@@ -3,6 +3,8 @@ import jwtDecode from 'jwt-decode';
 import { PATH_AUTH } from '../routes/paths';
 //
 import axios from './axios';
+import Cookies from 'js-cookie';
+import { cookiesExpires, cookiesKey } from '../config';
 
 // ----------------------------------------------------------------------
 
@@ -40,6 +42,8 @@ const handleTokenExpired = (exp: number) => {
 
 const setSession = (accessToken: string | null) => {
   if (accessToken) {
+    Cookies.set(cookiesKey.accessToken, accessToken, { expires: cookiesExpires });
+
     localStorage.setItem('accessToken', accessToken);
     axios.defaults.headers.common.Authorization = `Bearer ${accessToken}`;
 

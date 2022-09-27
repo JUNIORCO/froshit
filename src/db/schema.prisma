@@ -1,0 +1,52 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("SUPABASE_DATABASE_URL")
+}
+
+enum Role {
+  ADMIN
+  ORGANIZER
+  LEADER
+  FROSHEE
+}
+
+model University {
+  id          Int         @id @default(autoincrement())
+  name        String      @unique
+  subdomain   String      @unique
+  froshs      Frosh[]
+  users       User[]
+  updatedAt   DateTime    @default(now())
+  createdAt   DateTime    @updatedAt
+}
+
+model Frosh {
+  id            Int         @id @default(autoincrement())
+  name          String
+  description   String
+  // university
+  university    University  @relation(fields: [universityId], references: [id])
+  universityId  Int         // relation scalar field - university associated to the frosh
+  // users
+  users         User[]
+  updatedAt     DateTime    @default(now())
+  createdAt     DateTime    @updatedAt
+}
+
+model User {
+  id             Int        @id @default(autoincrement())
+  name           String     @db.Text
+  role           Role
+  // university
+  university     University @relation(fields: [universityId], references: [id])
+  universityId   Int        // relation scalar field - which university the user is associated to
+  // frosh
+  frosh          Frosh?     @relation(fields: [froshId], references: [id])
+  froshId        Int?       // relation scalar field - which frosh the user is associated to
+  updatedAt      DateTime   @default(now())
+  createdAt      DateTime   @updatedAt
+}

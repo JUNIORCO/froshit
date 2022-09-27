@@ -46,6 +46,9 @@ import {
 } from '../../../../../components/table';
 // sections
 import { UserTableToolbar, UserTableRow } from '../../../../../sections/@dashboard/user/list';
+import { prisma, PrismaType } from '../../../../../db';
+import { GetServerSideProps, InferGetServerSidePropsType } from 'next';
+import { getUsersForAdminList, UsersForAdminList } from '../../../../../db/users/get';
 
 // ----------------------------------------------------------------------
 
@@ -80,8 +83,7 @@ UserList.getLayout = function getLayout(page: React.ReactElement) {
 };
 
 // ----------------------------------------------------------------------
-
-export default function UserList() {
+export default function UserList({ users }: InferGetServerSidePropsType<typeof getServerSideProps>) {
   const {
     dense,
     page,
@@ -100,6 +102,8 @@ export default function UserList() {
     onChangePage,
     onChangeRowsPerPage,
   } = useTable();
+
+  console.log(users);
 
   const { themeStretch } = useSettings();
 
@@ -154,10 +158,10 @@ export default function UserList() {
     (!dataFiltered.length && !!filterStatus);
 
   return (
-    <Page title="User: List">
+    <Page title='User: List'>
       <Container maxWidth={themeStretch ? false : 'lg'}>
         <HeaderBreadcrumbs
-          heading="User List"
+          heading='User List'
           links={[
             { name: 'Dashboard', href: PATH_DASHBOARD.root },
             { name: 'User', href: PATH_DASHBOARD.user.root },
@@ -165,7 +169,7 @@ export default function UserList() {
           ]}
           action={
             <NextLink href={PATH_DASHBOARD.user.new} passHref>
-              <Button variant="contained" startIcon={<Iconify icon={'eva:plus-fill'} />}>
+              <Button variant='contained' startIcon={<Iconify icon={'eva:plus-fill'} />}>
                 New User
               </Button>
             </NextLink>
@@ -175,8 +179,8 @@ export default function UserList() {
         <Card>
           <Tabs
             allowScrollButtonsMobile
-            variant="scrollable"
-            scrollButtons="auto"
+            variant='scrollable'
+            scrollButtons='auto'
             value={filterStatus}
             onChange={onChangeFilterStatus}
             sx={{ px: 2, bgcolor: 'background.neutral' }}
@@ -206,12 +210,12 @@ export default function UserList() {
                   onSelectAllRows={(checked) =>
                     onSelectAllRows(
                       checked,
-                      tableData.map((row) => row.id)
+                      tableData.map((row) => row.id),
                     )
                   }
                   actions={
-                    <Tooltip title="Delete">
-                      <IconButton color="primary" onClick={() => handleDeleteRows(selected)}>
+                    <Tooltip title='Delete'>
+                      <IconButton color='primary' onClick={() => handleDeleteRows(selected)}>
                         <Iconify icon={'eva:trash-2-outline'} />
                       </IconButton>
                     </Tooltip>
@@ -230,7 +234,7 @@ export default function UserList() {
                   onSelectAllRows={(checked) =>
                     onSelectAllRows(
                       checked,
-                      tableData.map((row) => row.id)
+                      tableData.map((row) => row.id),
                     )
                   }
                 />
@@ -263,7 +267,7 @@ export default function UserList() {
           <Box sx={{ position: 'relative' }}>
             <TablePagination
               rowsPerPageOptions={[5, 10, 25]}
-              component="div"
+              component='div'
               count={dataFiltered.length}
               rowsPerPage={rowsPerPage}
               page={page}
@@ -273,7 +277,7 @@ export default function UserList() {
 
             <FormControlLabel
               control={<Switch checked={dense} onChange={onChangeDense} />}
-              label="Dense"
+              label='Dense'
               sx={{ px: 3, py: 1.5, top: 0, position: { md: 'absolute' } }}
             />
           </Box>
@@ -286,12 +290,12 @@ export default function UserList() {
 // ----------------------------------------------------------------------
 
 function applySortFilter({
-  tableData,
-  comparator,
-  filterName,
-  filterStatus,
-  filterRole,
-}: {
+                           tableData,
+                           comparator,
+                           filterName,
+                           filterStatus,
+                           filterRole,
+                         }: {
   tableData: UserManager[];
   comparator: (a: any, b: any) => number;
   filterName: string;
@@ -311,7 +315,7 @@ function applySortFilter({
   if (filterName) {
     tableData = tableData.filter(
       (item: Record<string, any>) =>
-        item.name.toLowerCase().indexOf(filterName.toLowerCase()) !== -1
+        item.name.toLowerCase().indexOf(filterName.toLowerCase()) !== -1,
     );
   }
 
@@ -324,4 +328,15 @@ function applySortFilter({
   }
 
   return tableData;
+}
+
+export const getServerSideProps: GetServerSideProps = async (ctx) => {
+  console.log(ctx.req.headers)
+  const users: UsersForAdminList = await getUsersForAdminList();
+
+  return {
+    props: {
+      users,
+    },
+  };
 }

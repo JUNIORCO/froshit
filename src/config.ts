@@ -80,6 +80,7 @@ export const cookiesKey = {
   themeContrast: 'themeContrast',
   themeDirection: 'themeDirection',
   themeColorPresets: 'themeColorPresets',
+  accessToken: 'accessToken',
 };
 
 export const defaultSettings: SettingsValueProps = {

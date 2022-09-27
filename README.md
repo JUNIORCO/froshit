@@ -22,10 +22,10 @@ npm run supabase-start
 
 This will start an empty database instance with no tables or data based on your `.env` file.
 
-To add our models to the databse instance, use Prisma
+To add our models to the database instance, use Prisma
 
 ```bash
-npm run prisma-generate
+npm run prisma-db-push
 ```
 
 This will generate the tables and associations.
