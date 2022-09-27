@@ -1,3 +1,4 @@
+// @ts-nocheck
 import { createClient } from 'https://esm.sh/@supabase/supabase-js@^1.33.2';
 
 export const supabaseClient = createClient(
