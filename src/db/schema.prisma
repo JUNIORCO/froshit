@@ -19,34 +19,74 @@ model University {
   name        String      @unique
   subdomain   String      @unique
   froshs      Frosh[]
-  users       User[]
-  updatedAt   DateTime    @default(now())
-  createdAt   DateTime    @updatedAt
+  profiles    Profile[]
+  imageUrl    String
+  createdAt   DateTime    @default(now())
+  updatedAt   DateTime    @updatedAt
 }
 
 model Frosh {
   id            Int         @id @default(autoincrement())
   name          String
   description   String
+  imageUrl      String
   // university
   university    University  @relation(fields: [universityId], references: [id])
   universityId  Int         // relation scalar field - university associated to the frosh
-  // users
-  users         User[]
-  updatedAt     DateTime    @default(now())
-  createdAt     DateTime    @updatedAt
+  // events
+  events        Event[]
+  // teams
+  teams         Team[]
+  // profiles
+  profiles      Profile[]
+  createdAt     DateTime    @default(now())
+  updatedAt     DateTime    @updatedAt
 }
 
-model User {
+model Event {
+  id            Int         @id @default(autoincrement())
+  name          String
+  description   String
+  startDate     DateTime
+  endDate       DateTime
+  imageUrl      String
+  location      String
+  accessibility String
+  // frosh
+  frosh         Frosh       @relation(fields: [froshId], references: [id])
+  froshId       Int         // relation scalar field - which frosh the event is associated to
+  createdAt     DateTime    @default(now())
+  updatedAt     DateTime    @updatedAt
+}
+
+model Team {
+  id            Int        @id @default(autoincrement())
+  name          String
+  // frosh
+  frosh         Frosh       @relation(fields: [froshId], references: [id])
+  froshId       Int         // relation scalar field - which frosh the team is associated to
+  // profiles
+  profiles      Profile[]
+  createdAt     DateTime    @default(now())
+  updatedAt     DateTime    @updatedAt
+}
+
+model Profile {
   id             Int        @id @default(autoincrement())
   name           String     @db.Text
   role           Role
+  avatarUrl      String
+  program        String?
+  interests      String?
   // university
   university     University @relation(fields: [universityId], references: [id])
-  universityId   Int        // relation scalar field - which university the user is associated to
+  universityId   Int        // relation scalar field - which university the profile is associated to
   // frosh
-  frosh          Frosh?     @relation(fields: [froshId], references: [id])
-  froshId        Int?       // relation scalar field - which frosh the user is associated to
-  updatedAt      DateTime   @default(now())
-  createdAt      DateTime   @updatedAt
+  frosh          Frosh?     @relation(fields: [froshId], references: [id]) // optional because admin/organizers are not part of a frosh
+  froshId        Int?       // relation scalar field - which frosh the profile is associated to
+  // team
+  team           Team?       @relation(fields: [teamId], references: [id]) // optional because admin/organizers are not part of a team
+  teamId         Int?        // relation scalar field - which team the profile is associated to
+  createdAt      DateTime    @default(now())
+  updatedAt      DateTime    @updatedAt
 }

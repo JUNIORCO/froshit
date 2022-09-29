@@ -2,8 +2,6 @@ import { useState } from 'react';
 // @mui
 import { useTheme } from '@mui/material/styles';
 import { Avatar, Checkbox, TableRow, TableCell, Typography, MenuItem } from '@mui/material';
-// @types
-import { UserManager } from '../../../../@types/user';
 // components
 import Label from '../../../../components/Label';
 import Iconify from '../../../../components/Iconify';
@@ -12,7 +10,7 @@ import { TableMoreMenu } from '../../../../components/table';
 // ----------------------------------------------------------------------
 
 type Props = {
-  row: UserManager;
+  row: any;
   selected: boolean;
   onEditRow: VoidFunction;
   onSelectRow: VoidFunction;
@@ -28,7 +26,7 @@ export default function UserTableRow({
 }: Props) {
   const theme = useTheme();
 
-  const { name, avatarUrl, company, role, isVerified, status } = row;
+  const { name, avatarUrl, role, program, interests, universityId, froshId, teamId } = row;
 
   const [openMenu, setOpenMenuActions] = useState<HTMLElement | null>(null);
 
@@ -53,32 +51,28 @@ export default function UserTableRow({
         </Typography>
       </TableCell>
 
-      <TableCell align="left">{company}</TableCell>
-
       <TableCell align="left" sx={{ textTransform: 'capitalize' }}>
         {role}
       </TableCell>
 
-      <TableCell align="center">
-        <Iconify
-          icon={isVerified ? 'eva:checkmark-circle-fill' : 'eva:clock-outline'}
-          sx={{
-            width: 20,
-            height: 20,
-            color: 'success.main',
-            ...(!isVerified && { color: 'warning.main' }),
-          }}
-        />
+      <TableCell align="left">
+        {program}
       </TableCell>
 
       <TableCell align="left">
-        <Label
-          variant={theme.palette.mode === 'light' ? 'ghost' : 'filled'}
-          color={(status === 'banned' && 'error') || 'success'}
-          sx={{ textTransform: 'capitalize' }}
-        >
-          {status}
-        </Label>
+        {interests}
+      </TableCell>
+
+      <TableCell align="left">
+        {universityId}
+      </TableCell>
+
+      <TableCell align="left">
+        {froshId}
+      </TableCell>
+
+      <TableCell align="left">
+        {teamId}
       </TableCell>
 
       <TableCell align="right">

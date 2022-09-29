@@ -100,7 +100,7 @@ export default function KanbanContactsDialog({ open, onClose }: Props) {
 function applySortFilter<T>({ listData, filterName }: { listData: T[]; filterName: string }) {
   if (filterName) {
     listData = listData.filter(
-      (item: Record<string, any>) =>
+      (item: any) =>
         item.name.toLowerCase().indexOf(filterName.toLowerCase()) !== -1 ||
         item.email.toLowerCase().indexOf(filterName.toLowerCase()) !== -1
     );

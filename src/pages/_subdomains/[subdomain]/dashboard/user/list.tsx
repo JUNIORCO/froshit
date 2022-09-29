@@ -6,31 +6,30 @@ import { useRouter } from 'next/router';
 // @mui
 import {
   Box,
-  Tab,
-  Tabs,
-  Card,
-  Table,
-  Switch,
   Button,
-  Tooltip,
-  Divider,
-  TableBody,
+  Card,
   Container,
+  Divider,
+  FormControlLabel,
   IconButton,
+  Switch,
+  Tab,
+  Table,
+  TableBody,
   TableContainer,
   TablePagination,
-  FormControlLabel,
+  Tabs,
+  Tooltip,
 } from '@mui/material';
 // routes
 import { PATH_DASHBOARD } from '../../../../../routes/paths';
 // hooks
 import useTabs from '../../../../../hooks/useTabs';
 import useSettings from '../../../../../hooks/useSettings';
-import useTable, { getComparator, emptyRows } from '../../../../../hooks/useTable';
+import useTable, { emptyRows, getComparator } from '../../../../../hooks/useTable';
 // @types
 import { UserManager } from '../../../../../@types/user';
 // _mock_
-import { _userList } from '../../../../../_mock';
 // layouts
 import Layout from '../../../../../layouts';
 // components
@@ -38,41 +37,26 @@ import Page from '../../../../../components/Page';
 import Iconify from '../../../../../components/Iconify';
 import Scrollbar from '../../../../../components/Scrollbar';
 import HeaderBreadcrumbs from '../../../../../components/HeaderBreadcrumbs';
-import {
-  TableNoData,
-  TableEmptyRows,
-  TableHeadCustom,
-  TableSelectedActions,
-} from '../../../../../components/table';
+import { TableEmptyRows, TableHeadCustom, TableNoData, TableSelectedActions } from '../../../../../components/table';
 // sections
-import { UserTableToolbar, UserTableRow } from '../../../../../sections/@dashboard/user/list';
-import { prisma, PrismaType } from '../../../../../db';
+import { UserTableRow, UserTableToolbar } from '../../../../../sections/@dashboard/user/list';
 import { GetServerSideProps, InferGetServerSidePropsType } from 'next';
-import { getUsersForAdminList, UsersForAdminList } from '../../../../../db/users/get';
+import type { UserRoles, UsersForAdminList } from '../../../../../db/users/get';
+import { getUserRoles, getUsersForAdminList } from '../../../../../db/users/get';
+import capitalize from 'lodash/capitalize';
 
 // ----------------------------------------------------------------------
 
-const STATUS_OPTIONS = ['all', 'active', 'banned'];
-
-const ROLE_OPTIONS = [
-  'all',
-  'ux designer',
-  'full stack designer',
-  'backend developer',
-  'project manager',
-  'leader',
-  'ui designer',
-  'ui/ux designer',
-  'front end developer',
-  'full stack developer',
-];
+const STATUS_OPTIONS = ['All', 'Active', 'Banned'];
 
 const TABLE_HEAD = [
   { id: 'name', label: 'Name', align: 'left' },
-  { id: 'company', label: 'Company', align: 'left' },
   { id: 'role', label: 'Role', align: 'left' },
-  { id: 'isVerified', label: 'Verified', align: 'center' },
-  { id: 'status', label: 'Status', align: 'left' },
+  { id: 'program', label: 'Program', align: 'left' },
+  { id: 'interests', label: 'Interests', align: 'left' },
+  { id: 'universityId', label: 'University', align: 'left' },
+  { id: 'froshId', label: 'Frosh', align: 'left' },
+  { id: 'teamId', label: 'Team', align: 'left' },
   { id: '' },
 ];
 
@@ -83,7 +67,7 @@ UserList.getLayout = function getLayout(page: React.ReactElement) {
 };
 
 // ----------------------------------------------------------------------
-export default function UserList({ users }: InferGetServerSidePropsType<typeof getServerSideProps>) {
+export default function UserList({ users, roles }: InferGetServerSidePropsType<typeof getServerSideProps>) {
   const {
     dense,
     page,
@@ -103,19 +87,19 @@ export default function UserList({ users }: InferGetServerSidePropsType<typeof g
     onChangeRowsPerPage,
   } = useTable();
 
-  console.log(users);
+  const ROLE_OPTIONS = ['All', ...roles.map((role: string) => capitalize(role))];
 
   const { themeStretch } = useSettings();
 
   const { push } = useRouter();
 
-  const [tableData, setTableData] = useState(_userList);
+  const [tableData, setTableData] = useState(users);
 
   const [filterName, setFilterName] = useState('');
 
-  const [filterRole, setFilterRole] = useState('all');
+  const [filterRole, setFilterRole] = useState('All');
 
-  const { currentTab: filterStatus, onChangeTab: onChangeFilterStatus } = useTabs('all');
+  const { currentTab: filterStatus, onChangeTab: onChangeFilterStatus } = useTabs('All');
 
   const handleFilterName = (filterName: string) => {
     setFilterName(filterName);
@@ -127,13 +111,13 @@ export default function UserList({ users }: InferGetServerSidePropsType<typeof g
   };
 
   const handleDeleteRow = (id: string) => {
-    const deleteRow = tableData.filter((row) => row.id !== id);
+    const deleteRow = tableData.filter((row: any) => row.id !== id);
     setSelected([]);
     setTableData(deleteRow);
   };
 
   const handleDeleteRows = (selected: string[]) => {
-    const deleteRows = tableData.filter((row) => !selected.includes(row.id));
+    const deleteRows = tableData.filter((row: any) => !selected.includes(row.id));
     setSelected([]);
     setTableData(deleteRows);
   };
@@ -207,10 +191,10 @@ export default function UserList({ users }: InferGetServerSidePropsType<typeof g
                   dense={dense}
                   numSelected={selected.length}
                   rowCount={tableData.length}
-                  onSelectAllRows={(checked) =>
+                  onSelectAllRows={(checked: boolean) =>
                     onSelectAllRows(
                       checked,
-                      tableData.map((row) => row.id),
+                      tableData.map((row: any) => row.id),
                     )
                   }
                   actions={
@@ -231,10 +215,10 @@ export default function UserList({ users }: InferGetServerSidePropsType<typeof g
                   rowCount={tableData.length}
                   numSelected={selected.length}
                   onSort={onSort}
-                  onSelectAllRows={(checked) =>
+                  onSelectAllRows={(checked: boolean) =>
                     onSelectAllRows(
                       checked,
-                      tableData.map((row) => row.id),
+                      tableData.map((row: any) => row.id),
                     )
                   }
                 />
@@ -242,7 +226,7 @@ export default function UserList({ users }: InferGetServerSidePropsType<typeof g
                 <TableBody>
                   {dataFiltered
                     .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
-                    .map((row) => (
+                    .map((row: any) => (
                       <UserTableRow
                         key={row.id}
                         row={row}
@@ -319,11 +303,11 @@ function applySortFilter({
     );
   }
 
-  if (filterStatus !== 'all') {
+  if (filterStatus !== 'All') {
     tableData = tableData.filter((item: Record<string, any>) => item.status === filterStatus);
   }
 
-  if (filterRole !== 'all') {
+  if (filterRole !== 'All') {
     tableData = tableData.filter((item: Record<string, any>) => item.role === filterRole);
   }
 
@@ -331,12 +315,12 @@ function applySortFilter({
 }
 
 export const getServerSideProps: GetServerSideProps = async (ctx) => {
-  console.log(ctx.req.headers)
-  const users: UsersForAdminList = await getUsersForAdminList();
-
+  const [users, roles]: [UsersForAdminList, UserRoles] = await Promise.all([getUsersForAdminList(), getUserRoles()]);
+  console.log(users);
   return {
     props: {
       users,
+      roles,
     },
   };
-}
+};

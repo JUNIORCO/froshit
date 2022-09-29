@@ -17,7 +17,7 @@ This is the FROSHIT monolith repo. Contains the backend, frontend, and mobile ap
 In one terminal, start Supabase (make sure Docker is started):
 
 ```bash
-npm run supabase-start
+npm run supabase:start
 ```
 
 This will start an empty database instance with no tables or data based on your `.env` file.
@@ -25,7 +25,7 @@ This will start an empty database instance with no tables or data based on your 
 To add our models to the database instance, use Prisma
 
 ```bash
-npm run prisma-db-push
+npm run prisma:db-push
 ```
 
 This will generate the tables and associations.
@@ -35,7 +35,7 @@ to see the results.
 To seed the database, again use Prisma
 
 ```bash
-npm run prisma-seed
+npm run prisma:seed
 ```
 
 You should now see testing data in the database.
@@ -43,7 +43,7 @@ You should now see testing data in the database.
 To clear the Supabase instance (i.e delete all data and drop all tables), run
 
 ```bash
-npm run supabase-reset
+npm run supabase:reset
 ```
 
 ### Frontend
@@ -51,7 +51,7 @@ npm run supabase-reset
 Start another terminal and run
 
 ```bash
-npm run next-dev
+npm run next:dev
 ```
 
 It will be running on [http://localhost:3000](http://localhost:3000)
@@ -61,5 +61,5 @@ It will be running on [http://localhost:3000](http://localhost:3000)
 Automatic deployment when you push to `main` branch. Make sure you verify the build before deploying!
 
 ```bash
-npm run next-build
+npm run next:build
 ```
