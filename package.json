@@ -16,7 +16,7 @@
     "prisma:db-push": "npx prisma db push",
     "prisma:migrations": "npx prisma migrate dev",
     "prisma:seed": "npx prisma db seed",
-    "prisma:seed:prod": "node build/prisma/seed.js",
+    "prisma:seed:prod": "ts-node --compiler-options {\"module\":\"CommonJS\"} prisma/seed.ts",
     "prisma:studio": "npx prisma studio"
   },
   "prisma": {
