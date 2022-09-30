@@ -1,4 +1,4 @@
-name: Deploy Migrations to Production
+name: Production Deploy
 
 on:
   push:
@@ -13,7 +13,7 @@ jobs:
     env:
       SUPABASE_ACCESS_TOKEN: ${{ secrets.SUPABASE_ACCESS_TOKEN }}
       SUPABASE_DB_PASSWORD: ${{ secrets.PRODUCTION_DB_PASSWORD }}
-      PRODUCTION_PROJECT_ID: abcdefghijklmnopqrst
+      PRODUCTION_PROJECT_ID: ${{ secrets.PRODUCTION_PROJECT_ID }}
 
     steps:
       - uses: actions/checkout@v3
