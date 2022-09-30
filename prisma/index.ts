@@ -1,2 +1,2 @@
-export { prisma } from './prisma.ts';
-export type { PrismaType } from './prisma.ts';
+export { prisma } from './prisma';
+export type { PrismaType } from './prisma';
