@@ -67,7 +67,7 @@ UserList.getLayout = function getLayout(page: React.ReactElement) {
 };
 
 // ----------------------------------------------------------------------
-export default function UserList({ users, roles }: InferGetServerSidePropsType<typeof getServerSideProps>) {
+export default function UserList({ users, roles, error }: InferGetServerSidePropsType<typeof getServerSideProps>) {
   const {
     dense,
     page,
@@ -86,6 +86,8 @@ export default function UserList({ users, roles }: InferGetServerSidePropsType<t
     onChangePage,
     onChangeRowsPerPage,
   } = useTable();
+
+  console.log(error)
 
   const ROLE_OPTIONS = ['All', ...roles.map((role: string) => capitalize(role))];
 
@@ -326,6 +328,12 @@ export const getServerSideProps: GetServerSideProps = async (ctx) => {
     };
   } catch (error) {
     console.log(error);
-    throw error;
+    return {
+      props: {
+        users: [],
+        roles: [],
+        error: error,
+      },
+    };
   }
 };
