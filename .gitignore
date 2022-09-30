@@ -1,5 +1,5 @@
 # env
-.env*
+prisma/.env
 
 # dependencies
 /node_modules

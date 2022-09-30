@@ -1,4 +1,4 @@
-import { prisma } from './prisma'
+import { prisma } from './prisma.ts'
 
 async function main() {
   // Create universities

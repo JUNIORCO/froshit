@@ -1,4 +1,4 @@
-import { prisma, PrismaType } from '..';
+import { prisma, PrismaType } from '../index.ts';
 import capitalize from 'lodash/capitalize';
 
 /**
