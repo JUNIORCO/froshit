@@ -315,12 +315,17 @@ function applySortFilter({
 }
 
 export const getServerSideProps: GetServerSideProps = async (ctx) => {
-  const [users, roles]: [UsersForAdminList, UserRoles] = await Promise.all([getUsersForAdminList(), getUserRoles()]);
-  console.log(users);
-  return {
-    props: {
-      users,
-      roles,
-    },
-  };
+  try {
+    const [users, roles]: [UsersForAdminList, UserRoles] = await Promise.all([getUsersForAdminList(), getUserRoles()]);
+    console.log(users, roles);
+    return {
+      props: {
+        users,
+        roles,
+      },
+    };
+  } catch (error) {
+    console.log(error);
+    throw error;
+  }
 };
