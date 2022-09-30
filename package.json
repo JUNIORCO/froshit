@@ -19,8 +19,8 @@
     "prisma:studio": "npx prisma studio"
   },
   "prisma": {
-    "schema": "src/db/schema.prisma",
-    "seed": "ts-node --compiler-options {\"module\":\"CommonJS\"} src/db/seed.ts"
+    "schema": "prisma/schema.prisma",
+    "seed": "ts-node --compiler-options {\"module\":\"CommonJS\"} prisma/seed.ts"
   },
   "dependencies": {
     "@auth0/auth0-spa-js": "^1.22.4",
