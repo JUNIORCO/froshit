@@ -5,6 +5,7 @@
   "description": "Froshit monolith.",
   "private": true,
   "scripts": {
+    "prebuild": "npx prisma generate",
     "next:dev": "next dev",
     "next:build": "next build",
     "next:start": "next start",
