@@ -41,21 +41,21 @@ async function main() {
   await prisma.profile.createMany({
     data: [
       // admins
-      { name: 'Sami Junior', role: 'ADMIN', avatarUrl: 'https://gravatar.com/avatar/797edb6dfb170ce5952723c711d3bf09?s=400&d=robohash&r=x', program: null, interests: null, universityId: 1, froshId: null, teamId: null },
-      { name: 'Peggy Philips', role: 'ADMIN', avatarUrl: 'https://gravatar.com/avatar/797edb6dfb170ce5952723c711d3bf09?s=400&d=robohash&r=x', program: null, interests: null,universityId: 2, froshId: null, teamId: null },
-      { name: 'Alexa Macintosh', role: 'ADMIN', avatarUrl: 'https://gravatar.com/avatar/797edb6dfb170ce5952723c711d3bf09?s=400&d=robohash&r=x', program: null, interests: null,universityId: 3, froshId: null, teamId: null },
+      { name: 'Sami Junior', email: 'sami.junior@example.com', phoneNumber: '4385225656', role: 'Admin', avatarUrl: 'https://gravatar.com/avatar/797edb6dfb170ce5952723c711d3bf09?s=400&d=robohash&r=x', program: null, interests: null, universityId: 1, froshId: null, teamId: null },
+      { name: 'Peggy Philips', email: 'peggy.philips@example.com', phoneNumber: '4385225656',role: 'Admin', avatarUrl: 'https://gravatar.com/avatar/797edb6dfb170ce5952723c711d3bf09?s=400&d=robohash&r=x', program: null, interests: null,universityId: 2, froshId: null, teamId: null },
+      { name: 'Alexa Macintosh', email: 'alexa.macintosh@example.com', phoneNumber: '4385225656',role: 'Admin', avatarUrl: 'https://gravatar.com/avatar/797edb6dfb170ce5952723c711d3bf09?s=400&d=robohash&r=x', program: null, interests: null,universityId: 3, froshId: null, teamId: null },
       // organizers
-      { name: 'Ryan Blue', role: 'ORGANIZER', avatarUrl: 'https://gravatar.com/avatar/797edb6dfb170ce5952723c711d3bf09?s=400&d=robohash&r=x', program: null, interests: null, universityId: 1, froshId: null, teamId: null },
-      { name: 'Andy Pac', role: 'ORGANIZER', avatarUrl: 'https://gravatar.com/avatar/797edb6dfb170ce5952723c711d3bf09?s=400&d=robohash&r=x', program: null, interests: null, universityId: 2, froshId: null, teamId: null },
-      { name: 'Ben Parker', role: 'ORGANIZER', avatarUrl: 'https://gravatar.com/avatar/797edb6dfb170ce5952723c711d3bf09?s=400&d=robohash&r=x', program: null, interests: null, universityId: 3, froshId: null, teamId: null },
+      { name: 'Ryan Blue', email: 'ryan.blue@example.com', phoneNumber: '4385225656',role: 'Organizer', avatarUrl: 'https://gravatar.com/avatar/797edb6dfb170ce5952723c711d3bf09?s=400&d=robohash&r=x', program: null, interests: null, universityId: 1, froshId: null, teamId: null },
+      { name: 'Andy Pac', email: 'andy.pac@example.com', phoneNumber: '4385225656',role: 'Organizer', avatarUrl: 'https://gravatar.com/avatar/797edb6dfb170ce5952723c711d3bf09?s=400&d=robohash&r=x', program: null, interests: null, universityId: 2, froshId: null, teamId: null },
+      { name: 'Ben Parker', email: 'ben.parker@example.com', phoneNumber: '4385225656',role: 'Organizer', avatarUrl: 'https://gravatar.com/avatar/797edb6dfb170ce5952723c711d3bf09?s=400&d=robohash&r=x', program: null, interests: null, universityId: 3, froshId: null, teamId: null },
       // leaders
-      { name: 'Abi Miller', role: 'LEADER', avatarUrl: 'https://gravatar.com/avatar/797edb6dfb170ce5952723c711d3bf09?s=400&d=robohash&r=x', program: 'Arts', interests: 'Snowboarding',universityId: 1, froshId: 1, teamId: 1 },
-      { name: 'Tom Jones', role: 'LEADER', avatarUrl: 'https://gravatar.com/avatar/797edb6dfb170ce5952723c711d3bf09?s=400&d=robohash&r=x', program: 'Science', interests: 'Basketball',universityId: 2, froshId: 2, teamId: 2 },
-      { name: 'Pete Armani', role: 'LEADER', avatarUrl: 'https://gravatar.com/avatar/797edb6dfb170ce5952723c711d3bf09?s=400&d=robohash&r=x', program: 'Engineering', interests: 'Ski',universityId: 3, froshId: 3, teamId: 3 },
+      { name: 'Abi Miller', email: 'abi.miller@example.com', phoneNumber: '4385225656',role: 'Leader', avatarUrl: 'https://gravatar.com/avatar/797edb6dfb170ce5952723c711d3bf09?s=400&d=robohash&r=x', program: 'Arts', interests: 'Snowboarding',universityId: 1, froshId: 1, teamId: 1 },
+      { name: 'Tom Jones', email: 'tom.jones@example.com', phoneNumber: '4385225656',role: 'Leader', avatarUrl: 'https://gravatar.com/avatar/797edb6dfb170ce5952723c711d3bf09?s=400&d=robohash&r=x', program: 'Science', interests: 'Basketball',universityId: 2, froshId: 2, teamId: 2 },
+      { name: 'Pete Armani', email: 'pete.armani@example.com', phoneNumber: '4385225656',role: 'Leader', avatarUrl: 'https://gravatar.com/avatar/797edb6dfb170ce5952723c711d3bf09?s=400&d=robohash&r=x', program: 'Engineering', interests: 'Ski',universityId: 3, froshId: 3, teamId: 3 },
       // froshees
-      { name: 'John Doe', role: 'FROSHEE', avatarUrl: 'https://gravatar.com/avatar/797edb6dfb170ce5952723c711d3bf09?s=400&d=robohash&r=x', program: 'Engineering', interests: 'Cricket',universityId: 1, froshId: 1, teamId: 1 },
-      { name: 'Amanda Reed', role: 'FROSHEE', avatarUrl: 'https://gravatar.com/avatar/797edb6dfb170ce5952723c711d3bf09?s=400&d=robohash&r=x', program: 'Arts', interests: 'Football',universityId: 2, froshId: 2, teamId: 2 },
-      { name: 'Ava Gabriel', role: 'FROSHEE', avatarUrl: 'https://gravatar.com/avatar/797edb6dfb170ce5952723c711d3bf09?s=400&d=robohash&r=x', program: 'Science', interests: 'Swimming', universityId: 3, froshId: 3, teamId: 3 },
+      { name: 'John Doe', email: 'john.doe@example.com', phoneNumber: '4385225656',role: 'Froshee', avatarUrl: 'https://gravatar.com/avatar/797edb6dfb170ce5952723c711d3bf09?s=400&d=robohash&r=x', program: 'Engineering', interests: 'Cricket',universityId: 1, froshId: 1, teamId: 1 },
+      { name: 'Amanda Reed', email: 'amanda.reed@example.com', phoneNumber: '4385225656',role: 'Froshee', avatarUrl: 'https://gravatar.com/avatar/797edb6dfb170ce5952723c711d3bf09?s=400&d=robohash&r=x', program: 'Arts', interests: 'Football',universityId: 2, froshId: 2, teamId: 2 },
+      { name: 'Ava Gabriel', email: 'ava.gabriel@example.com', phoneNumber: '4385225656',role: 'Froshee', avatarUrl: 'https://gravatar.com/avatar/797edb6dfb170ce5952723c711d3bf09?s=400&d=robohash&r=x', program: 'Science', interests: 'Swimming', universityId: 3, froshId: 3, teamId: 3 },
     ],
   })
 

@@ -1,14 +1,15 @@
 import * as Yup from 'yup';
-import { useCallback, useEffect, useMemo } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
+import useSWRMutation from 'swr/mutation';
 import { useSnackbar } from 'notistack';
 // next
 import { useRouter } from 'next/router';
 // form
-import { useForm, Controller } from 'react-hook-form';
+import { Controller, useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 // @mui
 import { LoadingButton } from '@mui/lab';
-import { Box, Card, Grid, Stack, Switch, Typography, FormControlLabel } from '@mui/material';
+import { Box, Card, FormControlLabel, Grid, Stack, Switch, Typography } from '@mui/material';
 // utils
 import { fData } from '../../../utils/formatNumber';
 // routes
@@ -20,15 +21,21 @@ import { countries } from '../../../_mock';
 // components
 import Label from '../../../components/Label';
 import { CustomFile } from '../../../components/upload';
-import {
-  FormProvider,
-  RHFSelect,
-  RHFSwitch,
-  RHFTextField,
-  RHFUploadAvatar,
-} from '../../../components/hook-form';
+import { FormProvider, RHFSelect, RHFSwitch, RHFTextField, RHFUploadAvatar } from '../../../components/hook-form';
 
 // ----------------------------------------------------------------------
+
+const sendCreateProfileRequest = async (url: string, { arg }: any) => {
+  const res = await fetch(url, {
+    method: 'POST',
+    headers: {
+      'Accept': 'application/json',
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify(arg),
+  })
+  return res.json();
+}
 
 interface FormValuesProps extends Omit<UserManager, 'avatarUrl'> {
   avatarUrl: CustomFile | string | null;
@@ -37,9 +44,12 @@ interface FormValuesProps extends Omit<UserManager, 'avatarUrl'> {
 type Props = {
   isEdit?: boolean;
   currentUser?: UserManager;
+  roles: any[];
 };
 
-export default function UserNewEditForm({ isEdit = false, currentUser }: Props) {
+export default function UserNewEditForm({ isEdit = false, currentUser, roles }: Props) {
+  const { trigger } = useSWRMutation('/api/profile', sendCreateProfileRequest)
+
   const { push } = useRouter();
 
   const { enqueueSnackbar } = useSnackbar();
@@ -48,33 +58,29 @@ export default function UserNewEditForm({ isEdit = false, currentUser }: Props) 
     name: Yup.string().required('Name is required'),
     email: Yup.string().required('Email is required').email(),
     phoneNumber: Yup.string().required('Phone number is required'),
-    address: Yup.string().required('Address is required'),
-    country: Yup.string().required('country is required'),
-    company: Yup.string().required('Company is required'),
-    state: Yup.string().required('State is required'),
-    city: Yup.string().required('City is required'),
     role: Yup.string().required('Role Number is required'),
-    avatarUrl: Yup.mixed().test('required', 'Avatar is required', (value) => value !== ''),
+    avatarUrl: Yup.string().optional(),
+    program: Yup.string().optional(),
+    interests: Yup.string().optional(),
+    froshId: Yup.number().optional(),
+    teamId: Yup.number().optional(),
   });
 
   const defaultValues = useMemo(
     () => ({
-      name: currentUser?.name || '',
-      email: currentUser?.email || '',
-      phoneNumber: currentUser?.phoneNumber || '',
-      address: currentUser?.address || '',
-      country: currentUser?.country || '',
-      state: currentUser?.state || '',
-      city: currentUser?.city || '',
-      zipCode: currentUser?.zipCode || '',
-      avatarUrl: currentUser?.avatarUrl || '',
-      isVerified: currentUser?.isVerified || true,
-      status: currentUser?.status,
-      company: currentUser?.company || '',
-      role: currentUser?.role || '',
+      name: '',
+      email: '',
+      phoneNumber: '',
+      role: '',
+      avatarUrl: '',
+      program: '',
+      interests: '',
+      froshId: null,
+      teamId: null,
+      // @ts-ignore
+      universityId: currentUser?.universityId || 1,
     }),
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-    [currentUser]
+    [currentUser],
   );
 
   const methods = useForm<FormValuesProps>({
@@ -105,7 +111,7 @@ export default function UserNewEditForm({ isEdit = false, currentUser }: Props) 
 
   const onSubmit = async (data: FormValuesProps) => {
     try {
-      await new Promise((resolve) => setTimeout(resolve, 500));
+      await trigger(data);
       reset();
       enqueueSnackbar(!isEdit ? 'Create success!' : 'Update success!');
       push(PATH_DASHBOARD.user.list);
@@ -123,11 +129,11 @@ export default function UserNewEditForm({ isEdit = false, currentUser }: Props) 
           'avatarUrl',
           Object.assign(file, {
             preview: URL.createObjectURL(file),
-          })
+          }),
         );
       }
     },
-    [setValue]
+    [setValue],
   );
 
   return (
@@ -146,12 +152,12 @@ export default function UserNewEditForm({ isEdit = false, currentUser }: Props) 
 
             <Box sx={{ mb: 5 }}>
               <RHFUploadAvatar
-                name="avatarUrl"
+                name='avatarUrl'
                 maxSize={3145728}
                 onDrop={handleDrop}
                 helperText={
                   <Typography
-                    variant="caption"
+                    variant='caption'
                     sx={{
                       mt: 2,
                       mx: 'auto',
@@ -169,10 +175,10 @@ export default function UserNewEditForm({ isEdit = false, currentUser }: Props) 
 
             {isEdit && (
               <FormControlLabel
-                labelPlacement="start"
+                labelPlacement='start'
                 control={
                   <Controller
-                    name="status"
+                    name='status'
                     control={control}
                     render={({ field }) => (
                       <Switch
@@ -187,10 +193,10 @@ export default function UserNewEditForm({ isEdit = false, currentUser }: Props) 
                 }
                 label={
                   <>
-                    <Typography variant="subtitle2" sx={{ mb: 0.5 }}>
+                    <Typography variant='subtitle2' sx={{ mb: 0.5 }}>
                       Banned
                     </Typography>
-                    <Typography variant="body2" sx={{ color: 'text.secondary' }}>
+                    <Typography variant='body2' sx={{ color: 'text.secondary' }}>
                       Apply disable account
                     </Typography>
                   </>
@@ -199,21 +205,21 @@ export default function UserNewEditForm({ isEdit = false, currentUser }: Props) 
               />
             )}
 
-            <RHFSwitch
-              name="isVerified"
-              labelPlacement="start"
-              label={
-                <>
-                  <Typography variant="subtitle2" sx={{ mb: 0.5 }}>
-                    Email Verified
-                  </Typography>
-                  <Typography variant="body2" sx={{ color: 'text.secondary' }}>
-                    Disabling this will automatically send the user a verification email
-                  </Typography>
-                </>
-              }
-              sx={{ mx: 0, width: 1, justifyContent: 'space-between' }}
-            />
+            {/*<RHFSwitch*/}
+            {/*  name='isVerified'*/}
+            {/*  labelPlacement='start'*/}
+            {/*  label={*/}
+            {/*    <>*/}
+            {/*      <Typography variant='subtitle2' sx={{ mb: 0.5 }}>*/}
+            {/*        Email Verified*/}
+            {/*      </Typography>*/}
+            {/*      <Typography variant='body2' sx={{ color: 'text.secondary' }}>*/}
+            {/*        Disabling this will automatically send the user a verification email*/}
+            {/*      </Typography>*/}
+            {/*    </>*/}
+            {/*  }*/}
+            {/*  sx={{ mx: 0, width: 1, justifyContent: 'space-between' }}*/}
+            {/*/>*/}
           </Card>
         </Grid>
 
@@ -227,29 +233,27 @@ export default function UserNewEditForm({ isEdit = false, currentUser }: Props) 
                 gridTemplateColumns: { xs: 'repeat(1, 1fr)', sm: 'repeat(2, 1fr)' },
               }}
             >
-              <RHFTextField name="name" label="Full Name" />
-              <RHFTextField name="email" label="Email Address" />
-              <RHFTextField name="phoneNumber" label="Phone Number" />
+              <RHFTextField name='name' label='Full Name' />
+              <RHFTextField name='email' label='Email Address' />
+              <RHFTextField name='phoneNumber' label='Phone Number' />
 
-              <RHFSelect name="country" label="Country" placeholder="Country">
-                <option value="" />
-                {countries.map((option) => (
-                  <option key={option.code} value={option.label}>
-                    {option.label}
+              <RHFSelect name='role' label='Role' placeholder='Role'>
+                <option value='' />
+                {roles.map((role) => (
+                  <option key={role} value={role}>
+                    {role}
                   </option>
                 ))}
               </RHFSelect>
 
-              <RHFTextField name="state" label="State/Region" />
-              <RHFTextField name="city" label="City" />
-              <RHFTextField name="address" label="Address" />
-              <RHFTextField name="zipCode" label="Zip/Code" />
-              <RHFTextField name="company" label="Company" />
-              <RHFTextField name="role" label="Role" />
+              <RHFTextField name='program' label='Program' />
+              <RHFTextField name='interests' label='Interests' />
+              <RHFTextField name='froshId' label='Frosh' />
+              <RHFTextField name='teamId' label='Team' />
             </Box>
 
-            <Stack alignItems="flex-end" sx={{ mt: 3 }}>
-              <LoadingButton type="submit" variant="contained" loading={isSubmitting}>
+            <Stack alignItems='flex-end' sx={{ mt: 3 }}>
+              <LoadingButton type='submit' variant='contained' loading={isSubmitting}>
                 {!isEdit ? 'Create User' : 'Save Changes'}
               </LoadingButton>
             </Stack>

@@ -11,6 +11,8 @@ import Page from '../../../../../components/Page';
 import HeaderBreadcrumbs from '../../../../../components/HeaderBreadcrumbs';
 // sections
 import UserNewEditForm from '../../../../../sections/@dashboard/user/UserNewEditForm';
+import { GetServerSideProps } from 'next';
+import { getUserRoles, getUsersForAdminList } from '../../../../../../prisma/users/get';
 
 // ----------------------------------------------------------------------
 
@@ -20,22 +22,41 @@ UserCreate.getLayout = function getLayout(page: React.ReactElement) {
 
 // ----------------------------------------------------------------------
 
-export default function UserCreate() {
+export default function UserCreate({ roles }: any) {
   const { themeStretch } = useSettings();
 
   return (
-    <Page title="User: Create a new user">
+    <Page title="Create User">
       <Container maxWidth={themeStretch ? false : 'lg'}>
         <HeaderBreadcrumbs
-          heading="Create a new user"
+          heading="Create a New User"
           links={[
             { name: 'Dashboard', href: PATH_DASHBOARD.root },
             { name: 'User', href: PATH_DASHBOARD.user.list },
             { name: 'New user' },
           ]}
         />
-        <UserNewEditForm />
+        <UserNewEditForm roles={roles}/>
       </Container>
     </Page>
   );
 }
+
+export const getServerSideProps: GetServerSideProps = async (ctx) => {
+  try {
+    const roles = await getUserRoles();
+    return {
+      props: {
+        roles,
+      },
+    };
+  } catch (error) {
+    console.log(error);
+    return {
+      props: {
+        roles: [],
+        error: error,
+      },
+    };
+  }
+};

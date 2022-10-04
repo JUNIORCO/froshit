@@ -8,10 +8,10 @@ datasource db {
 }
 
 enum Role {
-  ADMIN
-  ORGANIZER
-  LEADER
-  FROSHEE
+  Admin
+  Organizer
+  Leader
+  Froshee
 }
 
 model University {
@@ -73,7 +73,9 @@ model Team {
 
 model Profile {
   id             Int        @id @default(autoincrement())
-  name           String     @db.Text
+  name           String
+  email          String
+  phoneNumber    String
   role           Role
   avatarUrl      String
   program        String?

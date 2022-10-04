@@ -26,7 +26,7 @@ export default function UserTableRow({
 }: Props) {
   const theme = useTheme();
 
-  const { name, avatarUrl, role, program, interests, universityId, froshId, teamId } = row;
+  const { name, avatarUrl, role, email, phoneNumber, universityId, froshId, teamId } = row;
 
   const [openMenu, setOpenMenuActions] = useState<HTMLElement | null>(null);
 
@@ -51,16 +51,16 @@ export default function UserTableRow({
         </Typography>
       </TableCell>
 
+      <TableCell align="left">
+        {email}
+      </TableCell>
+
+      <TableCell align="left">
+        {phoneNumber}
+      </TableCell>
+
       <TableCell align="left" sx={{ textTransform: 'capitalize' }}>
         {role}
-      </TableCell>
-
-      <TableCell align="left">
-        {program}
-      </TableCell>
-
-      <TableCell align="left">
-        {interests}
       </TableCell>
 
       <TableCell align="left">

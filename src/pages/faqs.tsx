@@ -27,7 +27,7 @@ Faqs.getLayout = function getLayout(page: React.ReactElement) {
 
 export default function Faqs() {
   return (
-    <Page title="Faqs">
+    <Page title="FAQs">
       <RootStyle>
         <FaqsHero />
 

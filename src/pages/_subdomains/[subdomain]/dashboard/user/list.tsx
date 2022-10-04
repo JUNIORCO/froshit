@@ -47,13 +47,13 @@ import capitalize from 'lodash/capitalize';
 
 // ----------------------------------------------------------------------
 
-const STATUS_OPTIONS = ['All', 'Active', 'Banned'];
+const STATUS_OPTIONS = ['All', 'Not Paid'];
 
 const TABLE_HEAD = [
   { id: 'name', label: 'Name', align: 'left' },
+  { id: 'email', label: 'Email', align: 'left' },
+  { id: 'phoneNumber', label: 'Phone Number', align: 'left' },
   { id: 'role', label: 'Role', align: 'left' },
-  { id: 'program', label: 'Program', align: 'left' },
-  { id: 'interests', label: 'Interests', align: 'left' },
   { id: 'universityId', label: 'University', align: 'left' },
   { id: 'froshId', label: 'Frosh', align: 'left' },
   { id: 'teamId', label: 'Team', align: 'left' },
@@ -87,7 +87,7 @@ export default function UserList({ users, roles, error }: InferGetServerSideProp
     onChangeRowsPerPage,
   } = useTable();
 
-  console.log(error)
+  console.log(users)
 
   const ROLE_OPTIONS = ['All', ...roles.map((role: string) => capitalize(role))];
 
@@ -310,7 +310,7 @@ function applySortFilter({
   }
 
   if (filterRole !== 'All') {
-    tableData = tableData.filter((item: Record<string, any>) => item.role === filterRole);
+    tableData = tableData.filter((item: Record<string, any>) => item.role.toLowerCase() === filterRole.toLowerCase());
   }
 
   return tableData;
@@ -320,7 +320,6 @@ export const getServerSideProps: GetServerSideProps = async (ctx) => {
   try {
     const users = await getUsersForAdminList();
     const roles = await getUserRoles();
-    console.log(users, roles);
     return {
       props: {
         users,

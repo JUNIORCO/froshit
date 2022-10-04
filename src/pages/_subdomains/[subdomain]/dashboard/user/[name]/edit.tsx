@@ -16,6 +16,8 @@ import Page from '../../../../../../components/Page';
 import HeaderBreadcrumbs from '../../../../../../components/HeaderBreadcrumbs';
 // sections
 import UserNewEditForm from '../../../../../../sections/@dashboard/user/UserNewEditForm';
+import { GetServerSideProps } from 'next';
+import { getUserRoles } from '../../../../../../../prisma/users/get';
 
 // ----------------------------------------------------------------------
 
@@ -25,7 +27,7 @@ UserEdit.getLayout = function getLayout(page: React.ReactElement) {
 
 // ----------------------------------------------------------------------
 
-export default function UserEdit() {
+export default function UserEdit({ roles }: any) {
   const { themeStretch } = useSettings();
 
   const { query } = useRouter();
@@ -46,8 +48,27 @@ export default function UserEdit() {
           ]}
         />
 
-        <UserNewEditForm isEdit currentUser={currentUser} />
+        <UserNewEditForm isEdit currentUser={currentUser} roles={roles} />
       </Container>
     </Page>
   );
 }
+
+export const getServerSideProps: GetServerSideProps = async (ctx) => {
+  try {
+    const roles = await getUserRoles();
+    return {
+      props: {
+        roles,
+      },
+    };
+  } catch (error) {
+    console.log(error);
+    return {
+      props: {
+        roles: [],
+        error: error,
+      },
+    };
+  }
+};

@@ -21,6 +21,7 @@ export default async function middleware(req: NextRequest) {
   }
 
   const currentHost = hostname.replace(`.${process.env.ROOT_DOMAIN}`, '');
+
   if (currentHost !== process.env.ROOT_DOMAIN) {
     // const isValid = await checkValidSubdomain(currentHost);
     if (checkValidSubdomain(currentHost)) {

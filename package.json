@@ -100,6 +100,7 @@
     "slick-carousel": "^1.8.1",
     "stylis": "^4.1.2",
     "stylis-plugin-rtl": "^2.1.1",
+    "swr": "^2.0.0-beta.0",
     "yup": "^0.32.11"
   },
   "devDependencies": {

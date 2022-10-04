@@ -8,14 +8,14 @@ export const getUsersForAdminList = async () => prisma.profile.findMany({
   select: {
     id: true,
     name: true,
+    email: true,
+    phoneNumber: true,
     role: true,
     avatarUrl: true,
-    program: true,
-    interests: true,
     universityId: true,
     froshId: true,
     teamId: true,
-  }
+  },
 });
 
 /**
