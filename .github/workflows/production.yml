@@ -26,5 +26,6 @@ jobs:
       - run: |
           supabase link --project-ref $PRODUCTION_PROJECT_ID
           npm install --legacy-peer-deps
+          npm run prisma:generate
           npm run prisma:db-push
           npm run prisma:seed
