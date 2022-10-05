@@ -41,9 +41,10 @@ import { TableEmptyRows, TableHeadCustom, TableNoData, TableSelectedActions } fr
 // sections
 import { UserTableRow, UserTableToolbar } from '../../../../../sections/@dashboard/user/list';
 import { GetServerSideProps, InferGetServerSidePropsType } from 'next';
-import type { UserRoles, UsersForAdminList } from '../../../../../../prisma/users/get';
-import { getUserRoles, getUsersForAdminList } from '../../../../../../prisma/users/get';
+import { getUsersForAdminList } from '../../../../../../prisma/users/get';
 import capitalize from 'lodash/capitalize';
+import { prisma } from '../../../../../../prisma';
+import { getProfileRoles } from '../../../../../../prisma/roles/roles';
 
 // ----------------------------------------------------------------------
 
@@ -319,7 +320,8 @@ function applySortFilter({
 export const getServerSideProps: GetServerSideProps = async (ctx) => {
   try {
     const users = await getUsersForAdminList();
-    const roles = await getUserRoles();
+    const roles = getProfileRoles();
+    console.log(roles);
     return {
       props: {
         users,

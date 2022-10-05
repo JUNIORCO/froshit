@@ -1,5 +1,4 @@
-import { prisma, PrismaType } from '../index';
-import capitalize from 'lodash/capitalize';
+import { prisma } from '../index';
 
 /**
  * Gets all the users for a given admin
@@ -17,20 +16,3 @@ export const getUsersForAdminList = async () => prisma.profile.findMany({
     teamId: true,
   },
 });
-
-/**
- * Gets all roles in the database
- */
-export const getUserRoles = async () => {
-  const roles = await prisma.profile.findMany({
-    distinct: ['role'],
-    select: {
-      role: true,
-    },
-  });
-  return roles.map(({ role }: Record<string, string>) => capitalize(role));
-};
-
-export type UsersForAdminList = PrismaType.PromiseReturnType<typeof getUsersForAdminList>
-
-export type UserRoles = PrismaType.PromiseReturnType<typeof getUserRoles>

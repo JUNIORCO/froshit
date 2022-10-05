@@ -17,7 +17,7 @@ import HeaderBreadcrumbs from '../../../../../../components/HeaderBreadcrumbs';
 // sections
 import UserNewEditForm from '../../../../../../sections/@dashboard/user/UserNewEditForm';
 import { GetServerSideProps } from 'next';
-import { getUserRoles } from '../../../../../../../prisma/users/get';
+import { getProfileRoles } from '../../../../../../../prisma/roles/roles';
 
 // ----------------------------------------------------------------------
 
@@ -56,7 +56,7 @@ export default function UserEdit({ roles }: any) {
 
 export const getServerSideProps: GetServerSideProps = async (ctx) => {
   try {
-    const roles = await getUserRoles();
+    const roles = getProfileRoles();
     return {
       props: {
         roles,
