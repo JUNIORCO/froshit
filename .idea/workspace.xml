@@ -4,20 +4,7 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="ff1ba3e5-c202-409d-87f0-f2570d6da013" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/prisma/roles/roles.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/.gitignore" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/deno.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/jsLibraryMappings.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/modules.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/modules.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/nextjs_TS.iml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/package-lock.json" beforeDir="false" afterPath="$PROJECT_DIR$/package-lock.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/prisma/users/get.ts" beforeDir="false" afterPath="$PROJECT_DIR$/prisma/users/get.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/pages/_subdomains/[subdomain]/dashboard/user/[name]/edit.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/pages/_subdomains/[subdomain]/dashboard/user/[name]/edit.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/pages/_subdomains/[subdomain]/dashboard/user/list.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/pages/_subdomains/[subdomain]/dashboard/user/list.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/pages/_subdomains/[subdomain]/dashboard/user/new.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/pages/_subdomains/[subdomain]/dashboard/user/new.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/pages/api/profile.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/pages/api/profile.ts" afterDir="false" />
-    </list>
+    <list default="true" id="ff1ba3e5-c202-409d-87f0-f2570d6da013" name="Changes" comment="" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -57,7 +44,8 @@
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
       <updated>1664934026238</updated>
-      <workItem from="1664934029380" duration="1368000" />
+      <workItem from="1664934029380" duration="2024000" />
+      <workItem from="1665026186034" duration="56000" />
     </task>
     <servers />
   </component>
@@ -74,5 +62,6 @@
         </entry>
       </map>
     </option>
+    <option name="oldMeFiltersMigrated" value="true" />
   </component>
 </project>
