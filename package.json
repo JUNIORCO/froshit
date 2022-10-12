@@ -5,7 +5,7 @@
   "description": "Froshit monolith.",
   "private": true,
   "scripts": {
-    "vercel-build": "npm run supabase:reset && npm run prisma:generate && npm run prisma:db-push && npm run next:build",
+    "vercel-build": "npm run prisma:generate && npm run prisma:db-push && npm run next:build",
     "next:dev": "next dev",
     "next:build": "next build",
     "next:start": "next start",
