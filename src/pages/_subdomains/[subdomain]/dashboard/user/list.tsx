@@ -19,7 +19,7 @@ import {
   TableContainer,
   TablePagination,
   Tabs,
-  Tooltip,
+  Tooltip, Typography,
 } from '@mui/material';
 // routes
 import { PATH_DASHBOARD } from '../../../../../routes/paths';
@@ -43,8 +43,8 @@ import { UserTableRow, UserTableToolbar } from '../../../../../sections/@dashboa
 import { GetServerSideProps, InferGetServerSidePropsType } from 'next';
 import { getUsersForAdminList } from '../../../../../../prisma/users/get';
 import capitalize from 'lodash/capitalize';
-import { prisma } from '../../../../../../prisma';
 import { getProfileRoles } from '../../../../../../prisma/roles/roles';
+import Breadcrumbs from '../../../../../components/Breadcrumbs';
 
 // ----------------------------------------------------------------------
 
@@ -88,8 +88,6 @@ export default function UserList({ users, roles, error }: InferGetServerSideProp
     onChangeRowsPerPage,
   } = useTable();
 
-  console.log(users)
-
   const ROLE_OPTIONS = ['All', ...roles.map((role: string) => capitalize(role))];
 
   const { themeStretch } = useSettings();
@@ -126,7 +124,7 @@ export default function UserList({ users, roles, error }: InferGetServerSideProp
   };
 
   const handleEditRow = (id: string) => {
-    push(PATH_DASHBOARD.user.edit(paramCase(id)));
+    push(PATH_DASHBOARD.user.edit(id));
   };
 
   const dataFiltered = applySortFilter({
@@ -145,10 +143,10 @@ export default function UserList({ users, roles, error }: InferGetServerSideProp
     (!dataFiltered.length && !!filterStatus);
 
   return (
-    <Page title='User: List'>
+    <Page title='User List'>
       <Container maxWidth={themeStretch ? false : 'lg'}>
         <HeaderBreadcrumbs
-          heading='User List'
+          heading="User List"
           links={[
             { name: 'Dashboard', href: PATH_DASHBOARD.root },
             { name: 'User', href: PATH_DASHBOARD.user.root },
@@ -156,7 +154,7 @@ export default function UserList({ users, roles, error }: InferGetServerSideProp
           ]}
           action={
             <NextLink href={PATH_DASHBOARD.user.new} passHref>
-              <Button variant='contained' startIcon={<Iconify icon={'eva:plus-fill'} />}>
+              <Button variant="contained" startIcon={<Iconify icon={'eva:plus-fill'} />}>
                 New User
               </Button>
             </NextLink>
@@ -236,7 +234,7 @@ export default function UserList({ users, roles, error }: InferGetServerSideProp
                         selected={selected.includes(row.id)}
                         onSelectRow={() => onSelectRow(row.id)}
                         onDeleteRow={() => handleDeleteRow(row.id)}
-                        onEditRow={() => handleEditRow(row.name)}
+                        onEditRow={() => handleEditRow(row.id)}
                       />
                     ))}
 
@@ -302,7 +300,7 @@ function applySortFilter({
   if (filterName) {
     tableData = tableData.filter(
       (item: Record<string, any>) =>
-        item.name.toLowerCase().indexOf(filterName.toLowerCase()) !== -1,
+        item.email.toLowerCase().indexOf(filterName.toLowerCase()) !== -1,
     );
   }
 
@@ -318,24 +316,12 @@ function applySortFilter({
 }
 
 export const getServerSideProps: GetServerSideProps = async (ctx) => {
-  try {
-    const users = await getUsersForAdminList();
-    const roles = getProfileRoles();
-    console.log(roles);
-    return {
-      props: {
-        users,
-        roles,
-      },
-    };
-  } catch (error) {
-    console.log(error);
-    return {
-      props: {
-        users: [],
-        roles: [],
-        error: error,
-      },
-    };
-  }
+  const users = await getUsersForAdminList();
+  const roles = getProfileRoles();
+  return {
+    props: {
+      users,
+      roles,
+    },
+  };
 };

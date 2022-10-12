@@ -12,8 +12,8 @@ const en = {
   },
   docs: {
     hi: `Hi`,
-    description: `Need help? \n Please check our docs.`,
-    documentation: `documentation`,
+    description: `Need help? \n Please check our FAQ.`,
+    documentation: `FAQ`,
   },
   app: `app`,
   user: `user`,

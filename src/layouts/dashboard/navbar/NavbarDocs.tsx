@@ -18,14 +18,11 @@ export default function NavbarDocs() {
   return (
     <Stack
       spacing={3}
-      sx={{ px: 5, pb: 5, mt: 10, width: 1, textAlign: 'center', display: 'block' }}
+      sx={{ px: 5, pb: 5, mt: 3, width: 1, textAlign: 'center', display: 'block' }}
     >
-      <DocIllustration sx={{ width: 1 }} />
+      {/*<DocIllustration sx={{ width: 1 }} />*/}
 
       <div>
-        <Typography gutterBottom variant="subtitle1">
-          {translate('docs.hi')}, {user?.displayName}
-        </Typography>
         <Typography variant="body2" sx={{ color: 'text.secondary', whiteSpace: 'pre-line' }}>
           {translate('docs.description')}
         </Typography>

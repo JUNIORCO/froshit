@@ -4,7 +4,47 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="ff1ba3e5-c202-409d-87f0-f2570d6da013" name="Changes" comment="" />
+    <list default="true" id="ff1ba3e5-c202-409d-87f0-f2570d6da013" name="Changes" comment="">
+      <change afterPath="$PROJECT_DIR$/prisma/froshs/get.ts" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/prisma/interests/interests.ts" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/prisma/programs/get.ts" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/prisma/team/get.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.github/workflows/production.yml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/package.json" beforeDir="false" afterPath="$PROJECT_DIR$/package.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/prisma/schema.prisma" beforeDir="false" afterPath="$PROJECT_DIR$/prisma/schema.prisma" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/prisma/seed.ts" beforeDir="false" afterPath="$PROJECT_DIR$/prisma/seed.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/prisma/users/get.ts" beforeDir="false" afterPath="$PROJECT_DIR$/prisma/users/get.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/public/assets/icons/navbar/ic_analytics.svg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/public/assets/icons/navbar/ic_banking.svg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/public/assets/icons/navbar/ic_blog.svg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/public/assets/icons/navbar/ic_booking.svg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/public/assets/icons/navbar/ic_calendar.svg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/public/assets/icons/navbar/ic_cart.svg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/public/assets/icons/navbar/ic_chat.svg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/public/assets/icons/navbar/ic_dashboard.svg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/public/assets/icons/navbar/ic_ecommerce.svg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/public/assets/icons/navbar/ic_invoice.svg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/public/assets/icons/navbar/ic_kanban.svg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/public/assets/icons/navbar/ic_mail.svg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/public/assets/icons/navbar/ic_menu_item.svg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/public/assets/icons/navbar/ic_user.svg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/_mock/_plans.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/_mock/_plans.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/components/EmptyContent.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/EmptyContent.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/components/Pricing.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/Pricing.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/components/table/TableNoData.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/table/TableNoData.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/contexts/Auth0Context.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/contexts/Auth0Context.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/layouts/dashboard/navbar/NavConfig.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/layouts/dashboard/navbar/NavConfig.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/layouts/dashboard/navbar/NavbarDocs.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/layouts/dashboard/navbar/NavbarDocs.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/locales/en.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/locales/en.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/pages/_subdomains/[subdomain]/dashboard/user/[name]/edit.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/pages/_subdomains/[subdomain]/dashboard/user/[id]/edit.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/pages/_subdomains/[subdomain]/dashboard/user/list.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/pages/_subdomains/[subdomain]/dashboard/user/list.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/pages/_subdomains/[subdomain]/dashboard/user/new.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/pages/_subdomains/[subdomain]/dashboard/user/new.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/pages/api/profile.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/pages/api/profile.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/routes/paths.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/routes/paths.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/sections/@dashboard/user/UserNewEditForm.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/sections/@dashboard/user/UserNewEditForm.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/sections/@dashboard/user/list/UserTableToolbar.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/sections/@dashboard/user/list/UserTableToolbar.tsx" afterDir="false" />
+    </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -26,6 +66,7 @@
     <property name="RunOnceActivity.ShowReadmeOnStart" value="true" />
     <property name="WebServerToolWindowFactoryState" value="false" />
     <property name="dart.analysis.tool.window.visible" value="false" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$/prisma/team" />
     <property name="node.js.detected.package.eslint" value="true" />
     <property name="node.js.detected.package.tslint" value="true" />
     <property name="node.js.selected.package.eslint" value="(autodetect)" />
@@ -36,6 +77,15 @@
     <property name="ts.external.directory.path" value="$PROJECT_DIR$/node_modules/typescript/lib" />
     <property name="vue.rearranger.settings.migration" value="true" />
   </component>
+  <component name="RecentsManager">
+    <key name="CopyFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$/prisma/team" />
+      <recent name="$PROJECT_DIR$/prisma/users" />
+      <recent name="$PROJECT_DIR$/prisma/froshs" />
+      <recent name="$PROJECT_DIR$/prisma/programs" />
+      <recent name="$PROJECT_DIR$/prisma/interests" />
+    </key>
+  </component>
   <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
   <component name="TaskManager">
     <task active="true" id="Default" summary="Default task">
@@ -45,7 +95,8 @@
       <option name="presentableId" value="Default" />
       <updated>1664934026238</updated>
       <workItem from="1664934029380" duration="2024000" />
-      <workItem from="1665026186034" duration="56000" />
+      <workItem from="1665026186034" duration="526000" />
+      <workItem from="1665538206239" duration="8360000" />
     </task>
     <servers />
   </component>

@@ -3,6 +3,7 @@ import { styled } from '@mui/material/styles';
 import { Typography, Box, BoxProps } from '@mui/material';
 //
 import Image from './Image';
+import Iconify from './Iconify';
 
 // ----------------------------------------------------------------------
 
@@ -27,13 +28,7 @@ interface Props extends BoxProps {
 export default function EmptyContent({ title, description, img, ...other }: Props) {
   return (
     <RootStyle {...other}>
-      <Image
-        disabledEffect
-        visibleByDefault
-        alt="empty content"
-        src={img || '/assets/illustrations/illustration_empty_content.svg'}
-        sx={{ height: 240, mb: 3 }}
-      />
+      <Iconify icon={'ant-design:exclamation-circle-twotone'} sx={{ height: 60, width: 60, mb: 3 }} />
 
       <Typography variant="h5" gutterBottom>
         {title}

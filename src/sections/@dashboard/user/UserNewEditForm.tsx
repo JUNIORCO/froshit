@@ -1,5 +1,5 @@
 import * as Yup from 'yup';
-import { useCallback, useEffect, useMemo, useState } from 'react';
+import { useCallback, useEffect, useMemo } from 'react';
 import useSWRMutation from 'swr/mutation';
 import { useSnackbar } from 'notistack';
 // next
@@ -17,11 +17,10 @@ import { PATH_DASHBOARD } from '../../../routes/paths';
 // @types
 import { UserManager } from '../../../@types/user';
 // _mock
-import { countries } from '../../../_mock';
 // components
 import Label from '../../../components/Label';
 import { CustomFile } from '../../../components/upload';
-import { FormProvider, RHFSelect, RHFSwitch, RHFTextField, RHFUploadAvatar } from '../../../components/hook-form';
+import { FormProvider, RHFSelect, RHFTextField, RHFUploadAvatar } from '../../../components/hook-form';
 
 // ----------------------------------------------------------------------
 
@@ -30,12 +29,12 @@ const sendCreateProfileRequest = async (url: string, { arg }: any) => {
     method: 'POST',
     headers: {
       'Accept': 'application/json',
-      'Content-Type': 'application/json'
+      'Content-Type': 'application/json',
     },
     body: JSON.stringify(arg),
-  })
+  });
   return res.json();
-}
+};
 
 interface FormValuesProps extends Omit<UserManager, 'avatarUrl'> {
   avatarUrl: CustomFile | string | null;
@@ -43,16 +42,30 @@ interface FormValuesProps extends Omit<UserManager, 'avatarUrl'> {
 
 type Props = {
   isEdit?: boolean;
-  currentUser?: UserManager;
-  roles: any[];
+  currentUser?: any;
+  roles: string[];
+  interests: string[];
+  programs: any[];
+  froshs: any[];
+  teams: any[];
 };
 
-export default function UserNewEditForm({ isEdit = false, currentUser, roles }: Props) {
-  const { trigger } = useSWRMutation('/api/profile', sendCreateProfileRequest)
+export default function UserNewEditForm({
+                                          isEdit = false,
+                                          currentUser,
+                                          roles,
+                                          interests,
+                                          programs,
+                                          froshs,
+                                          teams,
+                                        }: Props) {
+  const { trigger } = useSWRMutation('/api/profile', sendCreateProfileRequest);
 
   const { push } = useRouter();
 
   const { enqueueSnackbar } = useSnackbar();
+
+  console.log(currentUser)
 
   const NewUserSchema = Yup.object().shape({
     name: Yup.string().required('Name is required'),
@@ -60,23 +73,23 @@ export default function UserNewEditForm({ isEdit = false, currentUser, roles }: 
     phoneNumber: Yup.string().required('Phone number is required'),
     role: Yup.string().required('Role Number is required'),
     avatarUrl: Yup.string().optional(),
-    program: Yup.string().optional(),
+    programId: Yup.number().optional(),
     interests: Yup.string().optional(),
     froshId: Yup.number().optional(),
     teamId: Yup.number().optional(),
   });
-
+  console.log(currentUser)
   const defaultValues = useMemo(
     () => ({
-      name: '',
-      email: '',
-      phoneNumber: '',
-      role: '',
-      avatarUrl: '',
-      program: '',
-      interests: '',
-      froshId: null,
-      teamId: null,
+      name: currentUser?.name || '',
+      email: currentUser?.email || '',
+      phoneNumber: currentUser?.phoneNumber || '',
+      role: currentUser?.role || '',
+      avatarUrl: currentUser?.avatarUrl || '',
+      programId: currentUser?.programId || '',
+      interests: currentUser?.interests[0] || '',
+      froshId: currentUser?.froshId || null,
+      teamId: currentUser?.teamId || null,
       // @ts-ignore
       universityId: currentUser?.universityId || 1,
     }),
@@ -111,6 +124,7 @@ export default function UserNewEditForm({ isEdit = false, currentUser, roles }: 
 
   const onSubmit = async (data: FormValuesProps) => {
     try {
+
       await trigger(data);
       reset();
       enqueueSnackbar(!isEdit ? 'Create success!' : 'Update success!');
@@ -246,10 +260,41 @@ export default function UserNewEditForm({ isEdit = false, currentUser, roles }: 
                 ))}
               </RHFSelect>
 
-              <RHFTextField name='program' label='Program' />
-              <RHFTextField name='interests' label='Interests' />
-              <RHFTextField name='froshId' label='Frosh' />
-              <RHFTextField name='teamId' label='Team' />
+              <RHFSelect name='interests' label='Interests' placeholder='Interests'>
+                <option value='' />
+                {interests.map((interest) => (
+                  <option key={interest} value={interest}>
+                    {interest}
+                  </option>
+                ))}
+              </RHFSelect>
+
+              <RHFSelect name='programId' label='Program' placeholder='Program'>
+                <option value='' />
+                {programs.map((program) => (
+                  <option key={program.id} value={program.id}>
+                    {program.name}
+                  </option>
+                ))}
+              </RHFSelect>
+
+              <RHFSelect name='froshId' label='Frosh' placeholder='Frosh'>
+                <option value='' />
+                {froshs.map((frosh) => (
+                  <option key={frosh.id} value={frosh.id}>
+                    {frosh.name}
+                  </option>
+                ))}
+              </RHFSelect>
+
+              <RHFSelect name='teamId' label='Team' placeholder='Team'>
+                <option value='' />
+                {teams.map((team) => (
+                  <option key={team.id} value={team.id}>
+                    {team.name}
+                  </option>
+                ))}
+              </RHFSelect>
             </Box>
 
             <Stack alignItems='flex-end' sx={{ mt: 3 }}>

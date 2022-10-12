@@ -59,7 +59,7 @@ export const PATH_DASHBOARD = {
   kanban: path(ROOTS_DASHBOARD, '/kanban'),
   permissionDenied: path(ROOTS_DASHBOARD, '/permission-denied'),
   user: {
-    root: path(ROOTS_DASHBOARD, '/user'),
+    root: path(ROOTS_DASHBOARD, '/user/list'),
     new: path(ROOTS_DASHBOARD, '/user/new'),
     list: path(ROOTS_DASHBOARD, '/user/list'),
     cards: path(ROOTS_DASHBOARD, '/user/cards'),

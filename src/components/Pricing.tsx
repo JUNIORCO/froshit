@@ -7,7 +7,7 @@ import applicationMobile from '@iconify/icons-carbon/application-mobile';
 import { PATH_PAGE } from '../routes/paths';
 
 const pricingPlan = {
-  license: '$4.99 per user',
+  license: '7% of Ticket Sales',
   commons: ['Registration', 'Payment', 'Admin Console', 'Mobile App'],
   options: [
     'Unlimited students',

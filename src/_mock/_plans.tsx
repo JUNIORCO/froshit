@@ -39,7 +39,7 @@ export const _pricingPlans = [
   {
     subscription: 'starter',
     icon: <PlanStarterIcon />,
-    price: 4.99,
+    price: 7,
     caption: 'saving $24 a year',
     lists: [
       { text: '3 prototypes', isAvailable: true },
