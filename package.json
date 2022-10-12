@@ -14,7 +14,7 @@
     "supabase:stop": "supabase stop",
     "supabase:reset": "supabase db reset",
     "prisma:generate": "npx prisma generate",
-    "prisma:db-push": "npx prisma db push --accept-data-loss",
+    "prisma:db-push": "npx prisma db push --force-reset",
     "prisma:migrations": "npx prisma migrate dev",
     "prisma:seed": "npx prisma db seed",
     "prisma:studio": "npx prisma studio"
