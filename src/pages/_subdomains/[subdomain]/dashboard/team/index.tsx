@@ -82,7 +82,7 @@ export default function TeamList({ teams }: InferGetServerSidePropsType<typeof g
     onChangeRowsPerPage,
   } = useTable();
 
-  const FROSH_OPTIONS = ['All', ...(new Set(teams.map(({ frosh }) => frosh.name)))];
+  const FROSH_OPTIONS = ['All', ...(new Set(teams.map(({ frosh }: any) => frosh.name)))];
 
   const { themeStretch } = useSettings();
 

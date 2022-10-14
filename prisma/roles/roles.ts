@@ -1,5 +1,3 @@
 import { Role } from '@prisma/client';
 
-export const getProfileRoles = () => {
-  return Object.values(Role);
-}
+export const getProfileRoles = () => Object.values(Role)
