@@ -6,6 +6,7 @@
       "es6",
       "dom"
     ],
+    "downlevelIteration": true,
     "strict": true,
     "noEmit": true,
     "allowJs": true,
