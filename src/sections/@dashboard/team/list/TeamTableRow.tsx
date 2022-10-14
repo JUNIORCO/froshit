@@ -54,11 +54,11 @@ export default function TeamTableRow({
       </TableCell>
 
       <TableCell align='left'>
-        {profiles.filter((profile) => profile.role === 'Leader').map((profile) => profile.name).join(', ').slice(0, 100)}
+        {profiles.filter((profile: any) => profile.role === 'Leader').map((profile: any) => profile.name).join(', ').slice(0, 100)}
       </TableCell>
 
       <TableCell align='left'>
-        {profiles.filter((profile) => profile.role === 'Froshee').map((profile) => profile.name).join(', ').slice(0, 100)}
+        {profiles.filter((profile: any) => profile.role === 'Froshee').map((profile: any) => profile.name).join(', ').slice(0, 100)}
       </TableCell>
 
       <TableCell align='right'>

@@ -82,7 +82,8 @@ export default function TeamList({ teams }: InferGetServerSidePropsType<typeof g
     onChangeRowsPerPage,
   } = useTable();
 
-  const FROSH_OPTIONS = ['All', ...(new Set(teams.map(({ frosh }: any) => frosh.name)))];
+  // @ts-ignore
+  const FROSH_OPTIONS: string[] = ['All', ...(new Set(teams.map(({ frosh }: any) => frosh.name)))];
 
   const { themeStretch } = useSettings();
 
@@ -292,6 +293,7 @@ function applySortFilter({
   if (filterName) {
     tableData = tableData.filter(
       (item: Record<string, any>) =>
+        // @ts-ignore
         item.profiles.map((profile) => profile.name.toLowerCase().indexOf(filterName.toLowerCase()) !== -1).find((res) => res),
     );
   }

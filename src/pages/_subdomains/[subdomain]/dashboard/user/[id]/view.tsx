@@ -123,7 +123,7 @@ export const getServerSideProps: GetServerSideProps = async (ctx) => {
       interests,
       programs,
       froshs,
-      teams: team,
+      teams,
     },
   };
 };
