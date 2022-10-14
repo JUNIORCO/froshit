@@ -14,6 +14,16 @@ const withTM = require('next-transpile-modules')([
 
 module.exports = withTM({
   swcMinify: false,
+  experimental: {
+    swcPlugins: [
+      [
+        'next-superjson-plugin',
+        {
+          excluded: [],
+        },
+      ],
+    ],
+  },
   env: {
     // HOST
     HOST_API_KEY: 'https://minimal-assets-api-dev.vercel.app',

@@ -47,12 +47,6 @@ const navConfig = [
         title: 'Users',
         path: PATH_DASHBOARD.user.root,
         icon: ICONS.user,
-        // children: [
-        //   { title: 'list', path: PATH_DASHBOARD.user.list },
-        //   { title: 'create', path: PATH_DASHBOARD.user.new },
-        //   { title: 'edit', path: PATH_DASHBOARD.user.demoEdit },
-        //   { title: 'account', path: PATH_DASHBOARD.user.account },
-        // ],
       },
       {
         title: 'Events',
@@ -69,15 +63,8 @@ const navConfig = [
       },
       {
         title: 'Teams',
-        path: PATH_DASHBOARD.invoice.root,
+        path: PATH_DASHBOARD.team.root,
         icon: ICONS.team,
-        children: [
-          { title: 'cards', path: PATH_DASHBOARD.user.cards },
-          { title: 'list', path: PATH_DASHBOARD.invoice.list },
-          { title: 'details', path: PATH_DASHBOARD.invoice.demoView },
-          { title: 'create', path: PATH_DASHBOARD.invoice.new },
-          { title: 'edit', path: PATH_DASHBOARD.invoice.demoEdit },
-        ],
       },
       {
         title: 'Froshs',
@@ -123,7 +110,7 @@ const navConfig = [
         path: PATH_DASHBOARD.general.app,
         icon: ICONS.settings,
         children: [
-          { title: 'Programs', path: PATH_DASHBOARD.user.cards },
+          { title: 'Programs', path: PATH_DASHBOARD.user.root },
         ],
       },
     ],

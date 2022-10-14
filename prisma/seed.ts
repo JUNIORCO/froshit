@@ -103,7 +103,7 @@ async function main() {
     ],
   });
 
-  // Create users
+  // Create user
   await prisma.profile.createMany({
     data: [
       // admins
@@ -253,6 +253,30 @@ async function main() {
         programId: 3,
         froshId: 3,
         teamId: 3,
+      },
+      {
+        name: 'Chanel Geoffery',
+        email: 'chanel.Geoffery@example.com',
+        phoneNumber: '12334445',
+        role: 'Froshee',
+        avatarUrl: 'https://gravatar.com/avatar/797edb6dfb170ce5952723c711d3bf09?s=400&d=robohash&r=x',
+        interests: ['Movies', 'Netflix'],
+        universityId: 3,
+        programId: 3,
+        froshId: 3,
+        teamId: 1,
+      },
+      {
+        name: 'Luca Van',
+        email: 'luca.van@example.com',
+        phoneNumber: '1114449857',
+        role: 'Leader',
+        avatarUrl: 'https://gravatar.com/avatar/797edb6dfb170ce5952723c711d3bf09?s=400&d=robohash&r=x',
+        interests: ['Netflix'],
+        universityId: 3,
+        programId: 3,
+        froshId: 3,
+        teamId: 1,
       },
     ],
   });

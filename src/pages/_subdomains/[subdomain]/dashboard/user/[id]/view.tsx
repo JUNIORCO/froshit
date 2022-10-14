@@ -1,37 +1,42 @@
 import { capitalCase } from 'change-case';
 // @mui
-import { Container, Tab, Box, Tabs } from '@mui/material';
+import { Box, Container, Tab, Tabs } from '@mui/material';
 // routes
-import { PATH_DASHBOARD } from '../../../../../routes/paths';
+import { PATH_DASHBOARD } from '../../../../../../routes/paths';
 // hooks
-import useTabs from '../../../../../hooks/useTabs';
-import useSettings from '../../../../../hooks/useSettings';
+import useTabs from '../../../../../../hooks/useTabs';
+import useSettings from '../../../../../../hooks/useSettings';
 // _mock_
-import { _userPayment, _userAddressBook, _userInvoices, _userAbout } from '../../../../../_mock';
+import { _userAddressBook, _userInvoices, _userPayment } from '../../../../../../_mock';
 // layouts
-import Layout from '../../../../../layouts';
+import Layout from '../../../../../../layouts';
 // components
-import Page from '../../../../../components/Page';
-import Iconify from '../../../../../components/Iconify';
-import HeaderBreadcrumbs from '../../../../../components/HeaderBreadcrumbs';
+import Page from '../../../../../../components/Page';
+import Iconify from '../../../../../../components/Iconify';
+import HeaderBreadcrumbs from '../../../../../../components/HeaderBreadcrumbs';
 // sections
 import {
-  AccountGeneral,
   AccountBilling,
-  AccountSocialLinks,
-  AccountNotifications,
   AccountChangePassword,
-} from '../../../../../sections/@dashboard/user/account';
+  AccountGeneral,
+} from '../../../../../../sections/@dashboard/user/account';
+import { GetServerSideProps } from 'next';
+import { getUserById } from '../../../../../../../prisma/user/get';
+import { getProfileRoles } from '../../../../../../../prisma/roles/roles';
+import { getProfileInterests } from '../../../../../../../prisma/interests/interests';
+import { getPrograms } from '../../../../../../../prisma/programs/get';
+import { getFroshs } from '../../../../../../../prisma/froshs/get';
+import { getTeams } from '../../../../../../../prisma/team/get';
 
 // ----------------------------------------------------------------------
 
-UserAccount.getLayout = function getLayout(page: React.ReactElement) {
+UserView.getLayout = function getLayout(page: React.ReactElement) {
   return <Layout>{page}</Layout>;
 };
 
 // ----------------------------------------------------------------------
 
-export default function UserAccount() {
+export default function UserView() {
   const { themeStretch } = useSettings();
 
   const { currentTab, onChangeTab } = useTabs('general');
@@ -54,16 +59,6 @@ export default function UserAccount() {
       ),
     },
     {
-      value: 'notifications',
-      icon: <Iconify icon={'eva:bell-fill'} width={20} height={20} />,
-      component: <AccountNotifications />,
-    },
-    {
-      value: 'social_links',
-      icon: <Iconify icon={'eva:share-fill'} width={20} height={20} />,
-      component: <AccountSocialLinks myProfile={_userAbout} />,
-    },
-    {
       value: 'change_password',
       icon: <Iconify icon={'ic:round-vpn-key'} width={20} height={20} />,
       component: <AccountChangePassword />,
@@ -71,10 +66,10 @@ export default function UserAccount() {
   ];
 
   return (
-    <Page title="User: Account Settings">
+    <Page title='User: Account Settings'>
       <Container maxWidth={themeStretch ? false : 'lg'}>
         <HeaderBreadcrumbs
-          heading="Account"
+          heading='Account'
           links={[
             { name: 'Dashboard', href: PATH_DASHBOARD.root },
             { name: 'User', href: PATH_DASHBOARD.user.root },
@@ -84,8 +79,8 @@ export default function UserAccount() {
 
         <Tabs
           allowScrollButtonsMobile
-          variant="scrollable"
-          scrollButtons="auto"
+          variant='scrollable'
+          scrollButtons='auto'
           value={currentTab}
           onChange={onChangeTab}
         >
@@ -110,3 +105,25 @@ export default function UserAccount() {
     </Page>
   );
 }
+
+export const getServerSideProps: GetServerSideProps = async (ctx) => {
+  const { subdomain, id } = ctx.query;
+  const user = await getUserById(Number(id));
+
+  const roles = getProfileRoles();
+  const interests = getProfileInterests();
+  const programs = await getPrograms();
+  const froshs = await getFroshs();
+  const teams = await getTeams();
+
+  return {
+    props: {
+      user,
+      roles,
+      interests,
+      programs,
+      froshs,
+      teams: team,
+    },
+  };
+};

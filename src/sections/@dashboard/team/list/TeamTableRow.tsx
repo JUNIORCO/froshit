@@ -1,9 +1,8 @@
 import { useState } from 'react';
 // @mui
 import { useTheme } from '@mui/material/styles';
-import { Avatar, Checkbox, TableRow, TableCell, Typography, MenuItem } from '@mui/material';
+import { Avatar, Checkbox, MenuItem, TableCell, TableRow, Typography } from '@mui/material';
 // components
-import Label from '../../../../components/Label';
 import Iconify from '../../../../components/Iconify';
 import { TableMoreMenu } from '../../../../components/table';
 
@@ -17,16 +16,16 @@ type Props = {
   onViewRow: VoidFunction;
 };
 
-export default function UserTableRow({
-  row,
-  selected,
-  onEditRow,
-  onSelectRow,
+export default function TeamTableRow({
+                                       row,
+                                       selected,
+                                       onEditRow,
+                                       onSelectRow,
                                        onViewRow,
-}: Props) {
+                                     }: Props) {
   const theme = useTheme();
 
-  const { name, avatarUrl, role, email, phoneNumber, frosh, team } = row;
+  const { name: teamName, frosh, profiles } = row;
 
   const [openMenu, setOpenMenuActions] = useState<HTMLElement | null>(null);
 
@@ -40,38 +39,29 @@ export default function UserTableRow({
 
   return (
     <TableRow hover selected={selected}>
-      <TableCell padding="checkbox">
+      <TableCell padding='checkbox'>
         <Checkbox checked={selected} onClick={onSelectRow} />
       </TableCell>
 
-      <TableCell sx={{ display: 'flex', alignItems: 'center' }}>
-        <Avatar alt={name} src={avatarUrl} sx={{ mr: 2 }} />
-        <Typography variant="subtitle2" noWrap>
-          {name}
+      <TableCell sx={{ alignItems: 'center' }}>
+        <Typography variant='subtitle2'>
+          {teamName}
         </Typography>
       </TableCell>
 
-      <TableCell align="left">
-        {email}
+      <TableCell align='left'>
+        {frosh.name}
       </TableCell>
 
-      <TableCell align="left">
-        {phoneNumber}
+      <TableCell align='left'>
+        {profiles.filter((profile) => profile.role === 'Leader').map((profile) => profile.name).join(', ').slice(0, 100)}
       </TableCell>
 
-      <TableCell align="left" sx={{ textTransform: 'capitalize' }}>
-        {role}
+      <TableCell align='left'>
+        {profiles.filter((profile) => profile.role === 'Froshee').map((profile) => profile.name).join(', ').slice(0, 100)}
       </TableCell>
 
-      <TableCell align="left">
-        {frosh && frosh.name}
-      </TableCell>
-
-      <TableCell align="left">
-        {team && team.name}
-      </TableCell>
-
-      <TableCell align="right">
+      <TableCell align='right'>
         <TableMoreMenu
           open={openMenu}
           onOpen={handleOpenMenu}

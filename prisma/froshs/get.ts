@@ -1,11 +1,6 @@
 import { prisma } from '../index';
 
 /**
- * Gets all the users.
+ * Gets all the user.
  */
-export const getFroshs = async () => prisma.frosh.findMany({
-  select: {
-    id: true,
-    name: true,
-  },
-});
+export const getFroshs = async () => prisma.frosh.findMany({});

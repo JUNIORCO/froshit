@@ -5,8 +5,12 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
   try {
     if (req.method === 'PATCH') {
       const { id } = req.query;
+
+      if (!id) {
+        throw new Error('No id found');
+      }
+
       const profile = req.body as PrismaType.ProfileUpdateInput;
-      // @ts-ignore
       const user = await prisma.profile.update({ where: { id: +id }, data: profile });
       res.status(200).json(user);
     } else {

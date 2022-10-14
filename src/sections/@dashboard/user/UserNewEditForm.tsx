@@ -130,7 +130,7 @@ export default function UserNewEditForm({
       await trigger({ ...data, method });
       reset();
       enqueueSnackbar(!isEdit ? 'Create success!' : 'Update success!');
-      push(PATH_DASHBOARD.user.list);
+      push(PATH_DASHBOARD.user.root);
     } catch (error) {
       console.error(error);
     }

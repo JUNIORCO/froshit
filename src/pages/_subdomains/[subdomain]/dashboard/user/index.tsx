@@ -1,4 +1,3 @@
-import { paramCase } from 'change-case';
 import { useState } from 'react';
 // next
 import NextLink from 'next/link';
@@ -12,6 +11,7 @@ import {
   Divider,
   FormControlLabel,
   IconButton,
+  Stack,
   Switch,
   Tab,
   Table,
@@ -19,7 +19,7 @@ import {
   TableContainer,
   TablePagination,
   Tabs,
-  Tooltip, Typography,
+  Tooltip,
 } from '@mui/material';
 // routes
 import { PATH_DASHBOARD } from '../../../../../routes/paths';
@@ -41,21 +41,21 @@ import { TableEmptyRows, TableHeadCustom, TableNoData, TableSelectedActions } fr
 // sections
 import { UserTableRow, UserTableToolbar } from '../../../../../sections/@dashboard/user/list';
 import { GetServerSideProps, InferGetServerSidePropsType } from 'next';
-import { getUsersForAdminList } from '../../../../../../prisma/users/get';
+import { getUsersForAdminList } from '../../../../../../prisma/user/get';
 import capitalize from 'lodash/capitalize';
 import { getProfileRoles } from '../../../../../../prisma/roles/roles';
-import Breadcrumbs from '../../../../../components/Breadcrumbs';
+import InvoiceAnalytic from '../../../../../sections/@dashboard/invoice/InvoiceAnalytic';
+import { useTheme } from '@mui/material/styles';
 
 // ----------------------------------------------------------------------
 
-const STATUS_OPTIONS = ['All', 'Not Paid'];
+const STATUS_OPTIONS = ['All', 'Paid', 'Unpaid'];
 
 const TABLE_HEAD = [
   { id: 'name', label: 'Name', align: 'left' },
   { id: 'email', label: 'Email', align: 'left' },
   { id: 'phoneNumber', label: 'Phone Number', align: 'left' },
   { id: 'role', label: 'Role', align: 'left' },
-  { id: 'universityId', label: 'University', align: 'left' },
   { id: 'froshId', label: 'Frosh', align: 'left' },
   { id: 'teamId', label: 'Team', align: 'left' },
   { id: '' },
@@ -90,6 +90,7 @@ export default function UserList({ users, roles, error }: InferGetServerSideProp
 
   const ROLE_OPTIONS = ['All', ...roles.map((role: string) => capitalize(role))];
 
+  const theme = useTheme();
   const { themeStretch } = useSettings();
 
   const { push } = useRouter();
@@ -111,10 +112,8 @@ export default function UserList({ users, roles, error }: InferGetServerSideProp
     setFilterRole(event.target.value);
   };
 
-  const handleDeleteRow = (id: string) => {
-    const deleteRow = tableData.filter((row: any) => row.id !== id);
-    setSelected([]);
-    setTableData(deleteRow);
+  const handleViewRow = (id: string) => {
+    push(PATH_DASHBOARD.user.view(id));
   };
 
   const handleDeleteRows = (selected: string[]) => {
@@ -142,11 +141,13 @@ export default function UserList({ users, roles, error }: InferGetServerSideProp
     (!dataFiltered.length && !!filterRole) ||
     (!dataFiltered.length && !!filterStatus);
 
+  console.log(users);
+
   return (
     <Page title='User List'>
       <Container maxWidth={themeStretch ? false : 'lg'}>
         <HeaderBreadcrumbs
-          heading="User List"
+          heading='User List'
           links={[
             { name: 'Dashboard', href: PATH_DASHBOARD.root },
             { name: 'User', href: PATH_DASHBOARD.user.root },
@@ -154,12 +155,47 @@ export default function UserList({ users, roles, error }: InferGetServerSideProp
           ]}
           action={
             <NextLink href={PATH_DASHBOARD.user.new} passHref>
-              <Button variant="contained" startIcon={<Iconify icon={'eva:plus-fill'} />}>
+              <Button variant='contained' startIcon={<Iconify icon={'eva:plus-fill'} />}>
                 New User
               </Button>
             </NextLink>
           }
         />
+
+        <Card sx={{ mb: 5 }}>
+          <Scrollbar>
+            <Stack
+              direction='row'
+              divider={<Divider orientation='vertical' flexItem sx={{ borderStyle: 'dashed' }} />}
+              sx={{ py: 2 }}
+            >
+              <InvoiceAnalytic
+                title='Total'
+                total={10}
+                percent={100}
+                price={10 * 150}
+                icon='ic:round-receipt'
+                color={theme.palette.info.main}
+              />
+              <InvoiceAnalytic
+                title='Paid'
+                total={10 - 1}
+                percent={(10 - 1) / 10 * 100}
+                price={(10 - 1) * 150}
+                icon='eva:checkmark-circle-2-fill'
+                color={theme.palette.success.main}
+              />
+              <InvoiceAnalytic
+                title='Unpaid'
+                total={1}
+                percent={1 / 10 * 100}
+                price={150}
+                icon='eva:clock-fill'
+                color={theme.palette.warning.main}
+              />
+            </Stack>
+          </Scrollbar>
+        </Card>
 
         <Card>
           <Tabs
@@ -233,7 +269,7 @@ export default function UserList({ users, roles, error }: InferGetServerSideProp
                         row={row}
                         selected={selected.includes(row.id)}
                         onSelectRow={() => onSelectRow(row.id)}
-                        onDeleteRow={() => handleDeleteRow(row.id)}
+                        onViewRow={() => handleViewRow(row.id)}
                         onEditRow={() => handleEditRow(row.id)}
                       />
                     ))}
