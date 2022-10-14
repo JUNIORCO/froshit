@@ -24,14 +24,15 @@ import { FormProvider, RHFSelect, RHFTextField, RHFUploadAvatar } from '../../..
 
 // ----------------------------------------------------------------------
 
-const sendCreateProfileRequest = async (url: string, { arg }: any) => {
+const sendProfileRequest = async (url: string, { arg }: any) => {
+  const { method, ...profile } = arg;
   const res = await fetch(url, {
-    method: 'POST',
+    method,
     headers: {
       'Accept': 'application/json',
       'Content-Type': 'application/json',
     },
-    body: JSON.stringify(arg),
+    body: JSON.stringify(profile),
   });
   return res.json();
 };
@@ -59,7 +60,9 @@ export default function UserNewEditForm({
                                           froshs,
                                           teams,
                                         }: Props) {
-  const { trigger } = useSWRMutation('/api/profile', sendCreateProfileRequest);
+  const url = !isEdit ? '/api/profile' : `/api/profile/${currentUser.id}`;
+  const method = !isEdit ? 'POST' : 'PATCH';
+  const { trigger } = useSWRMutation(url, sendProfileRequest);
 
   const { push } = useRouter();
 
@@ -124,8 +127,7 @@ export default function UserNewEditForm({
 
   const onSubmit = async (data: FormValuesProps) => {
     try {
-
-      await trigger(data);
+      await trigger({ ...data, method });
       reset();
       enqueueSnackbar(!isEdit ? 'Create success!' : 'Update success!');
       push(PATH_DASHBOARD.user.list);

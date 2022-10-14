@@ -14,7 +14,6 @@ const withTM = require('next-transpile-modules')([
 
 module.exports = withTM({
   swcMinify: false,
-  trailingSlash: true,
   env: {
     // HOST
     HOST_API_KEY: 'https://minimal-assets-api-dev.vercel.app',

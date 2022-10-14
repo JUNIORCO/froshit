@@ -81,7 +81,7 @@ model Frosh {
   events       Event[]
   // team
   teams        Team[]
-  // profiles
+  // profile
   profiles     Profile[]
   createdAt    DateTime   @default(now())
   updatedAt    DateTime   @updatedAt
@@ -109,7 +109,7 @@ model Team {
   // frosh
   frosh     Frosh     @relation(fields: [froshId], references: [id])
   froshId   Int // relation scalar field - which frosh the team is associated to
-  // profiles
+  // profile
   profiles  Profile[]
   createdAt DateTime  @default(now())
   updatedAt DateTime  @updatedAt
