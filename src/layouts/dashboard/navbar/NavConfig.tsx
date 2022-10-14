@@ -104,10 +104,10 @@ const navConfig = [
   {
     subheader: 'Customization',
     items: [
-      { title: 'Branding', path: PATH_DASHBOARD.general.app, icon: ICONS.branding },
+      { title: 'Branding', path: PATH_DASHBOARD.general.banking, icon: ICONS.branding },
       {
         title: 'Settings',
-        path: PATH_DASHBOARD.general.app,
+        path: PATH_DASHBOARD.general.ecommerce,
         icon: ICONS.settings,
         children: [
           { title: 'Programs', path: PATH_DASHBOARD.user.root },
