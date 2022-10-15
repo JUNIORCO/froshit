@@ -5,6 +5,11 @@ async function main() {
   await prisma.university.createMany({
     data: [
       {
+        name: 'Demo University',
+        subdomain: 'demo',
+        imageUrl: 'https://gravatar.com/avatar/797edb6dfb170ce5952723c711d3bf09?s=400&d=robohash&r=x',
+      },
+      {
         name: 'McGill Univeristy',
         subdomain: 'mcgill',
         imageUrl: 'https://gravatar.com/avatar/797edb6dfb170ce5952723c711d3bf09?s=400&d=robohash&r=x',
@@ -97,9 +102,10 @@ async function main() {
   // Create team
   await prisma.team.createMany({
     data: [
-      { name: 'Team 1', froshId: 1 },
-      { name: 'Team 2', froshId: 2 },
-      { name: 'Team 3', froshId: 3 },
+      { name: 'FC Barcelona', froshId: 1 },
+      { name: 'Real Madrid', froshId: 2 },
+      { name: 'Chelsea', froshId: 3 },
+      { name: 'Arsenal', froshId: 3 },
     ],
   });
 
@@ -277,6 +283,18 @@ async function main() {
         programId: 3,
         froshId: 3,
         teamId: 1,
+      },
+      {
+        name: 'No Team',
+        email: 'no.team@example.com',
+        phoneNumber: '1114449827',
+        role: 'Froshee',
+        avatarUrl: 'https://gravatar.com/avatar/797edb6dfb170ce5952723c711d3bf09?s=400&d=robohash&r=x',
+        interests: ['Movies'],
+        universityId: 3,
+        programId: 3,
+        froshId: 3,
+        teamId: null,
       },
     ],
   });

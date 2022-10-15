@@ -5,23 +5,16 @@ import { useCallback } from 'react';
 import { useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 // @mui
-import { Box, Grid, Card, Stack, Typography } from '@mui/material';
+import { Box, Grid, Card, Stack, Typography, TextField } from '@mui/material';
 import { LoadingButton } from '@mui/lab';
 // hooks
 import useAuth from '../../../../hooks/useAuth';
 // utils
 import { fData } from '../../../../utils/formatNumber';
 // _mock
-import { countries } from '../../../../_mock';
 // components
 import { CustomFile } from '../../../../components/upload';
-import {
-  FormProvider,
-  RHFSwitch,
-  RHFSelect,
-  RHFTextField,
-  RHFUploadAvatar,
-} from '../../../../components/hook-form';
+import UploadAvatar from '../../../../components/upload/UploadAvatar';
 
 // ----------------------------------------------------------------------
 
@@ -39,96 +32,15 @@ type FormValuesProps = {
   isPublic: boolean;
 };
 
-export default function AccountGeneral() {
+export default function AccountGeneral({ user }: any) {
   const { enqueueSnackbar } = useSnackbar();
 
-  const { user } = useAuth();
-
-  const UpdateUserSchema = Yup.object().shape({
-    displayName: Yup.string().required('Name is required'),
-  });
-
-  const defaultValues = {
-    displayName: user?.displayName || '',
-    email: user?.email || '',
-    photoURL: user?.photoURL || '',
-    phoneNumber: user?.phoneNumber || '',
-    country: user?.country || '',
-    address: user?.address || '',
-    state: user?.state || '',
-    city: user?.city || '',
-    zipCode: user?.zipCode || '',
-    about: user?.about || '',
-    isPublic: user?.isPublic || false,
-  };
-
-  const methods = useForm<FormValuesProps>({
-    resolver: yupResolver(UpdateUserSchema),
-    defaultValues,
-  });
-
-  const {
-    setValue,
-    handleSubmit,
-    formState: { isSubmitting },
-  } = methods;
-
-  const onSubmit = async (data: FormValuesProps) => {
-    try {
-      await new Promise((resolve) => setTimeout(resolve, 500));
-      enqueueSnackbar('Update success!');
-    } catch (error) {
-      console.error(error);
-    }
-  };
-
-  const handleDrop = useCallback(
-    (acceptedFiles: File[]) => {
-      const file = acceptedFiles[0];
-
-      if (file) {
-        setValue(
-          'photoURL',
-          Object.assign(file, {
-            preview: URL.createObjectURL(file),
-          })
-        );
-      }
-    },
-    [setValue]
-  );
-
   return (
-    <FormProvider methods={methods} onSubmit={handleSubmit(onSubmit)}>
       <Grid container spacing={3}>
         <Grid item xs={12} md={4}>
           <Card sx={{ py: 10, px: 3, textAlign: 'center' }}>
-            <RHFUploadAvatar
-              name="photoURL"
-              maxSize={3145728}
-              onDrop={handleDrop}
-              helperText={
-                <Typography
-                  variant="caption"
-                  sx={{
-                    mt: 2,
-                    mx: 'auto',
-                    display: 'block',
-                    textAlign: 'center',
-                    color: 'text.secondary',
-                  }}
-                >
-                  Allowed *.jpeg, *.jpg, *.png, *.gif
-                  <br /> max size of {fData(3145728)}
-                </Typography>
-              }
-            />
-
-            <RHFSwitch
-              name="isPublic"
-              labelPlacement="start"
-              label="Public Profile"
-              sx={{ mt: 5 }}
+            <UploadAvatar
+              file=''
             />
           </Card>
         </Grid>
@@ -143,37 +55,58 @@ export default function AccountGeneral() {
                 gridTemplateColumns: { xs: 'repeat(1, 1fr)', sm: 'repeat(2, 1fr)' },
               }}
             >
-              <RHFTextField name="displayName" label="Name" />
-              <RHFTextField name="email" label="Email Address" />
-
-              <RHFTextField name="phoneNumber" label="Phone Number" />
-              <RHFTextField name="address" label="Address" />
-
-              <RHFSelect name="country" label="Country" placeholder="Country">
-                <option value="" />
-                {countries.map((option) => (
-                  <option key={option.code} value={option.label}>
-                    {option.label}
-                  </option>
-                ))}
-              </RHFSelect>
-
-              <RHFTextField name="state" label="State/Region" />
-
-              <RHFTextField name="city" label="City" />
-              <RHFTextField name="zipCode" label="Zip/Code" />
+              <TextField
+                disabled
+                fullWidth
+                value={user.name}
+                label="Name"
+              />
+              <TextField
+                disabled
+                fullWidth
+                value={user.email}
+                label="Email"
+              />
+              <TextField
+                disabled
+                fullWidth
+                value={user.phoneNumber}
+                label="Phone Number"
+              />
+              <TextField
+                disabled
+                fullWidth
+                value={user.role}
+                label="Role"
+              />
+              <TextField
+                disabled
+                fullWidth
+                value={user.interests}
+                label="Interests"
+              />
+              <TextField
+                disabled
+                fullWidth
+                value={user.program.name}
+                label="Program"
+              />
+              <TextField
+                disabled
+                fullWidth
+                value={user.frosh?.name}
+                label="Frosh"
+              />
+              <TextField
+                disabled
+                fullWidth
+                value={user.team?.name}
+                label="Team"
+              />
             </Box>
 
-            <Stack spacing={3} alignItems="flex-end" sx={{ mt: 3 }}>
-              <RHFTextField name="about" multiline rows={4} label="About" />
-
-              <LoadingButton type="submit" variant="contained" loading={isSubmitting}>
-                Save Changes
-              </LoadingButton>
-            </Stack>
           </Card>
         </Grid>
       </Grid>
-    </FormProvider>
   );
 }

@@ -3,7 +3,7 @@ import { prisma } from '../index';
 /**
  * Gets all the teams.
  */
-export const getTeams = async () => prisma.team.findMany({});
+export const getTeams = async () => prisma.team.findMany();
 
 /**
  * Gets all the teams and the teams Frosh.

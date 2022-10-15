@@ -49,7 +49,7 @@ import { useTheme } from '@mui/material/styles';
 
 // ----------------------------------------------------------------------
 
-const STATUS_OPTIONS = ['All', 'Paid', 'Unpaid'];
+const STATUS_OPTIONS = ['All', 'Paid', 'Unpaid', 'Unassigned'];
 
 const TABLE_HEAD = [
   { id: 'name', label: 'Name', align: 'left' },

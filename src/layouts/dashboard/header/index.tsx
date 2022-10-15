@@ -1,6 +1,6 @@
 // @mui
 import { styled } from '@mui/material/styles';
-import { Box, Stack, AppBar, Toolbar } from '@mui/material';
+import { AppBar, Box, Stack, Toolbar } from '@mui/material';
 // hooks
 import useOffSetTop from '../../../hooks/useOffSetTop';
 import useResponsive from '../../../hooks/useResponsive';
@@ -16,8 +16,6 @@ import { IconButtonAnimate } from '../../../components/animate';
 import Searchbar from './Searchbar';
 import AccountPopover from './AccountPopover';
 import LanguagePopover from './LanguagePopover';
-import ContactsPopover from './ContactsPopover';
-import NotificationsPopover from './NotificationsPopover';
 
 // ----------------------------------------------------------------------
 
@@ -64,10 +62,10 @@ type Props = {
 };
 
 export default function DashboardHeader({
-  onOpenSidebar,
-  isCollapse = false,
-  verticalLayout = false,
-}: Props) {
+                                          onOpenSidebar,
+                                          isCollapse = false,
+                                          verticalLayout = false,
+                                        }: Props) {
   const isOffset = useOffSetTop(HEADER.DASHBOARD_DESKTOP_HEIGHT) && !verticalLayout;
 
   const isDesktop = useResponsive('up', 'lg');
@@ -84,17 +82,15 @@ export default function DashboardHeader({
 
         {!isDesktop && (
           <IconButtonAnimate onClick={onOpenSidebar} sx={{ mr: 1, color: 'text.primary' }}>
-            <Iconify icon="eva:menu-2-fill" />
+            <Iconify icon='eva:menu-2-fill' />
           </IconButtonAnimate>
         )}
 
         <Searchbar />
         <Box sx={{ flexGrow: 1 }} />
 
-        <Stack direction="row" alignItems="center" spacing={{ xs: 0.5, sm: 1.5 }}>
+        <Stack direction='row' alignItems='center' spacing={{ xs: 0.5, sm: 1.5 }}>
           <LanguagePopover />
-          <NotificationsPopover />
-          <ContactsPopover />
           <AccountPopover />
         </Stack>
       </Toolbar>

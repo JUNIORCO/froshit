@@ -36,7 +36,7 @@ UserView.getLayout = function getLayout(page: React.ReactElement) {
 
 // ----------------------------------------------------------------------
 
-export default function UserView() {
+export default function UserView({ user }: any) {
   const { themeStretch } = useSettings();
 
   const { currentTab, onChangeTab } = useTabs('general');
@@ -45,18 +45,7 @@ export default function UserView() {
     {
       value: 'general',
       icon: <Iconify icon={'ic:round-account-box'} width={20} height={20} />,
-      component: <AccountGeneral />,
-    },
-    {
-      value: 'billing',
-      icon: <Iconify icon={'ic:round-receipt'} width={20} height={20} />,
-      component: (
-        <AccountBilling
-          cards={_userPayment}
-          addressBook={_userAddressBook}
-          invoices={_userInvoices}
-        />
-      ),
+      component: <AccountGeneral user={user}/>,
     },
     {
       value: 'change_password',
@@ -66,14 +55,14 @@ export default function UserView() {
   ];
 
   return (
-    <Page title='User: Account Settings'>
+    <Page title='View User'>
       <Container maxWidth={themeStretch ? false : 'lg'}>
         <HeaderBreadcrumbs
           heading='Account'
           links={[
             { name: 'Dashboard', href: PATH_DASHBOARD.root },
             { name: 'User', href: PATH_DASHBOARD.user.root },
-            { name: 'Account Settings' },
+            { name: 'View' },
           ]}
         />
 
@@ -110,20 +99,9 @@ export const getServerSideProps: GetServerSideProps = async (ctx) => {
   const { subdomain, id } = ctx.query;
   const user = await getUserById(Number(id));
 
-  const roles = getProfileRoles();
-  const interests = getProfileInterests();
-  const programs = await getPrograms();
-  const froshs = await getFroshs();
-  const teams = await getTeams();
-
   return {
     props: {
       user,
-      roles,
-      interests,
-      programs,
-      froshs,
-      teams,
     },
   };
 };

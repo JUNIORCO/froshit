@@ -8,6 +8,8 @@ function checkValidSubdomain(subdomain: string) {
   const validSubdomains = [
     'demo',
     'mcgill',
+    'concordia',
+    'uoft',
   ];
   return validSubdomains.includes(subdomain);
 }
@@ -19,7 +21,6 @@ export default async function middleware(req: NextRequest) {
   if (!hostname) {
     throw Error('Middleware -> No hostname');
   }
-
 
   const currentHost = hostname.replace(`.${process.env.ROOT_DOMAIN}`, '');
 
