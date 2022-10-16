@@ -38,7 +38,7 @@
     <property name="dart.analysis.tool.window.visible" value="false" />
     <property name="javascript.nodejs.core.library.configured.version" value="16.17.0" />
     <property name="javascript.nodejs.core.library.typings.version" value="16.11.65" />
-    <property name="last_opened_file_path" value="$PROJECT_DIR$/src/pages/api/team" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$/src/sections/@dashboard/user" />
     <property name="node.js.detected.package.eslint" value="true" />
     <property name="node.js.detected.package.tslint" value="true" />
     <property name="node.js.selected.package.eslint" value="(autodetect)" />
@@ -46,17 +46,17 @@
     <property name="nodejs_interpreter_path" value="$USER_HOME$/.nvm/versions/node/v16.17.0/bin/node" />
     <property name="nodejs_package_manager_path" value="npm" />
     <property name="prettierjs.PrettierConfiguration.Package" value="$PROJECT_DIR$/node_modules/prettier" />
-    <property name="settings.editor.selected.configurable" value="settings.nodejs" />
+    <property name="settings.editor.selected.configurable" value="preferences.sourceCode.TypeScript" />
     <property name="ts.external.directory.path" value="$PROJECT_DIR$/node_modules/typescript/lib" />
     <property name="vue.rearranger.settings.migration" value="true" />
   </component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
-      <recent name="$PROJECT_DIR$/src/pages/api/team" />
+      <recent name="$PROJECT_DIR$/src/sections/@dashboard/user" />
       <recent name="$PROJECT_DIR$/src/sections/@dashboard/team" />
+      <recent name="$PROJECT_DIR$/src/pages/_subdomains/[subdomain]/dashboard/team/[id]" />
+      <recent name="$PROJECT_DIR$/src/pages/api/team" />
       <recent name="$PROJECT_DIR$/src/sections/@dashboard/team/list" />
-      <recent name="$PROJECT_DIR$/src/pages/_subdomains/[subdomain]/dashboard/user" />
-      <recent name="$PROJECT_DIR$/src/pages/_subdomains/[subdomain]/dashboard/team" />
     </key>
     <key name="MoveFile.RECENT_KEYS">
       <recent name="$PROJECT_DIR$/src/pages/api/profile" />
@@ -72,7 +72,7 @@
       <updated>1664934026238</updated>
       <workItem from="1664934029380" duration="2024000" />
       <workItem from="1665026186034" duration="526000" />
-      <workItem from="1665538206239" duration="25506000" />
+      <workItem from="1665538206239" duration="48530000" />
     </task>
     <servers />
   </component>

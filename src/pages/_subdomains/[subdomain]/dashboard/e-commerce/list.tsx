@@ -1,3 +1,4 @@
+// @ts-nocheck
 import { paramCase } from 'change-case';
 import { useState, useEffect } from 'react';
 // next

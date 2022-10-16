@@ -1,34 +1,27 @@
-// next
-import { useRouter } from 'next/router';
-// @mui
 import { Box, Container, Typography } from '@mui/material';
-// routes
-// hooks
 import useSettings from '../../../../../../hooks/useSettings';
-// _mock_
-// layouts
 import Layout from '../../../../../../layouts';
-// components
 import Page from '../../../../../../components/Page';
-// sections
 import UserNewEditForm from '../../../../../../sections/@dashboard/user/UserNewEditForm';
 import { GetServerSideProps } from 'next';
-import { getProfileRoles } from '../../../../../../../prisma/roles/roles';
-import { getUserById } from '../../../../../../../prisma/user/get';
-import { getProfileInterests } from '../../../../../../../prisma/interests/interests';
+import { FullUser, getFullUserById } from '../../../../../../../prisma/user/get';
 import { getPrograms } from '../../../../../../../prisma/programs/get';
 import { getFroshs } from '../../../../../../../prisma/froshs/get';
 import { getTeams } from '../../../../../../../prisma/team/get';
-
-// ----------------------------------------------------------------------
+import type { Program, Frosh, Team } from '../../../../../../../prisma/types';
 
 UserEdit.getLayout = function getLayout(page: React.ReactElement) {
   return <Layout>{page}</Layout>;
 };
 
-// ----------------------------------------------------------------------
+interface UserEditProps {
+  user: FullUser;
+  programs: Program[];
+  froshs: Frosh[];
+  teams: Team[];
+}
 
-export default function UserEdit({ user, roles, interests, programs, froshs, teams }: any) {
+export default function UserEdit({ user, programs, froshs, teams }: UserEditProps) {
   const { themeStretch } = useSettings();
 
   return (
@@ -44,7 +37,7 @@ export default function UserEdit({ user, roles, interests, programs, froshs, tea
           </Box>
         </Box>
 
-        <UserNewEditForm isEdit currentUser={user} roles={roles} interests={interests} programs={programs} froshs={froshs} teams={teams} />
+        <UserNewEditForm currentUser={user} programs={programs} froshs={froshs} teams={teams} />
       </Container>
     </Page>
   );
@@ -52,10 +45,8 @@ export default function UserEdit({ user, roles, interests, programs, froshs, tea
 
 export const getServerSideProps: GetServerSideProps = async (ctx) => {
   const { subdomain, id } = ctx.query;
-  const user = await getUserById(Number(id));
+  const user = await getFullUserById(Number(id));
 
-  const roles = getProfileRoles();
-  const interests = getProfileInterests();
   const programs = await getPrograms();
   const froshs = await getFroshs();
   const teams = await getTeams();
@@ -63,8 +54,6 @@ export const getServerSideProps: GetServerSideProps = async (ctx) => {
   return {
     props: {
       user,
-      roles,
-      interests,
       programs,
       froshs,
       teams,

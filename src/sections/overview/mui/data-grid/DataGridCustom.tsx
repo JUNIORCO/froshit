@@ -206,8 +206,6 @@ export default function DataGridCustom() {
 
   const selected = _dataGrid.filter((row) => selectionModel.includes(row.id));
 
-  console.log('selected', selected);
-
   return (
     <>
       <DataGrid

@@ -1,3 +1,4 @@
+// @ts-nocheck
 import sumBy from 'lodash/sumBy';
 import { useState } from 'react';
 // next

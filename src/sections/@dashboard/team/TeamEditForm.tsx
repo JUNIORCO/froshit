@@ -2,36 +2,26 @@ import * as Yup from 'yup';
 import { useEffect, useMemo } from 'react';
 import useSWRMutation from 'swr/mutation';
 import { useSnackbar } from 'notistack';
-// next
 import { useRouter } from 'next/router';
-// form
 import { useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
-// @mui
 import { LoadingButton } from '@mui/lab';
 import { Box, Card, Grid, Stack } from '@mui/material';
-// utils
-// routes
 import { PATH_DASHBOARD } from '../../../routes/paths';
-// @types
-import { UserManager } from '../../../@types/user';
-// _mock
-// components
-import { CustomFile } from '../../../components/upload';
 import { FormProvider, RHFSelect, RHFTextField } from '../../../components/hook-form';
-import type { PrismaType } from '../../../../prisma';
-
-// ----------------------------------------------------------------------
+import { RHFMultiSelect } from '../../../components/hook-form/RHFMultiSelect';
+import { Frosh, Profile, Role } from '../../../../prisma/types';
+import { UnassignedFrosheesAndLeaders } from '../../../../prisma/user/get';
+import { FullTeam } from '../../../../prisma/team/get';
 
 const sendTeamRequest = async (url: string, { arg }: any) => {
-  const { method, ...team } = arg;
   const res = await fetch(url, {
-    method,
+    method: 'PATCH',
     headers: {
       'Accept': 'application/json',
       'Content-Type': 'application/json',
     },
-    body: JSON.stringify(team),
+    body: JSON.stringify(arg),
   });
   return res.json();
 };
@@ -39,45 +29,57 @@ const sendTeamRequest = async (url: string, { arg }: any) => {
 type FormValuesProps = {
   name: string;
   froshId: number;
-  leaders: any[];
-  froshees: any[];
+  leaderIds: number[];
+  frosheeIds: number[];
 };
 
 type Props = {
-  isEdit?: boolean;
-  currentTeam?: any;
-  froshs: any[];
-  profiles: any[];
+  currentTeam: FullTeam;
+  froshs: Frosh[];
+  profiles: UnassignedFrosheesAndLeaders[];
 };
 
-export default function TeamNewEditForm({
-                                          isEdit = false,
-                                          currentTeam,
-                                          froshs,
-                                          profiles = [],
-                                        }: Props) {
-  const url = !isEdit ? '/api/team' : `/api/team/${currentTeam.id}`;
-  const method = !isEdit ? 'POST' : 'PATCH';
-  const { trigger } = useSWRMutation(url, sendTeamRequest);
+export default function TeamNewForm({
+                                      currentTeam,
+                                      froshs,
+                                      profiles,
+                                    }: Props) {
+  const { trigger } = useSWRMutation(`/api/team/${currentTeam.id}`, sendTeamRequest);
 
   const { push } = useRouter();
 
   const { enqueueSnackbar } = useSnackbar();
 
+  const currentTeamLeaders: Profile[] = currentTeam.profiles?.filter((profile) => profile.role === Role.Leader) || [];
+  const currentTeamFroshees: Profile[] = currentTeam.profiles?.filter((profile) => profile.role === Role.Froshee) || [];
+
+  const currentTeamLeadersOptions = currentTeamLeaders.map((leader) => ({ label: leader.name, value: leader.id }));
+  const currentTeamFrosheeOptions = currentTeamFroshees.map((froshee) => ({ label: froshee.name, value: froshee.id }));
+
+  const allLeaderOptions = profiles.filter((profile) => profile.role === Role.Leader).map((leader) => ({
+    label: leader.name,
+    value: leader.id,
+  })).concat(currentTeamLeadersOptions);
+  const allFrosheeOptions = profiles.filter((profile) => profile.role === Role.Froshee).map((froshee) => ({
+    label: froshee.name,
+    value: froshee.id,
+  })).concat(currentTeamFrosheeOptions);
+
   const NewTeamSchema = Yup.object().shape({
     name: Yup.string().required('Team name is required'),
     froshId: Yup.number().required('Frosh is required'),
-    leaders: Yup.array().optional(),
-    froshees: Yup.array().optional(),
+    leaderIds: Yup.array().optional(),
+    frosheeIds: Yup.array().optional(),
   });
 
   const defaultValues = useMemo(
     () => ({
-      name: currentTeam?.name || '',
-      froshId: currentTeam?.froshId || '',
-      leaders: currentTeam?.profiles.filter((profile: any) => profile.role === 'Leader') || [],
-      froshees: currentTeam?.profiles.filter((profile: any) => profile.role === 'Froshee') || [],
+      name: currentTeam.name,
+      froshId: currentTeam.froshId,
+      leaderIds: currentTeamLeaders.map(leader => leader.id),
+      frosheeIds: currentTeamFroshees.map(froshee => froshee.id),
     }),
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     [currentTeam],
   );
 
@@ -88,38 +90,28 @@ export default function TeamNewEditForm({
 
   const {
     reset,
-    watch,
-    control,
-    setValue,
     handleSubmit,
     formState: { isSubmitting },
   } = methods;
 
-  const values = watch();
-
   useEffect(() => {
-    if (isEdit && currentTeam) {
-      reset(defaultValues);
-    }
-    if (!isEdit) {
+    if (currentTeam) {
       reset(defaultValues);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [isEdit, currentTeam]);
+  }, [currentTeam]);
 
   const onSubmit = async ({
                             name,
                             froshId,
-                            leaders,
-                            froshees,
+                            leaderIds,
+                            frosheeIds,
                           }: FormValuesProps) => {
     try {
-      console.log(leaders, froshees);
-      const teamToCreate = { name, froshId, profiles: leaders.concat(froshees) };
-      console.log(teamToCreate);
-      await trigger({ ...teamToCreate, method });
+      const teamToUpdate = { name, froshId, profiles: leaderIds.concat(frosheeIds) };
+      await trigger(teamToUpdate);
       reset();
-      enqueueSnackbar(!isEdit ? 'Create success!' : 'Update success!');
+      enqueueSnackbar('Update success!');
       push(PATH_DASHBOARD.team.root);
     } catch (error) {
       console.error(error);
@@ -150,28 +142,22 @@ export default function TeamNewEditForm({
                 ))}
               </RHFSelect>
 
-              <RHFSelect name='leaders' label='Unassigned Leaders' placeholder='Leaders'>
-                <option value='' />
-                {profiles.filter((profile: any) => profile.role === 'Leader').map((leader) => (
-                  <option key={leader.id} value={leader.id}>
-                    {leader.name}
-                  </option>
-                ))}
-              </RHFSelect>
+              <RHFMultiSelect
+                name='leaderIds'
+                label='Leaders'
+                options={allLeaderOptions}
+              />
 
-              <RHFSelect name='froshees' label='Unassigned Froshees' placeholder='Froshees'>
-                <option value='' />
-                {profiles.filter((profile: any) => profile.role === 'Froshee').map((froshee) => (
-                  <option key={froshee.id} value={froshee.id}>
-                    {froshee.name}
-                  </option>
-                ))}
-              </RHFSelect>
+              <RHFMultiSelect
+                name='frosheeIds'
+                label='Froshees'
+                options={allFrosheeOptions}
+              />
             </Box>
 
             <Stack alignItems='flex-end' sx={{ mt: 3 }}>
               <LoadingButton type='submit' variant='contained' loading={isSubmitting}>
-                {!isEdit ? 'Create Team' : 'Save Changes'}
+                Save Changes
               </LoadingButton>
             </Stack>
           </Card>

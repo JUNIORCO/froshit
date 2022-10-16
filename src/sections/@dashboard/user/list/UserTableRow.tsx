@@ -1,16 +1,12 @@
-import { useState } from 'react';
-// @mui
-import { useTheme } from '@mui/material/styles';
-import { Avatar, Checkbox, TableRow, TableCell, Typography, MenuItem } from '@mui/material';
-// components
-import Label from '../../../../components/Label';
+import React, { useState } from 'react';
+import { Avatar, Checkbox, MenuItem, TableCell, TableRow, Typography } from '@mui/material';
 import Iconify from '../../../../components/Iconify';
 import { TableMoreMenu } from '../../../../components/table';
-
-// ----------------------------------------------------------------------
+import type { UsersForUserList } from '../../../../../prisma/user/get';
+import { Role } from '../../../../../prisma/types';
 
 type Props = {
-  row: any;
+  row: UsersForUserList;
   selected: boolean;
   onEditRow: VoidFunction;
   onSelectRow: VoidFunction;
@@ -18,15 +14,13 @@ type Props = {
 };
 
 export default function UserTableRow({
-  row,
-  selected,
-  onEditRow,
-  onSelectRow,
+                                       row,
+                                       selected,
+                                       onEditRow,
+                                       onSelectRow,
                                        onViewRow,
-}: Props) {
-  const theme = useTheme();
-
-  const { name, avatarUrl, role, email, phoneNumber, frosh, team } = row;
+                                     }: Props) {
+  const { avatarUrl, name, email, phoneNumber, role, frosh, team, paid } = row;
 
   const [openMenu, setOpenMenuActions] = useState<HTMLElement | null>(null);
 
@@ -38,40 +32,70 @@ export default function UserTableRow({
     setOpenMenuActions(null);
   };
 
+  const displayPaidIcon = () => {
+    if (role === Role.Admin || role === Role.Organizer) {
+      return;
+    }
+
+    if (paid) {
+      return (<Iconify
+        icon={'eva:checkmark-circle-fill'}
+        sx={{
+          width: 25,
+          height: 25,
+          color: 'success.main',
+        }}
+      />);
+    }
+
+    return (<Iconify
+      icon={'eva:alert-circle-outline'}
+      sx={{
+        width: 25,
+        height: 25,
+        color: 'warning.main',
+      }}
+    />);
+  };
+
   return (
     <TableRow hover selected={selected}>
-      <TableCell padding="checkbox">
+      <TableCell padding='checkbox'>
         <Checkbox checked={selected} onClick={onSelectRow} />
       </TableCell>
 
       <TableCell sx={{ display: 'flex', alignItems: 'center' }}>
         <Avatar alt={name} src={avatarUrl} sx={{ mr: 2 }} />
-        <Typography variant="subtitle2" noWrap>
+        <Typography variant='subtitle2' noWrap>
           {name}
         </Typography>
       </TableCell>
 
-      <TableCell align="left">
+      <TableCell align='left'>
         {email}
       </TableCell>
 
-      <TableCell align="left">
+      <TableCell align='left'>
         {phoneNumber}
       </TableCell>
 
-      <TableCell align="left" sx={{ textTransform: 'capitalize' }}>
+      <TableCell align='left' sx={{ textTransform: 'capitalize' }}>
         {role}
       </TableCell>
 
-      <TableCell align="left">
+      <TableCell align='left'>
         {frosh && frosh.name}
       </TableCell>
 
-      <TableCell align="left">
+      <TableCell align='left'>
         {team && team.name}
       </TableCell>
 
-      <TableCell align="right">
+      <TableCell align='left'>
+        {displayPaidIcon()}
+      </TableCell>
+
+      <TableCell align='right'>
         <TableMoreMenu
           open={openMenu}
           onOpen={handleOpenMenu}

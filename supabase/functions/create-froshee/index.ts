@@ -7,8 +7,6 @@
 import { serve } from 'https://deno.land/std@0.131.0/http/server.ts';
 import { supabaseClient } from '../_shared/supabaseClient.ts';
 
-console.log(`Function "create-froshee" up and running...`);
-
 serve(async (req: Request) => {
   try {
     // Set the Auth context of the user that called the function.
@@ -20,7 +18,6 @@ serve(async (req: Request) => {
       password: 'password',
       user_metadata: { name: 'Yoda' }
     })
-    console.log({ data, error });
 
     return new Response(JSON.stringify({ data, error }), {
       headers: { 'Content-Type': 'application/json' },

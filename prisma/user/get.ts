@@ -1,19 +1,26 @@
-import { prisma } from '../index';
+import { prisma } from '..';
+import { Role } from '../types';
+import type { Frosh, Profile, Program, Team } from '../types';
 
 /**
- * Gets all the user.
+ * Gets all Users for user list.
  */
-export const getUsersForAdminList = async () => prisma.profile.findMany({
-  include: {
-    frosh: true,
-    team: true,
-  },
-});
+export type UsersForUserList = Profile & { frosh: Frosh | null, team: Team | null };
+
+export const getUsersForUserList = async (): Promise<UsersForUserList[]> =>
+  prisma.profile.findMany({
+    include: {
+      frosh: true,
+      team: true,
+    },
+  });
 
 /**
- * Gets a user by id.
+ * Gets a User by their id.
  */
-export const getUserById = async (id: number) => prisma.profile.findUniqueOrThrow({
+export type FullUser = Profile & { frosh: Frosh | null, team: Team | null, program: Program };
+
+export const getFullUserById = async (id: number): Promise<FullUser> => prisma.profile.findUniqueOrThrow({
   where: {
     id,
   },
@@ -27,11 +34,13 @@ export const getUserById = async (id: number) => prisma.profile.findUniqueOrThro
 /**
  * Gets all Froshees and Leaders that are unassigned to a team.
  */
-export const getFrosheesAndLeadersWithNoTeam = async () => prisma.profile.findMany({
+export type UnassignedFrosheesAndLeaders = Profile & { frosh: Frosh | null };
+
+export const getUnassignedFrosheesAndLeaders = async (): Promise<UnassignedFrosheesAndLeaders[]> => prisma.profile.findMany({
   where: {
     teamId: null,
     role: {
-      in: ['Froshee', 'Leader'],
+      in: [Role.Froshee, Role.Leader],
     },
   },
   include: {

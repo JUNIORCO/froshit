@@ -122,6 +122,7 @@ model Profile {
   phoneNumber  String     @unique
   role         Role
   avatarUrl    String
+  paid         Int?
   interests    Interest[]
   // university
   university   University @relation(fields: [universityId], references: [id])

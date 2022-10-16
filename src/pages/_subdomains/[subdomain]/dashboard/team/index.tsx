@@ -1,8 +1,6 @@
-import { useState } from 'react';
-// next
+import React, { useState } from 'react';
 import NextLink from 'next/link';
 import { useRouter } from 'next/router';
-// @mui
 import {
   Box,
   Button,
@@ -20,49 +18,41 @@ import {
   Tabs,
   Tooltip,
 } from '@mui/material';
-// routes
 import { PATH_DASHBOARD } from '../../../../../routes/paths';
-// hooks
 import useTabs from '../../../../../hooks/useTabs';
 import useSettings from '../../../../../hooks/useSettings';
 import useTable, { emptyRows, getComparator } from '../../../../../hooks/useTable';
-// @types
-import { UserManager } from '../../../../../@types/user';
-// _mock_
-// layouts
 import Layout from '../../../../../layouts';
-// components
 import Page from '../../../../../components/Page';
 import Iconify from '../../../../../components/Iconify';
 import Scrollbar from '../../../../../components/Scrollbar';
 import HeaderBreadcrumbs from '../../../../../components/HeaderBreadcrumbs';
 import { TableEmptyRows, TableHeadCustom, TableNoData, TableSelectedActions } from '../../../../../components/table';
-// sections
-import { GetServerSideProps, InferGetServerSidePropsType } from 'next';
-import { getTeamsWithFrosh } from '../../../../../../prisma/team/get';
+import { GetServerSideProps } from 'next';
+import { FullTeam, getTeamsWithFrosh } from '../../../../../../prisma/team/get';
 import TeamTableRow from '../../../../../sections/@dashboard/team/list/TeamTableRow';
 import { TeamTableToolbar } from '../../../../../sections/@dashboard/team/list';
+import { Role } from '../../../../../../prisma/types';
 
-// ----------------------------------------------------------------------
-
-const STATUS_OPTIONS = ['All'];
+const TAB_OPTIONS = ['All', 'No Leaders', 'No Froshees'];
 
 const TABLE_HEAD = [
   { id: 'name', label: 'Name', align: 'left' },
   { id: 'frosh', label: 'Frosh', align: 'left' },
   { id: 'leaders', label: 'Leaders', align: 'left' },
-  { id: 'members', label: 'Members', align: 'left' },
+  { id: 'froshees', label: 'Froshees', align: 'left' },
   { id: '' },
 ];
-
-// ----------------------------------------------------------------------
 
 TeamList.getLayout = function getLayout(page: React.ReactElement) {
   return <Layout>{page}</Layout>;
 };
 
-// ----------------------------------------------------------------------
-export default function TeamList({ teams }: InferGetServerSidePropsType<typeof getServerSideProps>) {
+type Props = {
+  teams: FullTeam[];
+}
+
+export default function TeamList({ teams }: Props) {
   const {
     dense,
     page,
@@ -70,32 +60,37 @@ export default function TeamList({ teams }: InferGetServerSidePropsType<typeof g
     orderBy,
     rowsPerPage,
     setPage,
-    //
     selected,
     setSelected,
     onSelectRow,
     onSelectAllRows,
-    //
     onSort,
     onChangeDense,
     onChangePage,
     onChangeRowsPerPage,
   } = useTable();
 
-  // @ts-ignore
-  const FROSH_OPTIONS: string[] = ['All', ...(new Set(teams.map(({ frosh }: any) => frosh.name)))];
+  const uniqueFroshsFromTeams = teams.reduce((accum, { frosh }) => {
+    if (!frosh || accum.includes(frosh.name)) {
+      return accum;
+    }
+    accum.push(frosh.name);
+    return accum;
+  }, [] as string[]);
+
+  const FROSH_OPTIONS: string[] = ['All', ...uniqueFroshsFromTeams];
 
   const { themeStretch } = useSettings();
 
   const { push } = useRouter();
 
-  const [tableData, setTableData] = useState(teams);
+  const [tableData, setTableData] = useState<FullTeam[]>(teams);
 
-  const [filterName, setFilterName] = useState('');
+  const [filterName, setFilterName] = useState<string>('');
 
-  const [filterFrosh, setFilterFrosh] = useState('All');
+  const [filterFrosh, setFilterFrosh] = useState<string>('All');
 
-  const { currentTab: filterStatus, onChangeTab: onChangeFilterStatus } = useTabs('All');
+  const { currentTab: filterTab, onChangeTab: onChangeFilterTab } = useTabs('All');
 
   const handleFilterName = (filterName: string) => {
     setFilterName(filterName);
@@ -106,18 +101,18 @@ export default function TeamList({ teams }: InferGetServerSidePropsType<typeof g
     setFilterFrosh(event.target.value);
   };
 
-  const handleViewRow = (id: string) => {
-    push(PATH_DASHBOARD.team.view(id));
+  const handleViewRow = (id: number) => {
+    void push(PATH_DASHBOARD.team.view(String(id)));
   };
 
-  const handleDeleteRows = (selected: string[]) => {
+  const handleDeleteRows = (selected: number[]) => {
     const deleteRows = tableData.filter((row: any) => !selected.includes(row.id));
     setSelected([]);
     setTableData(deleteRows);
   };
 
-  const handleEditRow = (id: string) => {
-    push(PATH_DASHBOARD.team.edit(id));
+  const handleEditRow = (id: number) => {
+    void push(PATH_DASHBOARD.team.edit(String(id)));
   };
 
   const dataFiltered = applySortFilter({
@@ -125,7 +120,7 @@ export default function TeamList({ teams }: InferGetServerSidePropsType<typeof g
     comparator: getComparator(order, orderBy),
     filterName,
     filterFrosh,
-    filterStatus,
+    filterTab,
   });
 
   const denseHeight = dense ? 52 : 72;
@@ -133,7 +128,7 @@ export default function TeamList({ teams }: InferGetServerSidePropsType<typeof g
   const isNotFound =
     (!dataFiltered.length && !!filterName) ||
     (!dataFiltered.length && !!filterFrosh) ||
-    (!dataFiltered.length && !!filterStatus);
+    (!dataFiltered.length && !!filterTab);
 
   return (
     <Page title='Team List'>
@@ -159,11 +154,11 @@ export default function TeamList({ teams }: InferGetServerSidePropsType<typeof g
             allowScrollButtonsMobile
             variant='scrollable'
             scrollButtons='auto'
-            value={filterStatus}
-            onChange={onChangeFilterStatus}
+            value={filterTab}
+            onChange={onChangeFilterTab}
             sx={{ px: 2, bgcolor: 'background.neutral' }}
           >
-            {STATUS_OPTIONS.map((tab) => (
+            {TAB_OPTIONS.map((tab) => (
               <Tab disableRipple key={tab} label={tab} value={tab} />
             ))}
           </Tabs>
@@ -271,13 +266,13 @@ function applySortFilter({
                            tableData,
                            comparator,
                            filterName,
-                           filterStatus,
+                           filterTab,
                            filterFrosh,
                          }: {
-  tableData: UserManager[];
+  tableData: FullTeam[];
   comparator: (a: any, b: any) => number;
   filterName: string;
-  filterStatus: string;
+  filterTab: string;
   filterFrosh: string;
 }) {
   const stabilizedThis = tableData.map((el, index) => [el, index] as const);
@@ -292,25 +287,33 @@ function applySortFilter({
 
   if (filterName) {
     tableData = tableData.filter(
-      (item: Record<string, any>) =>
+      (team) =>
         // @ts-ignore
-        item.profiles.map((profile) => profile.name.toLowerCase().indexOf(filterName.toLowerCase()) !== -1).find((res) => res),
+        team.profiles.map((profile) => profile.name.toLowerCase().indexOf(filterName.toLowerCase()) !== -1).find((res) => res),
     );
   }
 
-  if (filterStatus !== 'All') {
-    tableData = tableData.filter((item: Record<string, any>) => item.status === filterStatus);
+  if (filterTab !== 'All') {
+    switch (filterTab) {
+      case 'No Leaders':
+        tableData = tableData.filter(({ profiles }) => !profiles?.find((member) => member.role === Role.Leader) || false);
+        break;
+      case 'No Froshees':
+        tableData = tableData.filter(({ profiles }) => !profiles?.find((member) => member.role === Role.Froshee) || false);
+        break;
+    }
   }
 
   if (filterFrosh !== 'All') {
-    tableData = tableData.filter((item: Record<string, any>) => item.frosh.name.toLowerCase() === filterFrosh.toLowerCase());
+    tableData = tableData.filter(({ frosh }) => frosh?.name === filterFrosh || false);
   }
 
   return tableData;
 }
 
-export const getServerSideProps: GetServerSideProps = async (ctx) => {
+export const getServerSideProps: GetServerSideProps = async () => {
   const teams = await getTeamsWithFrosh();
+
   return {
     props: {
       teams,

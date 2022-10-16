@@ -1,10 +1,11 @@
 import type { NextApiRequest, NextApiResponse } from 'next';
-import { prisma, PrismaType } from '../../../../prisma';
+import { prisma } from '../../../../prisma';
+import { Prisma } from '../../../../prisma/types';
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
   try {
     if (req.method === 'POST') {
-      const { name, froshId } = req.body as PrismaType.TeamUncheckedCreateInput;
+      const { name, froshId } = req.body as Prisma.TeamUncheckedCreateInput;
       const { profiles }: { profiles: number[] } = req.body;
       const createdTeam = await prisma.team.create({
         data: {

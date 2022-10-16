@@ -1,6 +1,7 @@
-import { prisma } from '../index';
+import { prisma } from '..';
+import type { Frosh } from '../types';
 
 /**
- * Gets all the user.
+ * Gets all the Froshs.
  */
-export const getFroshs = async () => prisma.frosh.findMany();
+export const getFroshs = async (): Promise<Frosh[]> => prisma.frosh.findMany();

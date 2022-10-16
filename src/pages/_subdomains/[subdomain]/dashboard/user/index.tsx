@@ -1,8 +1,6 @@
-import { useState } from 'react';
-// next
+import React, { useState } from 'react';
 import NextLink from 'next/link';
 import { useRouter } from 'next/router';
-// @mui
 import {
   Box,
   Button,
@@ -21,35 +19,25 @@ import {
   Tabs,
   Tooltip,
 } from '@mui/material';
-// routes
 import { PATH_DASHBOARD } from '../../../../../routes/paths';
-// hooks
 import useTabs from '../../../../../hooks/useTabs';
 import useSettings from '../../../../../hooks/useSettings';
 import useTable, { emptyRows, getComparator } from '../../../../../hooks/useTable';
-// @types
-import { UserManager } from '../../../../../@types/user';
-// _mock_
-// layouts
 import Layout from '../../../../../layouts';
-// components
 import Page from '../../../../../components/Page';
 import Iconify from '../../../../../components/Iconify';
 import Scrollbar from '../../../../../components/Scrollbar';
 import HeaderBreadcrumbs from '../../../../../components/HeaderBreadcrumbs';
 import { TableEmptyRows, TableHeadCustom, TableNoData, TableSelectedActions } from '../../../../../components/table';
-// sections
 import { UserTableRow, UserTableToolbar } from '../../../../../sections/@dashboard/user/list';
-import { GetServerSideProps, InferGetServerSidePropsType } from 'next';
-import { getUsersForAdminList } from '../../../../../../prisma/user/get';
-import capitalize from 'lodash/capitalize';
-import { getProfileRoles } from '../../../../../../prisma/roles/roles';
-import InvoiceAnalytic from '../../../../../sections/@dashboard/invoice/InvoiceAnalytic';
+import { GetServerSideProps } from 'next';
+import type { UsersForUserList } from '../../../../../../prisma/user/get';
+import { getUsersForUserList } from '../../../../../../prisma/user/get';
+import UserAnalytic from '../../../../../sections/@dashboard/user/UserAnalytic';
 import { useTheme } from '@mui/material/styles';
+import { Role } from '../../../../../../prisma/types';
 
-// ----------------------------------------------------------------------
-
-const STATUS_OPTIONS = ['All', 'Paid', 'Unpaid', 'Unassigned'];
+const TAB_OPTIONS = ['All', 'Paid', 'Unpaid', 'Unassigned Frosh', 'Unassigned Team'];
 
 const TABLE_HEAD = [
   { id: 'name', label: 'Name', align: 'left' },
@@ -58,17 +46,19 @@ const TABLE_HEAD = [
   { id: 'role', label: 'Role', align: 'left' },
   { id: 'froshId', label: 'Frosh', align: 'left' },
   { id: 'teamId', label: 'Team', align: 'left' },
+  { id: 'paid', label: 'Paid', align: 'left' },
   { id: '' },
 ];
-
-// ----------------------------------------------------------------------
 
 UserList.getLayout = function getLayout(page: React.ReactElement) {
   return <Layout>{page}</Layout>;
 };
 
-// ----------------------------------------------------------------------
-export default function UserList({ users, roles, error }: InferGetServerSidePropsType<typeof getServerSideProps>) {
+interface UserListProps {
+  users: UsersForUserList[];
+}
+
+export default function UserList({ users }: UserListProps) {
   const {
     dense,
     page,
@@ -76,32 +66,30 @@ export default function UserList({ users, roles, error }: InferGetServerSideProp
     orderBy,
     rowsPerPage,
     setPage,
-    //
     selected,
     setSelected,
     onSelectRow,
     onSelectAllRows,
-    //
     onSort,
     onChangeDense,
     onChangePage,
     onChangeRowsPerPage,
   } = useTable();
 
-  const ROLE_OPTIONS = ['All', ...roles.map((role: string) => capitalize(role))];
+  const ROLE_OPTIONS = ['All', ...Object.values(Role)];
 
   const theme = useTheme();
   const { themeStretch } = useSettings();
 
   const { push } = useRouter();
 
-  const [tableData, setTableData] = useState(users);
+  const [tableData, setTableData] = useState<UsersForUserList[]>(users);
 
-  const [filterName, setFilterName] = useState('');
+  const [filterName, setFilterName] = useState<string>('');
 
-  const [filterRole, setFilterRole] = useState('All');
+  const [filterRole, setFilterRole] = useState<string>('All');
 
-  const { currentTab: filterStatus, onChangeTab: onChangeFilterStatus } = useTabs('All');
+  const { currentTab: filterTab, onChangeTab: onChangeFilterTab } = useTabs('All');
 
   const handleFilterName = (filterName: string) => {
     setFilterName(filterName);
@@ -112,18 +100,18 @@ export default function UserList({ users, roles, error }: InferGetServerSideProp
     setFilterRole(event.target.value);
   };
 
-  const handleViewRow = (id: string) => {
-    push(PATH_DASHBOARD.user.view(id));
+  const handleViewRow = (id: number) => {
+    void push(PATH_DASHBOARD.user.view(String(id)));
   };
 
-  const handleDeleteRows = (selected: string[]) => {
-    const deleteRows = tableData.filter((row: any) => !selected.includes(row.id));
+  const handleDeleteRows = (selected: number[]) => {
+    const deleteRows = tableData.filter((row) => !selected.includes(row.id));
     setSelected([]);
     setTableData(deleteRows);
   };
 
-  const handleEditRow = (id: string) => {
-    push(PATH_DASHBOARD.user.edit(id));
+  const handleEditRow = (id: number) => {
+    void push(PATH_DASHBOARD.user.edit(String(id)));
   };
 
   const dataFiltered = applySortFilter({
@@ -131,7 +119,7 @@ export default function UserList({ users, roles, error }: InferGetServerSideProp
     comparator: getComparator(order, orderBy),
     filterName,
     filterRole,
-    filterStatus,
+    filterTab,
   });
 
   const denseHeight = dense ? 52 : 72;
@@ -139,9 +127,31 @@ export default function UserList({ users, roles, error }: InferGetServerSideProp
   const isNotFound =
     (!dataFiltered.length && !!filterName) ||
     (!dataFiltered.length && !!filterRole) ||
-    (!dataFiltered.length && !!filterStatus);
+    (!dataFiltered.length && !!filterTab);
 
-  console.log(users);
+  const {
+    totalValuePaid,
+    numberFrosheesPaid,
+    numberFrosheesUnpaid,
+    totalNumberFroshees,
+  } = users.reduce((accum, user) => {
+    if (user.role !== Role.Froshee) return accum;
+
+    if (user.paid) {
+      accum.numberFrosheesPaid++;
+      accum.totalValuePaid += user.paid;
+    } else {
+      accum.numberFrosheesUnpaid++;
+    }
+
+    accum.totalNumberFroshees++;
+    return accum;
+  }, {
+    totalValuePaid: 0,
+    numberFrosheesPaid: 0,
+    numberFrosheesUnpaid: 0,
+    totalNumberFroshees: 0,
+  });
 
   return (
     <Page title='User List'>
@@ -149,7 +159,7 @@ export default function UserList({ users, roles, error }: InferGetServerSideProp
         <HeaderBreadcrumbs
           heading='User List'
           links={[
-            { name: 'Dashboard', href: PATH_DASHBOARD.root },
+            { name: 'Dashboard', href: PATH_DASHBOARD.general.app },
             { name: 'User', href: PATH_DASHBOARD.user.root },
             { name: 'List' },
           ]}
@@ -169,28 +179,20 @@ export default function UserList({ users, roles, error }: InferGetServerSideProp
               divider={<Divider orientation='vertical' flexItem sx={{ borderStyle: 'dashed' }} />}
               sx={{ py: 2 }}
             >
-              <InvoiceAnalytic
-                title='Total'
-                total={10}
-                percent={100}
-                price={10 * 150}
-                icon='ic:round-receipt'
-                color={theme.palette.info.main}
-              />
-              <InvoiceAnalytic
+              <UserAnalytic
                 title='Paid'
-                total={10 - 1}
-                percent={(10 - 1) / 10 * 100}
-                price={(10 - 1) * 150}
+                total={numberFrosheesPaid}
+                percent={totalNumberFroshees ? (numberFrosheesPaid / totalNumberFroshees) * 100 : 100}
+                price={totalValuePaid}
                 icon='eva:checkmark-circle-2-fill'
                 color={theme.palette.success.main}
               />
-              <InvoiceAnalytic
+              <UserAnalytic
                 title='Unpaid'
-                total={1}
-                percent={1 / 10 * 100}
-                price={150}
-                icon='eva:clock-fill'
+                total={numberFrosheesUnpaid}
+                percent={totalNumberFroshees ? (numberFrosheesUnpaid / totalNumberFroshees) * 100 : 100}
+                price={0}
+                icon='eva:alert-circle-fill'
                 color={theme.palette.warning.main}
               />
             </Stack>
@@ -202,11 +204,11 @@ export default function UserList({ users, roles, error }: InferGetServerSideProp
             allowScrollButtonsMobile
             variant='scrollable'
             scrollButtons='auto'
-            value={filterStatus}
-            onChange={onChangeFilterStatus}
+            value={filterTab}
+            onChange={onChangeFilterTab}
             sx={{ px: 2, bgcolor: 'background.neutral' }}
           >
-            {STATUS_OPTIONS.map((tab) => (
+            {TAB_OPTIONS.map((tab) => (
               <Tab disableRipple key={tab} label={tab} value={tab} />
             ))}
           </Tabs>
@@ -263,7 +265,7 @@ export default function UserList({ users, roles, error }: InferGetServerSideProp
                 <TableBody>
                   {dataFiltered
                     .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
-                    .map((row: any) => (
+                    .map((row) => (
                       <UserTableRow
                         key={row.id}
                         row={row}
@@ -308,21 +310,19 @@ export default function UserList({ users, roles, error }: InferGetServerSideProp
   );
 }
 
-// ----------------------------------------------------------------------
-
-function applySortFilter({
+const applySortFilter = ({
                            tableData,
                            comparator,
                            filterName,
-                           filterStatus,
+                           filterTab,
                            filterRole,
                          }: {
-  tableData: UserManager[];
+  tableData: UsersForUserList[];
   comparator: (a: any, b: any) => number;
   filterName: string;
-  filterStatus: string;
+  filterTab: string;
   filterRole: string;
-}) {
+}): UsersForUserList[] => {
   const stabilizedThis = tableData.map((el, index) => [el, index] as const);
 
   stabilizedThis.sort((a, b) => {
@@ -335,29 +335,43 @@ function applySortFilter({
 
   if (filterName) {
     tableData = tableData.filter(
-      (item: Record<string, any>) =>
+      (item) =>
         item.email.toLowerCase().indexOf(filterName.toLowerCase()) !== -1,
     );
   }
 
-  if (filterStatus !== 'All') {
-    tableData = tableData.filter((item: Record<string, any>) => item.status === filterStatus);
+  if (filterTab !== 'All') {
+    switch (filterTab) {
+      case 'Paid':
+        tableData = tableData.filter((user) => user.paid && user.role === Role.Froshee);
+        break;
+      case 'Unpaid':
+        tableData = tableData.filter((user) => !user.paid && user.role === Role.Froshee);
+        break;
+      case 'Unassigned Frosh':
+        // @ts-ignore
+        tableData = tableData.filter((user) => [Role.Leader, Role.Froshee].includes(user.role) && user.frosh === null);
+        break;
+      case 'Unassigned Team':
+        // @ts-ignore
+        tableData = tableData.filter((user) => [Role.Leader, Role.Froshee].includes(user.role) && user.team === null);
+        break;
+    }
   }
 
   if (filterRole !== 'All') {
-    tableData = tableData.filter((item: Record<string, any>) => item.role.toLowerCase() === filterRole.toLowerCase());
+    tableData = tableData.filter((item) => item.role === filterRole);
   }
 
   return tableData;
-}
+};
 
-export const getServerSideProps: GetServerSideProps = async (ctx) => {
-  const users = await getUsersForAdminList();
-  const roles = getProfileRoles();
+export const getServerSideProps: GetServerSideProps = async () => {
+  const users = await getUsersForUserList();
+
   return {
     props: {
       users,
-      roles,
     },
   };
 };

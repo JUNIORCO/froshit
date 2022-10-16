@@ -132,7 +132,7 @@ function Searchbar() {
     if (path.includes('http')) {
       window.open(path);
     } else {
-      push(path);
+      void push(path);
     }
     setOpen(false);
   };

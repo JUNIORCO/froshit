@@ -2,27 +2,20 @@ import * as Yup from 'yup';
 import { useCallback, useEffect, useMemo } from 'react';
 import useSWRMutation from 'swr/mutation';
 import { useSnackbar } from 'notistack';
-// next
 import { useRouter } from 'next/router';
-// form
 import { Controller, useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
-// @mui
 import { LoadingButton } from '@mui/lab';
 import { Box, Card, FormControlLabel, Grid, Stack, Switch, Typography } from '@mui/material';
-// utils
 import { fData } from '../../../utils/formatNumber';
-// routes
 import { PATH_DASHBOARD } from '../../../routes/paths';
-// @types
 import { UserManager } from '../../../@types/user';
-// _mock
-// components
 import Label from '../../../components/Label';
 import { CustomFile } from '../../../components/upload';
 import { FormProvider, RHFSelect, RHFTextField, RHFUploadAvatar } from '../../../components/hook-form';
-
-// ----------------------------------------------------------------------
+import { RHFMultiSelect } from '../../../components/hook-form/RHFMultiSelect';
+import { FullUser } from '../../../../prisma/user/get';
+import { Frosh, Program, Team, Role, Interest } from '../../../../prisma/types';
 
 const sendProfileRequest = async (url: string, { arg }: any) => {
   const { method, ...profile } = arg;
@@ -42,33 +35,25 @@ interface FormValuesProps extends Omit<UserManager, 'avatarUrl'> {
 }
 
 type Props = {
-  isEdit?: boolean;
-  currentUser?: any;
-  roles: string[];
-  interests: string[];
-  programs: any[];
-  froshs: any[];
-  teams: any[];
+  currentUser?: FullUser;
+  programs: Program[];
+  froshs: Frosh[];
+  teams: Team[];
 };
 
 export default function UserNewEditForm({
-                                          isEdit = false,
                                           currentUser,
-                                          roles,
-                                          interests,
                                           programs,
                                           froshs,
                                           teams,
                                         }: Props) {
-  const url = !isEdit ? '/api/profile' : `/api/profile/${currentUser.id}`;
-  const method = !isEdit ? 'POST' : 'PATCH';
+  const url = !currentUser ? '/api/profile' : `/api/profile/${currentUser.id}`;
+  const method = !currentUser ? 'POST' : 'PATCH';
   const { trigger } = useSWRMutation(url, sendProfileRequest);
 
   const { push } = useRouter();
 
   const { enqueueSnackbar } = useSnackbar();
-
-  console.log(currentUser)
 
   const NewUserSchema = Yup.object().shape({
     name: Yup.string().required('Name is required'),
@@ -77,11 +62,11 @@ export default function UserNewEditForm({
     role: Yup.string().required('Role Number is required'),
     avatarUrl: Yup.string().optional(),
     programId: Yup.number().optional(),
-    interests: Yup.string().optional(),
+    interests: Yup.array().optional(),
     froshId: Yup.number().optional(),
     teamId: Yup.number().optional(),
   });
-  console.log(currentUser)
+
   const defaultValues = useMemo(
     () => ({
       name: currentUser?.name || '',
@@ -90,9 +75,9 @@ export default function UserNewEditForm({
       role: currentUser?.role || '',
       avatarUrl: currentUser?.avatarUrl || '',
       programId: currentUser?.programId || '',
-      interests: currentUser?.interests[0] || '',
-      froshId: currentUser?.froshId || null,
-      teamId: currentUser?.teamId || null,
+      interests: currentUser?.interests || [],
+      froshId: currentUser?.froshId || '',
+      teamId: currentUser?.teamId || '',
       // @ts-ignore
       universityId: currentUser?.universityId || 1,
     }),
@@ -116,20 +101,17 @@ export default function UserNewEditForm({
   const values = watch();
 
   useEffect(() => {
-    if (isEdit && currentUser) {
-      reset(defaultValues);
-    }
-    if (!isEdit) {
+    if (currentUser) {
       reset(defaultValues);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [isEdit, currentUser]);
+  }, [currentUser]);
 
   const onSubmit = async (data: FormValuesProps) => {
     try {
       await trigger({ ...data, method });
       reset();
-      enqueueSnackbar(!isEdit ? 'Create success!' : 'Update success!');
+      enqueueSnackbar(!currentUser ? 'Create success!' : 'Update success!');
       push(PATH_DASHBOARD.user.root);
     } catch (error) {
       console.error(error);
@@ -157,7 +139,7 @@ export default function UserNewEditForm({
       <Grid container spacing={3}>
         <Grid item xs={12} md={4}>
           <Card sx={{ py: 10, px: 3 }}>
-            {isEdit && (
+            {currentUser && (
               <Label
                 color={values.status !== 'active' ? 'error' : 'success'}
                 sx={{ textTransform: 'uppercase', position: 'absolute', top: 24, right: 24 }}
@@ -189,7 +171,7 @@ export default function UserNewEditForm({
               />
             </Box>
 
-            {isEdit && (
+            {currentUser && (
               <FormControlLabel
                 labelPlacement='start'
                 control={
@@ -220,22 +202,6 @@ export default function UserNewEditForm({
                 sx={{ mx: 0, mb: 3, width: 1, justifyContent: 'space-between' }}
               />
             )}
-
-            {/*<RHFSwitch*/}
-            {/*  name='isVerified'*/}
-            {/*  labelPlacement='start'*/}
-            {/*  label={*/}
-            {/*    <>*/}
-            {/*      <Typography variant='subtitle2' sx={{ mb: 0.5 }}>*/}
-            {/*        Email Verified*/}
-            {/*      </Typography>*/}
-            {/*      <Typography variant='body2' sx={{ color: 'text.secondary' }}>*/}
-            {/*        Disabling this will automatically send the user a verification email*/}
-            {/*      </Typography>*/}
-            {/*    </>*/}
-            {/*  }*/}
-            {/*  sx={{ mx: 0, width: 1, justifyContent: 'space-between' }}*/}
-            {/*/>*/}
           </Card>
         </Grid>
 
@@ -255,21 +221,21 @@ export default function UserNewEditForm({
 
               <RHFSelect name='role' label='Role' placeholder='Role'>
                 <option value='' />
-                {roles.map((role) => (
+                {Object.values(Role).map((role) => (
                   <option key={role} value={role}>
                     {role}
                   </option>
                 ))}
               </RHFSelect>
 
-              <RHFSelect name='interests' label='Interests' placeholder='Interests'>
-                <option value='' />
-                {interests.map((interest) => (
-                  <option key={interest} value={interest}>
-                    {interest}
-                  </option>
-                ))}
-              </RHFSelect>
+              <RHFMultiSelect
+                name='interests'
+                label='Interests'
+                options={Object.values(Interest).map((interest) => ({
+                  label: interest,
+                  value: interest,
+                }))}
+              />
 
               <RHFSelect name='programId' label='Program' placeholder='Program'>
                 <option value='' />
@@ -301,7 +267,7 @@ export default function UserNewEditForm({
 
             <Stack alignItems='flex-end' sx={{ mt: 3 }}>
               <LoadingButton type='submit' variant='contained' loading={isSubmitting}>
-                {!isEdit ? 'Create User' : 'Save Changes'}
+                {!currentUser ? 'Create User' : 'Save Changes'}
               </LoadingButton>
             </Stack>
           </Card>

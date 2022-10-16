@@ -1,42 +1,26 @@
 import { capitalCase } from 'change-case';
-// @mui
 import { Box, Container, Tab, Tabs } from '@mui/material';
-// routes
 import { PATH_DASHBOARD } from '../../../../../../routes/paths';
-// hooks
 import useTabs from '../../../../../../hooks/useTabs';
 import useSettings from '../../../../../../hooks/useSettings';
-// _mock_
-import { _userAddressBook, _userInvoices, _userPayment } from '../../../../../../_mock';
-// layouts
 import Layout from '../../../../../../layouts';
-// components
 import Page from '../../../../../../components/Page';
 import Iconify from '../../../../../../components/Iconify';
 import HeaderBreadcrumbs from '../../../../../../components/HeaderBreadcrumbs';
-// sections
-import {
-  AccountBilling,
-  AccountChangePassword,
-  AccountGeneral,
-} from '../../../../../../sections/@dashboard/user/account';
+import { AccountChangePassword, AccountGeneral } from '../../../../../../sections/@dashboard/user/account';
 import { GetServerSideProps } from 'next';
-import { getUserById } from '../../../../../../../prisma/user/get';
-import { getProfileRoles } from '../../../../../../../prisma/roles/roles';
-import { getProfileInterests } from '../../../../../../../prisma/interests/interests';
-import { getPrograms } from '../../../../../../../prisma/programs/get';
-import { getFroshs } from '../../../../../../../prisma/froshs/get';
-import { getTeams } from '../../../../../../../prisma/team/get';
-
-// ----------------------------------------------------------------------
+import type { FullUser } from '../../../../../../../prisma/user/get';
+import { getFullUserById } from '../../../../../../../prisma/user/get';
 
 UserView.getLayout = function getLayout(page: React.ReactElement) {
   return <Layout>{page}</Layout>;
 };
 
-// ----------------------------------------------------------------------
+interface UserViewProps {
+  user: FullUser;
+}
 
-export default function UserView({ user }: any) {
+export default function UserView({ user }: UserViewProps) {
   const { themeStretch } = useSettings();
 
   const { currentTab, onChangeTab } = useTabs('general');
@@ -45,7 +29,7 @@ export default function UserView({ user }: any) {
     {
       value: 'general',
       icon: <Iconify icon={'ic:round-account-box'} width={20} height={20} />,
-      component: <AccountGeneral user={user}/>,
+      component: <AccountGeneral user={user} />,
     },
     {
       value: 'change_password',
@@ -96,8 +80,8 @@ export default function UserView({ user }: any) {
 }
 
 export const getServerSideProps: GetServerSideProps = async (ctx) => {
-  const { subdomain, id } = ctx.query;
-  const user = await getUserById(Number(id));
+  const { id } = ctx.query;
+  const user = await getFullUserById(Number(id));
 
   return {
     props: {

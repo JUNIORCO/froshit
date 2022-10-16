@@ -1,6 +1,7 @@
-import { prisma } from '../index';
+import { prisma } from '..';
+import type { Program } from '../types';
 
 /**
- * Gets all the user.
+ * Gets all the Programs for a university.
  */
-export const getPrograms = async () => prisma.program.findMany();
+export const getPrograms = async (): Promise<Program[]> => prisma.program.findMany();

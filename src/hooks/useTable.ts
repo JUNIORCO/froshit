@@ -10,8 +10,8 @@ export type UseTableProps = {
   order: 'asc' | 'desc';
   orderBy: string;
   //
-  selected: string[];
-  setSelected: React.Dispatch<React.SetStateAction<string[]>>;
+  selected: number[];
+  setSelected: React.Dispatch<React.SetStateAction<number[]>>;
   onSelectRow: (id: string) => void;
   onSelectAllRows: (checked: boolean, newSelecteds: string[]) => void;
   //
@@ -25,7 +25,7 @@ export type Props = {
   defaultDense?: boolean;
   defaultOrder?: 'asc' | 'desc';
   defaultOrderBy?: string;
-  defaultSelected?: string[];
+  defaultSelected?: number[];
   defaultRowsPerPage?: number;
   defaultCurrentPage?: number;
 };
@@ -41,7 +41,7 @@ export default function useTable(props?: Props) {
 
   const [rowsPerPage, setRowsPerPage] = useState(props?.defaultRowsPerPage || 10);
 
-  const [selected, setSelected] = useState<string[]>(props?.defaultSelected || []);
+  const [selected, setSelected] = useState<number[]>(props?.defaultSelected || []);
 
   const onSort = (id: string) => {
     const isAsc = orderBy === id && order === 'asc';
@@ -51,10 +51,10 @@ export default function useTable(props?: Props) {
     }
   };
 
-  const onSelectRow = (id: string) => {
+  const onSelectRow = (id: number) => {
     const selectedIndex = selected.indexOf(id);
 
-    let newSelected: string[] = [];
+    let newSelected: number[] = [];
 
     if (selectedIndex === -1) {
       newSelected = newSelected.concat(selected, id);
@@ -71,7 +71,7 @@ export default function useTable(props?: Props) {
     setSelected(newSelected);
   };
 
-  const onSelectAllRows = (checked: boolean, newSelecteds: string[]) => {
+  const onSelectAllRows = (checked: boolean, newSelecteds: number[]) => {
     if (checked) {
       setSelected(newSelecteds);
       return;

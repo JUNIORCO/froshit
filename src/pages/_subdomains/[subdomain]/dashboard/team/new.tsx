@@ -12,8 +12,8 @@ import HeaderBreadcrumbs from '../../../../../components/HeaderBreadcrumbs';
 // sections
 import { GetServerSideProps } from 'next';
 import { getFroshs } from '../../../../../../prisma/froshs/get';
-import { getFrosheesAndLeadersWithNoTeam } from '../../../../../../prisma/user/get';
-import TeamNewEditForm from '../../../../../sections/@dashboard/team/TeamNewEditForm';
+import { getUnassignedFrosheesAndLeaders } from '../../../../../../prisma/user/get';
+import TeamNewForm from '../../../../../sections/@dashboard/team/TeamNewForm';
 
 // ----------------------------------------------------------------------
 
@@ -34,10 +34,10 @@ export default function TeamCreate({ froshs, profiles }: any) {
           links={[
             { name: 'Dashboard', href: PATH_DASHBOARD.root },
             { name: 'Team', href: PATH_DASHBOARD.team.root },
-            { name: 'New Team' },
+            { name: 'New' },
           ]}
         />
-        <TeamNewEditForm froshs={froshs} profiles={profiles} />
+        <TeamNewForm froshs={froshs} profiles={profiles} />
       </Container>
     </Page>
   );
@@ -45,7 +45,7 @@ export default function TeamCreate({ froshs, profiles }: any) {
 
 export const getServerSideProps: GetServerSideProps = async (ctx) => {
   const froshs = await getFroshs();
-  const profiles = await getFrosheesAndLeadersWithNoTeam();
+  const profiles = await getUnassignedFrosheesAndLeaders();
 
   return {
     props: {

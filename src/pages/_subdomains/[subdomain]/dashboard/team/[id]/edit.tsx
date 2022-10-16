@@ -1,50 +1,41 @@
-// next
-import { useRouter } from 'next/router';
-// @mui
 import { Box, Container, Typography } from '@mui/material';
-// routes
-// hooks
 import useSettings from '../../../../../../hooks/useSettings';
-// _mock_
-// layouts
 import Layout from '../../../../../../layouts';
-// components
 import Page from '../../../../../../components/Page';
-// sections
-import UserNewEditForm from '../../../../../../sections/@dashboard/user/UserNewEditForm';
 import { GetServerSideProps } from 'next';
-import { getProfileRoles } from '../../../../../../../prisma/roles/roles';
-import { getUserById } from '../../../../../../../prisma/user/get';
-import { getProfileInterests } from '../../../../../../../prisma/interests/interests';
-import { getPrograms } from '../../../../../../../prisma/programs/get';
+import { getUnassignedFrosheesAndLeaders, UnassignedFrosheesAndLeaders } from '../../../../../../../prisma/user/get';
 import { getFroshs } from '../../../../../../../prisma/froshs/get';
-import { getTeams } from '../../../../../../../prisma/team/get';
+import { getTeamById, FullTeam } from '../../../../../../../prisma/team/get';
+import type { Frosh } from '../../../../../../../prisma/types';
+import TeamEditForm from '../../../../../../sections/@dashboard/team/TeamEditForm';
+import HeaderBreadcrumbs from '../../../../../../components/HeaderBreadcrumbs';
+import { PATH_DASHBOARD } from '../../../../../../routes/paths';
 
-// ----------------------------------------------------------------------
-
-UserEdit.getLayout = function getLayout(page: React.ReactElement) {
+TeamEdit.getLayout = function getLayout(page: React.ReactElement) {
   return <Layout>{page}</Layout>;
 };
 
-// ----------------------------------------------------------------------
+type Props = {
+  team: FullTeam;
+  froshs: Frosh[];
+  profiles: UnassignedFrosheesAndLeaders[];
+}
 
-export default function UserEdit({ user, roles, interests, programs, froshs, teams }: any) {
+export default function TeamEdit({ team, froshs, profiles }: Props) {
   const { themeStretch } = useSettings();
 
   return (
-    <Page title='User Edit'>
+    <Page title='Team Edit'>
       <Container maxWidth={themeStretch ? false : 'lg'}>
-        <Box sx={{ mb: 5 }}>
-          <Box sx={{ display: 'flex', alignItems: 'center' }}>
-            <Box sx={{ flexGrow: 1 }}>
-              <Typography variant='h4' gutterBottom>
-                Edit User
-              </Typography>
-            </Box>
-          </Box>
-        </Box>
-
-        <UserNewEditForm isEdit currentUser={user} roles={roles} interests={interests} programs={programs} froshs={froshs} teams={teams} />
+        <HeaderBreadcrumbs
+          heading='Edit Team'
+          links={[
+            { name: 'Dashboard', href: PATH_DASHBOARD.root },
+            { name: 'Team', href: PATH_DASHBOARD.team.root },
+            { name: 'Edit' },
+          ]}
+        />
+        <TeamEditForm currentTeam={team} froshs={froshs} profiles={profiles} />
       </Container>
     </Page>
   );
@@ -52,22 +43,16 @@ export default function UserEdit({ user, roles, interests, programs, froshs, tea
 
 export const getServerSideProps: GetServerSideProps = async (ctx) => {
   const { subdomain, id } = ctx.query;
-  const user = await getUserById(Number(id));
 
-  const roles = getProfileRoles();
-  const interests = getProfileInterests();
-  const programs = await getPrograms();
+  const team = await getTeamById(Number(id));
   const froshs = await getFroshs();
-  const teams = await getTeams();
+  const profiles = await getUnassignedFrosheesAndLeaders();
 
   return {
     props: {
-      user,
-      roles,
-      interests,
-      programs,
+      team,
       froshs,
-      teams,
+      profiles,
     },
   };
 };

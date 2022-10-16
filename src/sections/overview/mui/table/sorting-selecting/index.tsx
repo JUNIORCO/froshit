@@ -1,3 +1,4 @@
+// @ts-nocheck
 import { useState } from 'react';
 // @mui
 import {
@@ -79,8 +80,6 @@ export default function SortingSelecting() {
   });
 
   const [tableData, setTableData] = useState(TABLE_DATA);
-
-  console.log('setTableData', setTableData);
 
   const dataFiltered = applySortFilter({
     tableData,
