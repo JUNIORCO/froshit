@@ -66,7 +66,7 @@ export default function FroshNewForm() {
       await trigger(froshToCreate);
       reset();
       enqueueSnackbar('Create success!');
-      push(PATH_DASHBOARD.frosh.root);
+      void push(PATH_DASHBOARD.frosh.root);
     } catch (error) {
       console.error(error);
     }

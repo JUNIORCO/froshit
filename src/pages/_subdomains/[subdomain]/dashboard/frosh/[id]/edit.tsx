@@ -1,41 +1,37 @@
-import { Box, Container, Typography } from '@mui/material';
+import { Container } from '@mui/material';
 import useSettings from '../../../../../../hooks/useSettings';
 import Layout from '../../../../../../layouts';
 import Page from '../../../../../../components/Page';
 import { GetServerSideProps } from 'next';
-import { getUnassignedFrosheesAndLeaders, UnassignedFrosheesAndLeaders } from '../../../../../../../prisma/user/get';
-import { getFroshs } from '../../../../../../../prisma/froshs/get';
-import { getTeamById, FullTeam } from '../../../../../../../prisma/team/get';
+import { getFroshById } from '../../../../../../../prisma/froshs/get';
 import type { Frosh } from '../../../../../../../prisma/types';
-import TeamEditForm from '../../../../../../sections/@dashboard/team/TeamEditForm';
 import HeaderBreadcrumbs from '../../../../../../components/HeaderBreadcrumbs';
 import { PATH_DASHBOARD } from '../../../../../../routes/paths';
+import FroshEditForm from '../../../../../../sections/@dashboard/frosh/FroshEditForm';
 
-TeamEdit.getLayout = function getLayout(page: React.ReactElement) {
+FroshEdit.getLayout = function getLayout(page: React.ReactElement) {
   return <Layout>{page}</Layout>;
 };
 
 type Props = {
-  team: FullTeam;
-  froshs: Frosh[];
-  profiles: UnassignedFrosheesAndLeaders[];
+  frosh: Frosh;
 }
 
-export default function TeamEdit({ team, froshs, profiles }: Props) {
+export default function FroshEdit({ frosh }: Props) {
   const { themeStretch } = useSettings();
 
   return (
-    <Page title='Team Edit'>
+    <Page title='Frosh Edit'>
       <Container maxWidth={themeStretch ? false : 'lg'}>
         <HeaderBreadcrumbs
-          heading='Edit Team'
+          heading='Edit Frosh'
           links={[
             { name: 'Dashboard', href: PATH_DASHBOARD.root },
-            { name: 'Team', href: PATH_DASHBOARD.team.root },
+            { name: 'Team', href: PATH_DASHBOARD.frosh.root },
             { name: 'Edit' },
           ]}
         />
-        <TeamEditForm currentTeam={team} froshs={froshs} profiles={profiles} />
+        <FroshEditForm currentFrosh={frosh} />
       </Container>
     </Page>
   );
@@ -44,15 +40,11 @@ export default function TeamEdit({ team, froshs, profiles }: Props) {
 export const getServerSideProps: GetServerSideProps = async (ctx) => {
   const { subdomain, id } = ctx.query;
 
-  const team = await getTeamById(Number(id));
-  const froshs = await getFroshs();
-  const profiles = await getUnassignedFrosheesAndLeaders();
+  const frosh = await getFroshById(Number(id));
 
   return {
     props: {
-      team,
-      froshs,
-      profiles,
+      frosh,
     },
   };
 };

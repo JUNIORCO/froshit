@@ -7,6 +7,15 @@ import type { Frosh, Profile } from '../types';
 export const getFroshs = async (): Promise<Frosh[]> => prisma.frosh.findMany();
 
 /**
+ * Gets Frosh by id.
+ */
+export const getFroshById = async (id: number): Promise<Frosh> => prisma.frosh.findUniqueOrThrow({
+  where: {
+    id,
+  }
+});
+
+/**
  * Gets all the Froshs with stats
  */
 export type FroshsWithStats = Frosh & { profiles: Profile[], _count: { events: number, teams: number, } };

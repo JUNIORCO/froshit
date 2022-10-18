@@ -1,52 +1,87 @@
-import { capitalCase } from 'change-case';
-// @mui
-import { Box, Container, Tab, Tabs } from '@mui/material';
-// routes
+import { Box, Card, Container, Grid, Slider, Stack, TextField, Typography } from '@mui/material';
 import { PATH_DASHBOARD } from '../../../../../../routes/paths';
-// hooks
-import useTabs from '../../../../../../hooks/useTabs';
 import useSettings from '../../../../../../hooks/useSettings';
-// _mock_
-import { _userAddressBook, _userInvoices, _userPayment } from '../../../../../../_mock';
-// layouts
 import Layout from '../../../../../../layouts';
-// components
 import Page from '../../../../../../components/Page';
-import Iconify from '../../../../../../components/Iconify';
 import HeaderBreadcrumbs from '../../../../../../components/HeaderBreadcrumbs';
-// sections
-import {
-  AccountBilling,
-  AccountChangePassword,
-  AccountGeneral,
-} from '../../../../../../sections/@dashboard/user/account';
 import { GetServerSideProps } from 'next';
-import { getTeamById } from '../../../../../../../prisma/team/get';
+import { getFroshById } from '../../../../../../../prisma/froshs/get';
+import { Frosh } from '../../../../../../../prisma/types';
 
-// ----------------------------------------------------------------------
-
-TeamView.getLayout = function getLayout(page: React.ReactElement) {
+FroshView.getLayout = function getLayout(page: React.ReactElement) {
   return <Layout>{page}</Layout>;
 };
 
-// ----------------------------------------------------------------------
+type Props = {
+  frosh: Frosh;
+}
 
-export default function TeamView({ team }: any) {
+
+export default function FroshView({ frosh }: Props) {
+  const { name, description, ticketPrice } = frosh;
   const { themeStretch } = useSettings();
 
+  const marksLabel = [...Array(21)].map((_, index) => {
+    const value = index * 10;
+
+    return {
+      value,
+      label: index % 2 ? '' : `$${value}`,
+    };
+  });
+
   return (
-    <Page title='View Team'>
+    <Page title='View Frosh'>
       <Container maxWidth={themeStretch ? false : 'lg'}>
         <HeaderBreadcrumbs
-          heading='Team'
+          heading='Frosh'
           links={[
             { name: 'Dashboard', href: PATH_DASHBOARD.root },
-            { name: 'Team', href: PATH_DASHBOARD.team.root },
+            { name: 'Frosh', href: PATH_DASHBOARD.frosh.root },
             { name: 'View' },
           ]}
         />
 
         <Box sx={{ mb: 5 }} />
+
+        <Grid container spacing={3}>
+          <Grid item xs={12} md={8}>
+            <Card sx={{ p: 3 }}>
+              <Box
+                sx={{
+                  display: 'grid',
+                  columnGap: 2,
+                  rowGap: 3,
+                  gridTemplateColumns: { xs: 'repeat(1, 1fr)', sm: 'repeat(2, 1fr)' },
+                }}
+              >
+                <TextField disabled value={name} label='Name' />
+
+                <TextField disabled value={description} label='Description' />
+
+                <Stack spacing={1} sx={{ pb: 2 }}>
+
+                  <Typography variant='subtitle1' sx={{ flexGrow: 1 }}>
+                    Ticket Price
+                  </Typography>
+                  <Slider
+                    disabled
+                    value={ticketPrice}
+                    step={5}
+                    min={0}
+                    max={200}
+                    marks={marksLabel}
+                    getAriaValueText={(value) => `$${value}`}
+                    valueLabelFormat={(value) => `$${value}`}
+                    sx={{ alignSelf: 'center', width: `calc(100% - 20px)` }}
+                    valueLabelDisplay='auto'
+                  />
+                </Stack>
+              </Box>
+
+            </Card>
+          </Grid>
+        </Grid>
 
       </Container>
     </Page>
@@ -55,11 +90,12 @@ export default function TeamView({ team }: any) {
 
 export const getServerSideProps: GetServerSideProps = async (ctx) => {
   const { subdomain, id } = ctx.query;
-  const team = await getTeamById(Number(id));
+
+  const frosh = await getFroshById(Number(id));
 
   return {
     props: {
-      team,
+      frosh,
     },
   };
 };
