@@ -68,13 +68,8 @@ const navConfig = [
       },
       {
         title: 'Froshs',
-        path: PATH_DASHBOARD.blog.root,
+        path: PATH_DASHBOARD.frosh.root,
         icon: ICONS.frosh,
-        children: [
-          { title: 'posts', path: PATH_DASHBOARD.blog.posts },
-          { title: 'post', path: PATH_DASHBOARD.blog.demoView },
-          { title: 'create', path: PATH_DASHBOARD.blog.new },
-        ],
       },
       {
         title: 'Notifications',

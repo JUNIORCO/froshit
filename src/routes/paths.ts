@@ -60,6 +60,12 @@ export const PATH_DASHBOARD = {
     edit: (id: string) => path(ROOTS_DASHBOARD, `/team/${id}/edit`),
     view: (id: string) => path(ROOTS_DASHBOARD, `/team/${id}/view`),
   },
+  frosh: {
+    root: path(ROOTS_DASHBOARD, '/frosh'),
+    new: path(ROOTS_DASHBOARD, '/frosh/new'),
+    edit: (id: string) => path(ROOTS_DASHBOARD, `/frosh/${id}/edit`),
+    view: (id: string) => path(ROOTS_DASHBOARD, `/frosh/${id}/view`),
+  },
   mail: {
     root: path(ROOTS_DASHBOARD, '/mail'),
     all: path(ROOTS_DASHBOARD, '/mail/all'),

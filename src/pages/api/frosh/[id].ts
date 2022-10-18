@@ -11,12 +11,11 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         res.status(400).end('No id found');
       }
 
-      const profile = req.body as Prisma.ProfileUpdateInput;
+      const frosh = req.body as Prisma.FroshUpdateInput;
 
-      const user = await prisma.profile.update({ where: { id: Number(id) }, data: profile });
-      console.log(user)
+      const updatedFrosh = await prisma.frosh.update({ where: { id: Number(id) }, data: frosh });
 
-      res.status(200).json(user);
+      res.status(200).json(updatedFrosh);
     } else {
       res.status(400).end('Unsupported request');
     }

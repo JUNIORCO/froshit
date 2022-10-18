@@ -39,25 +39,28 @@ async function main() {
     ],
   });
 
-  // Create froshs
+  // Create frosh
   await prisma.frosh.createMany({
     data: [
       {
         name: 'Engineering Frosh',
         description: 'Welcome to McGill Engineering Frosh',
         imageUrl: 'https://gravatar.com/avatar/797edb6dfb170ce5952723c711d3bf09?s=400&d=robohash&r=x',
+        ticketPrice: 150,
         universityId: 1,
       },
       {
         name: 'Arts Frosh',
         description: 'Welcome to Concordia Arts Frosh',
         imageUrl: 'https://gravatar.com/avatar/797edb6dfb170ce5952723c711d3bf09?s=400&d=robohash&r=x',
+        ticketPrice: 150,
         universityId: 2,
       },
       {
         name: 'Science Frosh',
         description: 'Welcome to UofT Science Frosh',
         imageUrl: 'https://gravatar.com/avatar/797edb6dfb170ce5952723c711d3bf09?s=400&d=robohash&r=x',
+        ticketPrice: 100,
         universityId: 3,
       },
     ],

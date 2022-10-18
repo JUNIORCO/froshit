@@ -201,15 +201,7 @@ export default function TeamList({ teams }: Props) {
                   order={order}
                   orderBy={orderBy}
                   headLabel={TABLE_HEAD}
-                  rowCount={tableData.length}
-                  numSelected={selected.length}
                   onSort={onSort}
-                  onSelectAllRows={(checked: boolean) =>
-                    onSelectAllRows(
-                      checked,
-                      tableData.map((row: any) => row.id),
-                    )
-                  }
                 />
 
                 <TableBody>

@@ -225,41 +225,12 @@ export default function UserList({ users }: UserListProps) {
 
           <Scrollbar>
             <TableContainer sx={{ minWidth: 800, position: 'relative' }}>
-              {selected.length > 0 && (
-                <TableSelectedActions
-                  dense={dense}
-                  numSelected={selected.length}
-                  rowCount={tableData.length}
-                  onSelectAllRows={(checked: boolean) =>
-                    onSelectAllRows(
-                      checked,
-                      tableData.map((row: any) => row.id),
-                    )
-                  }
-                  actions={
-                    <Tooltip title='Delete'>
-                      <IconButton color='primary' onClick={() => handleDeleteRows(selected)}>
-                        <Iconify icon={'eva:trash-2-outline'} />
-                      </IconButton>
-                    </Tooltip>
-                  }
-                />
-              )}
-
               <Table size={dense ? 'small' : 'medium'}>
                 <TableHeadCustom
                   order={order}
                   orderBy={orderBy}
                   headLabel={TABLE_HEAD}
-                  rowCount={tableData.length}
-                  numSelected={selected.length}
                   onSort={onSort}
-                  onSelectAllRows={(checked: boolean) =>
-                    onSelectAllRows(
-                      checked,
-                      tableData.map((row: any) => row.id),
-                    )
-                  }
                 />
 
                 <TableBody>

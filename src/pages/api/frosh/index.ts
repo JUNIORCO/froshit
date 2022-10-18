@@ -5,11 +5,11 @@ import { Prisma } from '../../../../prisma/types';
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
   try {
     if (req.method === 'POST') {
-      const profile = req.body as Prisma.ProfileCreateInput;
+      const frosh = req.body as Prisma.FroshUncheckedCreateInput;
 
-      const user = await prisma.profile.create({ data: profile });
+      const createdFrosh = await prisma.frosh.create({ data: frosh });
 
-      res.status(200).json(user);
+      res.status(200).json(createdFrosh);
     } else {
       res.status(400).end('Unsupported request');
     }

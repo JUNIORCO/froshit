@@ -1,31 +1,29 @@
 import { useState } from 'react';
-// @mui
 import { useTheme } from '@mui/material/styles';
-import { Avatar, Checkbox, MenuItem, TableCell, TableRow, Typography } from '@mui/material';
-// components
+import { Checkbox, MenuItem, TableCell, TableRow } from '@mui/material';
 import Iconify from '../../../../components/Iconify';
 import { TableMoreMenu } from '../../../../components/table';
-
-// ----------------------------------------------------------------------
+import { Role } from '../../../../../prisma/types';
+import { FroshsWithStats } from '../../../../../prisma/froshs/get';
 
 type Props = {
-  row: any;
+  row: FroshsWithStats;
   selected: boolean;
   onEditRow: VoidFunction;
   onSelectRow: VoidFunction;
   onViewRow: VoidFunction;
 };
 
-export default function TeamTableRow({
-                                       row,
-                                       selected,
-                                       onEditRow,
-                                       onSelectRow,
-                                       onViewRow,
-                                     }: Props) {
+export default function FroshTableRow({
+                                        row,
+                                        selected,
+                                        onEditRow,
+                                        onSelectRow,
+                                        onViewRow,
+                                      }: Props) {
   const theme = useTheme();
 
-  const { name: teamName, frosh, profiles } = row;
+  const { name, ticketPrice, profiles, _count } = row;
 
   const [openMenu, setOpenMenuActions] = useState<HTMLElement | null>(null);
 
@@ -39,22 +37,33 @@ export default function TeamTableRow({
 
   return (
     <TableRow hover selected={selected}>
-      <TableCell sx={{ alignItems: 'center' }}>
-        <Typography variant='subtitle2'>
-          {teamName}
-        </Typography>
-      </TableCell>
 
       <TableCell align='left'>
-        {frosh.name}
+        {name}
       </TableCell>
 
-      <TableCell align='left'>
-        {profiles.filter((profile: any) => profile.role === 'Leader').map((profile: any) => profile.name).join(', ').slice(0, 100)}
+      <TableCell align='center'>
+        ${ticketPrice}
       </TableCell>
 
-      <TableCell align='left'>
-        {profiles.filter((profile: any) => profile.role === 'Froshee').map((profile: any) => profile.name).join(', ').slice(0, 100)}
+      <TableCell align='center'>
+        {profiles.filter((profile) => profile.role === Role.Froshee && profile.paid).length}
+      </TableCell>
+
+      <TableCell align='center'>
+        {profiles.filter((profile) => profile.role === Role.Froshee).length}
+      </TableCell>
+
+      <TableCell align='center'>
+        {profiles.filter((profile) => profile.role === Role.Leader).length}
+      </TableCell>
+
+      <TableCell align='center'>
+        {_count.teams}
+      </TableCell>
+
+      <TableCell align='center'>
+        {_count.events}
       </TableCell>
 
       <TableCell align='right'>

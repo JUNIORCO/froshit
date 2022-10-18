@@ -1,5 +1,5 @@
 generator client {
-  provider = "prisma-client-js"
+  provider        = "prisma-client-js"
 }
 
 datasource db {
@@ -49,46 +49,71 @@ enum Interest {
 }
 
 model University {
-  id        Int       @id @default(autoincrement())
-  name      String    @unique
-  subdomain String    @unique
-  programs  Program[]
-  froshs    Frosh[]
-  profiles  Profile[]
+  // id
+  id        Int    @id @default(autoincrement())
+  // attributes
+  name      String @unique
+  subdomain String @unique
   imageUrl  String
-  createdAt DateTime  @default(now())
-  updatedAt DateTime  @updatedAt
+
+  // associations
+  programs Program[]
+  froshs   Frosh[]
+  profiles Profile[]
+
+  // dates
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 }
 
 model Program {
-  id           Int        @id @default(autoincrement())
-  name         String
-  profiles     Profile[]
-  // university
+  // id
+  id Int @id @default(autoincrement())
+
+  // attributes
+  name     String
+  profiles Profile[]
+
+  // associations
   university   University @relation(fields: [universityId], references: [id])
   universityId Int // relation scalar field - university associated to the program
+
+  // dates
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 }
 
 model Frosh {
-  id           Int        @id @default(autoincrement())
-  name         String
-  description  String
-  imageUrl     String
-  // university
+  // id
+  id Int @id @default(autoincrement())
+
+  // attributes
+  name        String
+  description String
+  imageUrl    String
+  ticketPrice Int
+
+  // associations
   university   University @relation(fields: [universityId], references: [id])
   universityId Int // relation scalar field - university associated to the frosh
-  // events
-  events       Event[]
-  // team
-  teams        Team[]
-  // profile
-  profiles     Profile[]
-  createdAt    DateTime   @default(now())
-  updatedAt    DateTime   @updatedAt
+
+  events   Event[]
+  teams    Team[]
+  profiles Profile[]
+
+  // dates
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  // constraints
+  @@unique([name, universityId]) // froshs in the same university cannot have the same name
 }
 
 model Event {
-  id            Int      @id @default(autoincrement())
+  // id
+  id Int @id @default(autoincrement())
+
+  // attributes
   name          String
   description   String
   startDate     DateTime
@@ -96,46 +121,61 @@ model Event {
   imageUrl      String
   location      String
   accessibility String
-  // frosh
-  frosh         Frosh    @relation(fields: [froshId], references: [id])
-  froshId       Int // relation scalar field - which frosh the event is associated to
-  createdAt     DateTime @default(now())
-  updatedAt     DateTime @updatedAt
+
+  // associations
+  frosh   Frosh @relation(fields: [froshId], references: [id])
+  froshId Int // relation scalar field - which frosh the event is associated to
+
+  // dates
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 }
 
 model Team {
-  id        Int       @id @default(autoincrement())
-  name      String
-  // frosh
-  frosh     Frosh     @relation(fields: [froshId], references: [id])
-  froshId   Int // relation scalar field - which frosh the team is associated to
-  // profile
-  profiles  Profile[]
-  createdAt DateTime  @default(now())
-  updatedAt DateTime  @updatedAt
+  // id
+  id Int @id @default(autoincrement())
+
+  // attributes
+  name String
+
+  // associations
+  frosh   Frosh @relation(fields: [froshId], references: [id])
+  froshId Int // relation scalar field - which frosh the team is associated to
+
+  profiles Profile[]
+
+  // dates
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 }
 
 model Profile {
-  id           Int        @id @default(autoincrement())
-  name         String
-  email        String     @unique
-  phoneNumber  String     @unique
-  role         Role
-  avatarUrl    String
-  paid         Int?
-  interests    Interest[]
-  // university
+  // id
+  id Int @id @default(autoincrement())
+
+  // attributes
+  name        String
+  email       String     @unique
+  phoneNumber String     @unique
+  role        Role
+  avatarUrl   String
+  paid        Int?
+  interests   Interest[]
+
+  // associations
   university   University @relation(fields: [universityId], references: [id])
   universityId Int // relation scalar field - which university the profile is associated to
-  // program
-  program      Program    @relation(fields: [programId], references: [id])
-  programId    Int // relation scalar field - which program the profile is associated to
-  // frosh
-  frosh        Frosh?     @relation(fields: [froshId], references: [id]) // optional because admin/organizers are not part of a frosh
-  froshId      Int? // relation scalar field - which frosh the profile is associated to
-  // team
-  team         Team?      @relation(fields: [teamId], references: [id]) // optional because admin/organizers are not part of a team
-  teamId       Int? // relation scalar field - which team the profile is associated to
-  createdAt    DateTime   @default(now())
-  updatedAt    DateTime   @updatedAt
+
+  program   Program @relation(fields: [programId], references: [id])
+  programId Int // relation scalar field - which program the profile is associated to
+
+  frosh   Frosh? @relation(fields: [froshId], references: [id]) // optional because admin/organizers are not part of a frosh
+  froshId Int? // relation scalar field - which frosh the profile is associated to
+
+  team   Team? @relation(fields: [teamId], references: [id]) // optional because admin/organizers are not part of a team
+  teamId Int? // relation scalar field - which team the profile is associated to
+
+  // dates
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 }
