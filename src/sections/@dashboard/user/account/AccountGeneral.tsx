@@ -1,15 +1,7 @@
 import { useSnackbar } from 'notistack';
-// form
-// @mui
 import { Box, Card, Grid, TextField } from '@mui/material';
-// hooks
-// utils
-// _mock
-// components
 import { CustomFile } from '../../../../components/upload';
 import UploadAvatar from '../../../../components/upload/UploadAvatar';
-
-// ----------------------------------------------------------------------
 
 type FormValuesProps = {
   displayName: string;

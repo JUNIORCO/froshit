@@ -44,11 +44,6 @@ const navConfig = [
     subheader: 'Management',
     items: [
       {
-        title: 'Users',
-        path: PATH_DASHBOARD.user.root,
-        icon: ICONS.user,
-      },
-      {
         title: 'Events',
         path: PATH_DASHBOARD.eCommerce.root,
         icon: ICONS.event,
@@ -60,11 +55,6 @@ const navConfig = [
           { title: 'edit', path: PATH_DASHBOARD.eCommerce.demoEdit },
           { title: 'checkout', path: PATH_DASHBOARD.eCommerce.checkout },
         ],
-      },
-      {
-        title: 'Teams',
-        path: PATH_DASHBOARD.team.root,
-        icon: ICONS.team,
       },
       {
         title: 'Froshs',
@@ -90,6 +80,16 @@ const navConfig = [
           { title: 'post', path: PATH_DASHBOARD.blog.demoView },
           { title: 'create', path: PATH_DASHBOARD.blog.new },
         ],
+      },
+      {
+        title: 'Teams',
+        path: PATH_DASHBOARD.team.root,
+        icon: ICONS.team,
+      },
+      {
+        title: 'Users',
+        path: PATH_DASHBOARD.user.root,
+        icon: ICONS.user,
       },
     ],
   },
