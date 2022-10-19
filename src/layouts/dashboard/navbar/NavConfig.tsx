@@ -7,10 +7,11 @@ const getIcon = (name: string) => (
 
 const ICONS = {
   dashboard: getIcon('carbon:dashboard'),
-  event: getIcon('carbon:event'),
+  event: getIcon('bi:calendar2-event'),
   team: getIcon('carbon:group'),
   frosh: getIcon('carbon:tag-group'),
   notification: getIcon('carbon:notification'),
+  offer: getIcon('tabler:discount'),
   resource: getIcon('carbon:security'),
   branding: getIcon('gala:image'),
   settings: getIcon('carbon:settings-adjust'),
@@ -27,6 +28,8 @@ const ICONS = {
   analytics: getIcon('ic_analytics'),
   menuItem: getIcon('ic_menu_item'),
 };
+
+// navconfig here
 
 const navConfig = [
   // DASHBOARD
@@ -45,16 +48,8 @@ const navConfig = [
     items: [
       {
         title: 'Events',
-        path: PATH_DASHBOARD.eCommerce.root,
+        path: PATH_DASHBOARD.event.root,
         icon: ICONS.event,
-        children: [
-          { title: 'shop', path: PATH_DASHBOARD.eCommerce.shop },
-          { title: 'product', path: PATH_DASHBOARD.eCommerce.demoView },
-          { title: 'list', path: PATH_DASHBOARD.eCommerce.list },
-          { title: 'create', path: PATH_DASHBOARD.eCommerce.new },
-          { title: 'edit', path: PATH_DASHBOARD.eCommerce.demoEdit },
-          { title: 'checkout', path: PATH_DASHBOARD.eCommerce.checkout },
-        ],
       },
       {
         title: 'Froshs',
@@ -65,20 +60,19 @@ const navConfig = [
         title: 'Notifications',
         path: PATH_DASHBOARD.blog.root,
         icon: ICONS.notification,
-        children: [
-          { title: 'posts', path: PATH_DASHBOARD.blog.posts },
-          { title: 'post', path: PATH_DASHBOARD.blog.demoView },
-          { title: 'create', path: PATH_DASHBOARD.blog.new },
-        ],
+      },
+      {
+        title: 'Offers',
+        path: PATH_DASHBOARD.blog.root,
+        icon: ICONS.offer,
       },
       {
         title: 'Resources',
         path: PATH_DASHBOARD.blog.root,
         icon: ICONS.resource,
         children: [
-          { title: 'posts', path: PATH_DASHBOARD.blog.posts },
-          { title: 'post', path: PATH_DASHBOARD.blog.demoView },
-          { title: 'create', path: PATH_DASHBOARD.blog.new },
+          { title: 'Resources', path: PATH_DASHBOARD.user.root },
+          { title: 'Tags', path: PATH_DASHBOARD.user.root },
         ],
       },
       {

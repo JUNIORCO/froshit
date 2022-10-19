@@ -1,5 +1,5 @@
 generator client {
-  provider        = "prisma-client-js"
+  provider = "prisma-client-js"
 }
 
 datasource db {
@@ -57,9 +57,11 @@ model University {
   imageUrl  String
 
   // associations
-  programs Program[]
-  froshs   Frosh[]
-  profiles Profile[]
+  programs     Program[]
+  froshs       Frosh[]
+  profiles     Profile[]
+  resourceTags ResourceTag[]
+  offers       Offer[]
 
   // dates
   createdAt DateTime @default(now())
@@ -76,7 +78,7 @@ model Program {
 
   // associations
   university   University @relation(fields: [universityId], references: [id])
-  universityId Int // relation scalar field - university associated to the program
+  universityId Int
 
   // dates
   createdAt DateTime @default(now())
@@ -95,7 +97,7 @@ model Frosh {
 
   // associations
   university   University @relation(fields: [universityId], references: [id])
-  universityId Int // relation scalar field - university associated to the frosh
+  universityId Int
 
   events   Event[]
   teams    Team[]
@@ -124,7 +126,7 @@ model Event {
 
   // associations
   frosh   Frosh @relation(fields: [froshId], references: [id])
-  froshId Int // relation scalar field - which frosh the event is associated to
+  froshId Int
 
   // dates
   createdAt DateTime @default(now())
@@ -140,7 +142,7 @@ model Team {
 
   // associations
   frosh   Frosh @relation(fields: [froshId], references: [id])
-  froshId Int // relation scalar field - which frosh the team is associated to
+  froshId Int
 
   profiles Profile[]
 
@@ -164,16 +166,75 @@ model Profile {
 
   // associations
   university   University @relation(fields: [universityId], references: [id])
-  universityId Int // relation scalar field - which university the profile is associated to
+  universityId Int
 
   program   Program @relation(fields: [programId], references: [id])
-  programId Int // relation scalar field - which program the profile is associated to
+  programId Int
 
   frosh   Frosh? @relation(fields: [froshId], references: [id]) // optional because admin/organizers are not part of a frosh
-  froshId Int? // relation scalar field - which frosh the profile is associated to
+  froshId Int?
 
   team   Team? @relation(fields: [teamId], references: [id]) // optional because admin/organizers are not part of a team
-  teamId Int? // relation scalar field - which team the profile is associated to
+  teamId Int?
+
+  // dates
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model ResourceTag {
+  // id
+  id Int @id @default(autoincrement())
+
+  // attributes
+  name String
+  icon String
+
+  // associations
+  university   University @relation(fields: [universityId], references: [id])
+  universityId Int
+
+  resources Resource[]
+
+  // dates
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  // constraints
+  @@unique([name, universityId]) // tags in the same university cannot have the same name
+}
+
+model Resource {
+  // id
+  id Int @id @default(autoincrement())
+
+  // attributes
+  title       String
+  description String
+
+  // associations
+  resourceTag   ResourceTag @relation(fields: [resourceTagId], references: [id])
+  resourceTagId Int
+
+  // dates
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Offer {
+  // id
+  id Int @id @default(autoincrement())
+
+  // attributes
+  title       String
+  description String
+  provider    String
+  icon        String
+  colour      String
+
+  // associations
+  university   University @relation(fields: [universityId], references: [id])
+  universityId Int
 
   // dates
   createdAt DateTime @default(now())

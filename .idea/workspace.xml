@@ -4,9 +4,7 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="ff1ba3e5-c202-409d-87f0-f2570d6da013" name="Changes" comment="">
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-    </list>
+    <list default="true" id="ff1ba3e5-c202-409d-87f0-f2570d6da013" name="Changes" comment="" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -37,7 +35,7 @@
     <property name="WebServerToolWindowFactoryState" value="false" />
     <property name="dart.analysis.tool.window.visible" value="false" />
     <property name="javascript.nodejs.core.library.configured.version" value="16.17.0" />
-    <property name="javascript.nodejs.core.library.typings.version" value="16.11.65" />
+    <property name="javascript.nodejs.core.library.typings.version" value="16.11.68" />
     <property name="last_opened_file_path" value="$PROJECT_DIR$/src/pages/api" />
     <property name="node.js.detected.package.eslint" value="true" />
     <property name="node.js.detected.package.tslint" value="true" />
@@ -54,9 +52,9 @@
     <key name="CopyFile.RECENT_KEYS">
       <recent name="$PROJECT_DIR$/src/pages/api" />
       <recent name="$PROJECT_DIR$/src/sections/@dashboard" />
+      <recent name="$PROJECT_DIR$/prisma/events" />
+      <recent name="$PROJECT_DIR$/src/pages/_subdomains/[subdomain]/dashboard" />
       <recent name="$PROJECT_DIR$/src/pages/_subdomains/[subdomain]/dashboard/froshs" />
-      <recent name="$PROJECT_DIR$/src/sections/@dashboard/user" />
-      <recent name="$PROJECT_DIR$/src/sections/@dashboard/team" />
     </key>
     <key name="MoveFile.RECENT_KEYS">
       <recent name="$PROJECT_DIR$/src/pages/api/profile" />
@@ -72,7 +70,8 @@
       <updated>1664934026238</updated>
       <workItem from="1664934029380" duration="2024000" />
       <workItem from="1665026186034" duration="526000" />
-      <workItem from="1665538206239" duration="58179000" />
+      <workItem from="1665538206239" duration="58358000" />
+      <workItem from="1666135460909" duration="7731000" />
     </task>
     <servers />
   </component>

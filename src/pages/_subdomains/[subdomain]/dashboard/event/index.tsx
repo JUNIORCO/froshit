@@ -8,8 +8,6 @@ import {
   Container,
   Divider,
   FormControlLabel,
-  IconButton,
-  Stack,
   Switch,
   Tab,
   Table,
@@ -17,7 +15,6 @@ import {
   TableContainer,
   TablePagination,
   Tabs,
-  Tooltip,
 } from '@mui/material';
 import { PATH_DASHBOARD } from '../../../../../routes/paths';
 import useTabs from '../../../../../hooks/useTabs';
@@ -28,37 +25,35 @@ import Page from '../../../../../components/Page';
 import Iconify from '../../../../../components/Iconify';
 import Scrollbar from '../../../../../components/Scrollbar';
 import HeaderBreadcrumbs from '../../../../../components/HeaderBreadcrumbs';
-import { TableEmptyRows, TableHeadCustom, TableNoData, TableSelectedActions } from '../../../../../components/table';
-import { UserTableRow, UserTableToolbar } from '../../../../../sections/@dashboard/user/list';
+import { TableEmptyRows, TableHeadCustom, TableNoData } from '../../../../../components/table';
 import { GetServerSideProps } from 'next';
-import type { UsersForUserList } from '../../../../../../prisma/user/get';
-import { getUsersForUserList } from '../../../../../../prisma/user/get';
-import UserAnalytic from '../../../../../sections/@dashboard/user/UserAnalytic';
-import { useTheme } from '@mui/material/styles';
-import { Role } from '../../../../../../prisma/types';
+import { FullEvent, getFullEvents } from '../../../../../../prisma/events/get';
+import dayjs from 'dayjs';
+import { EventTableRow, EventTableToolbar } from '../../../../../sections/@dashboard/event/list';
+import isBetween from 'dayjs/plugin/isBetween';
 
-const TAB_OPTIONS = ['All', 'Paid', 'Unpaid', 'Unassigned Frosh', 'Unassigned Team'];
+dayjs.extend(isBetween);
+
+const TAB_OPTIONS = ['All', 'Current Events', 'Upcoming Events', 'Past Events'];
 
 const TABLE_HEAD = [
   { id: 'name', label: 'Name', align: 'left' },
-  { id: 'email', label: 'Email', align: 'left' },
-  { id: 'phoneNumber', label: 'Phone Number', align: 'left' },
-  { id: 'role', label: 'Role', align: 'left' },
-  { id: 'froshId', label: 'Frosh', align: 'left' },
-  { id: 'teamId', label: 'Team', align: 'left' },
-  { id: 'paid', label: 'Paid', align: 'left' },
+  { id: 'frosh', label: 'Frosh', align: 'left' },
+  { id: 'startDate', label: 'Start Date', align: 'left' },
+  { id: 'endDate', label: 'End Date', align: 'left' },
+  { id: 'location', label: 'Location', align: 'left' },
   { id: '' },
 ];
 
-UserList.getLayout = function getLayout(page: React.ReactElement) {
+EventList.getLayout = function getLayout(page: React.ReactElement) {
   return <Layout>{page}</Layout>;
 };
 
-interface UserListProps {
-  users: UsersForUserList[];
+type Props = {
+  events: FullEvent[];
 }
 
-export default function UserList({ users }: UserListProps) {
+export default function EventList({ events }: Props) {
   const {
     dense,
     page,
@@ -67,27 +62,31 @@ export default function UserList({ users }: UserListProps) {
     rowsPerPage,
     setPage,
     selected,
-    setSelected,
-    onSelectRow,
-    onSelectAllRows,
     onSort,
     onChangeDense,
     onChangePage,
     onChangeRowsPerPage,
   } = useTable();
 
-  const ROLE_OPTIONS = ['All', ...Object.values(Role)];
+  const uniqueFroshsFromEvents = events.reduce((accum, { frosh }) => {
+    if (!frosh || accum.includes(frosh.name)) {
+      return accum;
+    }
+    accum.push(frosh.name);
+    return accum;
+  }, [] as string[]);
 
-  const theme = useTheme();
+  const FROSH_OPTIONS: string[] = ['All', ...uniqueFroshsFromEvents];
+
   const { themeStretch } = useSettings();
 
   const { push } = useRouter();
 
-  const [tableData, setTableData] = useState<UsersForUserList[]>(users);
+  const [tableData, setTableData] = useState<FullEvent[]>(events);
 
   const [filterName, setFilterName] = useState<string>('');
 
-  const [filterRole, setFilterRole] = useState<string>('All');
+  const [filterFrosh, setFilterFrosh] = useState<string>('All');
 
   const { currentTab: filterTab, onChangeTab: onChangeFilterTab } = useTabs('All');
 
@@ -96,29 +95,23 @@ export default function UserList({ users }: UserListProps) {
     setPage(0);
   };
 
-  const handleFilterRole = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setFilterRole(event.target.value);
+  const handleFilterFrosh = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setFilterFrosh(event.target.value);
   };
 
   const handleViewRow = (id: number) => {
-    void push(PATH_DASHBOARD.user.view(String(id)));
-  };
-
-  const handleDeleteRows = (selected: number[]) => {
-    const deleteRows = tableData.filter((row) => !selected.includes(row.id));
-    setSelected([]);
-    setTableData(deleteRows);
+    void push(PATH_DASHBOARD.event.view(String(id)));
   };
 
   const handleEditRow = (id: number) => {
-    void push(PATH_DASHBOARD.user.edit(String(id)));
+    void push(PATH_DASHBOARD.event.edit(String(id)));
   };
 
   const dataFiltered = applySortFilter({
     tableData,
     comparator: getComparator(order, orderBy),
     filterName,
-    filterRole,
+    filterFrosh,
     filterTab,
   });
 
@@ -126,81 +119,27 @@ export default function UserList({ users }: UserListProps) {
 
   const isNotFound =
     (!dataFiltered.length && !!filterName) ||
-    (!dataFiltered.length && !!filterRole) ||
+    (!dataFiltered.length && !!filterFrosh) ||
     (!dataFiltered.length && !!filterTab);
 
-  const {
-    totalValuePaid,
-    totalValueUnpaid,
-    numberFrosheesPaid,
-    numberFrosheesUnpaid,
-    totalNumberFroshees,
-  } = users.reduce((accum, user) => {
-    if (user.role !== Role.Froshee) return accum;
-
-    if (user.paid) {
-      accum.numberFrosheesPaid++;
-      accum.totalValuePaid += user.paid;
-    } else {
-      accum.numberFrosheesUnpaid++;
-      accum.totalValueUnpaid += user.frosh?.ticketPrice || 0; // TODO this is a problem
-    }
-
-    accum.totalNumberFroshees++;
-    return accum;
-  }, {
-    totalValuePaid: 0,
-    totalValueUnpaid: 0,
-    numberFrosheesPaid: 0,
-    numberFrosheesUnpaid: 0,
-    totalNumberFroshees: 0,
-  });
-
   return (
-    <Page title='User List'>
+    <Page title='Event List'>
       <Container maxWidth={themeStretch ? false : 'lg'}>
         <HeaderBreadcrumbs
-          heading='User List'
+          heading='Event List'
           links={[
-            { name: 'Dashboard', href: PATH_DASHBOARD.general.app },
-            { name: 'User', href: PATH_DASHBOARD.user.root },
+            { name: 'Dashboard', href: PATH_DASHBOARD.root },
+            { name: 'Event', href: PATH_DASHBOARD.event.root },
             { name: 'List' },
           ]}
           action={
-            <NextLink href={PATH_DASHBOARD.user.new} passHref>
+            <NextLink href={PATH_DASHBOARD.event.new} passHref>
               <Button variant='contained' startIcon={<Iconify icon={'eva:plus-fill'} />}>
-                New User
+                New Event
               </Button>
             </NextLink>
           }
         />
-
-        <Card sx={{ mb: 5 }}>
-          <Scrollbar>
-            <Stack
-              direction='row'
-              divider={<Divider orientation='vertical' flexItem sx={{ borderStyle: 'dashed' }} />}
-              sx={{ py: 2 }}
-            >
-              <UserAnalytic
-                title='Paid'
-                total={numberFrosheesPaid}
-                percent={totalNumberFroshees ? (numberFrosheesPaid / totalNumberFroshees) * 100 : 100}
-                price={totalValuePaid}
-                icon='eva:checkmark-circle-2-fill'
-                color={theme.palette.success.main}
-              />
-              <UserAnalytic
-                title='Unpaid'
-                total={numberFrosheesUnpaid}
-                percent={totalNumberFroshees ? (numberFrosheesUnpaid / totalNumberFroshees) * 100 : 100}
-                price={totalValueUnpaid}
-                icon='eva:alert-circle-fill'
-                color={theme.palette.warning.main}
-              />
-            </Stack>
-          </Scrollbar>
-        </Card>
 
         <Card>
           <Tabs
@@ -218,12 +157,12 @@ export default function UserList({ users }: UserListProps) {
 
           <Divider />
 
-          <UserTableToolbar
+          <EventTableToolbar
             filterName={filterName}
-            filterRole={filterRole}
+            filterFrosh={filterFrosh}
             onFilterName={handleFilterName}
-            onFilterRole={handleFilterRole}
-            optionsRole={ROLE_OPTIONS}
+            onFilterFrosh={handleFilterFrosh}
+            optionsRole={FROSH_OPTIONS}
           />
 
           <Scrollbar>
@@ -239,12 +178,11 @@ export default function UserList({ users }: UserListProps) {
                 <TableBody>
                   {dataFiltered
                     .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
-                    .map((row) => (
-                      <UserTableRow
+                    .map((row: any) => (
+                      <EventTableRow
                         key={row.id}
                         row={row}
                         selected={selected.includes(row.id)}
-                        onSelectRow={() => onSelectRow(row.id)}
                         onViewRow={() => handleViewRow(row.id)}
                         onEditRow={() => handleEditRow(row.id)}
                       />
@@ -284,19 +222,19 @@ export default function UserList({ users }: UserListProps) {
   );
 }
 
-const applySortFilter = ({
+function applySortFilter({
                            tableData,
                            comparator,
                            filterName,
                            filterTab,
-                           filterRole,
+                           filterFrosh,
                          }: {
-  tableData: UsersForUserList[];
+  tableData: FullEvent[];
   comparator: (a: any, b: any) => number;
   filterName: string;
   filterTab: string;
-  filterRole: string;
-}): UsersForUserList[] => {
+  filterFrosh: string;
+}) {
   const stabilizedThis = tableData.map((el, index) => [el, index] as const);
 
   stabilizedThis.sort((a, b) => {
@@ -309,43 +247,37 @@ const applySortFilter = ({
 
   if (filterName) {
     tableData = tableData.filter(
-      (item) =>
-        item.email.toLowerCase().indexOf(filterName.toLowerCase()) !== -1,
+      ({ name }) => name.toLowerCase().indexOf(filterName.toLowerCase()) !== -1,
     );
   }
 
   if (filterTab !== 'All') {
     switch (filterTab) {
-      case 'Paid':
-        tableData = tableData.filter((user) => user.paid && user.role === Role.Froshee);
+      case 'Current Events':
+        tableData = tableData.filter(({ startDate, endDate }) => dayjs().isBetween(startDate, endDate));
         break;
-      case 'Unpaid':
-        tableData = tableData.filter((user) => !user.paid && user.role === Role.Froshee);
+      case 'Upcoming Events':
+        tableData = tableData.filter(({ startDate }) => dayjs(startDate).isAfter(dayjs()));
         break;
-      case 'Unassigned Frosh':
-        // @ts-ignore
-        tableData = tableData.filter((user) => [Role.Leader, Role.Froshee].includes(user.role) && user.frosh === null);
-        break;
-      case 'Unassigned Team':
-        // @ts-ignore
-        tableData = tableData.filter((user) => [Role.Leader, Role.Froshee].includes(user.role) && user.team === null);
+      case 'Past Events':
+        tableData = tableData.filter(({ endDate }) => dayjs(endDate).isBefore(dayjs()));
         break;
     }
   }
 
-  if (filterRole !== 'All') {
-    tableData = tableData.filter((item) => item.role === filterRole);
+  if (filterFrosh !== 'All') {
+    tableData = tableData.filter(({ frosh }) => frosh.name === filterFrosh || false);
   }
 
   return tableData;
-};
+}
 
 export const getServerSideProps: GetServerSideProps = async () => {
-  const users = await getUsersForUserList();
+  const events = await getFullEvents();
 
   return {
     props: {
-      users,
+      events,
     },
   };
 };
