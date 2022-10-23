@@ -1,17 +1,19 @@
-import AsyncStorage from '@react-native-async-storage/async-storage'
-import { createClient } from '@supabase/supabase-js'
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import { createClient } from '@supabase/supabase-js';
 
-const supabaseUrl = "https://mybvkrkmvnuzeqvzgbzg.supabase.co"
-const supabaseAnonKey = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im15YnZrcmttdm51emVxdnpnYnpnIiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTY2NDA1OTExNiwiZXhwIjoxOTc5NjM1MTE2fQ.4KMplC7mH59RjXzFmAtuFpoT081C9NpwCjVE4otWaKM"
+import { SUPABASE_PUBLIC_KEY, SUPABASE_URL } from '@env';
 
-export const supabase = createClient(supabaseUrl, supabaseAnonKey, {
+console.log('SUPABASE_URL : ', SUPABASE_URL)
+console.log('SUPABASE_PUBLIC_KEY : ', SUPABASE_PUBLIC_KEY)
+
+export const supabase = createClient(SUPABASE_URL, SUPABASE_PUBLIC_KEY, {
   auth: {
-    storage: AsyncStorage as any,
+    storage: AsyncStorage,
     autoRefreshToken: true,
     persistSession: true,
     detectSessionInUrl: false,
   },
   db: {
-    schema: 'public'
-  }
-})
+    schema: 'public',
+  },
+});

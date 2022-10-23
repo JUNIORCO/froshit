@@ -169,7 +169,7 @@ model Profile {
   universityId Int
 
   program   Program @relation(fields: [programId], references: [id])
-  programId Int
+  programId Int?  // optional because admin/organizers are not part of a program
 
   frosh   Frosh? @relation(fields: [froshId], references: [id]) // optional because admin/organizers are not part of a frosh
   froshId Int?
