@@ -18,7 +18,7 @@ export const getUsersForUserList = async (): Promise<UsersForUserList[]> =>
 /**
  * Gets a User by their id.
  */
-export type FullUser = Profile & { frosh: Frosh | null, team: Team | null, program: Program };
+export type FullUser = Profile & { frosh: Frosh | null, team: Team | null, program: Program | null };
 
 export const getFullUserById = async (id: number): Promise<FullUser> => prisma.profile.findUniqueOrThrow({
   where: {
