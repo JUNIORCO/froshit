@@ -5,6 +5,7 @@ import Auth from './components/Auth';
 import Account from './components/Account';
 import { Button, View } from 'react-native';
 import { Session } from '@supabase/supabase-js';
+import { SUPABASE_COLUMNS } from "./supabase/columns";
 
 export default function App() {
   const [session, setSession] = useState<Session | null>(null);
@@ -22,7 +23,7 @@ export default function App() {
 
   const fetchUsers = async () => {
     try {
-      const { data: users, count, error } = await supabase.from('Profile').select('*');
+      const { data: users, count, error } = await supabase.from(SUPABASE_COLUMNS.PROFILE).select('*');
       console.log('get-users : ', users, count, error);
       setUsers(users);
     } catch (error) {
