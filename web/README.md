@@ -4,7 +4,8 @@ This is the FROSHIT monolith repo. Contains the backend, frontend, and mobile ap
 
 ## Technologies Used
 
-- Next.js – Frontend framework
+- Next.js – Web framework
+- React Native - Mobile Framework
 - Supabase – Database
 - Prisma – ORM
 - Typescript – Programming Language
