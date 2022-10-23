@@ -24,7 +24,7 @@
     "lint:fix": "eslint --fix --ext .ts,.tsx ."
   },
   "prisma": {
-    "schema": "prisma/schema.prisma",
+    "schema": "web/prisma/schema.prisma",
     "seed": "ts-node --compiler-options {\"module\":\"CommonJS\"} prisma/seed.ts"
   },
   "dependencies": {
