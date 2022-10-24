@@ -1,0 +1,60 @@
+### root ###
+.DS_Store
+.idea
+
+
+
+### web ###
+# env
+/web/.env
+
+# dependencies
+/web/node_modules
+/web/.pnp
+/web/.pnp.js
+
+# testing
+/web/coverage
+
+# next.js
+/web/.next/
+/web/.swc/
+/web/out/
+
+# production
+/web/build
+
+# misc
+/web/.DS_Store
+/web/*.pem
+
+# debug
+/web/npm-debug.log*
+/web/yarn-debug.log*
+/web/yarn-error.log*
+
+# local env files
+/web/.env.local
+/web/.env.development.local
+/web/.env.test.local
+/web/.env.production.local
+
+# vercel
+/web/.vercel
+
+/web/_static
+
+
+
+### mobile ###
+/mobile/node_modules/
+/mobile/.expo/
+/mobile/dist/
+/mobile/npm-debug.*
+/mobile/*.jks
+/mobile/*.p8
+/mobile/*.p12
+/mobile/*.key
+/mobile/*.mobileprovision
+/mobile/*.orig.*
+/mobile/web-build/
