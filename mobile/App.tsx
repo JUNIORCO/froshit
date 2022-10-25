@@ -2,39 +2,39 @@ import 'react-native-url-polyfill/auto';
 import { useEffect, useState } from 'react';
 import { supabase } from './supabase/supabase';
 import Auth from './components/Auth';
-import { View } from 'react-native';
+import { View, Image } from 'react-native';
 import { Session } from '@supabase/supabase-js';
 import { NavigationContainer } from '@react-navigation/native';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import EventsScreen from "./screens/events";
-import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
+import { MaterialCommunityIcons } from '@expo/vector-icons';
 
 const Tab = createBottomTabNavigator();
 
 const TABS = {
   NOTIFICATIONS: {
     name: 'Notifications',
-    icon: 'bell',
+    icon: 'bell-outline',
     component: EventsScreen,
   },
   TEAM: {
     name: 'Team',
-    icon: 'bell',
+    icon: 'account-group-outline',
     component: EventsScreen,
   },
   EVENTS: {
     name: 'Events',
-    icon: 'bell',
+    icon: 'calendar-blank-outline',
     component: EventsScreen,
   },
   OFFERS: {
     name: 'Offers',
-    icon: 'bell',
+    icon: 'tag',
     component: EventsScreen,
   },
   RESOURCES: {
     name: 'Resources',
-    icon: 'bell',
+    icon: 'help-circle-outline',
     component: EventsScreen,
   },
 }
@@ -51,6 +51,19 @@ export default function App() {
       setSession(session);
     });
   }, []);
+
+  useEffect(() => {
+    // TODO only for development
+    if (!(session && session.user)) {
+      console.log('fetching data...')
+    }
+  }, [session]);
+
+  function Logo() {
+    return (
+      <MaterialCommunityIcons name='bell' color='black' size={32}/>
+    );
+  }
 
   // TODO only for development
   if (!(session && session.user)) {
@@ -69,6 +82,8 @@ export default function App() {
               tabBarIcon: ({ color, size }) => (
                 <MaterialCommunityIcons name={options.icon} color={color} size={size}/>
               ),
+              headerTitle: (props) => <Logo {...props} />,
+              headerRight: (props) => <MaterialCommunityIcons name='menu' color='black' size={32} style={{ marginRight: 16 }} {...props}/>,
             }}
             />
           ))}

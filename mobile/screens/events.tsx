@@ -1,7 +1,8 @@
-import { Button, View } from "react-native";
+import { Button, SafeAreaView } from "react-native";
 import { supabase } from "../supabase/supabase";
 import { SUPABASE_COLUMNS } from "../supabase/columns";
 import { useState } from "react";
+import Calendar from "../components/events/Calendar/Calendar";
 
 export default function EventsScreen() {
   const [users, setUsers] = useState<any>();
@@ -17,8 +18,9 @@ export default function EventsScreen() {
   };
 
   return (
-    <View>
+    <SafeAreaView>
+      <Calendar />
       <Button title='Fetch' onPress={fetchUsers}/>
-    </View>
+    </SafeAreaView>
   )
 }
