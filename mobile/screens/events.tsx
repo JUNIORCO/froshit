@@ -1,26 +1,44 @@
-import { Button, SafeAreaView } from "react-native";
-import { supabase } from "../supabase/supabase";
-import { SUPABASE_COLUMNS } from "../supabase/columns";
+import { SafeAreaView } from "react-native";
 import { useState } from "react";
 import Calendar from "../components/events/Calendar/Calendar";
+import EventList from "../components/events/EventList/EventList";
+import type { Dayjs } from 'dayjs';
+import dayjs from "dayjs";
+import isToday from 'dayjs/plugin/isToday';
+import { getDatesBetween } from "../utils/date";
+
+dayjs.extend(isToday);
 
 export default function EventsScreen() {
-  const [users, setUsers] = useState<any>();
+  // calendar stuff
+  const startDate = dayjs();
+  const endDate = dayjs().add(10, 'days');
 
-  const fetchUsers = async () => {
-    try {
-      const { data: users, count, error } = await supabase.from(SUPABASE_COLUMNS.PROFILE).select('*');
-      console.log('get-users : ', users, count, error);
-      setUsers(users);
-    } catch (error) {
-      console.error(error);
+  const datesBetween = getDatesBetween({ startDate, endDate })
+
+  const eventDates = datesBetween.map((dayjsDate, id) => {
+    const month = dayjsDate.format('MMM');
+    const day = dayjsDate.format('D');
+    const isToday = dayjsDate.isToday();
+
+    return {
+      id,
+      month,
+      day,
+      isToday,
+      dayjsDate
     }
-  };
+  });
+
+  const [selectedDate, setSelectedDate] = useState<Dayjs>(eventDates[0].dayjsDate);
+
+  // event list stuff
+  const events = [];
 
   return (
     <SafeAreaView>
-      <Calendar />
-      <Button title='Fetch' onPress={fetchUsers}/>
+      <Calendar eventDates={eventDates} selectedDate={selectedDate} setSelectedDate={setSelectedDate}/>
+      <EventList events={events}/>
     </SafeAreaView>
   )
 }

@@ -1,50 +1,35 @@
 import React from 'react';
-import { FlatList, Pressable, SafeAreaView, Text, View } from 'react-native';
-import dayjs from "dayjs";
-import { getDatesBetween } from "../../../utils/date";
+import { FlatList, Pressable, Text, View } from 'react-native';
 import { styles } from "./Calendar.styles";
-import isToday from 'dayjs/plugin/isToday';
+import ItemSeparatorComponent from "../../common/ItemSeparatorComponent";
 
-dayjs.extend(isToday)
+export default function Calendar({ eventDates, selectedDate, setSelectedDate }) {
+  const handleCalendarPress = (dayjsDate) => setSelectedDate(dayjsDate);
 
-const startDate = dayjs();
-const endDate = dayjs().add(10, 'days');
+  const isDateSelected = (dayjsDate) => dayjsDate.isSame(selectedDate, 'day');
 
-const datesBetween = getDatesBetween({ startDate, endDate })
+  const renderCalendarItem = ({ item }) => {
+    const { month, day, dayjsDate } = item;
 
-const eventDates = datesBetween.map((dayjsDate, id) => {
-  const month = dayjsDate.format('MMM');
-  const day = dayjsDate.format('D');
-  const isToday = dayjsDate.isToday();
-
-  return {
-    id,
-    month,
-    day,
-    isToday,
-  }
-});
-
-console.log(eventDates)
-
-export default function Calendar() {
-  const handleCalendarPress = ({ id }) => {
-    console.log(id)
-  }
-
-  const renderCalendarItem = ({ item }) => (
-    <Pressable onPress={() => handleCalendarPress({ id: item.id })}>
-      <View style={styles.item}>
-        <Text style={styles.title}>{item.month}</Text>
-        <Text style={styles.title}>{item.day}</Text>
-        <Text style={styles.title}>{item.isToday? 'Today!' : 'Future'}</Text>
-      </View>
-    </Pressable>
-  );
+    return (
+      <Pressable onPress={() => handleCalendarPress(dayjsDate)}>
+        <View style={styles.item(isDateSelected(dayjsDate))}>
+          <Text style={styles.title}>{month}</Text>
+          <Text style={styles.title}>{day}</Text>
+        </View>
+      </Pressable>
+    )
+  };
 
   return (
-    <SafeAreaView styles={styles.container}>
-      <FlatList data={eventDates} renderItem={renderCalendarItem} keyExtractor={item => item.id} horizontal/>
-    </SafeAreaView>
+    <View style={styles.container}>
+      <FlatList
+        horizontal
+        data={eventDates}
+        renderItem={renderCalendarItem}
+        keyExtractor={item => item.id}
+        ItemSeparatorComponent={ItemSeparatorComponent}
+      />
+    </View>
   )
 }

@@ -2,42 +2,19 @@ import 'react-native-url-polyfill/auto';
 import { useEffect, useState } from 'react';
 import { supabase } from './supabase/supabase';
 import Auth from './components/Auth';
-import { View, Image } from 'react-native';
+import { View } from 'react-native';
 import { Session } from '@supabase/supabase-js';
 import { NavigationContainer } from '@react-navigation/native';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
-import EventsScreen from "./screens/events";
 import { MaterialCommunityIcons } from '@expo/vector-icons';
+import dayjs from "dayjs";
+import isToday from 'dayjs/plugin/isToday';
+import BOTTOM_TABS from "./layout/bottomTabs";
+import { SvgUri } from "react-native-svg";
+
+dayjs.extend(isToday);
 
 const Tab = createBottomTabNavigator();
-
-const TABS = {
-  NOTIFICATIONS: {
-    name: 'Notifications',
-    icon: 'bell-outline',
-    component: EventsScreen,
-  },
-  TEAM: {
-    name: 'Team',
-    icon: 'account-group-outline',
-    component: EventsScreen,
-  },
-  EVENTS: {
-    name: 'Events',
-    icon: 'calendar-blank-outline',
-    component: EventsScreen,
-  },
-  OFFERS: {
-    name: 'Offers',
-    icon: 'tag',
-    component: EventsScreen,
-  },
-  RESOURCES: {
-    name: 'Resources',
-    icon: 'help-circle-outline',
-    component: EventsScreen,
-  },
-}
 
 export default function App() {
   const [session, setSession] = useState<Session | null>(null);
@@ -61,7 +38,11 @@ export default function App() {
 
   function Logo() {
     return (
-      <MaterialCommunityIcons name='bell' color='black' size={32}/>
+      <SvgUri
+        width="64"
+        height="64"
+        uri="https://firebasestorage.googleapis.com/v0/b/froshit-prod.appspot.com/o/logos%2Fhigh-res-transparent.svg?alt=media&token=1244df09-d721-41b3-86bb-e4a0f5929b6d"
+      />
     );
   }
 
@@ -74,7 +55,7 @@ export default function App() {
           screenOptions={{
             tabBarActiveTintColor: '#e91e63',
           }}>
-          {Object.entries(TABS).map(([tabName, options]) => (
+          {Object.entries(BOTTOM_TABS).map(([tabName, options]) => (
             <Tab.Screen
               key={tabName}
               name={options.name}
@@ -83,7 +64,8 @@ export default function App() {
                 <MaterialCommunityIcons name={options.icon} color={color} size={size}/>
               ),
               headerTitle: (props) => <Logo {...props} />,
-              headerRight: (props) => <MaterialCommunityIcons name='menu' color='black' size={32} style={{ marginRight: 16 }} {...props}/>,
+              headerRight: (props) => <MaterialCommunityIcons name='menu' color='black' size={32}
+                                                              style={{ marginRight: 16 }} {...props}/>,
             }}
             />
           ))}

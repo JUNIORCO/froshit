@@ -2,19 +2,19 @@ import { StatusBar, StyleSheet } from "react-native";
 
 export const styles = StyleSheet.create({
   container: {
-    flex: 1,
-    marginTop: StatusBar.currentHeight || 0,
+    marginTop: StatusBar.currentHeight || 8,
+    marginHorizontal: 16,
+    marginBottom: 8,
   },
-  item: {
-    borderRadius: 12,
-    backgroundColor: '#f9c2ff',
-    paddingHorizontal: 24,
-    paddingVertical: 48,
-    marginVertical: 32,
-    marginHorizontal: 12,
+  item: (selected: boolean) => ({
+    borderRadius: 16,
+    backgroundColor: selected ? '#e91e63' : 'grey',
+    paddingHorizontal: 16,
+    paddingVertical: 32,
+    marginVertical: 24,
     alignItems: 'center',
-  },
+  }),
   title: {
-    fontSize: 20,
+    fontSize: 16,
   },
 });
