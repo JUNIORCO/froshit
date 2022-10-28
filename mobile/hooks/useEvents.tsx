@@ -14,7 +14,7 @@ enum AsyncStorageKeys {
 
 export interface UseEventContext {
   events: any;
-  eventStatus: FetchEventsStatus;
+  eventStatus: FetchEventsStatus | null;
 }
 
 /**
@@ -35,7 +35,7 @@ export function useEvents(): UseEventContext {
 
   const [eventsCtx, setEventsCtx] = useState<UseEventContext>({
     events: null,
-    eventStatus: FetchEventsStatus.Loading,
+    eventStatus: null,
   });
 
   // useEffect(() => {
@@ -52,6 +52,19 @@ export function useEvents(): UseEventContext {
       } = await supabase.from(TABLES.Event)
         .select('*')
         .order('startDate', { ascending: true });
+
+      await supabase
+        .channel(`public:${TABLES.Event}`)
+        .on('postgres_changes', { event: '*', schema: 'public', table: TABLES.Event }, payload => {
+          const newEvent = payload.new;
+          setEventsCtx(prev => {
+            const updatedEvents = prev.events.map(event =>
+              event.id === newEvent.id ? newEvent : event
+            );
+            return { ...prev, events: updatedEvents };
+          });
+        })
+        .subscribe();
 
       if (error || !events) {
         setEventsCtx(prev => ({

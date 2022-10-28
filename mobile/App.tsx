@@ -6,15 +6,11 @@ import { Session } from '@supabase/supabase-js';
 import { NavigationContainer } from '@react-navigation/native';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
-import dayjs from "dayjs";
-import isToday from 'dayjs/plugin/isToday';
 import BOTTOM_TABS from "./layout/bottomTabs";
 import { FetchEventsStatus, useEvents } from "./hooks/useEvents";
 import AppLoader from "./AppLoader";
 import Logo from "./components/common/Logo";
 import SplashImage from "./components/common/SplashImage";
-
-dayjs.extend(isToday);
 
 export default function App() {
   const Tab = createBottomTabNavigator();
@@ -33,6 +29,7 @@ export default function App() {
   ];
 
   useEffect(() => {
+    console.log('App mounted...')
     supabase.auth.getSession().then(({ data: { session } }) => {
       setSession(session);
     });

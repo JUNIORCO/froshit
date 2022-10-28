@@ -2,7 +2,7 @@ import * as React from 'react';
 import { Avatar, Card } from 'react-native-paper';
 import { styles } from "./EventCard.styles";
 import { Text, View } from "react-native";
-import dayjs from "dayjs";
+import dayjs from "../../../utils/dayjs";
 
 const LeftContent = props => <Avatar.Icon {...props} icon="camera"/>
 

@@ -1,20 +1,19 @@
-import type { Dayjs } from "dayjs";
-import dayjs from "dayjs";
+import dayjs from "./dayjs";
 
 type GetDatesBetweenType = {
   startDate: Date;
   endDate: Date;
 }
 
-export const getDatesBetween = ({ startDate, endDate }: GetDatesBetweenType): Dayjs[] => {
-  const dayjsStartDate = dayjs(startDate);
-  const dayjsEndDate = dayjs(endDate);
+export const getDatesBetween = ({ startDate, endDate }: GetDatesBetweenType): Date[] => {
+  const dayjsStartDate = dayjs.utc(startDate);
+  const dayjsEndDate = dayjs.utc(endDate);
 
-  const dateArray: Dayjs[] = [];
+  const dateArray: Date[] = [];
   let currentDate = dayjsStartDate;
 
-  while (currentDate <= dayjsEndDate) {
-    dateArray.push(currentDate);
+  while (currentDate <= dayjsEndDate || currentDate.isSame(dayjsEndDate, 'day')) {
+    dateArray.push(currentDate.toDate());
     currentDate = currentDate.add(1, 'day');
   }
 

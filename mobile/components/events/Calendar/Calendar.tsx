@@ -4,7 +4,7 @@ import { styles } from "./Calendar.styles";
 import HorizontalItemSeparatorComponent from "../../common/HorizontalItemSeparatorComponent";
 import { EventsContext } from "../../../context/EventsContext";
 import { getDatesBetween } from "../../../utils/date";
-import dayjs from "dayjs";
+import dayjs from "../../../utils/dayjs";
 
 export default function Calendar() {
   const { selectedDate, setSelectedDate, startDate, endDate } = useContext(EventsContext);
@@ -12,7 +12,10 @@ export default function Calendar() {
   const froshDates = getDatesBetween({ startDate, endDate });
   const calendarData = froshDates.map((date, index) => ({ date, id: index }));
 
-  const handleCalendarPress = (date) => setSelectedDate(date);
+  const handleCalendarPress = (date) => {
+    console.log(date, selectedDate)
+    setSelectedDate(date)
+  };
 
   const isDateSelected = (dayjsDate) => dayjsDate.isSame(selectedDate, 'day');
 

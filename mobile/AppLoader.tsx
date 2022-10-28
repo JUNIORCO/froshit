@@ -1,6 +1,6 @@
 // courtesy of https://javascript.plainenglish.io/how-to-handle-and-design-the-startup-of-a-react-application-da779f3727e5
 import { every } from "lodash";
-import React, { useEffect, useState } from "react";
+import React, { FC, Fragment, memo, ReactElement, useEffect, useState } from "react";
 
 interface LoadingProcess {
   name: string;
@@ -27,16 +27,16 @@ interface Props {
   /**
    * Can be a splashscreen or whatever
    *
-   * @type {React.ReactElement}
+   * @type {ReactElement}
    * @memberof Props
    */
-  loadingComponent: React.ReactElement;
+  loadingComponent: ReactElement;
 }
 
 /**
  * A component used to display a loading while some processes are loading.
  */
-const AppLoader: React.FC<Props> = React.memo(props => {
+const AppLoader: FC<Props> = memo(props => {
   const [minimumDurationPassed, setMinimumDurationPassed] = useState<boolean>((props.minimumLoadingTime || 0) <= 0);
 
   // Handle potential minimum duration
@@ -47,9 +47,9 @@ const AppLoader: React.FC<Props> = React.memo(props => {
   }, []);
 
   return (
-    <React.Fragment>
+    <Fragment>
       {every(props.mandatoryProcesses, "isReady") && minimumDurationPassed ? props.children : props.loadingComponent}
-    </React.Fragment>
+    </Fragment>
   );
 });
 

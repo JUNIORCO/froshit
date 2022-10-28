@@ -1,11 +1,7 @@
 import Calendar from "../components/events/Calendar/Calendar";
 import EventList from "../components/events/EventList/EventList";
-import dayjs from "dayjs";
-import isToday from 'dayjs/plugin/isToday';
 import { SafeAreaView, StyleSheet } from "react-native";
 import EventsProvider from "../context/EventsContext";
-
-dayjs.extend(isToday);
 
 const styles = StyleSheet.create({
   container: {
