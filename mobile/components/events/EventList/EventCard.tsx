@@ -1,11 +1,31 @@
-import React from 'react';
-import { Text, View } from 'react-native';
-import { styles } from "./EventList.styles";
+import * as React from 'react';
+import { Avatar, Card } from 'react-native-paper';
+import { styles } from "./EventCard.styles";
+import { Text, View } from "react-native";
+import dayjs from "dayjs";
 
-export default function EventCard() {
+const LeftContent = props => <Avatar.Icon {...props} icon="camera"/>
+
+const RightContent = ({ startDate, endDate }) => (
+  <View style={{ marginRight: 12 }}>
+    <Text style={{ fontSize: 12, fontWeight: '200' }}>{dayjs(startDate).format('h:mma')}</Text>
+    <Text style={{ fontSize: 12, fontWeight: '200', alignSelf: 'center' }}>–</Text>
+    <Text style={{ fontSize: 12, fontWeight: '200' }}>{dayjs(endDate).format('h:mma')}</Text>
+  </View>
+);
+
+export default function EventCard({ id, name, location, startDate, endDate, description, handleCardClick}) {
   return (
-    <View style={styles.container}>
-      <Text style={styles.title}>Events</Text>
-    </View>
-  )
+    <Card style={styles.container} onPress={handleCardClick}>
+      <Card.Cover source={{ uri: 'https://picsum.photos/700' }}/>
+      <Card.Title
+        title={name}
+        subtitle={`${description.slice(0, 30)}...\n${location}`}
+        subtitleNumberOfLines={2}
+        left={LeftContent}
+        right={() => <RightContent startDate={startDate} endDate={endDate}/>}
+        style={{ padding: 16 }}
+      />
+    </Card>
+  );
 }

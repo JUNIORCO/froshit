@@ -1,21 +1,30 @@
-import React from 'react';
+import React, { useContext, useState } from 'react';
 import { FlatList, Text, View } from 'react-native';
 import { styles } from "./EventList.styles";
-import ItemSeparatorComponent from "../../common/ItemSeparatorComponent";
+import EventCard from "./EventCard";
+import VerticalItemSeparatorComponent from "../../common/VerticalItemSeparatorComponent";
+import { EventsContext } from "../../../context/EventsContext";
 
-export default function EventList({ events }) {
+export default function EventList() {
+  const { filteredEvents } = useContext(EventsContext);
+
+  const handleCardClick = (id) => {
+    console.log('clicked on card, ', id)
+  }
+
   const renderEventCard = ({ item }) => {
-
+    return <EventCard {...item} handleCardClick={() => handleCardClick(item.id)} />;
   }
 
   return (
     <View style={styles.container}>
       <Text style={styles.title}>Events</Text>
       <FlatList
-        data={events}
+        data={filteredEvents}
+        showsVerticalScrollIndicator={false}
         renderItem={renderEventCard}
         keyExtractor={item => item.id}
-        ItemSeparatorComponent={ItemSeparatorComponent}
+        ItemSeparatorComponent={VerticalItemSeparatorComponent}
       />
     </View>
   )

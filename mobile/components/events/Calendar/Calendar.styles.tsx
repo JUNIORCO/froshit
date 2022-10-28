@@ -2,16 +2,13 @@ import { StatusBar, StyleSheet } from "react-native";
 
 export const styles = StyleSheet.create({
   container: {
-    marginTop: StatusBar.currentHeight || 8,
-    marginHorizontal: 16,
-    marginBottom: 8,
+    marginBottom: 16,
   },
   item: (selected: boolean) => ({
-    borderRadius: 16,
+    borderRadius: 8,
     backgroundColor: selected ? '#e91e63' : 'grey',
-    paddingHorizontal: 16,
+    paddingHorizontal: 18,
     paddingVertical: 32,
-    marginVertical: 24,
     alignItems: 'center',
   }),
   title: {
