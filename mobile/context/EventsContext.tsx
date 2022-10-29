@@ -18,17 +18,14 @@ export default function EventsProvider({ children }) {
     if (selectedDate) {
       setFilteredEvents(events.filter(({ startDate }) => dayjs(startDate).isSame(selectedDate, 'day')))
     }
-  }, [selectedDate]);
+  }, [events, selectedDate]);
 
   useEffect(() => {
+    console.log('events useffect fired ', events && events.length)
     if (events && events.length) {
       setStartDate(events[0].startDate);
       setEndDate(events[events.length - 1].startDate);
       setSelectedDate(events[0].startDate); // TODO make today
-
-      if (selectedDate) {
-        setFilteredEvents(events.filter(({ startDate }) => dayjs(startDate).isSame(selectedDate, 'day')))
-      }
     }
   }, [events]);
 

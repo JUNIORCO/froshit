@@ -55,12 +55,12 @@ export function useEvents(): UseEventContext {
 
       await supabase
         .channel(`public:${TABLES.Event}`)
-        .on('postgres_changes', { event: '*', schema: 'public', table: TABLES.Event }, payload => {
+        .on('postgres_changes', { event: '*', schema: 'public', table: TABLES.Event }, (payload) => {
           const newEvent = payload.new;
-          setEventsCtx(prev => {
-            const updatedEvents = prev.events.map(event =>
-              event.id === newEvent.id ? newEvent : event
-            );
+          console.log('realtime fired for event! ', newEvent);
+          setEventsCtx((prev) => {
+            const updatedEvents = prev.events.map((event) => event.id === newEvent.id ? newEvent : event);
+            console.log('updatedEvents : ', updatedEvents)
             return { ...prev, events: updatedEvents };
           });
         })
