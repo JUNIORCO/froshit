@@ -1,3 +1,4 @@
+import 'react-native-gesture-handler';
 import 'react-native-url-polyfill/auto';
 import { useEffect, useState } from 'react';
 import { supabase } from './supabase/supabase';
@@ -62,8 +63,9 @@ export default function App() {
                   <MaterialCommunityIcons name={options.icon} color={color} size={size}/>
                 ),
                 headerTitle: (props) => <Logo {...props} />,
-                headerRight: (props) => <MaterialCommunityIcons name='menu' color='black' size={32}
-                                                                style={{ marginRight: 16 }} {...props}/>,
+                // https://reactnavigation.org/docs/drawer-navigator
+                headerLeft: (props) => <MaterialCommunityIcons name='menu' color='black' size={32}
+                                                                style={{ marginLeft: 16 }} {...props}/>,
               }}
               />
             ))}

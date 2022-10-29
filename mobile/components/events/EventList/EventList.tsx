@@ -4,17 +4,15 @@ import { styles } from "./EventList.styles";
 import EventCard from "./EventCard";
 import VerticalItemSeparatorComponent from "../../common/VerticalItemSeparatorComponent";
 import { EventsContext } from "../../../context/EventsContext";
+import { useNavigation } from '@react-navigation/native';
 
 export default function EventList() {
+  const navigation = useNavigation();
   const { filteredEvents } = useContext(EventsContext);
 
-  const handleCardClick = (id) => {
-    console.log('clicked on card, ', id)
-  }
+  const handleCardClick = (event) => navigation.navigate('Event Details', { ...event });
 
-  const renderEventCard = ({ item }) => {
-    return <EventCard {...item} handleCardClick={() => handleCardClick(item.id)} />;
-  }
+  const renderEventCard = ({ item: event }) => <EventCard {...event} handleCardClick={() => handleCardClick(event)}/>;
 
   return (
     <View style={styles.container}>

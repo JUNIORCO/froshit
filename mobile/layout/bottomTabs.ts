@@ -2,7 +2,7 @@ import ResourcesScreen from "../screens/resources";
 import NotificationsScreen from "../screens/notifications";
 import TeamScreen from "../screens/team";
 import OffersScreen from "../screens/offers";
-import EventsScreen from "../screens/events";
+import EventsScreen from "../screens/events/EventsScreen";
 
 const BOTTOM_TABS = {
   NOTIFICATIONS: {

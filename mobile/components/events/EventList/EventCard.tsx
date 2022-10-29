@@ -14,7 +14,7 @@ const RightContent = ({ startDate, endDate }) => (
   </View>
 );
 
-export default function EventCard({ id, name, location, startDate, endDate, description, handleCardClick}) {
+export default function EventCard({ name, location, startDate, endDate, description, handleCardClick}) {
   return (
     <Card style={styles.container} onPress={handleCardClick}>
       <Card.Cover source={{ uri: 'https://picsum.photos/700' }}/>
