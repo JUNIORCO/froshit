@@ -19,13 +19,13 @@ export default function App() {
   const [session, setSession] = useState<Session | null>(null);
 
   // processes to load before loading app
-  const useEventsContext = useEvents();
+  const useEventsContext = useEvents({ forceFetch: true });
 
   // As long as not all screens are ready, display splashscreen
   const loadingProcesses = [
     {
       name: "fetch_user_events",
-      isReady: useEventsContext.eventStatus !== FetchEventsStatus.Loading
+      isReady: useEventsContext.eventsCtx.eventStatus !== FetchEventsStatus.Loading
     },
   ];
 
@@ -42,11 +42,12 @@ export default function App() {
 
   // TODO only for development
   if (!(session && session.user)) {
+    console.log('returning app loader...');
     return (
       <AppLoader
         mandatoryProcesses={loadingProcesses}
         loadingComponent={<SplashImage/>}
-        minimumLoadingTime={__DEV__ ? 0 : 2000}
+        minimumLoadingTime={__DEV__ ? 5000 : 2000}
       >
         <NavigationContainer>
           <Tab.Navigator
@@ -65,7 +66,7 @@ export default function App() {
                 headerTitle: (props) => <Logo {...props} />,
                 // https://reactnavigation.org/docs/drawer-navigator
                 headerLeft: (props) => <MaterialCommunityIcons name='menu' color='black' size={32}
-                                                                style={{ marginLeft: 16 }} {...props}/>,
+                                                               style={{ marginLeft: 16 }} {...props}/>,
               }}
               />
             ))}

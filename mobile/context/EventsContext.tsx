@@ -7,12 +7,16 @@ export const EventsContext = createContext({
 });
 
 export default function EventsProvider({ children }) {
-  const { events } = useEvents();
+  const { eventsCtx: { events } } = useEvents({ forceFetch: false }); // TODO this is a bug
   const [filteredEvents, setFilteredEvents] = useState();
 
   const [selectedDate, setSelectedDate] = useState<Date>();
   const [startDate, setStartDate] = useState<Date>();
   const [endDate, setEndDate] = useState<Date>();
+
+  useEffect(() => {
+    console.log('!!!! events context updated !!!!')
+  }, []);
 
   useEffect(() => {
     if (selectedDate) {

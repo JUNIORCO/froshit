@@ -1,6 +1,8 @@
 import { useEffect, useState } from "react";
 import { supabase } from "../supabase/supabase";
 import { TABLES } from "../supabase/columns";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import dayjs from "dayjs";
 
 export enum FetchEventsStatus {
   Loading = "LOADING",
@@ -9,7 +11,7 @@ export enum FetchEventsStatus {
 }
 
 enum AsyncStorageKeys {
-  UserFavoriteCountry = "UserFavoriteCountry",
+  Events = "Events",
 }
 
 export interface UseEventContext {
@@ -23,66 +25,80 @@ export interface UseEventContext {
  * @export
  * @returns {UseEventContext}
  */
-export function useEvents(): UseEventContext {
-  // const setEvents = useCallback(async (params) => {
-  //   console.log('call back running with params ', params)
-  //   // await AsyncStorage.setItem(AsyncStorageKeys.UserFavoriteCountry, countryCode);
-  //   setEventsCtx(prev => ({
-  //     ...prev,
-  //     eventStatus: FetchEventsStatus.Fetched,
-  //   }));
-  // }, []);
+export function useEvents({ forceFetch }): UseEventContext {
+  const cacheEvents = async () => {
+    console.log('cacheEvents started... ')
+
+    const cachedEvents = { events: eventsCtx.events, cachedAt: new Date() }
+
+    await AsyncStorage.setItem(AsyncStorageKeys.Events, JSON.stringify(cachedEvents));
+  };
 
   const [eventsCtx, setEventsCtx] = useState<UseEventContext>({
     events: null,
     eventStatus: null,
   });
 
-  // useEffect(() => {
-  //   if (eventsCtx.eventStatus === FetchEventsStatus.Fetched && eventsCtx.events) {
-  //     setEvents();
-  //   }
-  // }, [eventsCtx.eventStatus]);
+  async function fetchEvents() {
+    console.log('=================================================');
+    console.log('fetching events...', forceFetch);
+    setEventsCtx(prev => ({
+      ...prev,
+      eventStatus: FetchEventsStatus.Loading,
+    }));
 
-  useEffect(() => {
-    async function fetchEvents() {
-      const {
-        data: events,
-        error
-      } = await supabase.from(TABLES.Event)
-        .select('*')
-        .order('startDate', { ascending: true });
+    if (!forceFetch) {
+      const cachedItem = await AsyncStorage.getItem(AsyncStorageKeys.Events);
+      if (cachedItem) {
+        const { events: cachedEvents, cachedAt } = JSON.parse(cachedItem);
+        console.log('found ', cachedEvents.length, cachedAt, ' in local storage')
 
-      await supabase
-        .channel(`public:${TABLES.Event}`)
-        .on('postgres_changes', { event: '*', schema: 'public', table: TABLES.Event }, (payload) => {
-          const newEvent = payload.new;
-          console.log('realtime fired for event! ', newEvent);
-          setEventsCtx((prev) => {
-            const updatedEvents = prev.events.map((event) => event.id === newEvent.id ? newEvent : event);
-            console.log('updatedEvents : ', updatedEvents)
-            return { ...prev, events: updatedEvents };
-          });
-        })
-        .subscribe();
-
-      if (error || !events) {
-        setEventsCtx(prev => ({
-          ...prev,
-          eventStatus: FetchEventsStatus.Errored,
-        }));
-        return;
+        if (!dayjs(cachedAt).isBefore(dayjs(), 'minutes')) {
+          console.log('not old, can use cache');
+          setEventsCtx(prev => ({
+            ...prev,
+            eventStatus: FetchEventsStatus.Fetched,
+            events: cachedEvents,
+          }));
+          return;
+        }
+        console.log('old cache, refetching');
       }
-
-      setEventsCtx(prev => ({
-        ...prev,
-        eventStatus: FetchEventsStatus.Fetched,
-        events,
-      }));
     }
 
-    fetchEvents();
+    const {
+      data: events,
+      error
+    } = await supabase.from(TABLES.Event)
+      .select('*')
+      .order('startDate', { ascending: true });
+
+    if (error || !events) {
+      setEventsCtx(prev => ({
+        ...prev,
+        eventStatus: FetchEventsStatus.Errored,
+      }));
+      return;
+    }
+
+    setEventsCtx(prev => ({
+      ...prev,
+      eventStatus: FetchEventsStatus.Fetched,
+      events,
+    }));
+  }
+
+  useEffect(() => {
+    console.log('useEvents hook mounted...');
+    void fetchEvents();
   }, []);
 
-  return eventsCtx;
+  useEffect(() => {
+    console.log('eventCtx.events got updated...');
+    if (eventsCtx.events?.length) {
+      void cacheEvents();
+    }
+  }, [eventsCtx.events]);
+
+  return { eventsCtx, fetchEvents };
 }
