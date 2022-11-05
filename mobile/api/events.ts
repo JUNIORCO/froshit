@@ -1,17 +1,14 @@
 import { supabase } from "../supabase/supabase";
-import { TABLES } from "../supabase/columns";
+import { Tables } from "../supabase/columns";
 
-export const getEvents = async (callback) => {
-  try {
-    const { data: users, error } = await supabase.from(TABLES.Event).select('*');
+export const fetchEvents = async (): Promise<any> => {
+  console.log('api -> Fetching events...')
+  const { data: events, error } = await supabase.from(Tables.EVENT).select('*');
 
-    if (error) {
-      throw error;
-    }
-
-    callback(users);
-  } catch (error) {
-    console.error(`Error in events.getEvents, ${error.message}`);
+  if (error) {
+    console.error(`fetchEvents -> ${error.message}`);
     throw error;
   }
+
+  return events;
 }

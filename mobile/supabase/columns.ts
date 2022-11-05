@@ -1,8 +1,8 @@
-export const TABLES = {
+export const Tables = {
+  EVENT: 'Event',
   University: 'University',
   Program: 'Program',
   Frosh: 'Frosh',
-  Event: 'Event',
   Team: 'Team',
   Profile: 'Profile',
   ResourceTag: 'ResourceTag',

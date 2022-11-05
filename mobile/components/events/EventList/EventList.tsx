@@ -5,17 +5,18 @@ import EventCard from "./EventCard";
 import VerticalItemSeparatorComponent from "../../common/VerticalItemSeparatorComponent";
 import { EventsContext } from "../../../context/EventsContext";
 import { useNavigation } from '@react-navigation/native';
-import { FetchEventsStatus, useEvents } from "../../../hooks/useEvents";
+import { useRefetchByUser } from "../../../hooks/useRefetchByUser";
 
 export default function EventList() {
   const navigation = useNavigation();
-  const { eventsCtx, fetchEvents } = useEvents({ forceFetch: false });
-  const { filteredEvents } = useContext(EventsContext);
 
-  const handleCardClick = (event) => navigation.navigate('Event Details', { ...event });
+  const { filteredEvents, refetchEvents } = useContext(EventsContext);
+  const { isRefetchingByUser, refetchByUser } = useRefetchByUser(refetchEvents);
+
+  const handleCardClick = (event) => navigation.navigate('Event Details' as any, { ...event });
 
   const renderEventCard = ({ item: event }) => <EventCard {...event} handleCardClick={() => handleCardClick(event)}/>;
-  console.log('eventsCtx.eventStatus : ', eventsCtx.eventStatus)
+
   return (
     <View style={styles.container}>
       <Text style={styles.title}>Events</Text>
@@ -26,7 +27,10 @@ export default function EventList() {
         keyExtractor={item => item.id}
         ItemSeparatorComponent={VerticalItemSeparatorComponent}
         refreshControl={
-          <RefreshControl refreshing={eventsCtx.eventStatus === FetchEventsStatus.Loading} onRefresh={fetchEvents} />
+          <RefreshControl
+            refreshing={isRefetchingByUser}
+            onRefresh={refetchByUser}
+          />
         }
       />
     </View>

@@ -1,13 +1,24 @@
 import { createContext, useEffect, useState } from "react";
-import { useEvents } from "../hooks/useEvents";
 import dayjs from "../utils/dayjs";
+import { useQuery } from "@tanstack/react-query";
+import QueryKeys from "../hooks/query/QueryKeys";
+import { fetchEvents } from "../api/events";
 
 export const EventsContext = createContext({
   selectedDate: null,
 });
 
 export default function EventsProvider({ children }) {
-  const { eventsCtx: { events } } = useEvents({ forceFetch: false }); // TODO this is a bug
+  const {
+    isLoading: eventsIsLoading,
+    isError: eventsIsError,
+    data: events,
+    error: eventsError,
+    refetch: refetchEvents
+  } = useQuery({
+    queryKey: [QueryKeys.EVENTS],
+    queryFn: fetchEvents,
+  })
   const [filteredEvents, setFilteredEvents] = useState();
 
   const [selectedDate, setSelectedDate] = useState<Date>();
@@ -15,17 +26,12 @@ export default function EventsProvider({ children }) {
   const [endDate, setEndDate] = useState<Date>();
 
   useEffect(() => {
-    console.log('!!!! events context updated !!!!')
-  }, []);
-
-  useEffect(() => {
-    if (selectedDate) {
+    if (selectedDate && events && events.length) {
       setFilteredEvents(events.filter(({ startDate }) => dayjs(startDate).isSame(selectedDate, 'day')))
     }
   }, [events, selectedDate]);
 
   useEffect(() => {
-    console.log('events useffect fired ', events && events.length)
     if (events && events.length) {
       setStartDate(events[0].startDate);
       setEndDate(events[events.length - 1].startDate);
@@ -36,6 +42,11 @@ export default function EventsProvider({ children }) {
   return (
     <EventsContext.Provider
       value={{
+        events,
+        eventsIsLoading,
+        eventsIsError,
+        eventsError,
+        refetchEvents,
         selectedDate,
         setSelectedDate,
         filteredEvents,

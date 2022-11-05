@@ -12,10 +12,12 @@ const styles = StyleSheet.create({
 });
 
 export default function EventsList() {
-  return <EventsProvider>
-    <SafeAreaView style={styles.container}>
-      <Calendar/>
-      <EventList/>
-    </SafeAreaView>
-  </EventsProvider>
+  return (
+    <EventsProvider>
+      <SafeAreaView style={styles.container}>
+        <Calendar/>
+        <EventList/>
+      </SafeAreaView>
+    </EventsProvider>
+  );
 }

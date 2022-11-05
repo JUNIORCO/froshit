@@ -1,6 +1,9 @@
 // courtesy of https://javascript.plainenglish.io/how-to-handle-and-design-the-startup-of-a-react-application-da779f3727e5
 import { every } from "lodash";
 import React, { FC, Fragment, memo, ReactElement, useEffect, useState } from "react";
+import { useQuery } from "@tanstack/react-query";
+import QueryKeys from "./hooks/query/QueryKeys";
+import { fetchEvents } from "./api/events";
 
 interface LoadingProcess {
   name: string;
@@ -8,14 +11,6 @@ interface LoadingProcess {
 }
 
 interface Props {
-  /**
-   * A collection of process that should be ready before displaying the application
-   *
-   * @type {LoadingProcess[]}
-   * @memberof Props
-   */
-  mandatoryProcesses?: LoadingProcess[];
-
   /**
    * In ms. If provided this will make the loading last for the given duration even if everything has loaded.
    *
@@ -39,6 +34,20 @@ interface Props {
 const AppLoader: FC<Props> = memo(props => {
   const [minimumDurationPassed, setMinimumDurationPassed] = useState<boolean>((props.minimumLoadingTime || 0) <= 0);
 
+  // processes to load before loading app
+  const { isLoading: eventsIsLoading } = useQuery({
+    queryKey: [QueryKeys.EVENTS],
+    queryFn: fetchEvents,
+  })
+
+  // As long as not all screens are ready, display splashscreen
+  const loadingProcesses = [
+    {
+      name: "fetch_user_events",
+      isReady: !eventsIsLoading,
+    },
+  ];
+
   // Handle potential minimum duration
   useEffect(() => {
     if (props.minimumLoadingTime) {
@@ -48,7 +57,7 @@ const AppLoader: FC<Props> = memo(props => {
 
   return (
     <Fragment>
-      {every(props.mandatoryProcesses, "isReady") && minimumDurationPassed ? props.children : props.loadingComponent}
+      {every(loadingProcesses, "isReady") && minimumDurationPassed ? props.children : props.loadingComponent}
     </Fragment>
   );
 });
