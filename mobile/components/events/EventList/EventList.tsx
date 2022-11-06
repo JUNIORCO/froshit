@@ -10,8 +10,8 @@ import { useRefetchByUser } from "../../../hooks/useRefetchByUser";
 export default function EventList() {
   const navigation = useNavigation();
 
-  const { filteredEvents, refetchEvents } = useContext(EventsContext);
-  const { isRefetchingByUser, refetchByUser } = useRefetchByUser(refetchEvents);
+  const { filteredEvents } = useContext(EventsContext);
+  const { isRefetchingByUser, refetchByUser } = useRefetchByUser();
 
   const handleCardClick = (event) => navigation.navigate('Event Details' as any, { ...event });
 

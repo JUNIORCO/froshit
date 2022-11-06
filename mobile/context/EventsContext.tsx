@@ -1,8 +1,6 @@
 import { createContext, useEffect, useState } from "react";
 import dayjs from "../utils/dayjs";
-import { useQuery } from "@tanstack/react-query";
-import QueryKeys from "../hooks/query/QueryKeys";
-import { fetchEvents } from "../api/events";
+import { useGetEvents } from "../hooks/query";
 
 export const EventsContext = createContext({
   selectedDate: null,
@@ -14,11 +12,7 @@ export default function EventsProvider({ children }) {
     isError: eventsIsError,
     data: events,
     error: eventsError,
-    refetch: refetchEvents
-  } = useQuery({
-    queryKey: [QueryKeys.EVENTS],
-    queryFn: fetchEvents,
-  })
+  } = useGetEvents();
   const [filteredEvents, setFilteredEvents] = useState();
 
   const [selectedDate, setSelectedDate] = useState<Date>();
@@ -46,7 +40,6 @@ export default function EventsProvider({ children }) {
         eventsIsLoading,
         eventsIsError,
         eventsError,
-        refetchEvents,
         selectedDate,
         setSelectedDate,
         filteredEvents,

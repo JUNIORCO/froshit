@@ -4,6 +4,7 @@ import React, { FC, Fragment, memo, ReactElement, useEffect, useState } from "re
 import { useQuery } from "@tanstack/react-query";
 import QueryKeys from "./hooks/query/QueryKeys";
 import { fetchEvents } from "./api/events";
+import { fetchTeam } from "./api/team";
 
 interface LoadingProcess {
   name: string;
@@ -38,13 +39,22 @@ const AppLoader: FC<Props> = memo(props => {
   const { isLoading: eventsIsLoading } = useQuery({
     queryKey: [QueryKeys.EVENTS],
     queryFn: fetchEvents,
-  })
+  });
+
+  const { isLoading: teamIsLoading } = useQuery({
+    queryKey: [QueryKeys.TEAM],
+    queryFn: fetchTeam,
+  });
 
   // As long as not all screens are ready, display splashscreen
-  const loadingProcesses = [
+  const loadingProcesses: LoadingProcess[] = [
     {
       name: "fetch_user_events",
       isReady: !eventsIsLoading,
+    },
+    {
+      name: "fetch_user_team",
+      isReady: !teamIsLoading,
     },
   ];
 

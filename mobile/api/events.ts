@@ -6,7 +6,7 @@ export const fetchEvents = async (): Promise<any> => {
   const { data: events, error } = await supabase.from(Tables.EVENT).select('*');
 
   if (error) {
-    console.error(`fetchEvents -> ${error.message}`);
+    console.error(`api -> fetchEvents errored ${error.message}`);
     throw error;
   }
 
