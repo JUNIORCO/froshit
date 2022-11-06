@@ -1,7 +1,6 @@
 import Ionicons from '@expo/vector-icons/Ionicons';
 
 export default function HeaderLeft(props) {
-
   return (
     <Ionicons
       name='cog-outline'

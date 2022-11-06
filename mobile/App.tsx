@@ -69,25 +69,29 @@ export default function App() {
       <QueryClientProvider client={queryClient}>
         <AppLoader
           loadingComponent={<SplashImage/>}
-          minimumLoadingTime={__DEV__ ? 3000 : 2000}
+          minimumLoadingTime={__DEV__ ? 500 : 2000}
         >
           <NavigationContainer>
             <Tab.Navigator
               initialRouteName={BOTTOM_TABS.EVENTS.name}
-              screenOptions={{ tabBarActiveTintColor: '#ed1b2f' }}>
+              screenOptions={{
+                headerStyle: {
+                  backgroundColor: '#ed1b2f'
+                },
+                tabBarActiveTintColor: '#ed1b2f',
+                headerTitle: (props) => <HeaderTitle {...props} />,
+                headerLeft: (props) => <HeaderLeft {...props}/>,
+                headerRight: (props) => <HeaderRight {...props}/>,
+              }}
+            >
               {Object.entries(BOTTOM_TABS).map(([tabName, options]) => (
                 <Tab.Screen
                   key={tabName}
                   name={options.name}
-                  component={options.component} options={{
-                  tabBarIcon: (props) => <TabBarIcon name={options.icon} {...props}/>,
-                  headerTitle: (props) => <HeaderTitle {...props} />,
-                  headerLeft: (props) => <HeaderLeft {...props}/>,
-                  headerRight: (props) => <HeaderRight {...props}/>,
-                  headerStyle: {
-                    backgroundColor: '#ed1b2f'
-                  }
-                }}
+                  component={options.component}
+                  options={{
+                    tabBarIcon: (props) => <TabBarIcon name={options.icon} {...props}/>,
+                  }}
                 />
               ))}
             </Tab.Navigator>

@@ -5,6 +5,7 @@ import { useQuery } from "@tanstack/react-query";
 import QueryKeys from "./hooks/query/QueryKeys";
 import { fetchEvents } from "./api/events";
 import { fetchTeam } from "./api/team";
+import { useGetEvents, useGetTeam } from "./hooks/query";
 
 interface LoadingProcess {
   name: string;
@@ -36,15 +37,9 @@ const AppLoader: FC<Props> = memo(props => {
   const [minimumDurationPassed, setMinimumDurationPassed] = useState<boolean>((props.minimumLoadingTime || 0) <= 0);
 
   // processes to load before loading app
-  const { isLoading: eventsIsLoading } = useQuery({
-    queryKey: [QueryKeys.EVENTS],
-    queryFn: fetchEvents,
-  });
+  const { isLoading: eventsIsLoading } = useGetEvents();
 
-  const { isLoading: teamIsLoading } = useQuery({
-    queryKey: [QueryKeys.TEAM],
-    queryFn: fetchTeam,
-  });
+  const { isLoading: teamIsLoading } = useGetTeam();
 
   // As long as not all screens are ready, display splashscreen
   const loadingProcesses: LoadingProcess[] = [
