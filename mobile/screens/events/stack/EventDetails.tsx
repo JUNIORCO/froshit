@@ -1,7 +1,8 @@
-import { Image, Linking, Platform, SafeAreaView, StyleSheet, Text, View } from "react-native";
+import { Image, Linking, Platform, Pressable, SafeAreaView, StyleSheet, Text, View } from "react-native";
 import EventsProvider from "../../../context/EventsContext";
 import React from "react";
-import { Ionicons } from '@expo/vector-icons';
+import { FontAwesome, Ionicons } from '@expo/vector-icons';
+import dayjs from "dayjs";
 
 const styles = StyleSheet.create({
   container: {
@@ -14,15 +15,23 @@ const styles = StyleSheet.create({
     fontSize: 20,
     fontWeight: "bold",
     marginBottom: 8,
+  },
+  descriptionText: {
+    fontSize: 16,
+    marginBottom: 16,
+  },
+  helperText: {
+    fontSize: 12,
+    color: 'grey'
   }
 });
 
 export default function EventDetails({ route }) {
-  const { name, location, startDate, endDate, description, } = route.params;
+  const { name, location, startDate, endDate, description, accessibility } = route.params;
 
-  const onClickOpenMap = (searchString: string) => {
+  const handleLocationPress = () => {
     const scheme = Platform.select({ ios: 'maps:0,0?q=', android: 'geo:0,0?q=' });
-    const url = `${scheme}${searchString}`;
+    const url = `${scheme}${location}`;
     void Linking.openURL(url);
   }
 
@@ -31,19 +40,36 @@ export default function EventDetails({ route }) {
       <SafeAreaView style={styles.container}>
         <Image source={{ uri: 'https://picsum.photos/700' }} style={{ width: '100%', height: 248, marginBottom: 16, }}/>
         <Text style={styles.titleText}>{name}</Text>
-        <Text>{description}</Text>
-        <View style={{ flexDirection: "row", height: 50, marginBottom: 16, }}>
-          <Ionicons name="location-sharp" size={32} color="#E91E63" style={{ flex: 0.2, backgroundColor: "white" }}/>
-          <View style={{ backgroundColor: "blue", flex: 0.3 }}/>
-          <View style={{ backgroundColor: "red", flex: 0.5 }}/>
-          <Text>Hello World!</Text>
+        <Text style={styles.descriptionText}>{description}</Text>
+
+        <View style={{ flexDirection: "row", height: 50, marginBottom: 8, alignItems: 'center' }}>
+          <Ionicons name="time-outline" size={32} color="#E91E63"
+                    style={{ flex: 0.15, textAlign: 'center', paddingRight: 8 }}/>
+          <View style={{ flexDirection: 'column' }}>
+            <Text>{dayjs(startDate).format('MMMM D, YYYY')}</Text>
+            <Text>{dayjs(startDate).format('h:m a')} - {dayjs(endDate).format('h:m a')}</Text>
+          </View>
         </View>
-        <View style={{ flexDirection: "row", height: 50, marginBottom: 16, }}>
-          <Ionicons name="time-outline" size={32} color="#E91E63" style={{ flex: 0.2, backgroundColor: "white" }}/>
-          <View style={{ backgroundColor: "blue", flex: 0.3 }}/>
-          <View style={{ backgroundColor: "red", flex: 0.5 }}/>
-          <Text>Hello World!</Text>
+
+        <Pressable onPress={handleLocationPress}>
+          <View style={{ flexDirection: "row", height: 50, marginBottom: 8, alignItems: 'center' }}>
+            <Ionicons name="location" size={32} color="#E91E63"
+                      style={{ flex: 0.15, textAlign: 'center', paddingRight: 8 }}/>
+            <View style={{ flexDirection: 'column' }}>
+              <Text>{location}</Text>
+              <Text style={styles.helperText}>Click to open maps</Text>
+            </View>
+          </View>
+        </Pressable>
+
+        <View style={{ flexDirection: "row", height: 50, marginBottom: 8, alignItems: 'center' }}>
+          <FontAwesome name="universal-access" size={32} color="#E91E63"
+                       style={{ flex: 0.15, textAlign: 'center', paddingRight: 8 }}/>
+          <View style={{ flexDirection: 'column' }}>
+            <Text>{accessibility}</Text>
+          </View>
         </View>
+
       </SafeAreaView>
     </EventsProvider>
   );

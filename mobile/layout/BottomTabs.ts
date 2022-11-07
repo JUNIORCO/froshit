@@ -1,7 +1,7 @@
-import ResourcesScreen from "../screens/resources";
+import ResourcesScreen from "../screens/ResourcesScreen";
 import NotificationsScreen from "../screens/notifications";
 import TeamScreen from "../screens/TeamScreen";
-import OffersScreen from "../screens/offers";
+import OffersScreen from "../screens/OffersScreen";
 import EventsScreen from "../screens/events/EventsScreen";
 
 const BOTTOM_TABS = {

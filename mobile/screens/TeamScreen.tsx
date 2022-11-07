@@ -1,11 +1,26 @@
 import React from 'react';
-import { RefreshControl, SafeAreaView, SectionList, Text } from 'react-native';
-import { styles } from "./styles";
+import { SafeAreaView, SectionList, StyleSheet, Text } from 'react-native';
 import VerticalItemSeparatorComponent from "../components/common/VerticalItemSeparatorComponent";
 import { useRefetchByUser } from "../hooks/useRefetchByUser";
 import { useGetTeam } from "../hooks/query";
 import LeaderCard from "../components/team/LeaderCard";
 import FrosheeCard from "../components/team/FrosheeCard";
+
+export const styles = StyleSheet.create({
+  container: {
+    marginHorizontal: 16,
+    height: '100%',
+  },
+  title: {
+    fontSize: 24,
+    marginTop: 16,
+  },
+  header: {
+    fontSize: 24,
+    marginVertical: 16,
+  },
+});
+
 
 export default function TeamScreen() {
   const {
