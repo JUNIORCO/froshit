@@ -6,13 +6,24 @@ export default function EventsScreen() {
   const Stack = createStackNavigator();
 
   return (
-    <Stack.Navigator
-      screenOptions={{
-        headerBackTitleVisible: false
-      }}
-    >
-      <Stack.Screen name="Events List" component={EventsList} options={{ headerShown: false }}/>
-      <Stack.Screen name="Event Details" component={EventDetails}/>
+    <Stack.Navigator>
+      <Stack.Screen
+        name="Events List"
+        component={EventsList}
+        options={{ headerShown: false }}
+      />
+      <Stack.Screen
+        name="Event Details"
+        component={EventDetails}
+        options={{
+          headerTitle: '',
+          headerBackTitle: 'Back',
+          headerTintColor: '#ed1b2f',
+          headerStyle: {
+            backgroundColor: 'transparent',
+          }
+        }}
+      />
     </Stack.Navigator>
   )
 }
