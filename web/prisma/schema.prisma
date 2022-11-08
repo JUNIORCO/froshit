@@ -104,8 +104,9 @@ model Frosh {
   profiles Profile[]
 
   // dates
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  createdAt    DateTime       @default(now())
+  updatedAt    DateTime       @updatedAt
+  Notification Notification[]
 
   // constraints
   @@unique([name, universityId]) // froshs in the same university cannot have the same name
@@ -147,8 +148,9 @@ model Team {
   profiles Profile[]
 
   // dates
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  createdAt    DateTime       @default(now())
+  updatedAt    DateTime       @updatedAt
+  Notification Notification[]
 }
 
 model Profile {
@@ -178,8 +180,9 @@ model Profile {
   teamId Int?
 
   // dates
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  createdAt    DateTime       @default(now())
+  updatedAt    DateTime       @updatedAt
+  Notification Notification[]
 }
 
 model ResourceTag {
@@ -228,13 +231,34 @@ model Offer {
   // attributes
   title       String
   description String
+  location    String
   provider    String
   icon        String
-  colour      String
+  color       String
 
   // associations
   university   University @relation(fields: [universityId], references: [id])
   universityId Int
+
+  // dates
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Notification {
+  // id
+  id Int @id @default(autoincrement())
+
+  // attributes
+  title String
+  body  String
+
+  // associations
+  frosh   Frosh? @relation(fields: [froshId], references: [id])
+  froshId Int?
+
+  team   Team? @relation(fields: [teamId], references: [id])
+  teamId Int?
 
   // dates
   createdAt DateTime @default(now())
