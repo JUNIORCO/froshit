@@ -5,7 +5,7 @@
   "description": "Froshit monorepo.",
   "private": true,
   "scripts": {
-    "vercel-build": "npm run prisma:generate && npm run prisma:db-push && npm run seed && npm run next:build",
+    "vercel-build": "npm run prisma:generate && npm run prisma:db-push && npm run next:build",
     "next:dev": "next dev",
     "next:build": "next build",
     "next:start": "next start",
@@ -17,7 +17,6 @@
     "prisma:generate": "npx prisma generate",
     "prisma:db-push": "npx prisma db push --force-reset",
     "prisma:migrations": "npx prisma migrate dev",
-    "prisma:seed": "npx prisma db seed",
     "prisma:studio": "npx prisma studio",
     "prisma:format": "npx prisma format",
     "lint": "next lint",
@@ -25,8 +24,7 @@
     "lint:fix": "eslint --fix --ext .ts,.tsx ."
   },
   "prisma": {
-    "schema": "prisma/schema.prisma",
-    "seed": "ts-node --compiler-options {\"module\":\"CommonJS\"} prisma/seed.ts"
+    "schema": "prisma/schema.prisma"
   },
   "dependencies": {
     "@auth0/auth0-spa-js": "^1.22.4",
