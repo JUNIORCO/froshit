@@ -2,7 +2,7 @@
   "name": "froshit",
   "author": "Sami Junior Kahil",
   "version": "1.0.0",
-  "description": "Froshit monorepo.",
+  "description": "Froshit monorepo",
   "private": true,
   "scripts": {
     "vercel-build": "npm run prisma:generate && npm run prisma:db-push && npm run next:build",
