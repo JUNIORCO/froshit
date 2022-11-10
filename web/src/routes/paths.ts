@@ -72,6 +72,12 @@ export const PATH_DASHBOARD = {
     edit: (id: string) => path(ROOTS_DASHBOARD, `/event/${id}/edit`),
     view: (id: string) => path(ROOTS_DASHBOARD, `/event/${id}/view`),
   },
+  offer: {
+    root: path(ROOTS_DASHBOARD, '/offer'),
+    new: path(ROOTS_DASHBOARD, '/offer/new'),
+    edit: (id: string) => path(ROOTS_DASHBOARD, `/offer/${id}/edit`),
+    view: (id: string) => path(ROOTS_DASHBOARD, `/offer/${id}/view`),
+  },
   mail: {
     root: path(ROOTS_DASHBOARD, '/mail'),
     all: path(ROOTS_DASHBOARD, '/mail/all'),

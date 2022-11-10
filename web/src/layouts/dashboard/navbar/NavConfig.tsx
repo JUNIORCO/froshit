@@ -63,7 +63,7 @@ const navConfig = [
       },
       {
         title: 'Offers',
-        path: PATH_DASHBOARD.blog.root,
+        path: PATH_DASHBOARD.offer.root,
         icon: ICONS.offer,
       },
       {
