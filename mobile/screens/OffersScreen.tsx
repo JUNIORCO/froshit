@@ -21,7 +21,7 @@ export const styles = StyleSheet.create({
 });
 
 
-export default function TeamScreen() {
+export default function OffersScreen() {
   const {
     isLoading: teamIsLoading,
     isError: teamIsError,

@@ -2,11 +2,11 @@ import { supabase } from "../supabase/supabase";
 import { Tables } from "../supabase/columns";
 import type { QueryKey } from "@tanstack/react-query";
 
-export const fetchOffers = async ({ queryKey }: QueryKey): Promise<any> => {
+export const fetchNotifications = async ({ queryKey }: QueryKey): Promise<any> => {
   const [_key, { id }] = queryKey;
-  console.log(`api -> Fetching offers for university ${id}`)
+  console.log(`api -> Fetching notifications for user ${id}`)
   const {
-    data: offers,
+    data: notifications,
     error
   } = await supabase
     .from(Tables.OFFER)
@@ -19,5 +19,5 @@ export const fetchOffers = async ({ queryKey }: QueryKey): Promise<any> => {
     throw error;
   }
 
-  return offers;
+  return notifications;
 }

@@ -8,4 +8,5 @@ export const Tables = {
   RESOURCETAG: 'ResourceTag',
   RESOURCE: 'Resource',
   OFFER: 'Offer',
+  NOTIFICATION: 'Notification',
 };

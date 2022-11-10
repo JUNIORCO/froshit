@@ -64,7 +64,7 @@ export default function TeamScreen() {
 
   return (
     <SafeAreaView style={styles.container}>
-      <Text style={styles.title}>Team {team[0].teamId.name}</Text>
+      <Text style={styles.title}>Team {team[0]?.teamId.name}</Text>
       <SectionList
         sections={formattedTeam}
         showsVerticalScrollIndicator={false}
