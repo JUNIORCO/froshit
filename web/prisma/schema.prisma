@@ -20,7 +20,7 @@ enum Interest {
   Adventure
   Hiking
   Fishing
-  Hutning
+  Hunting
   Camping
   Beach
   Music
@@ -51,10 +51,10 @@ enum Interest {
 model University {
   // id
   id        Int    @id @default(autoincrement())
+
   // attributes
   name      String @unique
   subdomain String @unique
-  imageUrl  String
 
   // associations
   programs     Program[]
@@ -92,7 +92,6 @@ model Frosh {
   // attributes
   name        String
   description String
-  imageUrl    String
   ticketPrice Int
 
   // associations
@@ -102,11 +101,11 @@ model Frosh {
   events   Event[]
   teams    Team[]
   profiles Profile[]
+  Notification Notification[]
 
   // dates
   createdAt    DateTime       @default(now())
   updatedAt    DateTime       @updatedAt
-  Notification Notification[]
 
   // constraints
   @@unique([name, universityId]) // froshs in the same university cannot have the same name
@@ -121,7 +120,6 @@ model Event {
   description   String
   startDate     DateTime
   endDate       DateTime
-  imageUrl      String
   location      String
   accessibility String
 
@@ -146,11 +144,11 @@ model Team {
   froshId Int
 
   profiles Profile[]
+  Notification Notification[]
 
   // dates
   createdAt    DateTime       @default(now())
   updatedAt    DateTime       @updatedAt
-  Notification Notification[]
 }
 
 model Profile {
@@ -162,7 +160,6 @@ model Profile {
   email       String     @unique
   phoneNumber String     @unique
   role        Role
-  avatarUrl   String
   paid        Int?
   interests   Interest[]
 
@@ -182,7 +179,6 @@ model Profile {
   // dates
   createdAt    DateTime       @default(now())
   updatedAt    DateTime       @updatedAt
-  Notification Notification[]
 }
 
 model ResourceTag {
@@ -214,6 +210,8 @@ model Resource {
   // attributes
   title       String
   description String
+  phoneNumber String?
+  email       String?
 
   // associations
   resourceTag   ResourceTag @relation(fields: [resourceTagId], references: [id])
