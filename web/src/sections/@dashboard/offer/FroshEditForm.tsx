@@ -1,0 +1,147 @@
+import * as Yup from 'yup';
+import { useEffect, useMemo } from 'react';
+import useSWRMutation from 'swr/mutation';
+import { useSnackbar } from 'notistack';
+import { useRouter } from 'next/router';
+import { useForm } from 'react-hook-form';
+import { yupResolver } from '@hookform/resolvers/yup';
+import { LoadingButton } from '@mui/lab';
+import { Box, Card, Grid, Stack, Typography } from '@mui/material';
+import { PATH_DASHBOARD } from '../../../routes/paths';
+import { FormProvider, RHFSelect, RHFSlider, RHFTextField } from '../../../components/hook-form';
+import { RHFMultiSelect } from '../../../components/hook-form/RHFMultiSelect';
+import { Frosh, Profile, Role } from '../../../../prisma/types';
+import { UnassignedFrosheesAndLeaders } from '../../../../prisma/user/get';
+import { FullTeam } from '../../../../prisma/team/get';
+
+const sendFroshRequest = async (url: string, { arg }: any) => {
+  const res = await fetch(url, {
+    method: 'PATCH',
+    headers: {
+      'Accept': 'application/json',
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify(arg),
+  });
+  return res.json();
+};
+
+type FormValuesProps = {
+  name: string;
+  description: string;
+  ticketPrice: number;
+};
+
+type Props = {
+  currentFrosh: Frosh;
+};
+
+export default function FroshEditForm({ currentFrosh }: Props) {
+  const { trigger } = useSWRMutation(`/api/frosh/${currentFrosh.id}`, sendFroshRequest);
+
+  const { push } = useRouter();
+
+  const { enqueueSnackbar } = useSnackbar();
+
+  const NewTeamSchema = Yup.object().shape({
+    name: Yup.string().required('Frosh name is required'),
+    description: Yup.string().required('Description is required'),
+    imageUrl: Yup.string().url().required('Please upload an image'),
+    ticketPrice: Yup.number().required().min(5, 'Ticket price is required'),
+  });
+
+  const defaultValues = useMemo(
+    () => ({
+      name: currentFrosh.name,
+      description: currentFrosh.description,
+      imageUrl: currentFrosh.imageUrl,
+      ticketPrice: currentFrosh.ticketPrice,
+    }),
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [currentFrosh],
+  );
+
+  const methods = useForm<FormValuesProps>({
+    resolver: yupResolver(NewTeamSchema),
+    defaultValues,
+  });
+
+  const {
+    reset,
+    handleSubmit,
+    formState: { isSubmitting },
+  } = methods;
+
+  useEffect(() => {
+    if (currentFrosh) {
+      reset(defaultValues);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [currentFrosh]);
+
+  const onSubmit = async (froshToUpdate: FormValuesProps) => {
+    try {
+      await trigger(froshToUpdate);
+      reset();
+      enqueueSnackbar('Update success!');
+      void push(PATH_DASHBOARD.frosh.root);
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
+  const marksLabel = [...Array(21)].map((_, index) => {
+    const value = index * 10;
+
+    return {
+      value,
+      label: index % 2 ? '' : `$${value}`,
+    };
+  });
+
+  return (
+    <FormProvider methods={methods} onSubmit={handleSubmit(onSubmit)}>
+      <Grid container spacing={3}>
+        <Grid item xs={12} md={8}>
+          <Card sx={{ p: 3 }}>
+            <Box
+              sx={{
+                display: 'grid',
+                columnGap: 2,
+                rowGap: 3,
+                gridTemplateColumns: { xs: 'repeat(1, 1fr)', sm: 'repeat(2, 1fr)' },
+              }}
+            >
+              <RHFTextField name='name' label='Name' />
+
+              <RHFTextField name='description' label='Description' />
+
+              <Stack spacing={1} sx={{ pb: 2 }}>
+
+                <Typography variant='subtitle1' sx={{ flexGrow: 1 }}>
+                  Ticket Price
+                </Typography>
+                <RHFSlider
+                  name='ticketPrice'
+                  step={5}
+                  min={0}
+                  max={200}
+                  marks={marksLabel}
+                  getAriaValueText={(value) => `$${value}`}
+                  valueLabelFormat={(value) => `$${value}`}
+                  sx={{ alignSelf: 'center', width: `calc(100% - 20px)` }}
+                />
+              </Stack>
+            </Box>
+
+            <Stack alignItems='flex-end' sx={{ mt: 3 }}>
+              <LoadingButton type='submit' variant='contained' loading={isSubmitting}>
+                Save Changes
+              </LoadingButton>
+            </Stack>
+          </Card>
+        </Grid>
+      </Grid>
+    </FormProvider>
+  );
+}
