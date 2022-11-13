@@ -50,7 +50,7 @@ enum Interest {
 
 model University {
   // id
-  id        Int    @id @default(autoincrement())
+  id String @id @default(uuid())
 
   // attributes
   name      String @unique
@@ -70,7 +70,7 @@ model University {
 
 model Program {
   // id
-  id Int @id @default(autoincrement())
+  id String @id @default(uuid())
 
   // attributes
   name     String
@@ -78,7 +78,7 @@ model Program {
 
   // associations
   university   University @relation(fields: [universityId], references: [id])
-  universityId Int
+  universityId String
 
   // dates
   createdAt DateTime @default(now())
@@ -87,7 +87,7 @@ model Program {
 
 model Frosh {
   // id
-  id Int @id @default(autoincrement())
+  id String @id @default(uuid())
 
   // attributes
   name        String
@@ -96,16 +96,16 @@ model Frosh {
 
   // associations
   university   University @relation(fields: [universityId], references: [id])
-  universityId Int
+  universityId String
 
-  events   Event[]
-  teams    Team[]
-  profiles Profile[]
+  events       Event[]
+  teams        Team[]
+  profiles     Profile[]
   Notification Notification[]
 
   // dates
-  createdAt    DateTime       @default(now())
-  updatedAt    DateTime       @updatedAt
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 
   // constraints
   @@unique([name, universityId]) // froshs in the same university cannot have the same name
@@ -113,7 +113,7 @@ model Frosh {
 
 model Event {
   // id
-  id Int @id @default(autoincrement())
+  id String @id @default(uuid())
 
   // attributes
   name          String
@@ -124,8 +124,8 @@ model Event {
   accessibility String
 
   // associations
-  frosh   Frosh @relation(fields: [froshId], references: [id])
-  froshId Int
+  frosh   Frosh  @relation(fields: [froshId], references: [id])
+  froshId String
 
   // dates
   createdAt DateTime @default(now())
@@ -134,26 +134,26 @@ model Event {
 
 model Team {
   // id
-  id Int @id @default(autoincrement())
+  id String @id @default(uuid())
 
   // attributes
   name String
 
   // associations
-  frosh   Frosh @relation(fields: [froshId], references: [id])
-  froshId Int
+  frosh   Frosh  @relation(fields: [froshId], references: [id])
+  froshId String
 
-  profiles Profile[]
+  profiles     Profile[]
   Notification Notification[]
 
   // dates
-  createdAt    DateTime       @default(now())
-  updatedAt    DateTime       @updatedAt
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 }
 
 model Profile {
   // id
-  id Int @id @default(autoincrement())
+  id String @id @default(uuid())
 
   // attributes
   name        String
@@ -165,25 +165,25 @@ model Profile {
 
   // associations
   university   University @relation(fields: [universityId], references: [id])
-  universityId Int
+  universityId String
 
   program   Program? @relation(fields: [programId], references: [id])
-  programId Int? // optional because admin/organizers are not part of a program
+  programId String? // optional because admin/organizers are not part of a program
 
-  frosh   Frosh? @relation(fields: [froshId], references: [id]) // optional because admin/organizers are not part of a frosh
-  froshId Int?
+  frosh   Frosh?  @relation(fields: [froshId], references: [id]) // optional because admin/organizers are not part of a frosh
+  froshId String?
 
-  team   Team? @relation(fields: [teamId], references: [id]) // optional because admin/organizers are not part of a team
-  teamId Int?
+  team   Team?   @relation(fields: [teamId], references: [id]) // optional because admin/organizers are not part of a team
+  teamId String?
 
   // dates
-  createdAt    DateTime       @default(now())
-  updatedAt    DateTime       @updatedAt
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 }
 
 model ResourceTag {
   // id
-  id Int @id @default(autoincrement())
+  id String @id @default(uuid())
 
   // attributes
   name String
@@ -191,7 +191,7 @@ model ResourceTag {
 
   // associations
   university   University @relation(fields: [universityId], references: [id])
-  universityId Int
+  universityId String
 
   resources Resource[]
 
@@ -205,7 +205,7 @@ model ResourceTag {
 
 model Resource {
   // id
-  id Int @id @default(autoincrement())
+  id String @id @default(uuid())
 
   // attributes
   title       String
@@ -215,7 +215,7 @@ model Resource {
 
   // associations
   resourceTag   ResourceTag @relation(fields: [resourceTagId], references: [id])
-  resourceTagId Int
+  resourceTagId String
 
   // dates
   createdAt DateTime @default(now())
@@ -224,7 +224,7 @@ model Resource {
 
 model Offer {
   // id
-  id Int @id @default(autoincrement())
+  id String @id @default(uuid())
 
   // attributes
   title       String
@@ -236,7 +236,7 @@ model Offer {
 
   // associations
   university   University @relation(fields: [universityId], references: [id])
-  universityId Int
+  universityId String
 
   // dates
   createdAt DateTime @default(now())
@@ -245,18 +245,18 @@ model Offer {
 
 model Notification {
   // id
-  id Int @id @default(autoincrement())
+  id String @id @default(uuid())
 
   // attributes
   title String
   body  String
 
   // associations
-  frosh   Frosh? @relation(fields: [froshId], references: [id])
-  froshId Int?
+  frosh   Frosh?  @relation(fields: [froshId], references: [id])
+  froshId String?
 
-  team   Team? @relation(fields: [teamId], references: [id])
-  teamId Int?
+  team   Team?   @relation(fields: [teamId], references: [id])
+  teamId String?
 
   // dates
   createdAt DateTime @default(now())

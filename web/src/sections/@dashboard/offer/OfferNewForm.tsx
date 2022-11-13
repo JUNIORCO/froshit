@@ -9,14 +9,14 @@ import { Box, Card, Grid, Stack, Typography } from '@mui/material';
 import { PATH_DASHBOARD } from '../../../routes/paths';
 import { FormProvider, RHFSlider, RHFTextField } from '../../../components/hook-form';
 
-const sendOfferCreateRequest = async (url: string, { arg: frosh }: any) => {
+const sendOfferCreateRequest = async (url: string, { arg: offer }: any) => {
   const res = await fetch(url, {
     method: 'POST',
     headers: {
       'Accept': 'application/json',
       'Content-Type': 'application/json',
     },
-    body: JSON.stringify(frosh),
+    body: JSON.stringify(offer),
   });
   return res.json();
 };
@@ -41,15 +41,17 @@ export default function OfferNewForm() {
     provider: Yup.string().required('Ticket price is required'),
     icon: Yup.string().required('Ticket price is required'),
     color: Yup.string().required('Ticket price is required'),
-    universityId: Yup.number().required(),
+    universityId: Yup.string().required(),
   });
 
   const defaultValues = {
-    name: '',
+    title: '',
     description: '',
-    imageUrl: 'https://google.com',
-    ticketPrice: 100,
-    universityId: 1,
+    location: '',
+    provider: '',
+    icon: '',
+    color: '',
+    universityId: '1678f7bf-7a13-477c-942c-c85dcadfdd40',
   };
 
   const methods = useForm<FormValuesProps>({
@@ -67,21 +69,12 @@ export default function OfferNewForm() {
     try {
       await trigger(froshToCreate);
       reset();
-      enqueueSnackbar('Create success!');
-      void push(PATH_DASHBOARD.frosh.root);
+      enqueueSnackbar('Created offer!');
+      void push(PATH_DASHBOARD.offer.root);
     } catch (error) {
       console.error(error);
     }
   };
-
-  const marksLabel = [...Array(21)].map((_, index) => {
-    const value = index * 10;
-
-    return {
-      value,
-      label: index % 2 ? '' : `$${value}`,
-    };
-  });
 
   return (
     <FormProvider methods={methods} onSubmit={handleSubmit(onSubmit)}>
@@ -96,31 +89,22 @@ export default function OfferNewForm() {
                 gridTemplateColumns: { xs: 'repeat(1, 1fr)', sm: 'repeat(2, 1fr)' },
               }}
             >
-              <RHFTextField name='name' label='Name' />
+              <RHFTextField name='title' label='Title' />
 
               <RHFTextField name='description' label='Description' />
 
-              <Stack spacing={1} sx={{ pb: 2 }}>
+              <RHFTextField name='location' label='Location' />
 
-                <Typography variant='subtitle1' sx={{ flexGrow: 1 }}>
-                  Ticket Price
-                </Typography>
-                <RHFSlider
-                  name='ticketPrice'
-                  step={5}
-                  min={0}
-                  max={200}
-                  marks={marksLabel}
-                  getAriaValueText={(value) => `$${value}`}
-                  valueLabelFormat={(value) => `$${value}`}
-                  sx={{ alignSelf: 'center', width: `calc(100% - 20px)` }}
-                />
-              </Stack>
+              <RHFTextField name='provider' label='Provider' />
+
+              <RHFTextField name='icon' label='Icon' />
+
+              <RHFTextField name='color' label='Color' />
             </Box>
 
             <Stack alignItems='flex-end' sx={{ mt: 3 }}>
               <LoadingButton type='submit' variant='contained' loading={isSubmitting}>
-                Create Frosh
+                Create Offer
               </LoadingButton>
             </Stack>
           </Card>
