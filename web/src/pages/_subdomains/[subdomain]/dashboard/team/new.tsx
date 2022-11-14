@@ -4,24 +4,17 @@ import { Container } from '@mui/material';
 import { PATH_DASHBOARD } from '../../../../../routes/paths';
 // hooks
 import useSettings from '../../../../../hooks/useSettings';
-// layouts
 import Layout from '../../../../../layouts';
-// components
 import Page from '../../../../../components/Page';
 import HeaderBreadcrumbs from '../../../../../components/HeaderBreadcrumbs';
-// sections
 import { GetServerSideProps } from 'next';
 import { getFroshs } from '../../../../../../prisma/froshs/get';
 import { getUnassignedFrosheesAndLeaders } from '../../../../../../prisma/user/get';
 import TeamNewForm from '../../../../../sections/@dashboard/team/TeamNewForm';
 
-// ----------------------------------------------------------------------
-
 TeamCreate.getLayout = function getLayout(page: React.ReactElement) {
   return <Layout>{page}</Layout>;
 };
-
-// ----------------------------------------------------------------------
 
 export default function TeamCreate({ froshs, profiles }: any) {
   const { themeStretch } = useSettings();

@@ -8,7 +8,7 @@ import { FullUser, getFullUserById } from '../../../../../../../prisma/user/get'
 import { getPrograms } from '../../../../../../../prisma/programs/get';
 import { getFroshs } from '../../../../../../../prisma/froshs/get';
 import { getTeams } from '../../../../../../../prisma/team/get';
-import type { Program, Frosh, Team } from '../../../../../../../prisma/types';
+import type { Frosh, Program, Team } from '../../../../../../../prisma/types';
 import { Query } from '../../../../../../@types/query';
 
 UserEdit.getLayout = function getLayout(page: React.ReactElement) {

@@ -1,11 +1,11 @@
-import { Box, Container, Typography } from '@mui/material';
+import { Container } from '@mui/material';
 import useSettings from '../../../../../../hooks/useSettings';
 import Layout from '../../../../../../layouts';
 import Page from '../../../../../../components/Page';
 import { GetServerSideProps } from 'next';
 import { getUnassignedFrosheesAndLeaders, UnassignedFrosheesAndLeaders } from '../../../../../../../prisma/user/get';
 import { getFroshs } from '../../../../../../../prisma/froshs/get';
-import { getTeamById, FullTeam } from '../../../../../../../prisma/team/get';
+import { FullTeam, getTeamById } from '../../../../../../../prisma/team/get';
 import type { Frosh } from '../../../../../../../prisma/types';
 import TeamEditForm from '../../../../../../sections/@dashboard/team/TeamEditForm';
 import HeaderBreadcrumbs from '../../../../../../components/HeaderBreadcrumbs';

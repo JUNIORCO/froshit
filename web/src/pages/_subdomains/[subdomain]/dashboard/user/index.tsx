@@ -8,7 +8,6 @@ import {
   Container,
   Divider,
   FormControlLabel,
-  IconButton,
   Stack,
   Switch,
   Tab,
@@ -17,7 +16,6 @@ import {
   TableContainer,
   TablePagination,
   Tabs,
-  Tooltip,
 } from '@mui/material';
 import { PATH_DASHBOARD } from '../../../../../routes/paths';
 import useTabs from '../../../../../hooks/useTabs';
@@ -28,7 +26,7 @@ import Page from '../../../../../components/Page';
 import Iconify from '../../../../../components/Iconify';
 import Scrollbar from '../../../../../components/Scrollbar';
 import HeaderBreadcrumbs from '../../../../../components/HeaderBreadcrumbs';
-import { TableEmptyRows, TableHeadCustom, TableNoData, TableSelectedActions } from '../../../../../components/table';
+import { TableEmptyRows, TableHeadCustom, TableNoData } from '../../../../../components/table';
 import { UserTableRow, UserTableToolbar } from '../../../../../sections/@dashboard/user/list';
 import { GetServerSideProps } from 'next';
 import type { UsersForUserList } from '../../../../../../prisma/user/get';
@@ -237,8 +235,6 @@ export default function UserList({ users }: UserListProps) {
                       <UserTableRow
                         key={row.id}
                         row={row}
-                        selected={selected.includes(row.id)}
-                        onSelectRow={() => onSelectRow(row.id)}
                         onViewRow={() => handleViewRow(row.id)}
                         onEditRow={() => handleEditRow(row.id)}
                       />

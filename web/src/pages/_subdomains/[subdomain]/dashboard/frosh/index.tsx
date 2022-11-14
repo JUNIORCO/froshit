@@ -67,12 +67,12 @@ export default function FroshList({ froshs }: Props) {
 
   const { push } = useRouter();
 
-  const handleViewRow = (id: number) => {
-    void push(PATH_DASHBOARD.frosh.view(String(id)));
+  const handleViewRow = (id: string) => {
+    void push(PATH_DASHBOARD.frosh.view(id));
   };
 
-  const handleEditRow = (id: number) => {
-    void push(PATH_DASHBOARD.frosh.edit(String(id)));
+  const handleEditRow = (id: string) => {
+    void push(PATH_DASHBOARD.frosh.edit(id));
   };
 
   const denseHeight = dense ? 52 : 72;
@@ -117,8 +117,6 @@ export default function FroshList({ froshs }: Props) {
                       <FroshTableRow
                         key={row.id}
                         row={row}
-                        selected={selected.includes(row.id)}
-                        onSelectRow={() => onSelectRow(row.id)}
                         onViewRow={() => handleViewRow(row.id)}
                         onEditRow={() => handleEditRow(row.id)}
                       />

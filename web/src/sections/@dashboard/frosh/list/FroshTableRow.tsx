@@ -8,17 +8,13 @@ import { FroshsWithStats } from '../../../../../prisma/froshs/get';
 
 type Props = {
   row: FroshsWithStats;
-  selected: boolean;
   onEditRow: VoidFunction;
-  onSelectRow: VoidFunction;
   onViewRow: VoidFunction;
 };
 
 export default function FroshTableRow({
                                         row,
-                                        selected,
                                         onEditRow,
-                                        onSelectRow,
                                         onViewRow,
                                       }: Props) {
   const theme = useTheme();
@@ -36,7 +32,7 @@ export default function FroshTableRow({
   };
 
   return (
-    <TableRow hover selected={selected}>
+    <TableRow hover>
 
       <TableCell align='left'>
         {name}

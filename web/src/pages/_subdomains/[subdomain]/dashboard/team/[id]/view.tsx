@@ -1,25 +1,16 @@
-import { capitalCase } from 'change-case';
 // @mui
-import { Box, Container, Tab, Tabs } from '@mui/material';
+import { Box, Container } from '@mui/material';
 // routes
 import { PATH_DASHBOARD } from '../../../../../../routes/paths';
 // hooks
-import useTabs from '../../../../../../hooks/useTabs';
 import useSettings from '../../../../../../hooks/useSettings';
 // _mock_
-import { _userAddressBook, _userInvoices, _userPayment } from '../../../../../../_mock';
 // layouts
 import Layout from '../../../../../../layouts';
 // components
 import Page from '../../../../../../components/Page';
-import Iconify from '../../../../../../components/Iconify';
 import HeaderBreadcrumbs from '../../../../../../components/HeaderBreadcrumbs';
 // sections
-import {
-  AccountBilling,
-  AccountChangePassword,
-  AccountGeneral,
-} from '../../../../../../sections/@dashboard/user/account';
 import { GetServerSideProps } from 'next';
 import { getTeamById } from '../../../../../../../prisma/team/get';
 import { Query } from '../../../../../../@types/query';

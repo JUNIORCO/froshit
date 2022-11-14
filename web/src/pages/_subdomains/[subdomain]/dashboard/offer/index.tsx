@@ -5,13 +5,13 @@ import {
   Box,
   Button,
   Card,
-  Container, Divider,
+  Container,
   FormControlLabel,
-  Switch, Tab,
+  Switch,
   Table,
   TableBody,
   TableContainer,
-  TablePagination, Tabs,
+  TablePagination,
 } from '@mui/material';
 import { PATH_DASHBOARD } from '../../../../../routes/paths';
 import useSettings from '../../../../../hooks/useSettings';
@@ -24,10 +24,8 @@ import HeaderBreadcrumbs from '../../../../../components/HeaderBreadcrumbs';
 import { TableEmptyRows, TableHeadCustom, TableNoData } from '../../../../../components/table';
 import { GetServerSideProps } from 'next';
 import { getOffers } from '../../../../../../prisma/offer/get';
-import { Offer, Role } from '../../../../../../prisma/types';
+import { Offer } from '../../../../../../prisma/types';
 import { OfferTableRow, OfferTableToolbar } from '../../../../../sections/@dashboard/offer/list';
-import useTabs from '../../../../../hooks/useTabs';
-import { FullTeam } from '../../../../../../prisma/team/get';
 
 const TABLE_HEAD = [
   { id: 'provider', label: 'Provider', align: 'left' },
@@ -74,12 +72,12 @@ export default function OfferList({ offers }: Props) {
     setPage(0);
   };
 
-  const handleViewRow = (id: number) => {
-    void push(PATH_DASHBOARD.offer.view(String(id)));
+  const handleViewRow = (id: string) => {
+    void push(PATH_DASHBOARD.offer.view(id));
   };
 
-  const handleEditRow = (id: number) => {
-    void push(PATH_DASHBOARD.offer.edit(String(id)));
+  const handleEditRow = (id: string) => {
+    void push(PATH_DASHBOARD.offer.edit(id));
   };
 
   const dataFiltered = applySortFilter({
@@ -135,8 +133,6 @@ export default function OfferList({ offers }: Props) {
                       <OfferTableRow
                         key={row.id}
                         row={row}
-                        selected={selected.includes(row.id)}
-                        onSelectRow={() => onSelectRow(row.id)}
                         onViewRow={() => handleViewRow(row.id)}
                         onEditRow={() => handleEditRow(row.id)}
                       />
@@ -201,7 +197,7 @@ function applySortFilter({
     tableData = tableData.filter(
       (offer) =>
         // @ts-ignore
-        offer.provider.toLowerCase().indexOf(filterName.toLowerCase()) !== -1
+        offer.provider.toLowerCase().indexOf(filterName.toLowerCase()) !== -1,
     );
   }
 
@@ -209,7 +205,7 @@ function applySortFilter({
 }
 
 export const getServerSideProps: GetServerSideProps = async () => {
-  const offers = await getOffers({ id: 1 }); // TODO auth
+  const offers = await getOffers({ id: '1678f7bf-7a13-477c-942c-c85dcadfdd40' }); // TODO auth
 
   return {
     props: {

@@ -5,7 +5,6 @@ import Layout from '../../../../../../layouts';
 import Page from '../../../../../../components/Page';
 import HeaderBreadcrumbs from '../../../../../../components/HeaderBreadcrumbs';
 import { GetServerSideProps } from 'next';
-import { getTeamById } from '../../../../../../../prisma/team/get';
 import { FullEvent, getEventById } from '../../../../../../../prisma/events/get';
 import { Query } from '../../../../../../@types/query';
 

@@ -7,17 +7,13 @@ import { Offer, Role } from '../../../../../prisma/types';
 
 type Props = {
   row: Offer;
-  selected: boolean;
   onEditRow: VoidFunction;
-  onSelectRow: VoidFunction;
   onViewRow: VoidFunction;
 };
 
 export default function OfferTableRow({
                                         row,
-                                        selected,
                                         onEditRow,
-                                        onSelectRow,
                                         onViewRow,
                                       }: Props) {
   const theme = useTheme();
@@ -35,7 +31,7 @@ export default function OfferTableRow({
   };
 
   return (
-    <TableRow hover selected={selected}>
+    <TableRow hover>
 
       <TableCell align='left'>
         {provider}

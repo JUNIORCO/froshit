@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Avatar, Checkbox, MenuItem, TableCell, TableRow, Typography } from '@mui/material';
+import { Avatar, MenuItem, TableCell, TableRow, Typography } from '@mui/material';
 import Iconify from '../../../../components/Iconify';
 import { TableMoreMenu } from '../../../../components/table';
 import type { UsersForUserList } from '../../../../../prisma/user/get';
@@ -7,20 +7,16 @@ import { Role } from '../../../../../prisma/types';
 
 type Props = {
   row: UsersForUserList;
-  selected: boolean;
   onEditRow: VoidFunction;
-  onSelectRow: VoidFunction;
   onViewRow: VoidFunction;
 };
 
 export default function UserTableRow({
                                        row,
-                                       selected,
                                        onEditRow,
-                                       onSelectRow,
                                        onViewRow,
                                      }: Props) {
-  const { avatarUrl, name, email, phoneNumber, role, frosh, team, paid } = row;
+  const { name, email, phoneNumber, role, frosh, team, paid } = row;
 
   const [openMenu, setOpenMenuActions] = useState<HTMLElement | null>(null);
 
@@ -59,9 +55,9 @@ export default function UserTableRow({
   };
 
   return (
-    <TableRow hover selected={selected}>
+    <TableRow hover>
       <TableCell sx={{ display: 'flex', alignItems: 'center' }}>
-        <Avatar alt={name} src={avatarUrl} sx={{ mr: 2 }} />
+        <Avatar alt={name} src={'https://minimal-assets-api-dev.vercel.app/assets/images/avatars/avatar_default.jpg'} sx={{ mr: 2 }} />
         <Typography variant='subtitle2' noWrap>
           {name}
         </Typography>
