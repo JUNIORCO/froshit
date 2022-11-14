@@ -9,6 +9,7 @@ import { getPrograms } from '../../../../../../../prisma/programs/get';
 import { getFroshs } from '../../../../../../../prisma/froshs/get';
 import { getTeams } from '../../../../../../../prisma/team/get';
 import type { Program, Frosh, Team } from '../../../../../../../prisma/types';
+import { Query } from '../../../../../../@types/query';
 
 UserEdit.getLayout = function getLayout(page: React.ReactElement) {
   return <Layout>{page}</Layout>;
@@ -44,8 +45,8 @@ export default function UserEdit({ user, programs, froshs, teams }: UserEditProp
 }
 
 export const getServerSideProps: GetServerSideProps = async (ctx) => {
-  const { subdomain, id } = ctx.query;
-  const user = await getFullUserById(Number(id));
+  const { subdomain, id } = ctx.query as Query;
+  const user = await getFullUserById(id);
 
   const programs = await getPrograms();
   const froshs = await getFroshs();

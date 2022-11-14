@@ -7,6 +7,7 @@ import HeaderBreadcrumbs from '../../../../../../components/HeaderBreadcrumbs';
 import { GetServerSideProps } from 'next';
 import { getFroshById } from '../../../../../../../prisma/froshs/get';
 import { Frosh } from '../../../../../../../prisma/types';
+import { Query } from '../../../../../../@types/query';
 
 FroshView.getLayout = function getLayout(page: React.ReactElement) {
   return <Layout>{page}</Layout>;
@@ -89,9 +90,9 @@ export default function FroshView({ frosh }: Props) {
 }
 
 export const getServerSideProps: GetServerSideProps = async (ctx) => {
-  const { subdomain, id } = ctx.query;
+  const { subdomain, id } = ctx.query as Query;
 
-  const frosh = await getFroshById(Number(id));
+  const frosh = await getFroshById(id);
 
   return {
     props: {

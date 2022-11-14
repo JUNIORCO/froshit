@@ -100,18 +100,12 @@ export default function UserList({ users }: UserListProps) {
     setFilterRole(event.target.value);
   };
 
-  const handleViewRow = (id: number) => {
-    void push(PATH_DASHBOARD.user.view(String(id)));
+  const handleViewRow = (id: string) => {
+    void push(PATH_DASHBOARD.user.view(id));
   };
 
-  const handleDeleteRows = (selected: number[]) => {
-    const deleteRows = tableData.filter((row) => !selected.includes(row.id));
-    setSelected([]);
-    setTableData(deleteRows);
-  };
-
-  const handleEditRow = (id: number) => {
-    void push(PATH_DASHBOARD.user.edit(String(id)));
+  const handleEditRow = (id: string) => {
+    void push(PATH_DASHBOARD.user.edit(id));
   };
 
   const dataFiltered = applySortFilter({

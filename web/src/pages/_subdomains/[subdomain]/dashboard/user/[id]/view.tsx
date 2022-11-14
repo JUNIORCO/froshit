@@ -11,6 +11,7 @@ import { AccountChangePassword, AccountGeneral } from '../../../../../../section
 import { GetServerSideProps } from 'next';
 import type { FullUser } from '../../../../../../../prisma/user/get';
 import { getFullUserById } from '../../../../../../../prisma/user/get';
+import { Query } from '../../../../../../@types/query';
 
 UserView.getLayout = function getLayout(page: React.ReactElement) {
   return <Layout>{page}</Layout>;
@@ -80,8 +81,8 @@ export default function UserView({ user }: UserViewProps) {
 }
 
 export const getServerSideProps: GetServerSideProps = async (ctx) => {
-  const { id } = ctx.query;
-  const user = await getFullUserById(Number(id));
+  const { id } = ctx.query as Query;
+  const user = await getFullUserById(id);
 
   return {
     props: {

@@ -22,6 +22,7 @@ import {
 } from '../../../../../../sections/@dashboard/user/account';
 import { GetServerSideProps } from 'next';
 import { getTeamById } from '../../../../../../../prisma/team/get';
+import { Query } from '../../../../../../@types/query';
 
 // ----------------------------------------------------------------------
 
@@ -54,8 +55,8 @@ export default function TeamView({ team }: any) {
 }
 
 export const getServerSideProps: GetServerSideProps = async (ctx) => {
-  const { subdomain, id } = ctx.query;
-  const team = await getTeamById(Number(id));
+  const { subdomain, id } = ctx.query as Query;
+  const team = await getTeamById(id);
 
   return {
     props: {

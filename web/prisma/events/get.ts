@@ -15,7 +15,7 @@ export const getFullEvents = async (): Promise<FullEvent[]> => prisma.event.find
 /**
  * Gets a team by id.
  */
-export const getEventById = async (id: number): Promise<FullEvent> => prisma.event.findUniqueOrThrow({
+export const getEventById = async (id: string): Promise<FullEvent> => prisma.event.findUniqueOrThrow({
   where: {
     id,
   },

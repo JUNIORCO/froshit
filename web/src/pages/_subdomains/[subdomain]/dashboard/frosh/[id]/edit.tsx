@@ -8,8 +8,10 @@ import type { Frosh } from '../../../../../../../prisma/types';
 import HeaderBreadcrumbs from '../../../../../../components/HeaderBreadcrumbs';
 import { PATH_DASHBOARD } from '../../../../../../routes/paths';
 import FroshEditForm from '../../../../../../sections/@dashboard/frosh/FroshEditForm';
+import { Query } from '../../../../../../@types/query';
+import type { ReactElement } from 'react';
 
-FroshEdit.getLayout = function getLayout(page: React.ReactElement) {
+FroshEdit.getLayout = function getLayout(page: ReactElement) {
   return <Layout>{page}</Layout>;
 };
 
@@ -37,10 +39,10 @@ export default function FroshEdit({ frosh }: Props) {
   );
 }
 
-export const getServerSideProps: GetServerSideProps = async (ctx) => {
-  const { subdomain, id } = ctx.query;
+export const getServerSideProps: GetServerSideProps<Props> = async (ctx) => {
+  const { subdomain, id } = ctx.query as Query;
 
-  const frosh = await getFroshById(Number(id));
+  const frosh = await getFroshById(id);
 
   return {
     props: {

@@ -5,7 +5,7 @@ import type { Offer } from '../types';
  * Gets all the Offers for user
  */
 type GetOffer = {
-  id: number;
+  id: string;
 }
 
 export const getOffers = async ({ id }: GetOffer): Promise<Offer[]> => prisma.offer.findMany();

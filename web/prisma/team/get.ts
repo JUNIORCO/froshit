@@ -11,7 +11,7 @@ export const getTeams = async (): Promise<Team[]> => prisma.team.findMany();
  */
 export type FullTeam = Team & { profiles: Profile[] | null, frosh: Frosh | null };
 
-export const getTeamById = async (id: number): Promise<FullTeam> => prisma.team.findUniqueOrThrow({
+export const getTeamById = async (id: string): Promise<FullTeam> => prisma.team.findUniqueOrThrow({
   where: {
     id,
   },

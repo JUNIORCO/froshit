@@ -7,6 +7,7 @@ import HeaderBreadcrumbs from '../../../../../../components/HeaderBreadcrumbs';
 import { GetServerSideProps } from 'next';
 import { getTeamById } from '../../../../../../../prisma/team/get';
 import { FullEvent, getEventById } from '../../../../../../../prisma/events/get';
+import { Query } from '../../../../../../@types/query';
 
 EventView.getLayout = function getLayout(page: React.ReactElement) {
   return <Layout>{page}</Layout>;
@@ -39,9 +40,9 @@ export default function EventView({ event }: Props) {
 }
 
 export const getServerSideProps: GetServerSideProps = async (ctx) => {
-  const { subdomain, id } = ctx.query;
+  const { subdomain, id } = ctx.query as Query;
 
-  const event = await getEventById(Number(id));
+  const event = await getEventById(id);
 
   return {
     props: {

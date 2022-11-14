@@ -10,6 +10,7 @@ import type { Frosh } from '../../../../../../../prisma/types';
 import TeamEditForm from '../../../../../../sections/@dashboard/team/TeamEditForm';
 import HeaderBreadcrumbs from '../../../../../../components/HeaderBreadcrumbs';
 import { PATH_DASHBOARD } from '../../../../../../routes/paths';
+import { Query } from '../../../../../../@types/query';
 
 TeamEdit.getLayout = function getLayout(page: React.ReactElement) {
   return <Layout>{page}</Layout>;
@@ -42,9 +43,9 @@ export default function TeamEdit({ team, froshs, profiles }: Props) {
 }
 
 export const getServerSideProps: GetServerSideProps = async (ctx) => {
-  const { subdomain, id } = ctx.query;
+  const { subdomain, id } = ctx.query as Query;
 
-  const team = await getTeamById(Number(id));
+  const team = await getTeamById(id);
   const froshs = await getFroshs();
   const profiles = await getUnassignedFrosheesAndLeaders();
 

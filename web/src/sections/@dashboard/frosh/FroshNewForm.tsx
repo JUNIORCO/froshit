@@ -47,7 +47,7 @@ export default function FroshNewForm() {
     description: '',
     imageUrl: 'https://google.com',
     ticketPrice: 100,
-    universityId: 1,
+    universityId: '1678f7bf-7a13-477c-942c-c85dcadfdd40',
   };
 
   const methods = useForm<FormValuesProps>({

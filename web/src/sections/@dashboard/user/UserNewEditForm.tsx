@@ -78,8 +78,7 @@ export default function UserNewEditForm({
       interests: currentUser?.interests || [],
       froshId: currentUser?.froshId || '',
       teamId: currentUser?.teamId || '',
-      // @ts-ignore
-      universityId: currentUser?.universityId || 1,
+      universityId: currentUser?.universityId || '1678f7bf-7a13-477c-942c-c85dcadfdd40',
     }),
     [currentUser],
   );

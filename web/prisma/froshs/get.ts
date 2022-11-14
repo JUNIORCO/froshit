@@ -9,7 +9,7 @@ export const getFroshs = async (): Promise<Frosh[]> => prisma.frosh.findMany();
 /**
  * Gets Frosh by id.
  */
-export const getFroshById = async (id: number): Promise<Frosh> => prisma.frosh.findUniqueOrThrow({
+export const getFroshById = async (id: string): Promise<Frosh> => prisma.frosh.findUniqueOrThrow({
   where: {
     id,
   }
