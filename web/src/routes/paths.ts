@@ -79,8 +79,8 @@ export const PATH_DASHBOARD = {
     view: (id: string) => path(ROOTS_DASHBOARD, `/offer/${id}/view`),
   },
   resource: {
-    root: path(ROOTS_DASHBOARD, '/resources'),
-    new: path(ROOTS_DASHBOARD, '/resources/new'),
+    root: path(ROOTS_DASHBOARD, '/resource'),
+    new: path(ROOTS_DASHBOARD, '/resource/new'),
     edit: (id: string) => path(ROOTS_DASHBOARD, `/resource/${id}/edit`),
     view: (id: string) => path(ROOTS_DASHBOARD, `/resource/${id}/view`),
   },
