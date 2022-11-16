@@ -25,6 +25,7 @@ type FormValuesProps = {
   name: string;
   description: string;
   ticketPrice: number;
+  universityId: string;
 };
 
 export default function FroshNewForm() {
@@ -37,15 +38,13 @@ export default function FroshNewForm() {
   const NewTeamSchema = Yup.object().shape({
     name: Yup.string().required('Frosh name is required'),
     description: Yup.string().required('Description is required'),
-    imageUrl: Yup.string().url().required('Please upload an image'),
     ticketPrice: Yup.number().required().min(5, 'Ticket price is required'),
-    universityId: Yup.number().required(),
+    universityId: Yup.string().required(),
   });
 
   const defaultValues = {
     name: '',
     description: '',
-    imageUrl: 'https://google.com',
     ticketPrice: 100,
     universityId: '1678f7bf-7a13-477c-942c-c85dcadfdd40',
   };
