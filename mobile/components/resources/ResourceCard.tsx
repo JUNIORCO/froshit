@@ -8,9 +8,10 @@ const styles = StyleSheet.create({
   },
 });
 
-export default function OfferCard({ title, description, icon, provider, colour }) {
+export default function ResourceCard({ title, description, phoneNumber, email, resourceTagId }) {
+  const { icon: tagIcon } = resourceTagId;
 
-  const LeftContent = props => <Avatar.Icon {...props} color={colour} icon="folder"/>;
+  const LeftContent = props => <Avatar.Icon {...props} icon="folder"/>;
 
   // const RightContent = () => (
   //   <View style={{ marginRight: 12 }}>
@@ -22,8 +23,8 @@ export default function OfferCard({ title, description, icon, provider, colour }
     <Card style={styles.container}>
       <Card.Title
         title={title}
-        subtitle={description}
-        subtitleNumberOfLines={2}
+        subtitle={description + ' a lot of text a lot of text a lot of text a lot of text a lot of text a lot of text a lot of text a lot of text a lot of text a lot of text '}
+        subtitleNumberOfLines={3}
         left={LeftContent}
         // right={RightContent}
         style={{ padding: 16 }}

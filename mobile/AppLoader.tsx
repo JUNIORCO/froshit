@@ -5,7 +5,7 @@ import { useQuery } from "@tanstack/react-query";
 import QueryKeys from "./hooks/query/QueryKeys";
 import { fetchEvents } from "./api/events";
 import { fetchTeam } from "./api/team";
-import { useGetEvents, useGetOffers, useGetTeam } from "./hooks/query";
+import { useGetEvents, useGetOffers, useGetResources, useGetTeam } from "./hooks/query";
 
 interface LoadingProcess {
   name: string;

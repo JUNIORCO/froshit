@@ -13,7 +13,7 @@ export default function EventList() {
   const { filteredEvents } = useContext(EventsContext);
   const { isRefetchingByUser, refetchByUser } = useRefetchByUser();
 
-  const handleCardClick = (event) => navigation.navigate('Event Details' as any, { ...event });
+  const handleCardClick = (event) => navigation.navigate('Event Details' as any, event);
 
   const renderEventCard = ({ item: event }) => <EventCard {...event} handleCardClick={() => handleCardClick(event)}/>;
 

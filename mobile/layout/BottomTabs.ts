@@ -1,4 +1,4 @@
-import ResourcesScreen from "../screens/ResourcesScreen";
+import ResourcesScreen from "../screens/resources/ResourcesScreen";
 import NotificationsScreen from "../screens/NotificationsScreen";
 import TeamScreen from "../screens/TeamScreen";
 import OffersScreen from "../screens/OffersScreen";
