@@ -10,7 +10,7 @@ export const fetchTeam = async ({ queryKey }: QueryKey): Promise<any> => {
     error
   } = await supabase
     .from(Tables.PROFILE)
-    .select('id, avatarUrl, role, name, phoneNumber, interests, programId (name), teamId (name)')
+    .select('id, role, name, phoneNumber, interests, programId (name), teamId (name)')
     .eq('teamId', id)
     .order('name', { ascending: true });
 

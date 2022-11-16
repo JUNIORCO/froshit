@@ -57,11 +57,11 @@ model University {
   subdomain String @unique
 
   // associations
-  programs     Program[]
-  froshs       Frosh[]
-  profiles     Profile[]
-  resourceTags ResourceTag[]
-  offers       Offer[]
+  programs  Program[]
+  froshs    Frosh[]
+  profiles  Profile[]
+  resources Resource[]
+  offers    Offer[]
 
   // dates
   createdAt DateTime @default(now())
@@ -190,17 +190,11 @@ model ResourceTag {
   icon String
 
   // associations
-  university   University @relation(fields: [universityId], references: [id])
-  universityId String
-
   resources Resource[]
 
   // dates
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
-
-  // constraints
-  @@unique([name, universityId]) // tags in the same university cannot have the same name
 }
 
 model Resource {
@@ -216,6 +210,9 @@ model Resource {
   // associations
   resourceTag   ResourceTag @relation(fields: [resourceTagId], references: [id])
   resourceTagId String
+
+  university   University @relation(fields: [universityId], references: [id])
+  universityId String
 
   // dates
   createdAt DateTime @default(now())

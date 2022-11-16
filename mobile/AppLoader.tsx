@@ -40,6 +40,7 @@ const AppLoader: FC<Props> = memo(props => {
   const { isLoading: eventsIsLoading } = useGetEvents();
   const { isLoading: teamIsLoading } = useGetTeam();
   const { isLoading: offersIsLoading } = useGetOffers();
+  const { isLoading: resourcesIsLoading } = useGetResources();
 
   // As long as not all screens are ready, display splashscreen
   const loadingProcesses: LoadingProcess[] = [
@@ -54,6 +55,10 @@ const AppLoader: FC<Props> = memo(props => {
     {
       name: "fetch_offers",
       isReady: !offersIsLoading,
+    },
+    {
+      name: "fetch_resources",
+      isReady: !resourcesIsLoading,
     },
   ];
 

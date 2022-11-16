@@ -49,21 +49,23 @@ VALUES
 ('fd622850-7ce6-4baf-9a75-f15264305983', 'Ronaldo', 'r9@madrid.com', '1234567810', 'Froshee', 0, ARRAY ['Music','Books']::"Interest"[], 'd426a41b-ab8b-4418-b9ce-d295eba022a1', 'b6aee9eb-4b71-4704-9079-149cc926204c', 'f15ba6dc-e5f6-4361-9d4d-57f1d6e0dc72', 'a2d5b5e4-cb50-4eb2-800c-0e2bd61bfb12', NOW()),
 ('ab49c575-7655-4372-9e59-24fd6f32e8ea', 'Salah', 'salah@liverpool.com', '1234567811', 'Froshee', 100, ARRAY ['Gaming','Netflix']::"Interest"[], '583a9747-6742-4b90-8df3-3b243c80a811', 'd253d913-6402-47e0-a62e-7a630ed3cc2a', '7ab8131e-cf25-47ae-b698-efd6e14766a4', 'ba2d0f12-f90b-4d0d-a540-83c6f453e995', NOW());
 
-INSERT INTO "ResourceTag" ("id", "name", "icon", "universityId", "updatedAt")
+INSERT INTO "ResourceTag" ("id", "name", "icon", "updatedAt")
 VALUES
-('b10a053e-7ba7-485c-bcd7-3669b45b3596', 'Safety', 'shield-account', '1678f7bf-7a13-477c-942c-c85dcadfdd40', NOW()),
-('2d54fc40-8a93-48b7-8490-4a9242cfc310', 'Chants', 'bullhorn-outline', 'b6aee9eb-4b71-4704-9079-149cc926204c', NOW()),
-('6367edcf-cc27-4de0-bb71-73fe24008bac', 'Help', 'help-circle-outline', 'd253d913-6402-47e0-a62e-7a630ed3cc2a', NOW());
+('b10a053e-7ba7-485c-bcd7-3669b45b3596', 'Safety', 'shield-account', NOW()),
+('2d54fc40-8a93-48b7-8490-4a9242cfc310', 'Chants', 'bullhorn-outline', NOW()),
+('6367edcf-cc27-4de0-bb71-73fe24008bac', 'Help', 'help-circle-outline', NOW());
 
-INSERT INTO "Resource" ("id", "resourceTagId", "title", "description", "phoneNumber", "email", "updatedAt")
+INSERT INTO "Resource" ("id", "resourceTagId", "universityId", "title", "description", "phoneNumber", "email", "updatedAt")
 VALUES
-('1f760197-dbe1-4300-84dc-0f6f7c417416', 'b10a053e-7ba7-485c-bcd7-3669b45b3596', 'Drive Safe', 'Drive safe helps you get home', '1234567890', NULL, NOW()),
-('d8f9966d-6a3d-4dea-a3b9-e34a6d865bb2', '2d54fc40-8a93-48b7-8490-4a9242cfc310', 'Engineering Chant', 'Some chant', '1234567890', NULL, NOW()),
-('c0db8960-be94-48e0-8212-6a78adff7a29', '6367edcf-cc27-4de0-bb71-73fe24008bac', 'Some help', 'Some help description', '1234567890', 'something@gmail.com', NOW()),
-('963ef58a-1c09-4852-bd75-3171439a3ac8', 'b10a053e-7ba7-485c-bcd7-3669b45b3596', 'Some safety', 'Something about safety', '1234567890', 'something@gmail.com', NOW());
+('1f760197-dbe1-4300-84dc-0f6f7c417416', 'b10a053e-7ba7-485c-bcd7-3669b45b3596', '1678f7bf-7a13-477c-942c-c85dcadfdd40', 'Drive Safe', 'Drive safe helps you get home', '1234567890', NULL, NOW()),
+('d8f9966d-6a3d-4dea-a3b9-e34a6d865bb2', '2d54fc40-8a93-48b7-8490-4a9242cfc310', '1678f7bf-7a13-477c-942c-c85dcadfdd40', 'Engineering Chant', 'Some chant', '1234567890', NULL, NOW()),
+('c0db8960-be94-48e0-8212-6a78adff7a29', '6367edcf-cc27-4de0-bb71-73fe24008bac', '1678f7bf-7a13-477c-942c-c85dcadfdd40', 'Some help', 'Some help description', '1234567890', 'something@gmail.com', NOW()),
+('963ef58a-1c09-4852-bd75-3171439a3ac8', 'b10a053e-7ba7-485c-bcd7-3669b45b3596', '1678f7bf-7a13-477c-942c-c85dcadfdd40', 'Some safety', 'Something about safety', '1234567890', 'something@gmail.com', NOW());
 
 INSERT INTO "Offer" ("id", "universityId", "title", "description", "location", "provider", "icon", "color", "updatedAt")
 VALUES
 ('2a0ed98b-5a9b-4e68-b846-a15a4c1df906', '1678f7bf-7a13-477c-942c-c85dcadfdd40', 'Buy 1 get 1', 'Valid until Aug 31', '88 Harbour Street', 'Starbucks', 'some icon', 'green', NOW()),
+('78a2cfa9-f977-455d-926e-0f71ffa44836', '1678f7bf-7a13-477c-942c-c85dcadfdd40', 'Buy 1 get 1/2 Price', 'Valid until Aug 31', '88 Harbour Street', 'Starbucks', 'some icon', 'green', NOW()),
+('446fa741-ad0d-4998-976e-6b3ed07a48d4', '1678f7bf-7a13-477c-942c-c85dcadfdd40', 'Free Pizza Slice', 'Valid until Aug 31', '88 Harbour Street', 'Starbucks', 'some icon', 'green', NOW()),
 ('283f9277-89c7-43ff-9dca-db7101b33817', 'b6aee9eb-4b71-4704-9079-149cc926204c', 'Half Off Pizza', 'Valid until Aug 31', '88 Harbour Street', 'Some Provider', 'some icon', 'yellow', NOW()),
 ('e5a29fd5-44a2-40ba-80c7-34538a1f3f69', 'd253d913-6402-47e0-a62e-7a630ed3cc2a', 'Free Ice Cream', 'Valid until Aug 31', '88 Harbour Street', 'Some Other Provider', 'some icon', 'orange', NOW());

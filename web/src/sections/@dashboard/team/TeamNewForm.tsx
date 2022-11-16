@@ -1,25 +1,14 @@
 import * as Yup from 'yup';
-import { useEffect } from 'react';
 import useSWRMutation from 'swr/mutation';
 import { useSnackbar } from 'notistack';
-// next
 import { useRouter } from 'next/router';
-// form
 import { useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
-// @mui
 import { LoadingButton } from '@mui/lab';
 import { Box, Card, Grid, Stack } from '@mui/material';
-// utils
-// routes
 import { PATH_DASHBOARD } from '../../../routes/paths';
-// @types
-// _mock
-// components
 import { FormProvider, RHFSelect, RHFTextField } from '../../../components/hook-form';
 import { RHFMultiSelect } from '../../../components/hook-form/RHFMultiSelect';
-
-// ----------------------------------------------------------------------
 
 const sendTeamCreateRequest = async (url: string, { arg }: any) => {
   const { method, ...team } = arg;

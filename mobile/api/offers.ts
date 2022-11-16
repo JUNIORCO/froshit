@@ -10,7 +10,7 @@ export const fetchOffers = async ({ queryKey }: QueryKey): Promise<any> => {
     error
   } = await supabase
     .from(Tables.OFFER)
-    .select('id, title, description, icon, provider, colour')
+    .select('*')
     .eq('universityId', id)
     .order('provider', { ascending: true });
 
