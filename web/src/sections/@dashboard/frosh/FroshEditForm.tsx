@@ -8,11 +8,8 @@ import { yupResolver } from '@hookform/resolvers/yup';
 import { LoadingButton } from '@mui/lab';
 import { Box, Card, Grid, Stack, Typography } from '@mui/material';
 import { PATH_DASHBOARD } from '../../../routes/paths';
-import { FormProvider, RHFSelect, RHFSlider, RHFTextField } from '../../../components/hook-form';
-import { RHFMultiSelect } from '../../../components/hook-form/RHFMultiSelect';
-import { Frosh, Profile, Role } from '../../../../prisma/types';
-import { UnassignedFrosheesAndLeaders } from '../../../../prisma/user/get';
-import { FullTeam } from '../../../../prisma/team/get';
+import { FormProvider, RHFSlider, RHFTextField } from '../../../components/hook-form';
+import { Frosh } from '../../../../prisma/types';
 
 const sendFroshRequest = async (url: string, { arg }: any) => {
   const res = await fetch(url, {
@@ -46,7 +43,6 @@ export default function FroshEditForm({ currentFrosh }: Props) {
   const NewTeamSchema = Yup.object().shape({
     name: Yup.string().required('Frosh name is required'),
     description: Yup.string().required('Description is required'),
-    imageUrl: Yup.string().url().required('Please upload an image'),
     ticketPrice: Yup.number().required().min(5, 'Ticket price is required'),
   });
 
@@ -54,7 +50,6 @@ export default function FroshEditForm({ currentFrosh }: Props) {
     () => ({
       name: currentFrosh.name,
       description: currentFrosh.description,
-      imageUrl: currentFrosh.imageUrl,
       ticketPrice: currentFrosh.ticketPrice,
     }),
     // eslint-disable-next-line react-hooks/exhaustive-deps

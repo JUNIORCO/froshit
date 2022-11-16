@@ -9,10 +9,7 @@ import { LoadingButton } from '@mui/lab';
 import { Box, Card, Grid, Stack } from '@mui/material';
 import { PATH_DASHBOARD } from '../../../routes/paths';
 import { FormProvider, RHFSelect, RHFTextField } from '../../../components/hook-form';
-import { RHFMultiSelect } from '../../../components/hook-form/RHFMultiSelect';
-import { Frosh, Profile, Role } from '../../../../prisma/types';
-import { UnassignedFrosheesAndLeaders } from '../../../../prisma/user/get';
-import { FullTeam } from '../../../../prisma/team/get';
+import { Frosh } from '../../../../prisma/types';
 import { FullEvent } from '../../../../prisma/events/get';
 import RHFDateTimeRangeSelect from '../../../components/hook-form/RHFDateTimeRangeSelect';
 
@@ -29,14 +26,13 @@ const sendEventRequest = async (url: string, { arg: eventToUpdate }: any) => {
 };
 
 type FormValuesProps = {
-  imageUrl: string | null;
   name: string | null;
   description: string | null;
   startDate: Date | null;
   endDate: Date | null;
   location: string | null;
   accessibility: string | null;
-  froshId: number | null;
+  froshId: string | null;
 };
 
 type Props = {
@@ -45,9 +41,9 @@ type Props = {
 };
 
 export default function EventNewForm({
-                                      currentEvent,
-                                      froshs,
-                                    }: Props) {
+                                       currentEvent,
+                                       froshs,
+                                     }: Props) {
   const { trigger } = useSWRMutation(`/api/event/${currentEvent.id}`, sendEventRequest);
 
   const { push } = useRouter();
@@ -55,7 +51,6 @@ export default function EventNewForm({
   const { enqueueSnackbar } = useSnackbar();
 
   const NewTeamSchema = Yup.object().shape({
-    imageUrl: Yup.string(),
     name: Yup.string().required('Event name is required'),
     description: Yup.string().required('Description is required'),
     startDate: Yup.date().required(),
@@ -65,12 +60,11 @@ export default function EventNewForm({
     ),
     location: Yup.string().required('Location is required'),
     accessibility: Yup.string().required('Accessibility is required'),
-    froshId: Yup.number().required('Frosh is required'),
+    froshId: Yup.string().required('Frosh is required'),
   });
 
   const defaultValues = useMemo(
     () => ({
-      imageUrl: currentEvent.imageUrl,
       name: currentEvent.name,
       description: currentEvent.description,
       startDate: currentEvent.startDate,
@@ -102,7 +96,7 @@ export default function EventNewForm({
 
   const onSubmit = async (updatedEvent: FormValuesProps) => {
     try {
-      console.log(updatedEvent)
+      console.log(updatedEvent);
       await trigger(updatedEvent);
       reset();
       enqueueSnackbar('Update success!');

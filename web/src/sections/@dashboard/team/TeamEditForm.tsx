@@ -28,9 +28,9 @@ const sendTeamRequest = async (url: string, { arg }: any) => {
 
 type FormValuesProps = {
   name: string;
-  froshId: number;
-  leaderIds: number[];
-  frosheeIds: number[];
+  froshId: string;
+  leaderIds: string[];
+  frosheeIds: string[];
 };
 
 type Props = {
@@ -67,7 +67,7 @@ export default function TeamNewForm({
 
   const NewTeamSchema = Yup.object().shape({
     name: Yup.string().required('Team name is required'),
-    froshId: Yup.number().required('Frosh is required'),
+    froshId: Yup.string().required('Frosh is required'),
     leaderIds: Yup.array().optional(),
     frosheeIds: Yup.array().optional(),
   });

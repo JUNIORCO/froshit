@@ -12,7 +12,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
           name,
           froshId,
           profiles: {
-            connect: profiles.map((profileId) => ({ id: profileId })),
+            connect: profiles.map((profileId) => ({ id: profileId })) as any,
           },
         },
       });

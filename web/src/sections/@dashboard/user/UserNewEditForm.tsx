@@ -60,11 +60,10 @@ export default function UserNewEditForm({
     email: Yup.string().required('Email is required').email(),
     phoneNumber: Yup.string().required('Phone number is required'),
     role: Yup.string().required('Role Number is required'),
-    avatarUrl: Yup.string().optional(),
-    programId: Yup.number().optional(),
+    programId: Yup.string().optional(),
     interests: Yup.array().optional(),
-    froshId: Yup.number().optional(),
-    teamId: Yup.number().optional(),
+    froshId: Yup.string().optional(),
+    teamId: Yup.string().optional(),
   });
 
   const defaultValues = useMemo(
@@ -73,7 +72,6 @@ export default function UserNewEditForm({
       email: currentUser?.email || '',
       phoneNumber: currentUser?.phoneNumber || '',
       role: currentUser?.role || '',
-      avatarUrl: currentUser?.avatarUrl || '',
       programId: currentUser?.programId || '',
       interests: currentUser?.interests || [],
       froshId: currentUser?.froshId || '',

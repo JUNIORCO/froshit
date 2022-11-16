@@ -36,7 +36,7 @@ type Props = {
   currentFrosh: Frosh;
 };
 
-export default function FroshEditForm({ currentFrosh }: Props) {
+export default function OfferEditForm({ currentFrosh }: Props) {
   const { trigger } = useSWRMutation(`/api/frosh/${currentFrosh.id}`, sendFroshRequest);
 
   const { push } = useRouter();
@@ -46,7 +46,6 @@ export default function FroshEditForm({ currentFrosh }: Props) {
   const NewTeamSchema = Yup.object().shape({
     name: Yup.string().required('Frosh name is required'),
     description: Yup.string().required('Description is required'),
-    imageUrl: Yup.string().url().required('Please upload an image'),
     ticketPrice: Yup.number().required().min(5, 'Ticket price is required'),
   });
 
@@ -54,7 +53,6 @@ export default function FroshEditForm({ currentFrosh }: Props) {
     () => ({
       name: currentFrosh.name,
       description: currentFrosh.description,
-      imageUrl: currentFrosh.imageUrl,
       ticketPrice: currentFrosh.ticketPrice,
     }),
     // eslint-disable-next-line react-hooks/exhaustive-deps

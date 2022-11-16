@@ -5,7 +5,7 @@ import type { Prisma } from '../../../../prisma/types';
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
   try {
     if (req.method === 'PATCH') {
-      const { id } = req.query;
+      const { id } = req.query as any;
 
       if (!id) {
         throw new Error('No id found');
@@ -16,7 +16,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 
       const currentTeam = await prisma.team.findUniqueOrThrow({
         where: {
-          id: Number(id),
+          id,
         },
         include: {
           profiles: true,
@@ -24,11 +24,11 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       });
 
       const idsToDisconnect = currentTeam.profiles.map(({ id }) => ({ id }));
-      const idsToConnect = profiles.map((profileId) => ({ id: profileId }));
+      const idsToConnect = profiles.map((profileId) => ({ id: profileId })) as any;
 
       const user = await prisma.team.update({
         where: {
-          id: Number(id),
+          id,
         },
         data: {
           name,

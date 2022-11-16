@@ -5,7 +5,7 @@ import type { Prisma } from '../../../../prisma/types';
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
   try {
     if (req.method === 'PATCH') {
-      const { id } = req.query;
+      const { id } = req.query as any;
 
       if (!id) {
         res.status(400).end('No id found');
