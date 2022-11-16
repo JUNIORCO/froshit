@@ -24,14 +24,13 @@ const sendEventCreateRequest = async (url: string, { arg: eventToCreate }: any) 
 };
 
 type FormValuesProps = {
-  imageUrl: string | null;
   name: string | null;
   description: string | null;
   startDate: Date | null;
   endDate: Date | null;
   location: string | null;
   accessibility: string | null;
-  froshId: number | null;
+  froshId: string | null;
 };
 
 type Props = {
@@ -46,7 +45,6 @@ export default function EventNewForm({ froshs }: Props) {
   const { enqueueSnackbar } = useSnackbar();
 
   const NewEventSchema = Yup.object().shape({
-    imageUrl: Yup.string(),
     name: Yup.string().required('Event name is required'),
     description: Yup.string().required('Description is required'),
     startDate: Yup.date().required(),
@@ -56,18 +54,17 @@ export default function EventNewForm({ froshs }: Props) {
     ),
     location: Yup.string().required('Location is required'),
     accessibility: Yup.string().required('Accessibility is required'),
-    froshId: Yup.number().required('Frosh is required'),
+    froshId: Yup.string().required('Frosh is required'),
   });
 
   const defaultValues = {
-    imageUrl: '',
     name: '',
     description: '',
     startDate: null,
     endDate: null,
     location: '',
     accessibility: '',
-    froshId: null,
+    froshId: '',
   };
 
   const methods = useForm<FormValuesProps>({
@@ -131,7 +128,7 @@ export default function EventNewForm({ froshs }: Props) {
 
             <Stack alignItems='flex-end' sx={{ mt: 3 }}>
               <LoadingButton type='submit' variant='contained' loading={isSubmitting}>
-                Create Team
+                Create Event
               </LoadingButton>
             </Stack>
           </Card>
