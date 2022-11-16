@@ -78,6 +78,18 @@ export const PATH_DASHBOARD = {
     edit: (id: string) => path(ROOTS_DASHBOARD, `/offer/${id}/edit`),
     view: (id: string) => path(ROOTS_DASHBOARD, `/offer/${id}/view`),
   },
+  resource: {
+    root: path(ROOTS_DASHBOARD, '/resources'),
+    new: path(ROOTS_DASHBOARD, '/resources/new'),
+    edit: (id: string) => path(ROOTS_DASHBOARD, `/resource/${id}/edit`),
+    view: (id: string) => path(ROOTS_DASHBOARD, `/resource/${id}/view`),
+  },
+  resourceTag: {
+    root: path(ROOTS_DASHBOARD, '/resourceTag'),
+    new: path(ROOTS_DASHBOARD, '/resourceTag/new'),
+    edit: (id: string) => path(ROOTS_DASHBOARD, `/resourceTag/${id}/edit`),
+    view: (id: string) => path(ROOTS_DASHBOARD, `/resourceTag/${id}/view`),
+  },
   mail: {
     root: path(ROOTS_DASHBOARD, '/mail'),
     all: path(ROOTS_DASHBOARD, '/mail/all'),

@@ -68,11 +68,11 @@ const navConfig = [
       },
       {
         title: 'Resources',
-        path: PATH_DASHBOARD.blog.root,
+        path: PATH_DASHBOARD.resource.root,
         icon: ICONS.resource,
         children: [
-          { title: 'Resources', path: PATH_DASHBOARD.user.root },
-          { title: 'Tags', path: PATH_DASHBOARD.user.root },
+          { title: 'Resources', path: PATH_DASHBOARD.resource.root },
+          { title: 'Tags', path: PATH_DASHBOARD.resourceTag.root },
         ],
       },
       {
