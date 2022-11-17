@@ -9,82 +9,61 @@ import { LoadingButton } from '@mui/lab';
 import { Box, Card, Grid, Stack } from '@mui/material';
 import { PATH_DASHBOARD } from '../../../routes/paths';
 import { FormProvider, RHFSelect, RHFTextField } from '../../../components/hook-form';
-import { RHFMultiSelect } from '../../../components/hook-form/RHFMultiSelect';
-import { Frosh, Profile, Role } from '../../../../prisma/types';
-import { UnassignedFrosheesAndLeaders } from '../../../../prisma/user/get';
-import { FullTeam } from '../../../../prisma/team/get';
+import { ResourceTag } from '../../../../prisma/types';
+import { FullResource } from '../../../../prisma/resources/get';
 
-const sendTeamRequest = async (url: string, { arg }: any) => {
+const sendResourceEditRequest = async (url: string, { arg: resource }: any) => {
   const res = await fetch(url, {
     method: 'PATCH',
     headers: {
       'Accept': 'application/json',
       'Content-Type': 'application/json',
     },
-    body: JSON.stringify(arg),
+    body: JSON.stringify(resource),
   });
   return res.json();
 };
 
 type FormValuesProps = {
   name: string;
-  froshId: string;
-  leaderIds: string[];
-  frosheeIds: string[];
+  description: string;
+  ticketPrice: number;
 };
 
 type Props = {
-  currentTeam: FullTeam;
-  froshs: Frosh[];
-  profiles: UnassignedFrosheesAndLeaders[];
-};
+  resource: FullResource;
+  resourceTags: ResourceTag[];
+}
 
-export default function TeamNewForm({
-                                      currentTeam,
-                                      froshs,
-                                      profiles,
-                                    }: Props) {
-  const { trigger } = useSWRMutation(`/api/team/${currentTeam.id}`, sendTeamRequest);
+export default function ResourceEditForm({ resource, resourceTags }: Props) {
+  const { trigger } = useSWRMutation(`/api/resource/${resource.id}`, sendResourceEditRequest);
 
   const { push } = useRouter();
 
   const { enqueueSnackbar } = useSnackbar();
 
-  const currentTeamLeaders: Profile[] = currentTeam.profiles?.filter((profile) => profile.role === Role.Leader) || [];
-  const currentTeamFroshees: Profile[] = currentTeam.profiles?.filter((profile) => profile.role === Role.Froshee) || [];
-
-  const currentTeamLeadersOptions = currentTeamLeaders.map((leader) => ({ label: leader.name, value: leader.id }));
-  const currentTeamFrosheeOptions = currentTeamFroshees.map((froshee) => ({ label: froshee.name, value: froshee.id }));
-
-  const allLeaderOptions = profiles.filter((profile) => profile.role === Role.Leader).map((leader) => ({
-    label: leader.name,
-    value: leader.id,
-  })).concat(currentTeamLeadersOptions);
-  const allFrosheeOptions = profiles.filter((profile) => profile.role === Role.Froshee).map((froshee) => ({
-    label: froshee.name,
-    value: froshee.id,
-  })).concat(currentTeamFrosheeOptions);
-
-  const NewTeamSchema = Yup.object().shape({
-    name: Yup.string().required('Team name is required'),
-    froshId: Yup.string().required('Frosh is required'),
-    leaderIds: Yup.array().optional(),
-    frosheeIds: Yup.array().optional(),
+  const NewResourceSchema = Yup.object().shape({
+    title: Yup.string().required('Title is required'),
+    description: Yup.string().required('Description is required'),
+    phoneNumber: Yup.string().optional(),
+    email: Yup.string().email().optional(),
+    resourceTagId: Yup.string().required('Tag is required'),
   });
 
   const defaultValues = useMemo(
     () => ({
-      name: currentTeam.name,
-      froshId: currentTeam.froshId,
-      leaderIds: currentTeamLeaders.map(leader => leader.id),
-      frosheeIds: currentTeamFroshees.map(froshee => froshee.id),
+      title: resource.title || '',
+      description: resource.description || '',
+      phoneNumber: resource.phoneNumber || '',
+      email: resource.email || '',
+      resourceTagId: resource.resourceTagId || '',
     }),
     // eslint-disable-next-line react-hooks/exhaustive-deps
-    [currentTeam],
+    [resource],
   );
 
   const methods = useForm<FormValuesProps>({
-    resolver: yupResolver(NewTeamSchema),
+    resolver: yupResolver(NewResourceSchema),
     defaultValues,
   });
 
@@ -95,24 +74,18 @@ export default function TeamNewForm({
   } = methods;
 
   useEffect(() => {
-    if (currentTeam) {
+    if (resource) {
       reset(defaultValues);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [currentTeam]);
+  }, [resource]);
 
-  const onSubmit = async ({
-                            name,
-                            froshId,
-                            leaderIds,
-                            frosheeIds,
-                          }: FormValuesProps) => {
+  const onSubmit = async (resourceToUpdate: FormValuesProps) => {
     try {
-      const teamToUpdate = { name, froshId, profiles: leaderIds.concat(frosheeIds) };
-      await trigger(teamToUpdate);
+      await trigger({ ...resourceToUpdate, universityId: '1678f7bf-7a13-477c-942c-c85dcadfdd40' });
       reset();
       enqueueSnackbar('Update success!');
-      push(PATH_DASHBOARD.team.root);
+      void push(PATH_DASHBOARD.resource.root);
     } catch (error) {
       console.error(error);
     }
@@ -131,28 +104,22 @@ export default function TeamNewForm({
                 gridTemplateColumns: { xs: 'repeat(1, 1fr)', sm: 'repeat(2, 1fr)' },
               }}
             >
-              <RHFTextField name='name' label='Team Name' />
+              <RHFTextField name='title' label='Title' />
 
-              <RHFSelect name='froshId' label='Frosh' placeholder='Frosh'>
+              <RHFTextField name='description' label='Description' />
+
+              <RHFTextField name='phoneNumber' label='Phone Number' />
+
+              <RHFTextField name='email' label='Email' />
+
+              <RHFSelect name='resourceTagId' label='Tag' placeholder='Tag'>
                 <option value='' />
-                {froshs.map((frosh) => (
-                  <option key={frosh.id} value={frosh.id}>
-                    {frosh.name}
+                {resourceTags.map((tag) => (
+                  <option key={tag.id} value={tag.id}>
+                    {tag.name}
                   </option>
                 ))}
               </RHFSelect>
-
-              <RHFMultiSelect
-                name='leaderIds'
-                label='Leaders'
-                options={allLeaderOptions}
-              />
-
-              <RHFMultiSelect
-                name='frosheeIds'
-                label='Froshees'
-                options={allFrosheeOptions}
-              />
             </Box>
 
             <Stack alignItems='flex-end' sx={{ mt: 3 }}>

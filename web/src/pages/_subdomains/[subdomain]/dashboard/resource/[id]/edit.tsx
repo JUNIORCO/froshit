@@ -3,40 +3,39 @@ import useSettings from '../../../../../../hooks/useSettings';
 import Layout from '../../../../../../layouts';
 import Page from '../../../../../../components/Page';
 import { GetServerSideProps } from 'next';
-import { getUnassignedFrosheesAndLeaders, UnassignedFrosheesAndLeaders } from '../../../../../../../prisma/user/get';
-import { getFroshs } from '../../../../../../../prisma/froshs/get';
-import { FullTeam, getTeamById } from '../../../../../../../prisma/team/get';
-import type { Frosh } from '../../../../../../../prisma/types';
+import { ResourceTag } from '../../../../../../../prisma/types';
 import TeamEditForm from '../../../../../../sections/@dashboard/team/TeamEditForm';
 import HeaderBreadcrumbs from '../../../../../../components/HeaderBreadcrumbs';
 import { PATH_DASHBOARD } from '../../../../../../routes/paths';
 import { Query } from '../../../../../../@types/query';
+import { FullResource, getResourceById } from '../../../../../../../prisma/resources/get';
+import { getResourceTags } from '../../../../../../../prisma/resources/resourceTags';
+import ResourceEditForm from '../../../../../../sections/@dashboard/resource/ResourceEditForm';
 
-TeamEdit.getLayout = function getLayout(page: React.ReactElement) {
+ResourceEdit.getLayout = function getLayout(page: React.ReactElement) {
   return <Layout>{page}</Layout>;
 };
 
 type Props = {
-  team: FullTeam;
-  froshs: Frosh[];
-  profiles: UnassignedFrosheesAndLeaders[];
+  resource: FullResource;
+  resourceTags: ResourceTag[];
 }
 
-export default function TeamEdit({ team, froshs, profiles }: Props) {
+export default function ResourceEdit({ resource, resourceTags }: Props) {
   const { themeStretch } = useSettings();
 
   return (
-    <Page title='Team Edit'>
+    <Page title='Resource Edit'>
       <Container maxWidth={themeStretch ? false : 'lg'}>
         <HeaderBreadcrumbs
-          heading='Edit Team'
+          heading='Edit Resource'
           links={[
             { name: 'Dashboard', href: PATH_DASHBOARD.root },
-            { name: 'Team', href: PATH_DASHBOARD.team.root },
+            { name: 'Resource', href: PATH_DASHBOARD.resource.root },
             { name: 'Edit' },
           ]}
         />
-        <TeamEditForm currentTeam={team} froshs={froshs} profiles={profiles} />
+        <ResourceEditForm resource={resource} resourceTags={resourceTags} />
       </Container>
     </Page>
   );
@@ -45,15 +44,13 @@ export default function TeamEdit({ team, froshs, profiles }: Props) {
 export const getServerSideProps: GetServerSideProps = async (ctx) => {
   const { subdomain, id } = ctx.query as Query;
 
-  const team = await getTeamById(id);
-  const froshs = await getFroshs();
-  const profiles = await getUnassignedFrosheesAndLeaders();
+  const resource = await getResourceById(id);
+  const resourceTags = await getResourceTags();
 
   return {
     props: {
-      team,
-      froshs,
-      profiles,
+      resource,
+      resourceTags,
     },
   };
 };

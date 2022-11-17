@@ -1,49 +1,48 @@
-// @mui
 import { Container } from '@mui/material';
-// routes
 import { PATH_DASHBOARD } from '../../../../../routes/paths';
-// hooks
 import useSettings from '../../../../../hooks/useSettings';
 import Layout from '../../../../../layouts';
 import Page from '../../../../../components/Page';
 import HeaderBreadcrumbs from '../../../../../components/HeaderBreadcrumbs';
 import { GetServerSideProps } from 'next';
-import { getFroshs } from '../../../../../../prisma/froshs/get';
-import { getUnassignedFrosheesAndLeaders } from '../../../../../../prisma/user/get';
-import TeamNewForm from '../../../../../sections/@dashboard/team/TeamNewForm';
+import { getResourceTags } from '../../../../../../prisma/resources/resourceTags';
+import { ResourceTag } from 'prisma/types';
+import ResourceNewForm from '../../../../../sections/@dashboard/resource/ResourceNewForm';
 
-TeamCreate.getLayout = function getLayout(page: React.ReactElement) {
+ResourceCreate.getLayout = function getLayout(page: React.ReactElement) {
   return <Layout>{page}</Layout>;
 };
 
-export default function TeamCreate({ froshs, profiles }: any) {
+type Props = {
+  resourceTags: ResourceTag[];
+}
+
+export default function ResourceCreate({ resourceTags }: Props) {
   const { themeStretch } = useSettings();
 
   return (
-    <Page title='Create Team'>
+    <Page title='Create Resource'>
       <Container maxWidth={themeStretch ? false : 'lg'}>
         <HeaderBreadcrumbs
-          heading='Create a New Team'
+          heading='Create a New Resource'
           links={[
             { name: 'Dashboard', href: PATH_DASHBOARD.root },
-            { name: 'Team', href: PATH_DASHBOARD.team.root },
+            { name: 'Resource', href: PATH_DASHBOARD.resource.root },
             { name: 'New' },
           ]}
         />
-        <TeamNewForm froshs={froshs} profiles={profiles} />
+        <ResourceNewForm resourceTags={resourceTags} />
       </Container>
     </Page>
   );
 }
 
 export const getServerSideProps: GetServerSideProps = async (ctx) => {
-  const froshs = await getFroshs();
-  const profiles = await getUnassignedFrosheesAndLeaders();
+  const resourceTags = await getResourceTags();
 
   return {
     props: {
-      froshs,
-      profiles,
+      resourceTags,
     },
   };
 };

@@ -8,87 +8,74 @@ import { LoadingButton } from '@mui/lab';
 import { Box, Card, Grid, Stack } from '@mui/material';
 import { PATH_DASHBOARD } from '../../../routes/paths';
 import { FormProvider, RHFSelect, RHFTextField } from '../../../components/hook-form';
-import { RHFMultiSelect } from '../../../components/hook-form/RHFMultiSelect';
+import { ResourceTag } from 'prisma/types';
 
-const sendTeamCreateRequest = async (url: string, { arg }: any) => {
-  const { method, ...team } = arg;
+const sendResourceCreateRequest = async (url: string, { arg: resource }: any) => {
   const res = await fetch(url, {
     method: 'POST',
     headers: {
       'Accept': 'application/json',
       'Content-Type': 'application/json',
     },
-    body: JSON.stringify(team),
+    body: JSON.stringify(resource),
   });
   return res.json();
 };
 
 type FormValuesProps = {
-  name: string;
-  froshId: string;
-  leaders: any[];
-  froshees: any[];
+  title: string;
+  description: string;
+  phoneNumber?: string;
+  email?: string;
+  resourceTagId: string;
 };
 
 type Props = {
-  isEdit?: boolean;
-  currentTeam?: any;
-  froshs: any[];
-  profiles: any[];
+  resourceTags: ResourceTag[];
 };
 
 export default function ResourceNewForm({
-                                      froshs,
-                                      profiles = [],
-                                    }: Props) {
-  const { trigger } = useSWRMutation('/api/team', sendTeamCreateRequest);
+                                          resourceTags,
+                                        }: Props) {
+  const { trigger } = useSWRMutation('/api/resource', sendResourceCreateRequest);
 
   const { push } = useRouter();
 
   const { enqueueSnackbar } = useSnackbar();
 
-  const NewTeamSchema = Yup.object().shape({
-    name: Yup.string().required('Team name is required'),
-    froshId: Yup.string().required('Frosh is required'),
-    leaders: Yup.array().optional(),
-    froshees: Yup.array().optional(),
+  const NewResourceSchema = Yup.object().shape({
+    title: Yup.string().required('Title is required'),
+    description: Yup.string().required('Description is required'),
+    phoneNumber: Yup.string().optional(),
+    email: Yup.string().email().optional(),
+    resourceTagId: Yup.string().required('Tag is required'),
   });
 
   const defaultValues = {
-    name: '',
-    froshId: '',
-    leaders: [],
-    froshees: [],
+    title: '',
+    description: '',
+    phoneNumber: '',
+    email: '',
+    resourceTagId: '',
   };
 
   const methods = useForm<FormValuesProps>({
-    resolver: yupResolver(NewTeamSchema),
+    resolver: yupResolver(NewResourceSchema),
     defaultValues,
   });
 
   const {
     reset,
-    watch,
-    control,
-    setValue,
     handleSubmit,
     formState: { isSubmitting },
   } = methods;
 
-  const values = watch();
-
-  const onSubmit = async ({
-                            name,
-                            froshId,
-                            leaders,
-                            froshees,
-                          }: FormValuesProps) => {
+  const onSubmit = async (payload: FormValuesProps) => {
     try {
-      const teamToCreate = { name, froshId, profiles: leaders.concat(froshees) };
-      await trigger(teamToCreate);
+      await trigger({ ...payload, universityId: '1678f7bf-7a13-477c-942c-c85dcadfdd40' });
       reset();
       enqueueSnackbar('Create success!');
-      push(PATH_DASHBOARD.team.root);
+      push(PATH_DASHBOARD.resource.root);
     } catch (error) {
       console.error(error);
     }
@@ -107,41 +94,27 @@ export default function ResourceNewForm({
                 gridTemplateColumns: { xs: 'repeat(1, 1fr)', sm: 'repeat(2, 1fr)' },
               }}
             >
-              <RHFTextField name='name' label='Team Name' />
+              <RHFTextField name='title' label='Title' />
 
-              <RHFSelect name='froshId' label='Frosh' placeholder='Frosh'>
+              <RHFTextField name='description' label='Description' />
+
+              <RHFTextField name='phoneNumber' label='Phone Number' />
+
+              <RHFTextField name='email' label='Email' />
+
+              <RHFSelect name='resourceTagId' label='Tag' placeholder='Tag'>
                 <option value='' />
-                {froshs.map((frosh) => (
-                  <option key={frosh.id} value={frosh.id}>
-                    {frosh.name}
+                {resourceTags.map((tag) => (
+                  <option key={tag.id} value={tag.id}>
+                    {tag.name}
                   </option>
                 ))}
               </RHFSelect>
-
-              <RHFMultiSelect
-                name='leaders'
-                label='Unassigned Leaders'
-                options={profiles
-                  .filter((profile: any) => profile.role === 'Leader').map((profile) => ({
-                    label: profile.name,
-                    value: profile.id,
-                  }))}
-              />
-
-              <RHFMultiSelect
-                name='froshees'
-                label='Unassigned Froshees'
-                options={profiles
-                  .filter((profile: any) => profile.role === 'Froshee').map((profile) => ({
-                    label: profile.name,
-                    value: profile.id,
-                  }))}
-              />
             </Box>
 
             <Stack alignItems='flex-end' sx={{ mt: 3 }}>
               <LoadingButton type='submit' variant='contained' loading={isSubmitting}>
-                Create Team
+                Create Resource
               </LoadingButton>
             </Stack>
           </Card>

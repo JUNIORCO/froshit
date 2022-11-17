@@ -11,3 +11,15 @@ export const getResources = async (): Promise<FullResource[]> => prisma.resource
     resourceTag: true,
   },
 });
+
+/**
+ * Gets resource by id.
+ */
+export const getResourceById = async (id: string): Promise<FullResource> => prisma.resource.findUniqueOrThrow({
+  where: {
+    id,
+  },
+  include: {
+    resourceTag: true,
+  },
+});
