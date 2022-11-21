@@ -24,9 +24,9 @@ jobs:
 
         with:
           node-version: ${{ matrix.node-version }}
-      - run: |
-          apt-get update
-          apt-get install --yes --no-install-recommends postgresql-client
+#      - run: |
+#          apt-get update
+#          apt-get install --yes --no-install-recommends postgresql-client
       - run: npm run supabase:reset
       - run: npm run prisma:db-push
       - run: PGPASSWORD=$PG_PASSWORD psql -h db.mybvkrkmvnuzeqvzgbzg.supabase.co -p 5432 -d postgres -U postgres -f web/supabase/scripts/seed.sql
