@@ -40,12 +40,12 @@ export default class MyDocument extends Document {
 
           <meta
             name="description"
-            content="The starting point for your next project with Minimal UI Kit, built on the newest version of Material-UI ©, ready to be customized to your style"
+            content="FROSHIT is an all-in-one platform for managing Frosh, encompassing payment, registration, administration, and a mobile app for Froshees."
           />
 
-          <meta name="keywords" content="react,material,kit,application,dashboard,admin,template" />
+          <meta name="keywords" content="frosh,university,orientation,freshman,freshmen,canada" />
 
-          <meta name="author" content="Minimal UI Kit" />
+          <meta name="author" content="FROSHIT" />
         </Head>
 
         <body>
