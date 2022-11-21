@@ -1,3 +1,5 @@
+// @ts-nocheck
+
 // i18n
 import '../locales/i18n';
 
@@ -30,11 +32,11 @@ import '@fullcalendar/common/main.min.css';
 import '@fullcalendar/daygrid/main.min.css';
 
 import cookie from 'cookie';
-import { ReactElement, ReactNode } from 'react';
+import { ReactElement, ReactNode, useMemo, useState } from 'react';
 // next
 import { NextPage } from 'next';
 import Head from 'next/head';
-import App, { AppProps, AppContext } from 'next/app';
+import App, { AppContext, AppProps } from 'next/app';
 //
 import { Provider as ReduxProvider } from 'react-redux';
 // @mui
@@ -59,55 +61,64 @@ import MotionLazyContainer from '../components/animate/MotionLazyContainer';
 
 // Check our docs
 // https://docs-minimals.vercel.app/authentication/ts-version
-
-import { AuthProvider } from '../contexts/JWTContext';
+// import { AuthProvider } from '../contexts/JWTContext';
 // import { AuthProvider } from '../contexts/Auth0Context';
 // import { AuthProvider } from '../contexts/FirebaseContext';
 // import { AuthProvider } from '../contexts/AwsCognitoContext';
-
+import { createBrowserSupabaseClient } from '@supabase/auth-helpers-nextjs';
+import { Session, SessionContextProvider } from '@supabase/auth-helpers-react';
+import { ProfileProvider } from '../contexts/ProfileContext';
 // ----------------------------------------------------------------------
 
 type NextPageWithLayout = NextPage & {
   getLayout?: (page: ReactElement) => ReactNode;
 };
 
-interface MyAppProps extends AppProps {
+interface MyAppProps extends AppProps<{ initialSession: Session }> {
   settings: SettingsValueProps;
   Component: NextPageWithLayout;
+  subdomain: string | undefined;
+  profile: any | null;
 }
 
 export default function MyApp(props: MyAppProps) {
-  const { Component, pageProps, settings } = props;
+  const { Component, pageProps, settings, subdomain, profile } = props;
+  const [supabaseClient] = useState(() => createBrowserSupabaseClient());
 
   const getLayout = Component.getLayout ?? ((page) => page);
 
   return (
     <>
       <Head>
-        <meta name='viewport' content='initial-scale=1, width=device-width, user-scalable=no'/>
+        <meta name='viewport' content='initial-scale=1, width=device-width, user-scalable=no' />
       </Head>
 
-      <AuthProvider>
-        <ReduxProvider store={store}>
-          <LocalizationProvider dateAdapter={AdapterDateFns}>
-            <CollapseDrawerProvider>
-              <SettingsProvider defaultSettings={settings}>
-                <MotionLazyContainer>
-                  <ThemeProvider>
-                    <ThemeSettings>
-                      <NotistackProvider>
-                        <ChartStyle />
-                        <ProgressBar />
-                        {getLayout(<Component {...pageProps} />)}
-                      </NotistackProvider>
-                    </ThemeSettings>
-                  </ThemeProvider>
-                </MotionLazyContainer>
-              </SettingsProvider>
-            </CollapseDrawerProvider>
-          </LocalizationProvider>
-        </ReduxProvider>
-      </AuthProvider>
+      <SessionContextProvider
+        supabaseClient={supabaseClient}
+        initialSession={pageProps.initialSession}
+      >
+        <ProfileProvider profile={profile}>
+          <ReduxProvider store={store}>
+            <LocalizationProvider dateAdapter={AdapterDateFns}>
+              <CollapseDrawerProvider>
+                <SettingsProvider defaultSettings={settings}>
+                  <MotionLazyContainer>
+                    <ThemeProvider>
+                      <ThemeSettings>
+                        <NotistackProvider>
+                          <ChartStyle />
+                          <ProgressBar />
+                          {getLayout(<Component {...pageProps} subdomain={subdomain} profile={profile} />)}
+                        </NotistackProvider>
+                      </ThemeSettings>
+                    </ThemeProvider>
+                  </MotionLazyContainer>
+                </SettingsProvider>
+              </CollapseDrawerProvider>
+            </LocalizationProvider>
+          </ReduxProvider>
+        </ProfileProvider>
+      </SessionContextProvider>
     </>
   );
 }
@@ -116,15 +127,20 @@ export default function MyApp(props: MyAppProps) {
 
 MyApp.getInitialProps = async (context: AppContext) => {
   const appProps = await App.getInitialProps(context);
+  const { subdomain } = context.ctx.query;
 
   const cookies = cookie.parse(
-    context.ctx.req ? context.ctx.req.headers.cookie || '' : document.cookie
+    context.ctx.req ? context.ctx.req.headers.cookie || '' : document.cookie,
   );
 
   const settings = getSettings(cookies);
 
+  const profile = cookies.profile ? JSON.parse(cookies.profile) : null;
+
   return {
     ...appProps,
     settings,
+    subdomain,
+    profile,
   };
 };

@@ -6,10 +6,11 @@ import { Profile } from '../../../../@types/user';
 // utils
 import cssStyles from '../../../../utils/cssStyles';
 // hooks
-import useAuth from '../../../../hooks/useAuth';
 // components
 import MyAvatar from '../../../../components/MyAvatar';
 import Image from '../../../../components/Image';
+import { useUser } from '@supabase/auth-helpers-react';
+import useProfile from '../../../../hooks/useProfile';
 
 // ----------------------------------------------------------------------
 
@@ -18,7 +19,7 @@ const RootStyle = styled('div')(({ theme }) => ({
     ...cssStyles().bgBlur({ blur: 2, color: theme.palette.primary.darker }),
     top: 0,
     zIndex: 9,
-    content: "''",
+    content: '\'\'',
     width: '100%',
     height: '100%',
     position: 'absolute',
@@ -47,7 +48,7 @@ type Props = {
 };
 
 export default function ProfileCover({ myProfile }: Props) {
-  const { user } = useAuth();
+  const { profile } = useProfile();
   const { position, cover } = myProfile;
 
   return (
@@ -71,12 +72,12 @@ export default function ProfileCover({ myProfile }: Props) {
             textAlign: { xs: 'center', md: 'left' },
           }}
         >
-          <Typography variant="h4">{user?.displayName}</Typography>
+          <Typography variant='h4'>{profile?.firstName}</Typography>
           <Typography sx={{ opacity: 0.72 }}>{position}</Typography>
         </Box>
       </InfoStyle>
       <Image
-        alt="profile cover"
+        alt='profile cover'
         src={cover}
         sx={{ position: 'absolute', top: 0, left: 0, right: 0, bottom: 0 }}
       />

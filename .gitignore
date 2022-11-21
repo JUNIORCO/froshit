@@ -41,9 +41,10 @@
 
 # vercel
 /web/.vercel
-
 /web/_static
 
+# prisma
+/web/prisma/migrations/migration_lock.toml
 
 
 ### mobile ###

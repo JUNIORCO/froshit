@@ -1,14 +1,8 @@
 import { m } from 'framer-motion';
-// @mui
 import { Container, Typography } from '@mui/material';
-// hooks
-import useAuth from '../hooks/useAuth';
-// components
 import { MotionContainer, varBounce } from '../components/animate';
-// assets
 import { ForbiddenIllustration } from '../assets';
-
-// ----------------------------------------------------------------------
+import { useUser } from '@supabase/auth-helpers-react';
 
 type RoleBasedGuardProp = {
   hasContent?: boolean;
@@ -18,16 +12,16 @@ type RoleBasedGuardProp = {
 
 export default function RoleBasedGuard({ hasContent, roles, children }: RoleBasedGuardProp) {
   // Logic here to get current user role
-  const { user } = useAuth();
+  const user = useUser();
 
   // const currentRole = 'user';
   const currentRole = user?.role; // admin;
 
-  if (typeof roles !== 'undefined' && !roles.includes(currentRole)) {
+  if (typeof roles !== 'undefined' && currentRole && !roles.includes(currentRole)) {
     return hasContent ? (
       <Container component={MotionContainer} sx={{ textAlign: 'center' }}>
         <m.div variants={varBounce().in}>
-          <Typography variant="h3" paragraph>
+          <Typography variant='h3' paragraph>
             Permission Denied
           </Typography>
         </m.div>

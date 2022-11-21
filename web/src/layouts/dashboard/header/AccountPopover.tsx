@@ -5,18 +5,17 @@ import NextLink from 'next/link';
 import { useRouter } from 'next/router';
 // @mui
 import { alpha } from '@mui/material/styles';
-import { Box, Divider, Typography, Stack, MenuItem } from '@mui/material';
+import { Box, Divider, MenuItem, Stack, Typography } from '@mui/material';
 // routes
-import { PATH_DASHBOARD, PATH_AUTH } from '../../../routes/paths';
+import { PATH_AUTH, PATH_DASHBOARD } from '../../../routes/paths';
 // hooks
-import useAuth from '../../../hooks/useAuth';
 import useIsMountedRef from '../../../hooks/useIsMountedRef';
 // components
 import MyAvatar from '../../../components/MyAvatar';
 import MenuPopover from '../../../components/MenuPopover';
 import { IconButtonAnimate } from '../../../components/animate';
-
-// ----------------------------------------------------------------------
+import { useSupabaseClient } from '@supabase/auth-helpers-react';
+import useProfile from '../../../hooks/useProfile';
 
 const MENU_OPTIONS = [
   {
@@ -33,12 +32,11 @@ const MENU_OPTIONS = [
   },
 ];
 
-// ----------------------------------------------------------------------
-
 export default function AccountPopover() {
   const router = useRouter();
 
-  const { user, logout } = useAuth();
+  const { profile } = useProfile();
+  const supabaseClient = useSupabaseClient();
 
   const isMountedRef = useIsMountedRef();
 
@@ -56,7 +54,7 @@ export default function AccountPopover() {
 
   const handleLogout = async () => {
     try {
-      await logout();
+      await supabaseClient.auth.signOut();
       router.replace(PATH_AUTH.login);
 
       if (isMountedRef.current) {
@@ -77,7 +75,7 @@ export default function AccountPopover() {
           ...(open && {
             '&:before': {
               zIndex: 1,
-              content: "''",
+              content: '\'\'',
               width: '100%',
               height: '100%',
               borderRadius: '50%',
@@ -105,11 +103,11 @@ export default function AccountPopover() {
         }}
       >
         <Box sx={{ my: 1.5, px: 2.5 }}>
-          <Typography variant="subtitle2" noWrap>
-            {user?.displayName}
+          <Typography variant='subtitle2' noWrap>
+            {`${profile?.firstName} ${profile?.lastName}`}
           </Typography>
-          <Typography variant="body2" sx={{ color: 'text.secondary' }} noWrap>
-            {user?.email}
+          <Typography variant='body2' sx={{ color: 'text.secondary' }} noWrap>
+            {profile?.email}
           </Typography>
         </Box>
 

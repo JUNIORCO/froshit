@@ -1,48 +1,38 @@
 // @mui
 import { useTheme } from '@mui/material/styles';
-import { Container, Grid, Stack, Button } from '@mui/material';
+import { Container, Grid, Stack } from '@mui/material';
 // hooks
-import useAuth from '../../../../hooks/useAuth';
 import useSettings from '../../../../hooks/useSettings';
 // layouts
 import Layout from '../../../../layouts';
 // _mock_
-import { _appFeatured, _appAuthors, _appInstalled, _appRelated, _appInvoices } from '../../../../_mock';
+import { _appAuthors, _appInstalled, _appInvoices, _appRelated } from '../../../../_mock';
 // components
 import Page from '../../../../components/Page';
 // sections
 import {
-  AppWidget,
-  AppWelcome,
-  AppFeatured,
+  AppAreaInstalled,
+  AppCurrentDownload,
   AppNewInvoice,
   AppTopAuthors,
-  AppTopRelated,
-  AppAreaInstalled,
-  AppWidgetSummary,
-  AppCurrentDownload,
   AppTopInstalledCountries,
+  AppTopRelated,
+  AppWidget,
+  AppWidgetSummary,
 } from '../../../../sections/@dashboard/general/app';
 // assets
-import { SeoIllustration } from '../../../../assets';
-
-// ----------------------------------------------------------------------
 
 GeneralApp.getLayout = function getLayout(page: React.ReactElement) {
   return <Layout>{page}</Layout>;
 };
 
-// ----------------------------------------------------------------------
-
 export default function GeneralApp() {
-  const { user } = useAuth();
-
   const theme = useTheme();
 
   const { themeStretch } = useSettings();
 
   return (
-    <Page title="General: App">
+    <Page title='General: App'>
       <Container maxWidth={themeStretch ? false : 'xl'}>
         <Grid container spacing={3}>
           {/*<Grid item xs={12} md={8}>*/}
@@ -68,7 +58,7 @@ export default function GeneralApp() {
 
           <Grid item xs={12} md={4}>
             <AppWidgetSummary
-              title="Total Active Users"
+              title='Total Active Users'
               percent={2.6}
               total={18765}
               chartColor={theme.palette.primary.main}
@@ -78,7 +68,7 @@ export default function GeneralApp() {
 
           <Grid item xs={12} md={4}>
             <AppWidgetSummary
-              title="Total Installed"
+              title='Total Installed'
               percent={0.2}
               total={4876}
               chartColor={theme.palette.chart.blue[0]}
@@ -88,7 +78,7 @@ export default function GeneralApp() {
 
           <Grid item xs={12} md={4}>
             <AppWidgetSummary
-              title="Total Downloads"
+              title='Total Downloads'
               percent={-0.1}
               total={678}
               chartColor={theme.palette.chart.red[0]}
@@ -98,7 +88,7 @@ export default function GeneralApp() {
 
           <Grid item xs={12} md={6} lg={4}>
             <AppCurrentDownload
-              title="Current Download"
+              title='Current Download'
               chartColors={[
                 theme.palette.primary.lighter,
                 theme.palette.primary.light,
@@ -116,8 +106,8 @@ export default function GeneralApp() {
 
           <Grid item xs={12} md={6} lg={8}>
             <AppAreaInstalled
-              title="Area Installed"
-              subheader="(+43%) than last year"
+              title='Area Installed'
+              subheader='(+43%) than last year'
               chartLabels={['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep']}
               chartData={[
                 {
@@ -140,7 +130,7 @@ export default function GeneralApp() {
 
           <Grid item xs={12} lg={8}>
             <AppNewInvoice
-              title="New Invoice"
+              title='New Invoice'
               tableData={_appInvoices}
               tableLabels={[
                 { id: 'id', label: 'Invoice ID' },
@@ -153,25 +143,25 @@ export default function GeneralApp() {
           </Grid>
 
           <Grid item xs={12} md={6} lg={4}>
-            <AppTopRelated title="Top Related Applications" list={_appRelated} />
+            <AppTopRelated title='Top Related Applications' list={_appRelated} />
           </Grid>
 
           <Grid item xs={12} md={6} lg={4}>
-            <AppTopInstalledCountries title="Top Installed Countries" list={_appInstalled} />
+            <AppTopInstalledCountries title='Top Installed Countries' list={_appInstalled} />
           </Grid>
 
           <Grid item xs={12} md={6} lg={4}>
-            <AppTopAuthors title="Top Authors" list={_appAuthors} />
+            <AppTopAuthors title='Top Authors' list={_appAuthors} />
           </Grid>
 
           <Grid item xs={12} md={6} lg={4}>
             <Stack spacing={3}>
-              <AppWidget title="Conversion" total={38566} icon={'eva:person-fill'} chartData={48} />
+              <AppWidget title='Conversion' total={38566} icon={'eva:person-fill'} chartData={48} />
               <AppWidget
-                title="Applications"
+                title='Applications'
                 total={55566}
                 icon={'eva:email-fill'}
-                color="warning"
+                color='warning'
                 chartData={75}
               />
             </Stack>

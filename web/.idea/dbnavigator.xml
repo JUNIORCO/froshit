@@ -48,9 +48,6 @@
   <component name="DBNavigator.Project.ExecutionManager">
     <retain-sticky-names value="false" />
   </component>
-  <component name="DBNavigator.Project.FileConnectionMappingManager">
-    <mapping file-url="file://$PROJECT_DIR$/prisma/seed_sql.sql" connection-id="5b341c45-8242-4f01-91ba-93a761e4bc84" session-id="MAIN" current-schema="public" />
-  </component>
   <component name="DBNavigator.Project.MethodExecutionManager">
     <method-browser />
     <execution-history>

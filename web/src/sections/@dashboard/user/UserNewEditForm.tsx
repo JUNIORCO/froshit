@@ -56,7 +56,8 @@ export default function UserNewEditForm({
   const { enqueueSnackbar } = useSnackbar();
 
   const NewUserSchema = Yup.object().shape({
-    name: Yup.string().required('Name is required'),
+    firstName: Yup.string().required('First name is required'),
+    lastName: Yup.string().required('Last name is required'),
     email: Yup.string().required('Email is required').email(),
     phoneNumber: Yup.string().required('Phone number is required'),
     role: Yup.string().required('Role Number is required'),
@@ -68,7 +69,8 @@ export default function UserNewEditForm({
 
   const defaultValues = useMemo(
     () => ({
-      name: currentUser?.name || '',
+      firstName: currentUser?.firstName || '',
+      lastName: currentUser?.lastName || '',
       email: currentUser?.email || '',
       phoneNumber: currentUser?.phoneNumber || '',
       role: currentUser?.role || '',
@@ -212,7 +214,8 @@ export default function UserNewEditForm({
                 gridTemplateColumns: { xs: 'repeat(1, 1fr)', sm: 'repeat(2, 1fr)' },
               }}
             >
-              <RHFTextField name='name' label='Full Name' />
+              <RHFTextField name='firstName' label='First Name' />
+              <RHFTextField name='lastName' label='Last Name' />
               <RHFTextField name='email' label='Email Address' />
               <RHFTextField name='phoneNumber' label='Phone Number' />
 

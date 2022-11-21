@@ -28,6 +28,7 @@ const sendTeamRequest = async (url: string, { arg }: any) => {
 
 type FormValuesProps = {
   name: string;
+  number: string;
   froshId: string;
   leaderIds: string[];
   frosheeIds: string[];
@@ -53,20 +54,21 @@ export default function TeamNewForm({
   const currentTeamLeaders: Profile[] = currentTeam.profiles?.filter((profile) => profile.role === Role.Leader) || [];
   const currentTeamFroshees: Profile[] = currentTeam.profiles?.filter((profile) => profile.role === Role.Froshee) || [];
 
-  const currentTeamLeadersOptions = currentTeamLeaders.map((leader) => ({ label: leader.name, value: leader.id }));
-  const currentTeamFrosheeOptions = currentTeamFroshees.map((froshee) => ({ label: froshee.name, value: froshee.id }));
+  const currentTeamLeadersOptions = currentTeamLeaders.map((leader) => ({ label: `${leader.firstName} ${leader.lastName}`, value: leader.id }));
+  const currentTeamFrosheeOptions = currentTeamFroshees.map((froshee) => ({ label: `${froshee.firstName} ${froshee.lastName}`, value: froshee.id }));
 
   const allLeaderOptions = profiles.filter((profile) => profile.role === Role.Leader).map((leader) => ({
-    label: leader.name,
+    label: `${leader.firstName} ${leader.lastName}`,
     value: leader.id,
   })).concat(currentTeamLeadersOptions);
   const allFrosheeOptions = profiles.filter((profile) => profile.role === Role.Froshee).map((froshee) => ({
-    label: froshee.name,
+    label: `${froshee.firstName} ${froshee.lastName}`,
     value: froshee.id,
   })).concat(currentTeamFrosheeOptions);
 
   const NewTeamSchema = Yup.object().shape({
     name: Yup.string().required('Team name is required'),
+    number: Yup.string().required('Team number is required'),
     froshId: Yup.string().required('Frosh is required'),
     leaderIds: Yup.array().optional(),
     frosheeIds: Yup.array().optional(),
@@ -75,6 +77,7 @@ export default function TeamNewForm({
   const defaultValues = useMemo(
     () => ({
       name: currentTeam.name,
+      number: currentTeam.number,
       froshId: currentTeam.froshId,
       leaderIds: currentTeamLeaders.map(leader => leader.id),
       frosheeIds: currentTeamFroshees.map(froshee => froshee.id),
@@ -132,6 +135,8 @@ export default function TeamNewForm({
               }}
             >
               <RHFTextField name='name' label='Team Name' />
+
+              <RHFTextField name='number' label='Team Number' />
 
               <RHFSelect name='froshId' label='Frosh' placeholder='Frosh'>
                 <option value='' />

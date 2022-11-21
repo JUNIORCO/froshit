@@ -16,7 +16,7 @@ export default function UserTableRow({
                                        onEditRow,
                                        onViewRow,
                                      }: Props) {
-  const { name, email, phoneNumber, role, frosh, team, paid } = row;
+  const { firstName, lastName, email, phoneNumber, role, frosh, team, paid } = row;
 
   const [openMenu, setOpenMenuActions] = useState<HTMLElement | null>(null);
 
@@ -57,9 +57,10 @@ export default function UserTableRow({
   return (
     <TableRow hover>
       <TableCell sx={{ display: 'flex', alignItems: 'center' }}>
-        <Avatar alt={name} src={'https://minimal-assets-api-dev.vercel.app/assets/images/avatars/avatar_default.jpg'} sx={{ mr: 2 }} />
+        <Avatar alt={firstName} src={'https://minimal-assets-api-dev.vercel.app/assets/images/avatars/avatar_default.jpg'}
+                sx={{ mr: 2 }} />
         <Typography variant='subtitle2' noWrap>
-          {name}
+          {`${firstName} ${lastName}`}
         </Typography>
       </TableCell>
 

@@ -5,12 +5,13 @@ import { Prisma } from '../../../../prisma/types';
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
   try {
     if (req.method === 'POST') {
-      const { name, froshId } = req.body as Prisma.TeamUncheckedCreateInput;
+      const { name, number, froshId } = req.body as Prisma.TeamUncheckedCreateInput;
       const { profiles }: { profiles: number[] } = req.body;
       const createdTeam = await prisma.team.create({
         data: {
           name,
           froshId,
+          number,
           profiles: {
             connect: profiles.map((profileId) => ({ id: profileId })) as any,
           },

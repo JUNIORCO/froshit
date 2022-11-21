@@ -7,7 +7,6 @@ import { Box, Card, Stack, Link, Alert, Tooltip, Container, Typography } from '@
 // routes
 import { PATH_AUTH } from '../../../../routes/paths';
 // hooks
-import useAuth from '../../../../hooks/useAuth';
 import useResponsive from '../../../../hooks/useResponsive';
 // components
 import Page from '../../../../components/Page';
@@ -62,7 +61,7 @@ const ContentStyle = styled('div')(({ theme }) => ({
 // ----------------------------------------------------------------------
 
 export default function Login() {
-  const { method } = useAuth();
+  const method = 'supabase-auth';
 
   const smUp = useResponsive('up', 'sm');
 

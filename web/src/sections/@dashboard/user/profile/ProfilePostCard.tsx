@@ -18,8 +18,6 @@ import {
 } from '@mui/material';
 // @types
 import { UserPost } from '../../../../@types/user';
-// hooks
-import useAuth from '../../../../hooks/useAuth';
 // utils
 import { fDate } from '../../../../utils/formatTime';
 import { fShortenNumber } from '../../../../utils/formatNumber';
@@ -28,6 +26,8 @@ import Image from '../../../../components/Image';
 import Iconify from '../../../../components/Iconify';
 import MyAvatar from '../../../../components/MyAvatar';
 import EmojiPicker from '../../../../components/emoji-picker';
+import { useUser } from '@supabase/auth-helpers-react';
+import useProfile from '../../../../hooks/useProfile';
 
 // ----------------------------------------------------------------------
 
@@ -36,7 +36,7 @@ interface Props {
 }
 
 export default function ProfilePostCard({ post }: Props) {
-  const { user } = useAuth();
+  const { profile } = useProfile();
 
   const commentInputRef = useRef<HTMLInputElement>(null);
 
@@ -79,7 +79,7 @@ export default function ProfilePostCard({ post }: Props) {
         avatar={<MyAvatar />}
         title={
           <Link variant="subtitle2" color="text.primary">
-            {user?.displayName}
+            {profile?.firstName}
           </Link>
         }
         subheader={

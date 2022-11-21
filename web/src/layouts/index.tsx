@@ -1,12 +1,7 @@
 import { ReactNode } from 'react';
-// guards
-import AuthGuard from '../guards/AuthGuard';
-// components
 import MainLayout from './main';
 import DashboardLayout from './dashboard';
 import LogoOnlyLayout from './LogoOnlyLayout';
-
-// ----------------------------------------------------------------------
 
 type Props = {
   children: ReactNode;
@@ -23,8 +18,6 @@ export default function Layout({ variant = 'dashboard', children }: Props) {
   }
 
   return (
-    <AuthGuard>
-      <DashboardLayout> {children} </DashboardLayout>
-    </AuthGuard>
+    <DashboardLayout> {children} </DashboardLayout>
   );
 }

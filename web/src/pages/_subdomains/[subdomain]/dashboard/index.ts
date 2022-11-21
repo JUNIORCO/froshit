@@ -11,14 +11,18 @@ import { PATH_DASHBOARD } from '../../../../routes/paths';
 export default function Index() {
   const { pathname, replace, prefetch } = useRouter();
 
+  const getInternalPath = (pathname: string) => `/${pathname.split('/').pop()}`;
+
   useEffect(() => {
-    if (pathname === PATH_DASHBOARD.root) {
-      replace(PATH_AFTER_LOGIN);
+    if (getInternalPath(pathname) === PATH_DASHBOARD.root) {
+      void replace(PATH_AFTER_LOGIN);
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [pathname]);
 
   useEffect(() => {
-    prefetch(PATH_AFTER_LOGIN);
+    void prefetch(PATH_AFTER_LOGIN);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   return null;

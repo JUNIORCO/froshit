@@ -6,16 +6,16 @@ import NextLink from 'next/link';
 import { useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 // @mui
-import { Link, Stack, Alert, IconButton, InputAdornment } from '@mui/material';
+import { Alert, IconButton, InputAdornment, Link, Stack } from '@mui/material';
 import { LoadingButton } from '@mui/lab';
 // routes
 import { PATH_AUTH } from '../../../routes/paths';
 // hooks
-import useAuth from '../../../hooks/useAuth';
 import useIsMountedRef from '../../../hooks/useIsMountedRef';
 // components
 import Iconify from '../../../components/Iconify';
-import { FormProvider, RHFTextField, RHFCheckbox } from '../../../components/hook-form';
+import { FormProvider, RHFCheckbox, RHFTextField } from '../../../components/hook-form';
+import { useSupabaseClient } from '@supabase/auth-helpers-react';
 
 // ----------------------------------------------------------------------
 
@@ -27,7 +27,7 @@ type FormValuesProps = {
 };
 
 export default function LoginForm() {
-  const { login } = useAuth();
+  const supabaseClient = useSupabaseClient();
 
   const isMountedRef = useIsMountedRef();
 
@@ -39,7 +39,7 @@ export default function LoginForm() {
   });
 
   const defaultValues = {
-    email: 'demo@minimals.cc',
+    email: 'demo@froshit.com',
     password: 'demo1234',
     remember: true,
   };
@@ -58,7 +58,9 @@ export default function LoginForm() {
 
   const onSubmit = async (data: FormValuesProps) => {
     try {
-      await login(data.email, data.password);
+      console.log('signing in with : ', data)
+      const { error } = await supabaseClient.auth.signInWithPassword({ email: data.email, password: data.password });
+      console.log('error signing in ', error)
     } catch (error) {
       console.error(error);
 
@@ -73,18 +75,18 @@ export default function LoginForm() {
   return (
     <FormProvider methods={methods} onSubmit={handleSubmit(onSubmit)}>
       <Stack spacing={3}>
-        {!!errors.afterSubmit && <Alert severity="error">{errors.afterSubmit.message}</Alert>}
+        {!!errors.afterSubmit && <Alert severity='error'>{errors.afterSubmit.message}</Alert>}
 
-        <RHFTextField name="email" label="Email address" />
+        <RHFTextField name='email' label='Email address' />
 
         <RHFTextField
-          name="password"
-          label="Password"
+          name='password'
+          label='Password'
           type={showPassword ? 'text' : 'password'}
           InputProps={{
             endAdornment: (
-              <InputAdornment position="end">
-                <IconButton onClick={() => setShowPassword(!showPassword)} edge="end">
+              <InputAdornment position='end'>
+                <IconButton onClick={() => setShowPassword(!showPassword)} edge='end'>
                   <Iconify icon={showPassword ? 'eva:eye-fill' : 'eva:eye-off-fill'} />
                 </IconButton>
               </InputAdornment>
@@ -93,18 +95,18 @@ export default function LoginForm() {
         />
       </Stack>
 
-      <Stack direction="row" alignItems="center" justifyContent="space-between" sx={{ my: 2 }}>
-        <RHFCheckbox name="remember" label="Remember me" />
+      <Stack direction='row' alignItems='center' justifyContent='space-between' sx={{ my: 2 }}>
+        <RHFCheckbox name='remember' label='Remember me' />
         <NextLink href={PATH_AUTH.resetPassword} passHref>
-          <Link variant="subtitle2">Forgot password?</Link>
+          <Link variant='subtitle2'>Forgot password?</Link>
         </NextLink>
       </Stack>
 
       <LoadingButton
         fullWidth
-        size="large"
-        type="submit"
-        variant="contained"
+        size='large'
+        type='submit'
+        variant='contained'
         loading={isSubmitting}
       >
         Login

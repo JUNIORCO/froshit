@@ -1,16 +1,9 @@
-// next
 import NextLink from 'next/link';
-// @mui
 import { styled } from '@mui/material/styles';
 import { Box, Link, Typography } from '@mui/material';
-// hooks
-import useAuth from '../../../hooks/useAuth';
-// routes
 import { PATH_DASHBOARD } from '../../../routes/paths';
-// components
 import MyAvatar from '../../../components/MyAvatar';
-
-// ----------------------------------------------------------------------
+import useProfile from '../../../hooks/useProfile';
 
 const RootStyle = styled('div')(({ theme }) => ({
   display: 'flex',
@@ -23,18 +16,16 @@ const RootStyle = styled('div')(({ theme }) => ({
   }),
 }));
 
-// ----------------------------------------------------------------------
-
 type Props = {
   isCollapse: boolean | undefined;
 };
 
 export default function NavbarAccount({ isCollapse }: Props) {
-  const { user } = useAuth();
+  const { profile } = useProfile();
 
   return (
     <NextLink href={PATH_DASHBOARD.user.account} passHref>
-      <Link underline="none" color="inherit">
+      <Link underline='none' color='inherit'>
         <RootStyle
           sx={{
             ...(isCollapse && {
@@ -57,11 +48,11 @@ export default function NavbarAccount({ isCollapse }: Props) {
               }),
             }}
           >
-            <Typography variant="subtitle2" noWrap>
-              {user?.displayName}
+            <Typography variant='subtitle2' noWrap>
+              {profile?.firstName}
             </Typography>
-            <Typography variant="body2" noWrap sx={{ color: 'text.secondary' }}>
-              {user?.role}
+            <Typography variant='body2' noWrap sx={{ color: 'text.secondary' }}>
+              {profile?.role}
             </Typography>
           </Box>
         </RootStyle>

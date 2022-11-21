@@ -2,7 +2,6 @@
 import { useTheme } from '@mui/material/styles';
 import { Container, Grid, Button } from '@mui/material';
 // hooks
-import useAuth from '../../../../hooks/useAuth';
 import useSettings from '../../../../hooks/useSettings';
 // layouts
 import Layout from '../../../../layouts';
@@ -29,6 +28,7 @@ import {
 import { AppWelcome } from '../../../../sections/@dashboard/general/app';
 // assets
 import { MotivationIllustration } from '../../../../assets';
+import { useUser } from '@supabase/auth-helpers-react';
 
 // ----------------------------------------------------------------------
 
@@ -38,7 +38,7 @@ GeneralEcommerce.getLayout = function getLayout(page: React.ReactElement) {
 
 //
 export default function GeneralEcommerce() {
-  const { user } = useAuth();
+  const user = useUser();
 
   const theme = useTheme();
 
@@ -50,7 +50,7 @@ export default function GeneralEcommerce() {
         <Grid container spacing={3}>
           <Grid item xs={12} md={8}>
             <AppWelcome
-              title={`Congratulations! \n ${user?.displayName}`}
+              title={`Congratulations!`}
               description="Best seller of the month You have done 57.6% more sales today."
               img={
                 <MotivationIllustration

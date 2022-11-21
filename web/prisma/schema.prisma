@@ -65,7 +65,10 @@ model University {
 
   // dates
   createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  updatedAt DateTime @default(now()) @updatedAt
+
+  // map
+  @@map("university")
 }
 
 model Program {
@@ -82,7 +85,10 @@ model Program {
 
   // dates
   createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  updatedAt DateTime @default(now()) @updatedAt
+
+  // map
+  @@map("program")
 }
 
 model Frosh {
@@ -105,10 +111,12 @@ model Frosh {
 
   // dates
   createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  updatedAt DateTime @default(now()) @updatedAt
 
   // constraints
   @@unique([name, universityId]) // froshs in the same university cannot have the same name
+  // map
+  @@map("frosh")
 }
 
 model Event {
@@ -129,7 +137,10 @@ model Event {
 
   // dates
   createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  updatedAt DateTime @default(now()) @updatedAt
+
+  // map
+  @@map("event")
 }
 
 model Team {
@@ -137,7 +148,8 @@ model Team {
   id String @id @default(uuid())
 
   // attributes
-  name String
+  name   String
+  number String
 
   // associations
   frosh   Frosh  @relation(fields: [froshId], references: [id])
@@ -148,7 +160,12 @@ model Team {
 
   // dates
   createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  updatedAt DateTime @default(now()) @updatedAt
+
+  // uniqueness
+  @@unique([froshId, number]) // can't have two teams with the same number and frosh
+  // map
+  @@map("team")
 }
 
 model Profile {
@@ -156,7 +173,8 @@ model Profile {
   id String @id @default(uuid())
 
   // attributes
-  name        String
+  firstName   String
+  lastName    String
   email       String     @unique
   phoneNumber String     @unique
   role        Role
@@ -178,7 +196,10 @@ model Profile {
 
   // dates
   createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  updatedAt DateTime @default(now()) @updatedAt
+
+  // map
+  @@map("profile")
 }
 
 model ResourceTag {
@@ -194,7 +215,10 @@ model ResourceTag {
 
   // dates
   createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  updatedAt DateTime @default(now()) @updatedAt
+
+  // map
+  @@map("resource_tag")
 }
 
 model Resource {
@@ -216,7 +240,10 @@ model Resource {
 
   // dates
   createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  updatedAt DateTime @default(now()) @updatedAt
+
+  // map
+  @@map("resource")
 }
 
 model Offer {
@@ -237,7 +264,10 @@ model Offer {
 
   // dates
   createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  updatedAt DateTime @default(now()) @updatedAt
+
+  // map
+  @@map("offer")
 }
 
 model Notification {
@@ -257,5 +287,8 @@ model Notification {
 
   // dates
   createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  updatedAt DateTime @default(now()) @updatedAt
+
+  // map
+  @@map("notification")
 }
