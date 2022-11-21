@@ -10,7 +10,7 @@ export default function MyAvatar({ ...other }: AvatarProps) {
   return (
     <Avatar
       // src={profile?.photoURL}
-      alt={prodfile?.firstName}
+      alt={profile?.firstName}
       {...other}
     >
       {createAvatar(`${profile?.firstName} ${profile?.lastName}`).name}
