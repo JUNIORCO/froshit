@@ -96,7 +96,6 @@ export default function EventNewForm({
 
   const onSubmit = async (updatedEvent: FormValuesProps) => {
     try {
-      console.log(updatedEvent);
       await trigger(updatedEvent);
       reset();
       enqueueSnackbar('Update success!');

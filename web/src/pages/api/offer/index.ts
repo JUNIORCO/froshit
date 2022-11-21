@@ -7,8 +7,6 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     if (req.method === 'POST') {
       const offer = req.body as Prisma.OfferUncheckedCreateInput;
 
-      console.log('creating offer : ', offer);
-
       const createdFrosh = await prisma.offer.create({ data: offer });
 
       res.status(200).json(createdFrosh);

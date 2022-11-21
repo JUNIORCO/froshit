@@ -7,8 +7,6 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     if (req.method === 'POST') {
       const event = req.body as Prisma.EventUncheckedCreateInput;
 
-      console.log(event)
-
       const createdEvent = await prisma.event.create({ data: event });
 
       res.status(200).json(createdEvent);

@@ -14,7 +14,7 @@ export default function AuthGuard({ children }: Props) {
   const { pathname, push } = useRouter();
 
   const [requestedLocation, setRequestedLocation] = useState<string | null>(null);
-  console.log('users session is ', session)
+
   useEffect(() => {
     if (requestedLocation && pathname !== requestedLocation) {
       push(requestedLocation);

@@ -13,8 +13,6 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 
       const event = req.body as Prisma.EventUpdateInput;
 
-      console.log('event : ', event)
-
       const updatedEvent = await prisma.event.update({ where: { id }, data: event });
 
       res.status(200).json(updatedEvent);

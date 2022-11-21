@@ -80,7 +80,6 @@ export default function EventNewForm({ froshs }: Props) {
 
   const onSubmit = async (eventToCreate: FormValuesProps) => {
     try {
-      console.log(eventToCreate)
       await trigger(eventToCreate);
       reset();
       enqueueSnackbar('Create success!');

@@ -1,8 +1,6 @@
-// @ts-nocheck
-import { createClient } from 'https://esm.sh/@supabase/supabase-js@^1.33.2';
+import { createClient } from '@supabase/supabase-js';
 
 export const supabaseClient = createClient(
-  Deno.env.get('SUPABASE_URL') ?? '',
-  // use service key not anon key to create auth user
-  Deno.env.get('SUPABASE_SERVICE_KEY') ?? '',
+  process.env.NEXT_PUBLIC_DATABASE_URL ?? '',
+  process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY ?? '',
 );

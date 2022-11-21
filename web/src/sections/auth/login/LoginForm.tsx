@@ -58,10 +58,7 @@ export default function LoginForm() {
 
   const onSubmit = async (data: FormValuesProps) => {
     try {
-      console.log('signing in with : ', data)
       const { data: dataa, error } = await supabaseClient.auth.signInWithPassword({ email: data.email, password: data.password });
-      console.log('error signing in ', error)
-      console.log('data: ', dataa)
     } catch (error) {
       console.error(error);
 

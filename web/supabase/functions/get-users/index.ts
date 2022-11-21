@@ -8,15 +8,12 @@ import { serve } from 'https://deno.land/std@0.131.0/http/server.ts';
 
 serve(async (req: Request) => {
   try {
-    console.log('user function is called...');
     const users = prisma.profile.findMany({
       include: {
         frosh: true,
         team: true,
       },
     });
-
-    console.log('user function get-users : ', users);
 
     return new Response(JSON.stringify({ data: users, error }), {
       headers: { 'Content-Type': 'application/json' },

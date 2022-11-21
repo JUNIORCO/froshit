@@ -68,7 +68,6 @@ export default function RegisterForm() {
 
   const onSubmit = async (data: FormValuesProps) => {
     try {
-      console.log('clicking register', data)
       const res = await supabaseClient.auth.signUp({
         email: data.email,
         password: data.password,
@@ -82,11 +81,7 @@ export default function RegisterForm() {
           },
         },
       });
-      console.log('res ', res.error)
     } catch (error) {
-      console.log('or here?')
-      console.error(error);
-
       reset();
 
       if (isMountedRef.current) {
