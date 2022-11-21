@@ -19,12 +19,11 @@ function checkValidSubdomain(subdomain: string) {
 
 const unprotectedPages = [PATH_AUTH.login, PATH_AUTH.register];
 
+const hostIsSubdomain = (host: string) => host !== process.env.ROOT_DOMAIN;
+
 export default async function middleware(req: NextRequest) {
-  // We need to create a response and hand it to the supabase client to be able to modify the response headers.
   const res = NextResponse.next();
-  // Create authenticated Supabase Client
   const supabase = createMiddlewareSupabaseClient({ req, res });
-  // get the session
   const {
     data: { session },
   } = await supabase.auth.getSession();
@@ -35,16 +34,13 @@ export default async function middleware(req: NextRequest) {
     throw Error('[Middleware] No hostname');
   }
   const currentHost = hostname.replace(`.${process.env.ROOT_DOMAIN}`, '');
-  console.log('[Middleware] currentHost ', currentHost);
-  console.log('[Middleware] process.env.ROOT_DOMAIN ', process.env.ROOT_DOMAIN);
-  console.log('[Middleware] session?.user ', session?.user);
-  console.log('[Middleware] url.pathname ', url.pathname);
-  if (currentHost !== process.env.ROOT_DOMAIN) {
+
+  if (hostIsSubdomain(currentHost)) {
     if (checkValidSubdomain(currentHost)) {
       if (unprotectedPages.includes(url.pathname)) {
         url.pathname = `/_subdomains/${currentHost}${url.pathname}`;
       } else if (session?.user) {
-        // inject user profile
+        // inject user profile into cookies
         const userId = session.user.id;
         const { data: user } = await supabase
           .from('profile')
@@ -56,7 +52,7 @@ export default async function middleware(req: NextRequest) {
         response.cookies.set('profile', JSON.stringify(user));
         return response;
       } else {
-        // Auth condition not met, redirect to home page.
+        // User is not authenticated, redirect to login
         url.pathname = `/_subdomains/${currentHost}${PATH_AUTH.login}`;
       }
     } else {

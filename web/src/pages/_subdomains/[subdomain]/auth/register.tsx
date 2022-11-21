@@ -15,6 +15,7 @@ import Logo from '../../../../components/Logo';
 import Image from '../../../../components/Image';
 // sections
 import { RegisterForm } from '../../../../sections/auth/register';
+import GuestGuard from '../../../../guards/GuestGuard';
 
 // ----------------------------------------------------------------------
 
@@ -69,82 +70,84 @@ export default function Register() {
   const mdUp = useResponsive('up', 'md');
 
   return (
-    <Page title='Register'>
-      <RootStyle>
-        <HeaderStyle>
-          <Logo />
-          {smUp && (
-            <Typography variant='body2' sx={{ mt: { md: -2 } }}>
-              Already have an account? {''}
-              <NextLink href={PATH_AUTH.login} passHref>
-                <Link variant='subtitle2'>Login</Link>
-              </NextLink>
-            </Typography>
-          )}
-        </HeaderStyle>
-
-        {mdUp && (
-          <SectionStyle>
-            <Typography variant='h3' sx={{ px: 5, mt: 10, mb: 5 }}>
-              Manage the job more effectively with Minimal
-            </Typography>
-            <Image
-              visibleByDefault
-              disabledEffect
-              alt='register'
-              src='/assets/illustrations/illustration_register.png'
-            />
-          </SectionStyle>
-        )}
-
-        <Container>
-          <ContentStyle>
-            <Box sx={{ mb: 5, display: 'flex', alignItems: 'center' }}>
-              <Box sx={{ flexGrow: 1 }}>
-                <Typography variant='h4' gutterBottom>
-                  Get started absolutely free.
-                </Typography>
-                <Typography sx={{ color: 'text.secondary' }}>
-                  Free forever. No credit card needed.
-                </Typography>
-              </Box>
-              <Tooltip title={capitalCase(method)}>
-                <>
-                  <Image
-                    disabledEffect
-                    alt={method}
-                    src={`https://minimal-assets-api-dev.vercel.app/assets/icons/auth/ic_${method}.png`}
-                    sx={{ width: 32, height: 32 }}
-                  />
-                </>
-              </Tooltip>
-            </Box>
-
-            <RegisterForm />
-
-            <Typography variant='body2' align='center' sx={{ color: 'text.secondary', mt: 3 }}>
-              By registering, I agree to Minimal&nbsp;
-              <Link underline='always' color='text.primary' href='#'>
-                Terms of Service
-              </Link>
-              {''}and{''}
-              <Link underline='always' color='text.primary' href='#'>
-                Privacy Policy
-              </Link>
-              .
-            </Typography>
-
-            {!smUp && (
-              <Typography variant='body2' sx={{ mt: 3, textAlign: 'center' }}>
-                Already have an account?{' '}
+    <GuestGuard>
+      <Page title='Register'>
+        <RootStyle>
+          <HeaderStyle>
+            <Logo />
+            {smUp && (
+              <Typography variant='body2' sx={{ mt: { md: -2 } }}>
+                Already have an account? {''}
                 <NextLink href={PATH_AUTH.login} passHref>
                   <Link variant='subtitle2'>Login</Link>
                 </NextLink>
               </Typography>
             )}
-          </ContentStyle>
-        </Container>
-      </RootStyle>
-    </Page>
+          </HeaderStyle>
+
+          {mdUp && (
+            <SectionStyle>
+              <Typography variant='h3' sx={{ px: 5, mt: 10, mb: 5 }}>
+                Manage the job more effectively with Minimal
+              </Typography>
+              <Image
+                visibleByDefault
+                disabledEffect
+                alt='register'
+                src='/assets/illustrations/illustration_register.png'
+              />
+            </SectionStyle>
+          )}
+
+          <Container>
+            <ContentStyle>
+              <Box sx={{ mb: 5, display: 'flex', alignItems: 'center' }}>
+                <Box sx={{ flexGrow: 1 }}>
+                  <Typography variant='h4' gutterBottom>
+                    Get started absolutely free.
+                  </Typography>
+                  <Typography sx={{ color: 'text.secondary' }}>
+                    Free forever. No credit card needed.
+                  </Typography>
+                </Box>
+                <Tooltip title={capitalCase(method)}>
+                  <>
+                    <Image
+                      disabledEffect
+                      alt={method}
+                      src={`https://minimal-assets-api-dev.vercel.app/assets/icons/auth/ic_${method}.png`}
+                      sx={{ width: 32, height: 32 }}
+                    />
+                  </>
+                </Tooltip>
+              </Box>
+
+              <RegisterForm />
+
+              <Typography variant='body2' align='center' sx={{ color: 'text.secondary', mt: 3 }}>
+                By registering, I agree to Minimal&nbsp;
+                <Link underline='always' color='text.primary' href='#'>
+                  Terms of Service
+                </Link>
+                {''}and{''}
+                <Link underline='always' color='text.primary' href='#'>
+                  Privacy Policy
+                </Link>
+                .
+              </Typography>
+
+              {!smUp && (
+                <Typography variant='body2' sx={{ mt: 3, textAlign: 'center' }}>
+                  Already have an account?{' '}
+                  <NextLink href={PATH_AUTH.login} passHref>
+                    <Link variant='subtitle2'>Login</Link>
+                  </NextLink>
+                </Typography>
+              )}
+            </ContentStyle>
+          </Container>
+        </RootStyle>
+      </Page>
+    </GuestGuard>
   );
 }

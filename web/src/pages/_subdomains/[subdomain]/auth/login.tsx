@@ -6,6 +6,7 @@ import useResponsive from '../../../../hooks/useResponsive';
 import Page from '../../../../components/Page';
 import Logo from '../../../../components/Logo';
 import { LoginForm } from '../../../../sections/auth/login';
+import GuestGuard from '../../../../guards/GuestGuard';
 
 const RootStyle = styled('div')(({ theme }) => ({
   [theme.breakpoints.up('md')]: {
@@ -40,7 +41,7 @@ const ContentStyle = styled('div')(({ theme }) => ({
 }));
 
 type LoginProps = {
-  subdomain: string | undefined;
+  subdomain?: string;
 }
 
 export default function Login({ subdomain }: LoginProps) {
@@ -49,53 +50,55 @@ export default function Login({ subdomain }: LoginProps) {
   const mdUp = useResponsive('up', 'md');
 
   return (
-    <Page title='Login'>
-      <RootStyle>
-        <HeaderStyle>
-          <Logo />
-          {smUp && (
-            <Typography variant='body2' sx={{ mt: { md: -2 } }}>
-              Don’t have an account? {''}
-              <NextLink href={PATH_AUTH.register} passHref>
-                <Link variant='subtitle2'>Get started</Link>
-              </NextLink>
-            </Typography>
-          )}
-        </HeaderStyle>
-
-        <Container maxWidth='sm'>
-          <ContentStyle>
-            <Stack direction='row' alignItems='center' sx={{ mb: 5 }}>
-              <Box sx={{ flexGrow: 1 }}>
-                <Typography variant='h4' gutterBottom>
-                  Sign in
-                </Typography>
-                <Typography sx={{ color: 'text.secondary' }}>
-                  Enter your details below.
-                </Typography>
-              </Box>
-
-              {/* TODO change to university logo */}
-              <Logo sx={{ width: 64, height: 64 }} />
-            </Stack>
-
-            {subdomain === 'demo' && <Alert severity='info' sx={{ mb: 3 }}>
-              Use email : <strong>demo@froshit.com</strong> / password :<strong> demo1234</strong>
-            </Alert>}
-
-            <LoginForm />
-
-            {!smUp && (
-              <Typography variant='body2' align='center' sx={{ mt: 3 }}>
-                Don’t have an account?{' '}
+    <GuestGuard>
+      <Page title='Login'>
+        <RootStyle>
+          <HeaderStyle>
+            <Logo />
+            {smUp && (
+              <Typography variant='body2' sx={{ mt: { md: -2 } }}>
+                Don’t have an account? {''}
                 <NextLink href={PATH_AUTH.register} passHref>
                   <Link variant='subtitle2'>Get started</Link>
                 </NextLink>
               </Typography>
             )}
-          </ContentStyle>
-        </Container>
-      </RootStyle>
-    </Page>
+          </HeaderStyle>
+
+          <Container maxWidth='sm'>
+            <ContentStyle>
+              <Stack direction='row' alignItems='center' sx={{ mb: 5 }}>
+                <Box sx={{ flexGrow: 1 }}>
+                  <Typography variant='h4' gutterBottom>
+                    Sign in
+                  </Typography>
+                  <Typography sx={{ color: 'text.secondary' }}>
+                    Enter your details below.
+                  </Typography>
+                </Box>
+
+                {/* TODO change to university logo */}
+                <Logo sx={{ width: 64, height: 64 }} />
+              </Stack>
+
+              {subdomain === 'demo' && <Alert severity='info' sx={{ mb: 3 }}>
+                Use email : <strong>demo@froshit.com</strong> / password :<strong> demo1234</strong>
+              </Alert>}
+
+              <LoginForm />
+
+              {!smUp && (
+                <Typography variant='body2' align='center' sx={{ mt: 3 }}>
+                  Don’t have an account?{' '}
+                  <NextLink href={PATH_AUTH.register} passHref>
+                    <Link variant='subtitle2'>Get started</Link>
+                  </NextLink>
+                </Typography>
+              )}
+            </ContentStyle>
+          </Container>
+        </RootStyle>
+      </Page>
+    </GuestGuard>
   );
 }
