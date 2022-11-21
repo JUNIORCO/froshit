@@ -1,7 +1,10 @@
 name: Developing
 
 env:
-  PG_PASSWORD: YznqXszFoRbKP9jO
+  SUPABASE_DATABASE_URL: ${{ secrets.SUPABASE_DATABASE_URL }}
+  SUPABASE_ACCESS_TOKEN: ${{ secrets.SUPABASE_ACCESS_TOKEN }}
+  PRODUCTION_PROJECT_ID: ${{ secrets.PRODUCTION_PROJECT_ID }}
+  PRODUCTION_DB_PASSWORD: ${{ secrets.PRODUCTION_DB_PASSWORD }}
 
 on:
   push:
@@ -29,6 +32,6 @@ jobs:
 #          apt-get install --yes --no-install-recommends postgresql-client
       - run: cd web && npm install
       - run: cd web && npm run prisma:db-push
-      - run: PGPASSWORD=$PG_PASSWORD psql -h db.mybvkrkmvnuzeqvzgbzg.supabase.co -p 5432 -d postgres -U postgres -f web/supabase/scripts/seed.sql
-      - run: PGPASSWORD=$PG_PASSWORD psql -h db.mybvkrkmvnuzeqvzgbzg.supabase.co -p 5432 -d postgres -U postgres -f web/supabase/scripts/auth_fix.sql
-      - run: PGPASSWORD=$PG_PASSWORD psql -h db.mybvkrkmvnuzeqvzgbzg.supabase.co -p 5432 -d postgres -U postgres -f web/supabase/scripts/auth_triggers.sql
+      - run: PGPASSWORD=$PRODUCTION_DB_PASSWORD psql -h db.mybvkrkmvnuzeqvzgbzg.supabase.co -p 5432 -d postgres -U postgres -f web/supabase/scripts/seed.sql
+      - run: PGPASSWORD=$PRODUCTION_DB_PASSWORD psql -h db.mybvkrkmvnuzeqvzgbzg.supabase.co -p 5432 -d postgres -U postgres -f web/supabase/scripts/auth_fix.sql
+      - run: PGPASSWORD=$PRODUCTION_DB_PASSWORD psql -h db.mybvkrkmvnuzeqvzgbzg.supabase.co -p 5432 -d postgres -U postgres -f web/supabase/scripts/auth_triggers.sql
