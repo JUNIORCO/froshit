@@ -5,6 +5,7 @@
   "description": "Froshit monorepo.",
   "private": true,
   "scripts": {
+    "vercel-build": "npm run prisma:generate && npm run next:build",
     "next:dev": "next dev",
     "next:build": "next build",
     "next:start": "next start",
