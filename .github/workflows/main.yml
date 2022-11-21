@@ -12,24 +12,13 @@ on:
 
 jobs:
   build:
-
     runs-on: ubuntu-latest
-
-    strategy:
-      matrix:
-        node-version: [ 16.x ]
-
     steps:
       - uses: actions/checkout@v3
-
-      - name: Use Node.js ${{ matrix.node-version }}
+      - name: Use Node.js 16
         uses: actions/setup-node@v3
-
         with:
-          node-version: ${{ matrix.node-version }}
-#      - run: |
-#          apt-get update
-#          apt-get install --yes --no-install-recommends postgresql-client
+          node-version: 16
       - run: cd web && npm install supabase prisma
       - run: cd web && npm run prisma:db-push
       - run: PGPASSWORD=$PRODUCTION_DB_PASSWORD psql -h db.mybvkrkmvnuzeqvzgbzg.supabase.co -p 5432 -d postgres -U postgres -f web/supabase/scripts/seed.sql
