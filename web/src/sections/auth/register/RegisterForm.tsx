@@ -118,14 +118,14 @@ export default function RegisterForm({ universities }: RegisterProps) {
           ))}
         </RHFSelect>
 
-        <RHFSelect name='universityId' label='University' placeholder='University'>
-          <option value='' />
-          {universities.map((university) => (
-            <option key={university.id} value={university.id}>
-              {university.name}
-            </option>
-          ))}
-        </RHFSelect>
+        {/*<RHFSelect name='universityId' label='University' placeholder='University'>*/}
+        {/*  <option value='' />*/}
+        {/*  {universities.map((university) => (*/}
+        {/*    <option key={university.id} value={university.id}>*/}
+        {/*      {university.name}*/}
+        {/*    </option>*/}
+        {/*  ))}*/}
+        {/*</RHFSelect>*/}
 
         <RHFTextField
           name='password'
