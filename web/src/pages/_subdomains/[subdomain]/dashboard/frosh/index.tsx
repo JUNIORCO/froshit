@@ -25,7 +25,7 @@ import { TableEmptyRows, TableHeadCustom, TableNoData } from '../../../../../com
 import { GetServerSideProps, GetServerSidePropsContext } from 'next';
 import { FroshsWithStats } from '../../../../../../prisma/api/@types';
 import { FroshTableRow } from '../../../../../sections/@dashboard/frosh/list';
-import Api from '../../../../../../prisma/api/Api';
+import AuthApi from '../../../../../../prisma/api/AuthApi';
 
 const TAB_OPTIONS = ['All', 'No Leaders', 'No Froshees'];
 
@@ -158,7 +158,7 @@ export default function FroshList({ froshs }: Props) {
 }
 
 export const getServerSideProps: GetServerSideProps = async (ctx: GetServerSidePropsContext) => {
-  const api = new Api({ ctx });
+  const api = new AuthApi({ ctx });
   const froshs = await api.Frosh.getFroshsWithStats();
 
   return {

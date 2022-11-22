@@ -8,7 +8,7 @@ import HeaderBreadcrumbs from '../../../../../components/HeaderBreadcrumbs';
 import UserNewEditForm from '../../../../../sections/@dashboard/user/UserNewEditForm';
 import { GetServerSideProps } from 'next';
 import type { Frosh, Program, Team } from '../../../../../../prisma/types';
-import Api from '../../../../../../prisma/api/Api';
+import AuthApi from '../../../../../../prisma/api/AuthApi';
 
 UserCreate.getLayout = function getLayout(page: React.ReactElement) {
   return <Layout>{page}</Layout>;
@@ -41,7 +41,7 @@ export default function UserCreate({ programs, froshs, teams }: Props) {
 }
 
 export const getServerSideProps: GetServerSideProps = async (ctx) => {
-  const api = new Api({ ctx });
+  const api = new AuthApi({ ctx });
   const [programs, froshs, teams] = await Promise.all([api.Program.getPrograms(), api.Frosh.getFroshs(), api.Team.getTeamsWithFrosh()]);
 
   return {

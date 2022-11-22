@@ -7,7 +7,7 @@ import HeaderBreadcrumbs from '../../../../../components/HeaderBreadcrumbs';
 import { GetServerSideProps, GetServerSidePropsContext } from 'next';
 import { ResourceTag } from 'prisma/types';
 import ResourceNewForm from '../../../../../sections/@dashboard/resource/ResourceNewForm';
-import Api from '../../../../../../prisma/api/Api';
+import AuthApi from '../../../../../../prisma/api/AuthApi';
 
 ResourceCreate.getLayout = function getLayout(page: React.ReactElement) {
   return <Layout>{page}</Layout>;
@@ -38,7 +38,7 @@ export default function ResourceCreate({ resourceTags }: Props) {
 }
 
 export const getServerSideProps: GetServerSideProps = async (ctx: GetServerSidePropsContext) => {
-  const api = new Api({ ctx });
+  const api = new AuthApi({ ctx });
   const resourceTags = await api.Resource.getResourceTags();
 
   return {

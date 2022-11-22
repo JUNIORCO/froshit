@@ -1,6 +1,6 @@
 import { prisma } from '../prisma';
 import { FullTeam } from './@types';
-import { IChildApiOptions } from './Api';
+import { IChildApiOptions } from './AuthApi';
 import { Profile, Team } from '../types';
 
 class TeamApi {

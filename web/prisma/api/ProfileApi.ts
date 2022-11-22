@@ -1,6 +1,6 @@
 import { prisma } from '../prisma';
 import { FullProfile, UnassignedFrosheesAndLeaders, UsersForUserList } from './@types';
-import { IChildApiOptions } from './Api';
+import { IChildApiOptions } from './AuthApi';
 import { Profile, Role } from '../types';
 
 class ProfileApi {

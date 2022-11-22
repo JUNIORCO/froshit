@@ -33,7 +33,7 @@ import { FullTeam } from '../../../../../../prisma/api/@types';
 import TeamTableRow from '../../../../../sections/@dashboard/team/list/TeamTableRow';
 import { TeamTableToolbar } from '../../../../../sections/@dashboard/team/list';
 import { Role } from '../../../../../../prisma/types';
-import Api from '../../../../../../prisma/api/Api';
+import AuthApi from '../../../../../../prisma/api/AuthApi';
 
 const TAB_OPTIONS = ['All', 'No Leaders', 'No Froshees'];
 
@@ -305,7 +305,7 @@ function applySortFilter({
 }
 
 export const getServerSideProps: GetServerSideProps = async (ctx: GetServerSidePropsContext) => {
-  const api = new Api({ ctx });
+  const api = new AuthApi({ ctx });
   const teams = await api.Team.getTeamsWithFrosh();
 
   return {

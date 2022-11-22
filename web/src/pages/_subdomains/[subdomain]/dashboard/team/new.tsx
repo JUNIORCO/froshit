@@ -9,7 +9,7 @@ import Page from '../../../../../components/Page';
 import HeaderBreadcrumbs from '../../../../../components/HeaderBreadcrumbs';
 import { GetServerSideProps, GetServerSidePropsContext } from 'next';
 import TeamNewForm from '../../../../../sections/@dashboard/team/TeamNewForm';
-import Api from '../../../../../../prisma/api/Api';
+import AuthApi from '../../../../../../prisma/api/AuthApi';
 
 TeamCreate.getLayout = function getLayout(page: React.ReactElement) {
   return <Layout>{page}</Layout>;
@@ -36,7 +36,7 @@ export default function TeamCreate({ froshs, profiles }: any) {
 }
 
 export const getServerSideProps: GetServerSideProps = async (ctx: GetServerSidePropsContext) => {
-  const api = new Api({ ctx });
+  const api = new AuthApi({ ctx });
   const froshs = await api.Frosh.getFroshsWithStats();
   const profiles = await api.Profile.getUnassignedFrosheesAndLeaders();
 

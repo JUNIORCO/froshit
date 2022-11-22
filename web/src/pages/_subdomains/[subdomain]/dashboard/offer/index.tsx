@@ -25,7 +25,7 @@ import { TableEmptyRows, TableHeadCustom, TableNoData } from '../../../../../com
 import { GetServerSideProps, GetServerSidePropsContext } from 'next';
 import { Offer } from '../../../../../../prisma/types';
 import { OfferTableRow, OfferTableToolbar } from '../../../../../sections/@dashboard/offer/list';
-import Api from '../../../../../../prisma/api/Api';
+import AuthApi from '../../../../../../prisma/api/AuthApi';
 
 const TABLE_HEAD = [
   { id: 'provider', label: 'Provider', align: 'left' },
@@ -205,7 +205,7 @@ function applySortFilter({
 }
 
 export const getServerSideProps: GetServerSideProps = async (ctx: GetServerSidePropsContext) => {
-  const api = new Api({ ctx });
+  const api = new AuthApi({ ctx });
   const offers = await api.Offer.getOffers();
 
   return {

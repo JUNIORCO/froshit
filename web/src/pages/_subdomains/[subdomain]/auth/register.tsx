@@ -9,9 +9,9 @@ import Logo from '../../../../components/Logo';
 import Image from '../../../../components/Image';
 import { RegisterForm } from '../../../../sections/auth/register';
 import GuestGuard from '../../../../guards/GuestGuard';
-import { GetServerSideProps, GetServerSidePropsContext } from 'next';
-import Api from '../../../../../prisma/api/Api';
+import { GetServerSideProps } from 'next';
 import { University } from '../../../../../prisma/types';
+import PublicApi from '../../../../../prisma/api/PublicApi';
 
 const RootStyle = styled('div')(({ theme }) => ({
   [theme.breakpoints.up('md')]: {
@@ -150,8 +150,8 @@ export default function Register({ universities }: RegisterProps) {
   );
 }
 
-export const getServerSideProps: GetServerSideProps = async (ctx: GetServerSidePropsContext) => {
-  const api = new Api({ ctx });
+export const getServerSideProps: GetServerSideProps = async () => {
+  const api = new PublicApi();
   const universities = await api.University.getUniversities();
 
   return {

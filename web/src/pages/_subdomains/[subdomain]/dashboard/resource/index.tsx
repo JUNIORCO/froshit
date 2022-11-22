@@ -26,7 +26,7 @@ import { TableEmptyRows, TableHeadCustom, TableNoData } from '../../../../../com
 import { GetServerSideProps, GetServerSidePropsContext } from 'next';
 import { FullResource } from '../../../../../../prisma/api/@types';
 import { ResourceTableRow, ResourceTableToolbar } from '../../../../../sections/@dashboard/resource/list';
-import Api from '../../../../../../prisma/api/Api';
+import AuthApi from '../../../../../../prisma/api/AuthApi';
 
 const TAB_OPTIONS = ['All', 'No Leaders', 'No Froshees'];
 
@@ -233,7 +233,7 @@ function applySortFilter({
 }
 
 export const getServerSideProps: GetServerSideProps = async (ctx: GetServerSidePropsContext) => {
-  const api = new Api({ ctx });
+  const api = new AuthApi({ ctx });
   const resources = await api.Resource.getResources();
 
   return {

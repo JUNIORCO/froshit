@@ -7,7 +7,7 @@ import { GetServerSideProps, GetServerSidePropsContext } from 'next';
 import { FullProfile } from '../../../../../../../prisma/api/@types';
 import type { Frosh, Program, Team } from '../../../../../../../prisma/types';
 import { Query } from '../../../../../../@types/query';
-import Api from '../../../../../../../prisma/api/Api';
+import AuthApi from '../../../../../../../prisma/api/AuthApi';
 
 UserEdit.getLayout = function getLayout(page: React.ReactElement) {
   return <Layout>{page}</Layout>;
@@ -45,7 +45,7 @@ export default function UserEdit({ user, programs, froshs, teams }: UserEditProp
 export const getServerSideProps: GetServerSideProps = async (ctx: GetServerSidePropsContext) => {
   const { subdomain, id } = ctx.query as Query;
 
-  const api = new Api({ ctx });
+  const api = new AuthApi({ ctx });
 
   const user = await api.Profile.getFullProfileById(id);
   const programs = await api.Program.getPrograms();

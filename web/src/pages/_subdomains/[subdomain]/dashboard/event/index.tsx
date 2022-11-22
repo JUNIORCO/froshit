@@ -31,7 +31,7 @@ import { FullEvent } from '../../../../../../prisma/api/@types';
 import dayjs from 'dayjs';
 import { EventTableRow, EventTableToolbar } from '../../../../../sections/@dashboard/event/list';
 import isBetween from 'dayjs/plugin/isBetween';
-import Api from '../../../../../../prisma/api/Api';
+import AuthApi from '../../../../../../prisma/api/AuthApi';
 
 dayjs.extend(isBetween);
 
@@ -274,7 +274,7 @@ function applySortFilter({
 }
 
 export const getServerSideProps: GetServerSideProps = async (ctx: GetServerSidePropsContext) => {
-  const api = new Api({ ctx });
+  const api = new AuthApi({ ctx });
   const events = await api.Event.getFullEvents();
 
   return {

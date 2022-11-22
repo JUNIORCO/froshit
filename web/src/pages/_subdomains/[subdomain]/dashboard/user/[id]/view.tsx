@@ -11,7 +11,7 @@ import { AccountChangePassword, AccountGeneral } from '../../../../../../section
 import { GetServerSideProps, GetServerSidePropsContext } from 'next';
 import type { FullProfile } from '../../../../../../../prisma/api/@types';
 import { Query } from '../../../../../../@types/query';
-import Api from '../../../../../../../prisma/api/Api';
+import AuthApi from '../../../../../../../prisma/api/AuthApi';
 
 UserView.getLayout = function getLayout(page: React.ReactElement) {
   return <Layout>{page}</Layout>;
@@ -83,7 +83,7 @@ export default function UserView({ user }: UserViewProps) {
 export const getServerSideProps: GetServerSideProps = async (ctx: GetServerSidePropsContext) => {
   const { id } = ctx.query as Query;
 
-  const api = new Api({ ctx });
+  const api = new AuthApi({ ctx });
   const user = await api.Profile.getFullProfileById(id);
 
   return {

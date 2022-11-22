@@ -9,7 +9,7 @@ import { PATH_DASHBOARD } from '../../../../../../routes/paths';
 import { Query } from '../../../../../../@types/query';
 import { FullResource } from '../../../../../../../prisma/api/@types';
 import ResourceEditForm from '../../../../../../sections/@dashboard/resource/ResourceEditForm';
-import Api from '../../../../../../../prisma/api/Api';
+import AuthApi from '../../../../../../../prisma/api/AuthApi';
 
 ResourceEdit.getLayout = function getLayout(page: React.ReactElement) {
   return <Layout>{page}</Layout>;
@@ -42,7 +42,7 @@ export default function ResourceEdit({ resource, resourceTags }: Props) {
 
 export const getServerSideProps: GetServerSideProps = async (ctx: GetServerSidePropsContext) => {
   const { subdomain, id } = ctx.query as Query;
-  const api = new Api({ ctx });
+  const api = new AuthApi({ ctx });
   const resource = await api.Resource.getResourceById(id);
   const resourceTags = await api.Resource.getResourceTags();
 

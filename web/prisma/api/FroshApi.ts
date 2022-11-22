@@ -1,6 +1,6 @@
 import { prisma } from '../prisma';
 import { FroshsWithStats } from './@types';
-import { IChildApiOptions } from './Api';
+import { IChildApiOptions } from './AuthApi';
 import { Frosh, Profile } from '../types';
 
 class FroshApi {

@@ -18,7 +18,7 @@ export interface IChildApiOptions {
   profile: Profile;
 }
 
-class Api {
+class AuthApi {
   public readonly Event: EventApi;
   public readonly Frosh: FroshApi;
   public readonly Profile: ProfileApi;
@@ -26,14 +26,14 @@ class Api {
   public readonly Offer: OfferApi;
   public readonly Program: ProgramApi;
   public readonly Resource: ResourceApi;
-  public readonly University: UniversityApi;
+  public readonly Public: UniversityApi;
 
   constructor({ ctx }: IApiOptions) {
     const cookies = cookie.parse(ctx.req ? ctx.req.headers.cookie || '' : document.cookie);
     const profile = cookies.profile ? JSON.parse(cookies.profile) as Profile : null;
 
     if (!profile) {
-      throw new Error('[Api] No profile found.');
+      throw new Error('[AuthApi] No profile found.');
     }
 
     this.Event = new EventApi({ profile });
@@ -43,8 +43,8 @@ class Api {
     this.Offer = new OfferApi({ profile });
     this.Program = new ProgramApi({ profile });
     this.Resource = new ResourceApi({ profile });
-    this.University = new UniversityApi({ profile });
+    this.Public = new UniversityApi();
   }
 }
 
-export default Api;
+export default AuthApi;

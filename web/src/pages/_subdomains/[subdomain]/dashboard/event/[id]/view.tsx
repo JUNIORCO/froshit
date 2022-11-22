@@ -7,7 +7,7 @@ import HeaderBreadcrumbs from '../../../../../../components/HeaderBreadcrumbs';
 import { GetServerSideProps } from 'next';
 import { FullEvent } from '../../../../../../../prisma/api/@types';
 import { Query } from '../../../../../../@types/query';
-import Api from '../../../../../../../prisma/api/Api';
+import AuthApi from '../../../../../../../prisma/api/AuthApi';
 
 EventView.getLayout = function getLayout(page: React.ReactElement) {
   return <Layout>{page}</Layout>;
@@ -41,7 +41,7 @@ export default function EventView({ event }: Props) {
 
 export const getServerSideProps: GetServerSideProps = async (ctx) => {
   const { subdomain, id } = ctx.query as Query;
-  const api = new Api({ ctx });
+  const api = new AuthApi({ ctx });
   const event = await api.Event.getEventById(id);
 
   return {

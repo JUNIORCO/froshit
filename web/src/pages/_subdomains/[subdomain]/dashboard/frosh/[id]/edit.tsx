@@ -9,7 +9,7 @@ import { PATH_DASHBOARD } from '../../../../../../routes/paths';
 import FroshEditForm from '../../../../../../sections/@dashboard/frosh/FroshEditForm';
 import { Query } from '../../../../../../@types/query';
 import type { ReactElement } from 'react';
-import Api from '../../../../../../../prisma/api/Api';
+import AuthApi from '../../../../../../../prisma/api/AuthApi';
 
 FroshEdit.getLayout = function getLayout(page: ReactElement) {
   return <Layout>{page}</Layout>;
@@ -41,7 +41,7 @@ export default function FroshEdit({ frosh }: Props) {
 
 export const getServerSideProps: GetServerSideProps<Props> = async (ctx: GetServerSidePropsContext) => {
   const { subdomain, id } = ctx.query as Query;
-  const api = new Api({ ctx });
+  const api = new AuthApi({ ctx });
   const frosh = await api.Frosh.getFroshById(id);
 
   return {

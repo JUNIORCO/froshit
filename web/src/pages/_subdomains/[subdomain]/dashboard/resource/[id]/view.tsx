@@ -13,7 +13,7 @@ import HeaderBreadcrumbs from '../../../../../../components/HeaderBreadcrumbs';
 // sections
 import { GetServerSideProps, GetServerSidePropsContext } from 'next';
 import { Query } from '../../../../../../@types/query';
-import Api from '../../../../../../../prisma/api/Api';
+import AuthApi from '../../../../../../../prisma/api/AuthApi';
 
 // ----------------------------------------------------------------------
 
@@ -47,7 +47,7 @@ export default function TeamView({ team }: any) {
 
 export const getServerSideProps: GetServerSideProps = async (ctx: GetServerSidePropsContext) => {
   const { subdomain, id } = ctx.query as Query;
-  const api = new Api({ ctx });
+  const api = new AuthApi({ ctx });
   const team = await api.Team.getFullTeamById(id);
 
   return {

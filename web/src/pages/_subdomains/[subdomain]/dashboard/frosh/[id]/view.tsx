@@ -7,7 +7,7 @@ import HeaderBreadcrumbs from '../../../../../../components/HeaderBreadcrumbs';
 import { GetServerSideProps, GetServerSidePropsContext } from 'next';
 import { Frosh } from '../../../../../../../prisma/types';
 import { Query } from '../../../../../../@types/query';
-import Api from '../../../../../../../prisma/api/Api';
+import AuthApi from '../../../../../../../prisma/api/AuthApi';
 
 FroshView.getLayout = function getLayout(page: React.ReactElement) {
   return <Layout>{page}</Layout>;
@@ -90,7 +90,7 @@ export default function FroshView({ frosh }: Props) {
 
 export const getServerSideProps: GetServerSideProps = async (ctx: GetServerSidePropsContext) => {
   const { subdomain, id } = ctx.query as Query;
-  const api = new Api({ ctx });
+  const api = new AuthApi({ ctx });
   const frosh = await api.Frosh.getFroshById(id);
 
   return {

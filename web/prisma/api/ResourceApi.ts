@@ -1,5 +1,5 @@
 import { prisma } from '../prisma';
-import { IChildApiOptions } from './Api';
+import { IChildApiOptions } from './AuthApi';
 import { Profile, ResourceTag } from '../types';
 import { FullResource } from './@types';
 

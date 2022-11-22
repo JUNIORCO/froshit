@@ -33,7 +33,7 @@ import type { UsersForUserList } from '../../../../../../prisma/api/@types';
 import UserAnalytic from '../../../../../sections/@dashboard/user/UserAnalytic';
 import { useTheme } from '@mui/material/styles';
 import { Role } from '../../../../../../prisma/types';
-import Api from '../../../../../../prisma/api/Api';
+import AuthApi from '../../../../../../prisma/api/AuthApi';
 
 const TAB_OPTIONS = ['All', 'Paid', 'Unpaid', 'Unassigned Frosh', 'Unassigned Team'];
 
@@ -331,7 +331,7 @@ const applySortFilter = ({
 };
 
 export const getServerSideProps: GetServerSideProps = async (ctx: GetServerSidePropsContext) => {
-  const api = new Api({ ctx });
+  const api = new AuthApi({ ctx });
   const users = await api.Profile.getProfilesForProfileList();
 
   return {
