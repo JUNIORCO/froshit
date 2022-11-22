@@ -55,7 +55,7 @@ export default function RegisterForm({ universities }: RegisterProps) {
     lastName: '',
     phoneNumber: '',
     role: '',
-    universityId: '1678f7bf-7a13-477c-942c-c85dcadfdd40',
+    universityId: '',
   };
 
   const methods = useForm<FormValuesProps>({
@@ -118,14 +118,14 @@ export default function RegisterForm({ universities }: RegisterProps) {
           ))}
         </RHFSelect>
 
-        {/*<RHFSelect name='universityId' label='University' placeholder='University'>*/}
-        {/*  <option value='' />*/}
-        {/*  {universities.map((university) => (*/}
-        {/*    <option key={university.id} value={university.id}>*/}
-        {/*      {university.name}*/}
-        {/*    </option>*/}
-        {/*  ))}*/}
-        {/*</RHFSelect>*/}
+        <RHFSelect name='universityId' label='University' placeholder='University'>
+          <option value='' />
+          {universities.map((university) => (
+            <option key={university.id} value={university.id}>
+              {university.name}
+            </option>
+          ))}
+        </RHFSelect>
 
         <RHFTextField
           name='password'
