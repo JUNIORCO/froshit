@@ -25,7 +25,7 @@ VALUES
 ('101dabf2-ff4e-43de-9c40-3f0ff26488eb', 'Science Event', 'Some description for science event', NOW(), NOW() + INTERVAL '1 hour', 'Some location', 'Some accessibility', 'f15ba6dc-e5f6-4361-9d4d-57f1d6e0dc72'),
 ('eaa801da-8aac-483b-bc43-d8486f7ba4d0', 'Arts Event', 'Some description for arts event', NOW() + INTERVAL '26 hours', NOW() + INTERVAL '27 hours', 'Some location', 'Some accessibility', '7ab8131e-cf25-47ae-b698-efd6e14766a4');
 
-INSERT INTO "team" ("id", "name", "number", "froshId")
+INSERT INTO "team" ("id", "number", "name", "froshId")
 VALUES
 ('b3c4a208-52fc-4064-a43a-0c85be2ce42f', '1', 'FC Barcelona', '7419eddd-46ab-49c7-811a-042e476d09b6'),
 ('a2d5b5e4-cb50-4eb2-800c-0e2bd61bfb12', '2', 'Real Madrid', 'f15ba6dc-e5f6-4361-9d4d-57f1d6e0dc72'),
