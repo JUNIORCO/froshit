@@ -55,7 +55,7 @@ export default function RegisterForm({ universities }: RegisterProps) {
     lastName: '',
     phoneNumber: '',
     role: '',
-    universityId: '',
+    universityId: '1678f7bf-7a13-477c-942c-c85dcadfdd40',
   };
 
   const methods = useForm<FormValuesProps>({
