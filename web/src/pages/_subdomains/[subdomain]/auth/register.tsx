@@ -152,11 +152,11 @@ export default function Register({ universities }: RegisterProps) {
 
 export const getServerSideProps: GetServerSideProps = async () => {
   const api = new PublicApi();
-  // const universities = await api.University.getUniversities();
+  const universities = await api.University.getUniversities();
 
   return {
     props: {
-      universities: [],
+      universities,
     },
   };
 };

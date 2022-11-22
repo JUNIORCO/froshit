@@ -2,6 +2,9 @@ import { prisma } from '../prisma';
 import { University } from '../types';
 
 class UniversityApi {
+  constructor() {
+  }
+
   public async getUniversities(): Promise<University[]> {
     return prisma.university.findMany();
   }
