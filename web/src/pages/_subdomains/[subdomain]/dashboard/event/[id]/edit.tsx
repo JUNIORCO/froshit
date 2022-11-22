@@ -6,11 +6,11 @@ import type { GetServerSideProps, GetServerSidePropsContext } from 'next';
 import EventEditForm from '../../../../../../sections/@dashboard/event/EventEditForm';
 import HeaderBreadcrumbs from '../../../../../../components/HeaderBreadcrumbs';
 import { PATH_DASHBOARD } from '../../../../../../routes/paths';
-import { FullEvent, getEventById } from '../../../../../../../prisma/events/get';
 import React from 'react';
-import { getFroshs } from '../../../../../../../prisma/froshs/get';
 import type { Frosh } from '../../../../../../../prisma/types';
 import { Query } from '../../../../../../@types/query';
+import Api from '../../../../../../../prisma/api/Api';
+import { FullEvent } from '../../../../../../../prisma/api/@types';
 
 TeamEdit.getLayout = function getLayout(page: React.ReactElement) {
   return <Layout>{page}</Layout>;
@@ -44,8 +44,9 @@ export default function TeamEdit({ event, froshs }: Props) {
 export const getServerSideProps: GetServerSideProps<Props> = async (ctx: GetServerSidePropsContext) => {
   const { subdomain, id } = ctx.query as Query;
 
-  const event = await getEventById(id);
-  const froshs = await getFroshs();
+  const api = new Api({ ctx });
+  const event = await api.Event.getEventById(id);
+  const froshs = await api.Frosh.getFroshs();
 
   return {
     props: {

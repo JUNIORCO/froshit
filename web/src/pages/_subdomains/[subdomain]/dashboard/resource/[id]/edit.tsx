@@ -2,15 +2,14 @@ import { Container } from '@mui/material';
 import useSettings from '../../../../../../hooks/useSettings';
 import Layout from '../../../../../../layouts';
 import Page from '../../../../../../components/Page';
-import { GetServerSideProps } from 'next';
+import { GetServerSideProps, GetServerSidePropsContext } from 'next';
 import { ResourceTag } from '../../../../../../../prisma/types';
-import TeamEditForm from '../../../../../../sections/@dashboard/team/TeamEditForm';
 import HeaderBreadcrumbs from '../../../../../../components/HeaderBreadcrumbs';
 import { PATH_DASHBOARD } from '../../../../../../routes/paths';
 import { Query } from '../../../../../../@types/query';
-import { FullResource, getResourceById } from '../../../../../../../prisma/resources/get';
-import { getResourceTags } from '../../../../../../../prisma/resources/resourceTags';
+import { FullResource } from '../../../../../../../prisma/api/@types';
 import ResourceEditForm from '../../../../../../sections/@dashboard/resource/ResourceEditForm';
+import Api from '../../../../../../../prisma/api/Api';
 
 ResourceEdit.getLayout = function getLayout(page: React.ReactElement) {
   return <Layout>{page}</Layout>;
@@ -41,11 +40,11 @@ export default function ResourceEdit({ resource, resourceTags }: Props) {
   );
 }
 
-export const getServerSideProps: GetServerSideProps = async (ctx) => {
+export const getServerSideProps: GetServerSideProps = async (ctx: GetServerSidePropsContext) => {
   const { subdomain, id } = ctx.query as Query;
-
-  const resource = await getResourceById(id);
-  const resourceTags = await getResourceTags();
+  const api = new Api({ ctx });
+  const resource = await api.Resource.getResourceById(id);
+  const resourceTags = await api.Resource.getResourceTags();
 
   return {
     props: {

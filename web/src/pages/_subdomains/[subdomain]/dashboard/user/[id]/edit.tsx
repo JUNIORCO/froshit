@@ -3,20 +3,18 @@ import useSettings from '../../../../../../hooks/useSettings';
 import Layout from '../../../../../../layouts';
 import Page from '../../../../../../components/Page';
 import UserNewEditForm from '../../../../../../sections/@dashboard/user/UserNewEditForm';
-import { GetServerSideProps } from 'next';
-import { FullUser, getFullUserById } from '../../../../../../../prisma/user/get';
-import { getPrograms } from '../../../../../../../prisma/programs/get';
-import { getFroshs } from '../../../../../../../prisma/froshs/get';
-import { getTeams } from '../../../../../../../prisma/team/get';
+import { GetServerSideProps, GetServerSidePropsContext } from 'next';
+import { FullProfile } from '../../../../../../../prisma/api/@types';
 import type { Frosh, Program, Team } from '../../../../../../../prisma/types';
 import { Query } from '../../../../../../@types/query';
+import Api from '../../../../../../../prisma/api/Api';
 
 UserEdit.getLayout = function getLayout(page: React.ReactElement) {
   return <Layout>{page}</Layout>;
 };
 
 interface UserEditProps {
-  user: FullUser;
+  user: FullProfile;
   programs: Program[];
   froshs: Frosh[];
   teams: Team[];
@@ -44,13 +42,15 @@ export default function UserEdit({ user, programs, froshs, teams }: UserEditProp
   );
 }
 
-export const getServerSideProps: GetServerSideProps = async (ctx) => {
+export const getServerSideProps: GetServerSideProps = async (ctx: GetServerSidePropsContext) => {
   const { subdomain, id } = ctx.query as Query;
-  const user = await getFullUserById(id);
 
-  const programs = await getPrograms();
-  const froshs = await getFroshs();
-  const teams = await getTeams();
+  const api = new Api({ ctx });
+
+  const user = await api.Profile.getFullProfileById(id);
+  const programs = await api.Program.getPrograms();
+  const froshs = await api.Frosh.getFroshs();
+  const teams = await api.Team.getTeamsWithFrosh();
 
   return {
     props: {

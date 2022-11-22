@@ -22,9 +22,10 @@ import Iconify from '../../../../../components/Iconify';
 import Scrollbar from '../../../../../components/Scrollbar';
 import HeaderBreadcrumbs from '../../../../../components/HeaderBreadcrumbs';
 import { TableEmptyRows, TableHeadCustom, TableNoData } from '../../../../../components/table';
-import { GetServerSideProps } from 'next';
-import { FroshsWithStats, getFroshsWithStats } from '../../../../../../prisma/froshs/get';
+import { GetServerSideProps, GetServerSidePropsContext } from 'next';
+import { FroshsWithStats } from '../../../../../../prisma/api/@types';
 import { FroshTableRow } from '../../../../../sections/@dashboard/frosh/list';
+import Api from '../../../../../../prisma/api/Api';
 
 const TAB_OPTIONS = ['All', 'No Leaders', 'No Froshees'];
 
@@ -156,8 +157,9 @@ export default function FroshList({ froshs }: Props) {
   );
 }
 
-export const getServerSideProps: GetServerSideProps = async () => {
-  const froshs = await getFroshsWithStats();
+export const getServerSideProps: GetServerSideProps = async (ctx: GetServerSidePropsContext) => {
+  const api = new Api({ ctx });
+  const froshs = await api.Frosh.getFroshsWithStats();
 
   return {
     props: {

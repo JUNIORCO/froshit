@@ -259,6 +259,7 @@ model Offer {
   color       String
 
   // associations
+  // TODO maybe change to frosh?
   university   University @relation(fields: [universityId], references: [id])
   universityId String
 

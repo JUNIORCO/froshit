@@ -8,17 +8,17 @@ import Page from '../../../../../../components/Page';
 import Iconify from '../../../../../../components/Iconify';
 import HeaderBreadcrumbs from '../../../../../../components/HeaderBreadcrumbs';
 import { AccountChangePassword, AccountGeneral } from '../../../../../../sections/@dashboard/user/account';
-import { GetServerSideProps } from 'next';
-import type { FullUser } from '../../../../../../../prisma/user/get';
-import { getFullUserById } from '../../../../../../../prisma/user/get';
+import { GetServerSideProps, GetServerSidePropsContext } from 'next';
+import type { FullProfile } from '../../../../../../../prisma/api/@types';
 import { Query } from '../../../../../../@types/query';
+import Api from '../../../../../../../prisma/api/Api';
 
 UserView.getLayout = function getLayout(page: React.ReactElement) {
   return <Layout>{page}</Layout>;
 };
 
 interface UserViewProps {
-  user: FullUser;
+  user: FullProfile;
 }
 
 export default function UserView({ user }: UserViewProps) {
@@ -80,9 +80,11 @@ export default function UserView({ user }: UserViewProps) {
   );
 }
 
-export const getServerSideProps: GetServerSideProps = async (ctx) => {
+export const getServerSideProps: GetServerSideProps = async (ctx: GetServerSidePropsContext) => {
   const { id } = ctx.query as Query;
-  const user = await getFullUserById(id);
+
+  const api = new Api({ ctx });
+  const user = await api.Profile.getFullProfileById(id);
 
   return {
     props: {

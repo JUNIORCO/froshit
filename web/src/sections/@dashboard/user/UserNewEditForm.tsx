@@ -14,7 +14,7 @@ import Label from '../../../components/Label';
 import { CustomFile } from '../../../components/upload';
 import { FormProvider, RHFSelect, RHFTextField, RHFUploadAvatar } from '../../../components/hook-form';
 import { RHFMultiSelect } from '../../../components/hook-form/RHFMultiSelect';
-import { FullUser } from '../../../../prisma/user/get';
+import { FullProfile } from '../../../../prisma/api/@types';
 import { Frosh, Program, Team, Role, Interest } from '../../../../prisma/types';
 
 const sendProfileRequest = async (url: string, { arg }: any) => {
@@ -35,7 +35,7 @@ interface FormValuesProps extends Omit<UserManager, 'avatarUrl'> {
 }
 
 type Props = {
-  currentUser?: FullUser;
+  currentUser?: FullProfile;
   programs: Program[];
   froshs: Frosh[];
   teams: Team[];

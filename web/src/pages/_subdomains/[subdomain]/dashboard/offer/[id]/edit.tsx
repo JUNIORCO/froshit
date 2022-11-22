@@ -2,13 +2,13 @@ import { Container } from '@mui/material';
 import useSettings from '../../../../../../hooks/useSettings';
 import Layout from '../../../../../../layouts';
 import Page from '../../../../../../components/Page';
-import { GetServerSideProps } from 'next';
-import { getFroshById } from '../../../../../../../prisma/froshs/get';
+import { GetServerSideProps, GetServerSidePropsContext } from 'next';
 import type { Frosh } from '../../../../../../../prisma/types';
 import HeaderBreadcrumbs from '../../../../../../components/HeaderBreadcrumbs';
 import { PATH_DASHBOARD } from '../../../../../../routes/paths';
 import FroshEditForm from '../../../../../../sections/@dashboard/frosh/FroshEditForm';
 import { Query } from '../../../../../../@types/query';
+import Api from '../../../../../../../prisma/api/Api';
 
 FroshEdit.getLayout = function getLayout(page: React.ReactElement) {
   return <Layout>{page}</Layout>;
@@ -38,10 +38,10 @@ export default function FroshEdit({ frosh }: Props) {
   );
 }
 
-export const getServerSideProps: GetServerSideProps = async (ctx) => {
+export const getServerSideProps: GetServerSideProps = async (ctx: GetServerSidePropsContext) => {
   const { subdomain, id } = ctx.query as Query;
-
-  const frosh = await getFroshById(id);
+  const api = new Api({ ctx });
+  const frosh = await api.Frosh.getFroshById(id);
 
   return {
     props: {

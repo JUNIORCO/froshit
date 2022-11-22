@@ -2,15 +2,14 @@ import { Container } from '@mui/material';
 import useSettings from '../../../../../../hooks/useSettings';
 import Layout from '../../../../../../layouts';
 import Page from '../../../../../../components/Page';
-import { GetServerSideProps } from 'next';
-import { getUnassignedFrosheesAndLeaders, UnassignedFrosheesAndLeaders } from '../../../../../../../prisma/user/get';
-import { getFroshs } from '../../../../../../../prisma/froshs/get';
-import { FullTeam, getTeamById } from '../../../../../../../prisma/team/get';
+import { GetServerSideProps, GetServerSidePropsContext } from 'next';
+import type { FullTeam, UnassignedFrosheesAndLeaders } from '../../../../../../../prisma/api/@types';
 import type { Frosh } from '../../../../../../../prisma/types';
 import TeamEditForm from '../../../../../../sections/@dashboard/team/TeamEditForm';
 import HeaderBreadcrumbs from '../../../../../../components/HeaderBreadcrumbs';
 import { PATH_DASHBOARD } from '../../../../../../routes/paths';
 import { Query } from '../../../../../../@types/query';
+import Api from '../../../../../../../prisma/api/Api';
 
 TeamEdit.getLayout = function getLayout(page: React.ReactElement) {
   return <Layout>{page}</Layout>;
@@ -42,12 +41,14 @@ export default function TeamEdit({ team, froshs, profiles }: Props) {
   );
 }
 
-export const getServerSideProps: GetServerSideProps = async (ctx) => {
+export const getServerSideProps: GetServerSideProps = async (ctx: GetServerSidePropsContext) => {
   const { subdomain, id } = ctx.query as Query;
 
-  const team = await getTeamById(id);
-  const froshs = await getFroshs();
-  const profiles = await getUnassignedFrosheesAndLeaders();
+  const api = new Api({ ctx });
+
+  const team = await api.Team.getFullTeamById(id);
+  const froshs = await api.Frosh.getFroshs();
+  const profiles = await api.Profile.getUnassignedFrosheesAndLeaders();
 
   return {
     props: {

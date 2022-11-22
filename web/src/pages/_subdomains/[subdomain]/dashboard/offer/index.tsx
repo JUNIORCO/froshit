@@ -22,10 +22,10 @@ import Iconify from '../../../../../components/Iconify';
 import Scrollbar from '../../../../../components/Scrollbar';
 import HeaderBreadcrumbs from '../../../../../components/HeaderBreadcrumbs';
 import { TableEmptyRows, TableHeadCustom, TableNoData } from '../../../../../components/table';
-import { GetServerSideProps } from 'next';
-import { getOffers } from '../../../../../../prisma/offer/get';
+import { GetServerSideProps, GetServerSidePropsContext } from 'next';
 import { Offer } from '../../../../../../prisma/types';
 import { OfferTableRow, OfferTableToolbar } from '../../../../../sections/@dashboard/offer/list';
+import Api from '../../../../../../prisma/api/Api';
 
 const TABLE_HEAD = [
   { id: 'provider', label: 'Provider', align: 'left' },
@@ -204,8 +204,9 @@ function applySortFilter({
   return tableData;
 }
 
-export const getServerSideProps: GetServerSideProps = async () => {
-  const offers = await getOffers({ id: '1678f7bf-7a13-477c-942c-c85dcadfdd40' }); // TODO auth
+export const getServerSideProps: GetServerSideProps = async (ctx: GetServerSidePropsContext) => {
+  const api = new Api({ ctx });
+  const offers = await api.Offer.getOffers();
 
   return {
     props: {

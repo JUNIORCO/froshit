@@ -2,14 +2,14 @@ import { ReactNode, useEffect, useState } from 'react';
 import { useRouter } from 'next/router';
 import Login from '../pages/_subdomains/[subdomain]/auth/login';
 import LoadingScreen from '../components/LoadingScreen';
-import { useSession } from '@supabase/auth-helpers-react';
+import { useSessionContext } from '@supabase/auth-helpers-react';
 
 type Props = {
   children: ReactNode;
 };
 
 export default function AuthGuard({ children }: Props) {
-  const session = useSession();
+  const { isLoading, session } = useSessionContext();
 
   const { pathname, push } = useRouter();
 
@@ -24,9 +24,9 @@ export default function AuthGuard({ children }: Props) {
     }
   }, [session?.user, pathname, push, requestedLocation]);
 
-  // if (!isInitialized) {
-  //   return <LoadingScreen />;
-  // }
+  if (isLoading) {
+    return <LoadingScreen />;
+  }
 
   if (!session?.user) {
     if (pathname !== requestedLocation) {

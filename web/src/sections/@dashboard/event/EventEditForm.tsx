@@ -10,7 +10,7 @@ import { Box, Card, Grid, Stack } from '@mui/material';
 import { PATH_DASHBOARD } from '../../../routes/paths';
 import { FormProvider, RHFSelect, RHFTextField } from '../../../components/hook-form';
 import { Frosh } from '../../../../prisma/types';
-import { FullEvent } from '../../../../prisma/events/get';
+import { FullEvent } from '../../../../prisma/api/@types';
 import RHFDateTimeRangeSelect from '../../../components/hook-form/RHFDateTimeRangeSelect';
 
 const sendEventRequest = async (url: string, { arg: eventToUpdate }: any) => {

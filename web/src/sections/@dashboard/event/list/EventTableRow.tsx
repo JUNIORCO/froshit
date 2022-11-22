@@ -3,7 +3,7 @@ import { useTheme } from '@mui/material/styles';
 import { MenuItem, TableCell, TableRow, Typography } from '@mui/material';
 import Iconify from '../../../../components/Iconify';
 import { TableMoreMenu } from '../../../../components/table';
-import { FullEvent } from '../../../../../prisma/events/get';
+import { FullEvent } from '../../../../../prisma/api/@types';
 import dayjs from 'dayjs';
 
 type Props = {

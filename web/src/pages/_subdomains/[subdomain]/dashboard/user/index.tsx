@@ -28,12 +28,12 @@ import Scrollbar from '../../../../../components/Scrollbar';
 import HeaderBreadcrumbs from '../../../../../components/HeaderBreadcrumbs';
 import { TableEmptyRows, TableHeadCustom, TableNoData } from '../../../../../components/table';
 import { UserTableRow, UserTableToolbar } from '../../../../../sections/@dashboard/user/list';
-import { GetServerSideProps } from 'next';
-import type { UsersForUserList } from '../../../../../../prisma/user/get';
-import { getUsersForUserList } from '../../../../../../prisma/user/get';
+import { GetServerSideProps, GetServerSidePropsContext } from 'next';
+import type { UsersForUserList } from '../../../../../../prisma/api/@types';
 import UserAnalytic from '../../../../../sections/@dashboard/user/UserAnalytic';
 import { useTheme } from '@mui/material/styles';
 import { Role } from '../../../../../../prisma/types';
+import Api from '../../../../../../prisma/api/Api';
 
 const TAB_OPTIONS = ['All', 'Paid', 'Unpaid', 'Unassigned Frosh', 'Unassigned Team'];
 
@@ -330,8 +330,9 @@ const applySortFilter = ({
   return tableData;
 };
 
-export const getServerSideProps: GetServerSideProps = async () => {
-  const users = await getUsersForUserList();
+export const getServerSideProps: GetServerSideProps = async (ctx: GetServerSidePropsContext) => {
+  const api = new Api({ ctx });
+  const users = await api.Profile.getProfilesForProfileList();
 
   return {
     props: {

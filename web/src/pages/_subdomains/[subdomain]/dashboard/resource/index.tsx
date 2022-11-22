@@ -23,9 +23,10 @@ import Iconify from '../../../../../components/Iconify';
 import Scrollbar from '../../../../../components/Scrollbar';
 import HeaderBreadcrumbs from '../../../../../components/HeaderBreadcrumbs';
 import { TableEmptyRows, TableHeadCustom, TableNoData } from '../../../../../components/table';
-import { GetServerSideProps } from 'next';
-import { FullResource, getResources } from '../../../../../../prisma/resources/get';
+import { GetServerSideProps, GetServerSidePropsContext } from 'next';
+import { FullResource } from '../../../../../../prisma/api/@types';
 import { ResourceTableRow, ResourceTableToolbar } from '../../../../../sections/@dashboard/resource/list';
+import Api from '../../../../../../prisma/api/Api';
 
 const TAB_OPTIONS = ['All', 'No Leaders', 'No Froshees'];
 
@@ -231,8 +232,9 @@ function applySortFilter({
   return tableData;
 }
 
-export const getServerSideProps: GetServerSideProps = async () => {
-  const resources = await getResources();
+export const getServerSideProps: GetServerSideProps = async (ctx: GetServerSidePropsContext) => {
+  const api = new Api({ ctx });
+  const resources = await api.Resource.getResources();
 
   return {
     props: {

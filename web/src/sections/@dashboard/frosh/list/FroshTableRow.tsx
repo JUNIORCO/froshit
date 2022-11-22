@@ -4,7 +4,7 @@ import { Checkbox, MenuItem, TableCell, TableRow } from '@mui/material';
 import Iconify from '../../../../components/Iconify';
 import { TableMoreMenu } from '../../../../components/table';
 import { Role } from '../../../../../prisma/types';
-import { FroshsWithStats } from '../../../../../prisma/froshs/get';
+import { FroshsWithStats } from '../../../../../prisma/api/@types';
 
 type Props = {
   row: FroshsWithStats;

@@ -28,11 +28,12 @@ import Iconify from '../../../../../components/Iconify';
 import Scrollbar from '../../../../../components/Scrollbar';
 import HeaderBreadcrumbs from '../../../../../components/HeaderBreadcrumbs';
 import { TableEmptyRows, TableHeadCustom, TableNoData, TableSelectedActions } from '../../../../../components/table';
-import { GetServerSideProps } from 'next';
-import { FullTeam, getTeamsWithFrosh } from '../../../../../../prisma/team/get';
+import { GetServerSideProps, GetServerSidePropsContext } from 'next';
+import { FullTeam } from '../../../../../../prisma/api/@types';
 import TeamTableRow from '../../../../../sections/@dashboard/team/list/TeamTableRow';
 import { TeamTableToolbar } from '../../../../../sections/@dashboard/team/list';
 import { Role } from '../../../../../../prisma/types';
+import Api from '../../../../../../prisma/api/Api';
 
 const TAB_OPTIONS = ['All', 'No Leaders', 'No Froshees'];
 
@@ -303,8 +304,9 @@ function applySortFilter({
   return tableData;
 }
 
-export const getServerSideProps: GetServerSideProps = async () => {
-  const teams = await getTeamsWithFrosh();
+export const getServerSideProps: GetServerSideProps = async (ctx: GetServerSidePropsContext) => {
+  const api = new Api({ ctx });
+  const teams = await api.Team.getTeamsWithFrosh();
 
   return {
     props: {

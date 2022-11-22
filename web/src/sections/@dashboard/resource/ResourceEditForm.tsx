@@ -10,7 +10,7 @@ import { Box, Card, Grid, Stack } from '@mui/material';
 import { PATH_DASHBOARD } from '../../../routes/paths';
 import { FormProvider, RHFSelect, RHFTextField } from '../../../components/hook-form';
 import { ResourceTag } from '../../../../prisma/types';
-import { FullResource } from '../../../../prisma/resources/get';
+import { FullResource } from '../../../../prisma/api/@types';
 
 const sendResourceEditRequest = async (url: string, { arg: resource }: any) => {
   const res = await fetch(url, {

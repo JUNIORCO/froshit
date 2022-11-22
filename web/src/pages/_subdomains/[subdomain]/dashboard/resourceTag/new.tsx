@@ -7,10 +7,9 @@ import useSettings from '../../../../../hooks/useSettings';
 import Layout from '../../../../../layouts';
 import Page from '../../../../../components/Page';
 import HeaderBreadcrumbs from '../../../../../components/HeaderBreadcrumbs';
-import { GetServerSideProps } from 'next';
-import { getFroshs } from '../../../../../../prisma/froshs/get';
-import { getUnassignedFrosheesAndLeaders } from '../../../../../../prisma/user/get';
+import { GetServerSideProps, GetServerSidePropsContext } from 'next';
 import TeamNewForm from '../../../../../sections/@dashboard/team/TeamNewForm';
+import Api from '../../../../../../prisma/api/Api';
 
 TeamCreate.getLayout = function getLayout(page: React.ReactElement) {
   return <Layout>{page}</Layout>;
@@ -36,9 +35,11 @@ export default function TeamCreate({ froshs, profiles }: any) {
   );
 }
 
-export const getServerSideProps: GetServerSideProps = async (ctx) => {
-  const froshs = await getFroshs();
-  const profiles = await getUnassignedFrosheesAndLeaders();
+export const getServerSideProps: GetServerSideProps = async (ctx: GetServerSidePropsContext) => {
+  const api = new Api({ ctx });
+
+  const froshs = await api.Frosh.getFroshs();
+  const profiles = await api.Profile.getUnassignedFrosheesAndLeaders();
 
   return {
     props: {

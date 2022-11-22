@@ -7,10 +7,8 @@ import Page from '../../../../../components/Page';
 import HeaderBreadcrumbs from '../../../../../components/HeaderBreadcrumbs';
 import UserNewEditForm from '../../../../../sections/@dashboard/user/UserNewEditForm';
 import { GetServerSideProps } from 'next';
-import { getPrograms } from '../../../../../../prisma/programs/get';
-import { getFroshs } from '../../../../../../prisma/froshs/get';
-import { getTeams } from '../../../../../../prisma/team/get';
 import type { Frosh, Program, Team } from '../../../../../../prisma/types';
+import Api from '../../../../../../prisma/api/Api';
 
 UserCreate.getLayout = function getLayout(page: React.ReactElement) {
   return <Layout>{page}</Layout>;
@@ -43,7 +41,8 @@ export default function UserCreate({ programs, froshs, teams }: Props) {
 }
 
 export const getServerSideProps: GetServerSideProps = async (ctx) => {
-  const [programs, froshs, teams] = await Promise.all([getPrograms(), getFroshs(), getTeams()]);
+  const api = new Api({ ctx });
+  const [programs, froshs, teams] = await Promise.all([api.Program.getPrograms(), api.Frosh.getFroshs(), api.Team.getTeamsWithFrosh()]);
 
   return {
     props: {

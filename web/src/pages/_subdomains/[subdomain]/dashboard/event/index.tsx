@@ -26,11 +26,12 @@ import Iconify from '../../../../../components/Iconify';
 import Scrollbar from '../../../../../components/Scrollbar';
 import HeaderBreadcrumbs from '../../../../../components/HeaderBreadcrumbs';
 import { TableEmptyRows, TableHeadCustom, TableNoData } from '../../../../../components/table';
-import { GetServerSideProps } from 'next';
-import { FullEvent, getFullEvents } from '../../../../../../prisma/events/get';
+import { GetServerSideProps, GetServerSidePropsContext } from 'next';
+import { FullEvent } from '../../../../../../prisma/api/@types';
 import dayjs from 'dayjs';
 import { EventTableRow, EventTableToolbar } from '../../../../../sections/@dashboard/event/list';
 import isBetween from 'dayjs/plugin/isBetween';
+import Api from '../../../../../../prisma/api/Api';
 
 dayjs.extend(isBetween);
 
@@ -272,8 +273,9 @@ function applySortFilter({
   return tableData;
 }
 
-export const getServerSideProps: GetServerSideProps = async () => {
-  const events = await getFullEvents();
+export const getServerSideProps: GetServerSideProps = async (ctx: GetServerSidePropsContext) => {
+  const api = new Api({ ctx });
+  const events = await api.Event.getFullEvents();
 
   return {
     props: {

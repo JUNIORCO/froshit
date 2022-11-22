@@ -11,8 +11,7 @@ import { PATH_DASHBOARD } from '../../../routes/paths';
 import { FormProvider, RHFSelect, RHFTextField } from '../../../components/hook-form';
 import { RHFMultiSelect } from '../../../components/hook-form/RHFMultiSelect';
 import { Frosh, Profile, Role } from '../../../../prisma/types';
-import { UnassignedFrosheesAndLeaders } from '../../../../prisma/user/get';
-import { FullTeam } from '../../../../prisma/team/get';
+import type { FullTeam, UnassignedFrosheesAndLeaders } from '../../../../prisma/api/@types';
 
 const sendTeamRequest = async (url: string, { arg }: any) => {
   const res = await fetch(url, {
@@ -54,8 +53,14 @@ export default function TeamNewForm({
   const currentTeamLeaders: Profile[] = currentTeam.profiles?.filter((profile) => profile.role === Role.Leader) || [];
   const currentTeamFroshees: Profile[] = currentTeam.profiles?.filter((profile) => profile.role === Role.Froshee) || [];
 
-  const currentTeamLeadersOptions = currentTeamLeaders.map((leader) => ({ label: `${leader.firstName} ${leader.lastName}`, value: leader.id }));
-  const currentTeamFrosheeOptions = currentTeamFroshees.map((froshee) => ({ label: `${froshee.firstName} ${froshee.lastName}`, value: froshee.id }));
+  const currentTeamLeadersOptions = currentTeamLeaders.map((leader) => ({
+    label: `${leader.firstName} ${leader.lastName}`,
+    value: leader.id,
+  }));
+  const currentTeamFrosheeOptions = currentTeamFroshees.map((froshee) => ({
+    label: `${froshee.firstName} ${froshee.lastName}`,
+    value: froshee.id,
+  }));
 
   const allLeaderOptions = profiles.filter((profile) => profile.role === Role.Leader).map((leader) => ({
     label: `${leader.firstName} ${leader.lastName}`,

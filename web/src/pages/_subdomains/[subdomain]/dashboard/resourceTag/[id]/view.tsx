@@ -11,9 +11,9 @@ import Layout from '../../../../../../layouts';
 import Page from '../../../../../../components/Page';
 import HeaderBreadcrumbs from '../../../../../../components/HeaderBreadcrumbs';
 // sections
-import { GetServerSideProps } from 'next';
-import { getTeamById } from '../../../../../../../prisma/team/get';
+import { GetServerSideProps, GetServerSidePropsContext } from 'next';
 import { Query } from '../../../../../../@types/query';
+import Api from '../../../../../../../prisma/api/Api';
 
 // ----------------------------------------------------------------------
 
@@ -45,9 +45,11 @@ export default function TeamView({ team }: any) {
   );
 }
 
-export const getServerSideProps: GetServerSideProps = async (ctx) => {
+export const getServerSideProps: GetServerSideProps = async (ctx: GetServerSidePropsContext) => {
   const { subdomain, id } = ctx.query as Query;
-  const team = await getTeamById(id);
+  const api = new Api({ ctx });
+  ;
+  const team = await api.Team.getFullTeamById(id);
 
   return {
     props: {

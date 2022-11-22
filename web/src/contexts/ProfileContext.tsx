@@ -1,29 +1,8 @@
 import { createContext, ReactNode, useMemo } from 'react';
-import { FullUser } from '../../prisma/user/get';
-// import { Frosh, Program, Team, Role } from '../../prisma/types';
-
-// type Profile = {
-//   id: string;
-//   firstName: string;
-//   lastName: string;
-//   email: string;
-//   phoneNumber: string;
-//   role: Role;
-//   paid: number | null;
-//   interests: string[];
-//   universityId: string;
-//   programId: string | null;
-//   froshId: string | null;
-//   teamId: string | null;
-//   createdAt: Date;
-//   updatedAt: Date;
-//   frosh: Frosh | null;
-//   team: Team | null;
-//   program: Program | null;
-// };
+import { FullProfile } from '../../prisma/api/@types';
 
 export type ProfileContextProps = {
-  profile: FullUser | null;
+  profile: FullProfile | null;
 };
 
 const initialState: ProfileContextProps = {
@@ -33,7 +12,7 @@ const initialState: ProfileContextProps = {
 const ProfileContext = createContext(initialState);
 
 type ProfileProviderProps = {
-  profile: FullUser | null;
+  profile: FullProfile | null;
   children: ReactNode;
 };
 

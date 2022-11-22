@@ -4,11 +4,11 @@ import useSettings from '../../../../../hooks/useSettings';
 import Layout from '../../../../../layouts';
 import Page from '../../../../../components/Page';
 import HeaderBreadcrumbs from '../../../../../components/HeaderBreadcrumbs';
-import { GetServerSideProps } from 'next';
-import { getFroshs } from '../../../../../../prisma/froshs/get';
+import { GetServerSideProps, GetServerSidePropsContext } from 'next';
 import { Frosh } from '../../../../../../prisma/types';
 import React from 'react';
 import EventNewForm from '../../../../../sections/@dashboard/event/EventNewForm';
+import Api from '../../../../../../prisma/api/Api';
 
 EventCreate.getLayout = function getLayout(page: React.ReactElement) {
   return <Layout>{page}</Layout>;
@@ -38,8 +38,9 @@ export default function EventCreate({ froshs }: Props) {
   );
 }
 
-export const getServerSideProps: GetServerSideProps = async () => {
-  const froshs = await getFroshs();
+export const getServerSideProps: GetServerSideProps = async (ctx: GetServerSidePropsContext) => {
+  const api = new Api({ ctx });
+  const froshs = await api.Frosh.getFroshs();
 
   return {
     props: {

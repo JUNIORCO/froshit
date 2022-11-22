@@ -9,6 +9,9 @@ import Logo from '../../../../components/Logo';
 import Image from '../../../../components/Image';
 import { RegisterForm } from '../../../../sections/auth/register';
 import GuestGuard from '../../../../guards/GuestGuard';
+import { GetServerSideProps, GetServerSidePropsContext } from 'next';
+import Api from '../../../../../prisma/api/Api';
+import { University } from '../../../../../prisma/types';
 
 const RootStyle = styled('div')(({ theme }) => ({
   [theme.breakpoints.up('md')]: {
@@ -53,7 +56,11 @@ const ContentStyle = styled('div')(({ theme }) => ({
 
 // ----------------------------------------------------------------------
 
-export default function Register() {
+type RegisterProps = {
+  universities: University[];
+}
+
+export default function Register({ universities }: RegisterProps) {
   const method = 'supabase-auth';
 
   const smUp = useResponsive('up', 'sm');
@@ -113,7 +120,7 @@ export default function Register() {
                 </Tooltip>
               </Box>
 
-              <RegisterForm />
+              <RegisterForm universities={universities} />
 
               <Typography variant='body2' align='center' sx={{ color: 'text.secondary', mt: 3 }}>
                 By registering, I agree to Minimal&nbsp;
@@ -142,3 +149,14 @@ export default function Register() {
     </GuestGuard>
   );
 }
+
+export const getServerSideProps: GetServerSideProps = async (ctx: GetServerSidePropsContext) => {
+  const api = new Api({ ctx });
+  const universities = await api.University.getUniversities();
+
+  return {
+    props: {
+      universities,
+    },
+  };
+};

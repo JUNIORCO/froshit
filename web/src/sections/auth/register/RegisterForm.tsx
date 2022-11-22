@@ -10,8 +10,9 @@ import { LoadingButton } from '@mui/lab';
 import useIsMountedRef from '../../../hooks/useIsMountedRef';
 // components
 import Iconify from '../../../components/Iconify';
-import { FormProvider, RHFTextField } from '../../../components/hook-form';
+import { FormProvider, RHFSelect, RHFTextField } from '../../../components/hook-form';
 import { useSupabaseClient } from '@supabase/auth-helpers-react';
+import { Role, University } from '../../../../prisma/types';
 
 // ----------------------------------------------------------------------
 
@@ -26,7 +27,11 @@ type FormValuesProps = {
   afterSubmit?: string;
 };
 
-export default function RegisterForm() {
+type RegisterProps = {
+  universities: University[];
+}
+
+export default function RegisterForm({ universities }: RegisterProps) {
   const supabaseClient = useSupabaseClient();
 
   const isMountedRef = useIsMountedRef();
@@ -44,13 +49,13 @@ export default function RegisterForm() {
   });
 
   const defaultValues = {
-    email: 'j@gmail.com',
-    password: 'Demo1234',
-    firstName: 'John',
-    lastName: 'Doe',
-    phoneNumber: '1234',
-    role: 'Admin',
-    universityId: '1678f7bf-7a13-477c-942c-c85dcadfdd40',
+    email: '',
+    password: '',
+    firstName: '',
+    lastName: '',
+    phoneNumber: '',
+    role: '',
+    universityId: '',
   };
 
   const methods = useForm<FormValuesProps>({
@@ -101,6 +106,26 @@ export default function RegisterForm() {
         </Stack>
 
         <RHFTextField name='email' label='Email address' />
+
+        <RHFTextField name='phoneNumber' label='Phone Number' />
+
+        <RHFSelect name='role' label='Role' placeholder='Role'>
+          <option value='' />
+          {Object.values(Role).map((role) => (
+            <option key={role} value={role}>
+              {role}
+            </option>
+          ))}
+        </RHFSelect>
+
+        <RHFSelect name='universityId' label='University' placeholder='University'>
+          <option value='' />
+          {universities.map((university) => (
+            <option key={university.id} value={university.id}>
+              {university.name}
+            </option>
+          ))}
+        </RHFSelect>
 
         <RHFTextField
           name='password'
