@@ -41,7 +41,7 @@ export default function CartWidget() {
   const totalItems = sum(checkout.cart.map((item) => item.quantity));
 
   return (
-    <NextLink href={PATH_DASHBOARD.eCommerce.checkout} passHref>
+    <NextLink href={PATH_DASHBOARD.eCommerce.checkout} passHref style={{ textDecoration: 'none' }}>
       <RootStyle>
         <Badge showZero badgeContent={totalItems} color="error" max={99}>
           <Iconify icon={'eva:shopping-cart-fill'} width={24} height={24} />

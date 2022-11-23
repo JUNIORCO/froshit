@@ -1,4 +1,4 @@
-// @mui
+// @ts-nocheck
 import { List, Box } from '@mui/material';
 // hooks
 import useLocales from '../../../hooks/useLocales';

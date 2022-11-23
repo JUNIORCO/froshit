@@ -55,7 +55,7 @@ export default function Page403() {
             <ForbiddenIllustration sx={{ height: 260, my: { xs: 5, sm: 10 } }} />
           </m.div>
 
-          <NextLink href="/" passHref>
+          <NextLink href="/" passHref style={{ textDecoration: 'none' }}>
             <Button size="large" variant="contained">
               Go to Home
             </Button>

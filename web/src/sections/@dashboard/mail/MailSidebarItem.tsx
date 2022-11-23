@@ -54,7 +54,7 @@ export default function MailSidebarItem({ label, ...other }: Props) {
   const isUnread = label.unreadCount > 0;
 
   return (
-    <NextLink href={linkTo(label)} passHref>
+    <NextLink href={linkTo(label)} passHref style={{ textDecoration: 'none' }}>
       <ListItemButton
         sx={{
           px: 3,

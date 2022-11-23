@@ -159,7 +159,7 @@ export default function UserList({ users }: UserListProps) {
             { name: 'List' },
           ]}
           action={
-            <NextLink href={PATH_DASHBOARD.user.new} passHref>
+            <NextLink href={PATH_DASHBOARD.user.new} passHref style={{ textDecoration: 'none' }}>
               <Button variant='contained' startIcon={<Iconify icon={'eva:plus-fill'} />}>
                 New User
               </Button>

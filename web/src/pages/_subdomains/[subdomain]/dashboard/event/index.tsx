@@ -134,7 +134,7 @@ export default function EventList({ events }: Props) {
             { name: 'List' },
           ]}
           action={
-            <NextLink href={PATH_DASHBOARD.event.new} passHref>
+            <NextLink href={PATH_DASHBOARD.event.new} passHref style={{ textDecoration: 'none' }}>
               <Button variant='contained' startIcon={<Iconify icon={'eva:plus-fill'} />}>
                 New Event
               </Button>

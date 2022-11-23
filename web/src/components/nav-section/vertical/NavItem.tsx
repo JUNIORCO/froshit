@@ -1,4 +1,4 @@
-// @mui
+// @ts-nocheck
 import { Box, Tooltip, ListItemButtonProps } from '@mui/material';
 // hooks
 import useLocales from '../../../hooks/useLocales';

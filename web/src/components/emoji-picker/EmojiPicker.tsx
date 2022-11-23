@@ -1,5 +1,5 @@
 import data from '@emoji-mart/data';
-import { Picker, BaseEmoji, PickerProps, Data } from 'emoji-mart';
+import { Picker } from 'emoji-mart';
 import { useEffect, useRef, useState } from 'react';
 // @mui
 import { useTheme, hexToRgb, Theme } from '@mui/material/styles';
@@ -9,12 +9,12 @@ import Iconify from '../Iconify';
 
 // ----------------------------------------------------------------------
 
-interface Props extends PickerProps {
-  data?: Data;
+interface Props {
+  data?: any;
   disabled?: boolean;
   value: string;
   setValue: React.Dispatch<React.SetStateAction<string>>;
-  onEmojiSelect?: (emoji: BaseEmoji) => void;
+  onEmojiSelect?: (emoji: any) => void;
   ref?: React.MutableRefObject<HTMLInputElement>;
   sx?: SxProps<Theme>;
 }
@@ -30,7 +30,7 @@ export default function EmojiPicker({ value, setValue, disabled, sx, ...other }:
     new Picker({
       ref: emojiRef,
       data,
-      onEmojiSelect: (emoji: BaseEmoji) => setValue(value + emoji?.native),
+      onEmojiSelect: (emoji: any) => setValue(value + emoji?.native),
       ...other,
     });
     // eslint-disable-next-line react-hooks/exhaustive-deps

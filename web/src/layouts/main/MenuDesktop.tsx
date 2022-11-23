@@ -16,6 +16,7 @@ import {
   ListSubheader,
   Popover,
   Stack,
+  Typography,
 } from '@mui/material';
 // components
 import Iconify from '../../components/Iconify';
@@ -25,7 +26,7 @@ import { DEMO_PAGE } from '../../routes/paths';
 
 // ----------------------------------------------------------------------
 
-const LinkStyle = styled(Link)(({ theme }) => ({
+const LinkStyle = styled(Typography)(({ theme }) => ({
   ...theme.typography.subtitle2,
   color: theme.palette.text.primary,
   marginRight: theme.spacing(5),
@@ -122,7 +123,7 @@ function MenuDesktopItem({
 
   if (children) {
     return (
-      <>
+      <Box>
         <LinkStyle
           onClick={onOpen}
           sx={{
@@ -228,12 +229,12 @@ function MenuDesktopItem({
             })}
           </Grid>
         </Popover>
-      </>
+      </Box>
     );
   }
 
   return demo ? (
-    <a href={DEMO_PAGE} target='_blank' rel='noreferrer' style={{ textDecoration: 'none' }}>
+    <NextLink href={DEMO_PAGE} passHref target='_blank' rel='noreferrer' style={{ textDecoration: 'none' }}>
       <LinkStyle
         sx={{
           ...(isHome && { color: 'common.white' }),
@@ -245,8 +246,8 @@ function MenuDesktopItem({
       >
         {title}
       </LinkStyle>
-    </a>) : (
-    <NextLink href={path} passHref>
+    </NextLink>) : (
+    <NextLink href={path} passHref style={{ textDecoration: 'none' }}>
       <LinkStyle
         sx={{
           ...(isHome && { color: 'common.white' }),

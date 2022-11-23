@@ -156,7 +156,7 @@ function MenuMobileItem({ item, isOpen, onOpen }: MenuMobileItemProps) {
   }
 
   return (
-    <NextLink href={path} passHref>
+    <NextLink href={path} passHref style={{ textDecoration: 'none' }}>
       <ListItemStyle
         sx={{
           ...(isActive && {

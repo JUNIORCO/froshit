@@ -58,7 +58,7 @@ export default function Login({ subdomain }: LoginProps) {
             {smUp && (
               <Typography variant='body2' sx={{ mt: { md: -2 } }}>
                 Don’t have an account? {''}
-                <NextLink href={PATH_AUTH.register} passHref>
+                <NextLink href={PATH_AUTH.register} passHref style={{ textDecoration: 'none' }}>
                   <Link variant='subtitle2'>Get started</Link>
                 </NextLink>
               </Typography>
@@ -90,7 +90,7 @@ export default function Login({ subdomain }: LoginProps) {
               {!smUp && (
                 <Typography variant='body2' align='center' sx={{ mt: 3 }}>
                   Don’t have an account?{' '}
-                  <NextLink href={PATH_AUTH.register} passHref>
+                  <NextLink href={PATH_AUTH.register} passHref style={{ textDecoration: 'none' }}>
                     <Link variant='subtitle2'>Get started</Link>
                   </NextLink>
                 </Typography>

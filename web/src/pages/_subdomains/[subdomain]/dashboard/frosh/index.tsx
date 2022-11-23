@@ -91,7 +91,7 @@ export default function FroshList({ froshs }: Props) {
             { name: 'List' },
           ]}
           action={
-            <NextLink href={PATH_DASHBOARD.frosh.new} passHref>
+            <NextLink href={PATH_DASHBOARD.frosh.new} passHref style={{ textDecoration: 'none' }}>
               <Button variant='contained' startIcon={<Iconify icon={'eva:plus-fill'} />}>
                 New Frosh
               </Button>

@@ -82,7 +82,7 @@ function MegaMenuItem({ parent }: { parent: MegaMenuItemProps }) {
                   </Typography>
 
                   {list.items.map((link) => (
-                    <NextLink key={link.title} href={link.path} passHref>
+                    <NextLink key={link.title} href={link.path} passHref style={{ textDecoration: 'none' }}>
                       <Link
                         noWrap
                         underline="none"
@@ -104,7 +104,7 @@ function MegaMenuItem({ parent }: { parent: MegaMenuItemProps }) {
 
             {!!more && !!tags && !!products && (
               <Stack spacing={3}>
-                <NextLink href={more?.path} passHref>
+                <NextLink href={more?.path} passHref style={{ textDecoration: 'none' }}>
                   <Link sx={{ typography: 'body2', display: 'inline-flex', fontSize: 13 }}>
                     {more?.title}
                   </Link>
@@ -136,7 +136,7 @@ function ParentItem({ title, path = '', open, hasSub, ...other }: ParentItemProp
   };
 
   return (
-    <NextLink href={path} passHref>
+    <NextLink href={path} passHref style={{ textDecoration: 'none' }}>
       <Link
         underline="none"
         color="inherit"

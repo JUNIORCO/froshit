@@ -101,7 +101,7 @@ export default function OfferList({ offers }: Props) {
             { name: 'List' },
           ]}
           action={
-            <NextLink href={PATH_DASHBOARD.offer.new} passHref>
+            <NextLink href={PATH_DASHBOARD.offer.new} passHref style={{ textDecoration: 'none' }}>
               <Button variant='contained' startIcon={<Iconify icon={'eva:plus-fill'} />}>
                 New Offer
               </Button>

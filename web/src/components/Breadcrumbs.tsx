@@ -73,7 +73,7 @@ type LinkItemProps = {
 function LinkItem({ link }: LinkItemProps) {
   const { href = '', name, icon } = link;
   return (
-    <NextLink href={href} passHref>
+    <NextLink href={href} passHref style={{ textDecoration: 'none' }}>
       <Link
         key={name}
         variant="body2"

@@ -48,7 +48,7 @@ export default function ResetPassword() {
 
           <ResetPasswordForm />
 
-          <NextLink href={PATH_AUTH.login} passHref>
+          <NextLink href={PATH_AUTH.login} passHref style={{ textDecoration: 'none' }}>
             <Button fullWidth size="large" sx={{ mt: 1 }}>
               Back
             </Button>

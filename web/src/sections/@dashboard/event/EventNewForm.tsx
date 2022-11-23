@@ -1,5 +1,4 @@
 import * as Yup from 'yup';
-import useSWRMutation from 'swr/mutation';
 import { useSnackbar } from 'notistack';
 import { useRouter } from 'next/router';
 import { useForm } from 'react-hook-form';
@@ -10,27 +9,18 @@ import { PATH_DASHBOARD } from '../../../routes/paths';
 import { FormProvider, RHFSelect, RHFTextField } from '../../../components/hook-form';
 import { Frosh } from '../../../../prisma/types';
 import RHFDateTimeRangeSelect from '../../../components/hook-form/RHFDateTimeRangeSelect';
+import { useSupabaseClient } from '@supabase/auth-helpers-react';
+import { v4 as uuid } from 'uuid';
 
-const sendEventCreateRequest = async (url: string, { arg: eventToCreate }: any) => {
-  const res = await fetch(url, {
-    method: 'POST',
-    headers: {
-      'Accept': 'application/json',
-      'Content-Type': 'application/json',
-    },
-    body: JSON.stringify(eventToCreate),
-  });
-  return res.json();
-};
-
-type FormValuesProps = {
-  name: string | null;
-  description: string | null;
-  startDate: Date | null;
-  endDate: Date | null;
-  location: string | null;
-  accessibility: string | null;
-  froshId: string | null;
+type EventForm = {
+  id: string;
+  name: string;
+  description: string;
+  startDate: Date;
+  endDate: Date;
+  location: string;
+  accessibility: string;
+  froshId: string;
 };
 
 type Props = {
@@ -38,7 +28,7 @@ type Props = {
 };
 
 export default function EventNewForm({ froshs }: Props) {
-  const { trigger } = useSWRMutation('/api/event', sendEventCreateRequest);
+  const supabaseClient = useSupabaseClient();
 
   const { push } = useRouter();
 
@@ -58,35 +48,35 @@ export default function EventNewForm({ froshs }: Props) {
   });
 
   const defaultValues = {
+    id: uuid(),
     name: '',
     description: '',
-    startDate: null,
-    endDate: null,
+    startDate: new Date(),
+    endDate: new Date(),
     location: '',
     accessibility: '',
     froshId: '',
   };
 
-  const methods = useForm<FormValuesProps>({
+  const methods = useForm<EventForm>({
     resolver: yupResolver(NewEventSchema),
     defaultValues,
   });
 
   const {
-    reset,
     handleSubmit,
     formState: { isSubmitting },
   } = methods;
 
-  const onSubmit = async (eventToCreate: FormValuesProps) => {
-    try {
-      await trigger(eventToCreate);
-      reset();
-      enqueueSnackbar('Create success!');
-      void push(PATH_DASHBOARD.event.root);
-    } catch (error) {
-      console.error(error);
+  const onSubmit = async (eventToCreate: EventForm) => {
+    const { error } = await supabaseClient.from('event').insert(eventToCreate);
+    if (error) {
+      enqueueSnackbar(`Error ${error.message}`, { variant: 'error' });
+      return;
     }
+
+    enqueueSnackbar('Event created');
+    void push(PATH_DASHBOARD.event.root);
   };
 
   return (
@@ -122,7 +112,6 @@ export default function EventNewForm({ froshs }: Props) {
               <RHFDateTimeRangeSelect name='startDate' label='Start Date' />
 
               <RHFDateTimeRangeSelect name='endDate' label='End Date' />
-
             </Box>
 
             <Stack alignItems='flex-end' sx={{ mt: 3 }}>

@@ -25,14 +25,15 @@ const sendEventRequest = async (url: string, { arg: eventToUpdate }: any) => {
   return res.json();
 };
 
-type FormValuesProps = {
-  name: string | null;
-  description: string | null;
-  startDate: Date | null;
-  endDate: Date | null;
-  location: string | null;
-  accessibility: string | null;
-  froshId: string | null;
+type EventForm = {
+  id: string;
+  name: string;
+  description: string;
+  startDate: Date;
+  endDate: Date;
+  location: string;
+  accessibility: string;
+  froshId: string;
 };
 
 type Props = {
@@ -76,7 +77,7 @@ export default function EventNewForm({
     [currentEvent],
   );
 
-  const methods = useForm<FormValuesProps>({
+  const methods = useForm<EventForm>({
     resolver: yupResolver(NewTeamSchema),
     defaultValues,
   });
@@ -94,7 +95,7 @@ export default function EventNewForm({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [currentEvent]);
 
-  const onSubmit = async (updatedEvent: FormValuesProps) => {
+  const onSubmit = async (updatedEvent: EventForm) => {
     try {
       await trigger(updatedEvent);
       reset();

@@ -123,7 +123,7 @@ export default function MailItem({
         </Box>
       )}
 
-      <NextLink href={linkTo(params, mail.id)} passHref>
+      <NextLink href={linkTo(params, mail.id)} passHref style={{ textDecoration: 'none' }}>
         <Box
           sx={{
             py: 2,

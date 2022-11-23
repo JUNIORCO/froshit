@@ -120,7 +120,7 @@ export default function ResourceList({ resources }: Props) {
             { name: 'List' },
           ]}
           action={
-            <NextLink href={PATH_DASHBOARD.resource.new} passHref>
+            <NextLink href={PATH_DASHBOARD.resource.new} passHref style={{ textDecoration: 'none' }}>
               <Button variant='contained' startIcon={<Iconify icon={'eva:plus-fill'} />}>
                 New Resource
               </Button>

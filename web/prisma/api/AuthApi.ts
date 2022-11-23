@@ -1,5 +1,4 @@
 import { GetServerSidePropsContext } from 'next';
-import cookie from 'cookie';
 import type { Profile } from '../types';
 import EventApi from './EventApi';
 import FroshApi from './FroshApi';
@@ -29,9 +28,7 @@ class AuthApi {
   public readonly Public: UniversityApi;
 
   constructor({ ctx }: IApiOptions) {
-    const cookies = cookie.parse(ctx.req ? ctx.req.headers.cookie || '' : document.cookie);
-    const profile = cookies.profile ? JSON.parse(cookies.profile) as Profile : null;
-
+    const profile = ctx.req.headers.profile ? JSON.parse(<string>ctx.req.headers.profile) as Profile : null;
     if (!profile) {
       throw new Error('[AuthApi] No profile found.');
     }

@@ -89,7 +89,7 @@ export default function CheckoutCart() {
           )}
         </Card>
 
-        <NextLink href={PATH_DASHBOARD.eCommerce.root} passHref>
+        <NextLink href={PATH_DASHBOARD.eCommerce.root} passHref style={{ textDecoration: 'none' }}>
           <Button color="inherit" startIcon={<Iconify icon={'eva:arrow-ios-back-fill'} />}>
             Continue Shopping
           </Button>

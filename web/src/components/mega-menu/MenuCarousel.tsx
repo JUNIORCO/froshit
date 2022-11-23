@@ -53,7 +53,7 @@ export default function MenuCarousel({ products, numberShow, sx }: MenuCarouselP
         <Slider ref={carouselRef} {...settings}>
           {products.map((product) => (
             <Box key={product.name} sx={{ px: 1, textAlign: 'center' }}>
-              <NextLink href={product.path} passHref>
+              <NextLink href={product.path} passHref style={{ textDecoration: 'none' }}>
                 <Link
                   color="inherit"
                   underline="none"

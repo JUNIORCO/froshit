@@ -15,7 +15,7 @@ export default function MenuHotProducts({ tags, ...other }: MenuHotProductsProps
       </Typography>
       &nbsp;
       {tags.map((tag, index) => (
-        <NextLink key={tag.name} href={tag.path} passHref>
+        <NextLink key={tag.name} href={tag.path} passHref style={{ textDecoration: 'none' }}>
           <Link
             underline="none"
             variant="caption"

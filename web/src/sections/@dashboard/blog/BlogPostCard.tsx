@@ -168,7 +168,7 @@ export function PostContent({ title, view, comment, share, createdAt, index }: P
         {fDate(createdAt)}
       </Typography>
 
-      <NextLink href={linkTo} passHref>
+      <NextLink href={linkTo} passHref style={{ textDecoration: 'none' }}>
         <Link color="inherit">
           <TextMaxLine
             variant={isDesktop && latestPostLarge ? 'h5' : 'subtitle2'}

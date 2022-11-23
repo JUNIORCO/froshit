@@ -159,7 +159,7 @@ function SubMenu({ parent, pathname }: SubMenuProps) {
                       {subheader}
                     </Typography>
                     {items.map((link) => (
-                      <NextLink key={link.title} href={link.path} passHref>
+                      <NextLink key={link.title} href={link.path} passHref style={{ textDecoration: 'none' }}>
                         <ListItemButton sx={{ px: 1.5 }}>
                           <ListItemIcon
                             sx={{
@@ -199,7 +199,7 @@ function SubMenu({ parent, pathname }: SubMenuProps) {
   }
 
   return (
-    <NextLink href={path} passHref>
+    <NextLink href={path} passHref style={{ textDecoration: 'none' }}>
       <ParentItem title={title} icon={icon} />
     </NextLink>
   );

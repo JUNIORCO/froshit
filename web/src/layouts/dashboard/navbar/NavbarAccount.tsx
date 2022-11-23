@@ -24,7 +24,7 @@ export default function NavbarAccount({ isCollapse }: Props) {
   const { profile } = useProfile();
 
   return (
-    <NextLink href={PATH_DASHBOARD.user.account} passHref>
+    <Box>
       <Link underline='none' color='inherit'>
         <RootStyle
           sx={{
@@ -49,7 +49,7 @@ export default function NavbarAccount({ isCollapse }: Props) {
             }}
           >
             <Typography variant='subtitle2' noWrap>
-              {profile?.firstName}
+              {profile?.firstName} {profile?.lastName}
             </Typography>
             <Typography variant='body2' noWrap sx={{ color: 'text.secondary' }}>
               {profile?.role}
@@ -57,6 +57,6 @@ export default function NavbarAccount({ isCollapse }: Props) {
           </Box>
         </RootStyle>
       </Link>
-    </NextLink>
+    </Box>
   );
 }

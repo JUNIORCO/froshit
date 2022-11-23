@@ -76,7 +76,7 @@ export default function Register({ universities }: RegisterProps) {
             {smUp && (
               <Typography variant='body2' sx={{ mt: { md: -2 } }}>
                 Already have an account? {''}
-                <NextLink href={PATH_AUTH.login} passHref>
+                <NextLink href={PATH_AUTH.login} passHref style={{ textDecoration: 'none' }}>
                   <Link variant='subtitle2'>Login</Link>
                 </NextLink>
               </Typography>
@@ -137,7 +137,7 @@ export default function Register({ universities }: RegisterProps) {
               {!smUp && (
                 <Typography variant='body2' sx={{ mt: 3, textAlign: 'center' }}>
                   Already have an account?{' '}
-                  <NextLink href={PATH_AUTH.login} passHref>
+                  <NextLink href={PATH_AUTH.login} passHref style={{ textDecoration: 'none' }}>
                     <Link variant='subtitle2'>Login</Link>
                   </NextLink>
                 </Typography>

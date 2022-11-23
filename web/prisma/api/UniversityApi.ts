@@ -6,7 +6,6 @@ class UniversityApi {
   }
 
   public async getUniversities(): Promise<University[]> {
-    console.log('i bet we got all the way here')
     return prisma.university.findMany();
   }
 }

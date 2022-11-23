@@ -92,15 +92,14 @@ export default function MyApp(props: MyAppProps) {
 
 MyApp.getInitialProps = async (context: AppContext) => {
   const appProps = await App.getInitialProps(context);
-  const { subdomain } = context.ctx.query;
+  const { ctx } = context;
+  const { query, req } = ctx;
+  const { subdomain } = query;
 
-  const cookies = cookie.parse(
-    context.ctx.req ? context.ctx.req.headers.cookie || '' : document.cookie,
-  );
-
+  const cookies = cookie.parse(req ? req.headers.cookie || '' : document.cookie);
   const settings = getSettings(cookies);
 
-  const profile = cookies.profile ? JSON.parse(cookies.profile) : null;
+  const profile = req?.headers.profile ? JSON.parse(req.headers.profile) : null;
 
   return {
     ...appProps,

@@ -47,7 +47,7 @@ export default function ShopProductCard({ product }: Props) {
       </Box>
 
       <Stack spacing={2} sx={{ p: 3 }}>
-        <NextLink href={linkTo} passHref>
+        <NextLink href={linkTo} passHref style={{ textDecoration: 'none' }}>
           <Link color="inherit">
             <Typography variant="subtitle2" noWrap>
               {name}

@@ -40,16 +40,32 @@ export default async function middleware(req: NextRequest) {
       if (unprotectedPages.includes(url.pathname)) {
         url.pathname = `/_subdomains/${currentHost}${url.pathname}`;
       } else if (session?.user) {
-        // inject user profile into cookies
+        // inject user profile into header
         const userId = session.user.id;
-        const { data: user } = await supabase
+        const { data: profile } = await supabase
           .from('profile')
           .select('*')
           .eq('id', userId)
           .single();
+
+        if (!profile) {
+          throw new Error(`[Middleware] No profile found for logged in user ${userId}`);
+        }
+
+        // rewrite url to correct page
         url.pathname = `/_subdomains/${currentHost}${url.pathname}`;
-        const response = NextResponse.rewrite(url);
-        response.cookies.set('profile', JSON.stringify(user));
+
+        // clone the request headers and set a new header that has user profile
+        const requestHeaders = new Headers(req.headers);
+        requestHeaders.set('profile', JSON.stringify(profile));
+        const response = NextResponse.rewrite(url, {
+          request: {
+            headers: requestHeaders,
+          },
+        });
+
+        // set a new response header with the user profile
+        response.headers.set('profile', JSON.stringify(profile));
         return response;
       } else {
         // User is not authenticated, redirect to login

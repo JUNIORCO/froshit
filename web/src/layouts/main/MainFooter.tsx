@@ -84,10 +84,10 @@ export default function MainFooter() {
                   </Typography>
 
                   {list.children.map((link) => (
-                    <NextLink key={link.name} href={link.href} passHref>
-                      <Link color="inherit" variant="body2" sx={{ display: 'block' }}>
+                    <NextLink key={link.name} href={link.href} passHref style={{ textDecoration: 'none' }}>
+                      <Typography color="inherit" variant="body2" sx={{ display: 'block' }}>
                         {link.name}
-                      </Link>
+                      </Typography>
                     </NextLink>
                   ))}
                 </Stack>

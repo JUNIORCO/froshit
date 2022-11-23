@@ -1,3 +1,5 @@
+// @ts-nocheck
+
 import { Stack, Button, Typography } from '@mui/material';
 import useLocales from '../../../hooks/useLocales';
 import { PATH_DOCS } from '../../../routes/paths';

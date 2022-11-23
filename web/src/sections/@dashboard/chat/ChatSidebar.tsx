@@ -154,7 +154,7 @@ export default function ChatSidebar() {
           </IconButton>
 
           {!isCollapse && (
-            <NextLink href={PATH_DASHBOARD.chat.new} passHref>
+            <NextLink href={PATH_DASHBOARD.chat.new} passHref style={{ textDecoration: 'none' }}>
               <IconButton>
                 <Iconify icon={'eva:edit-fill'} width={20} height={20} />
               </IconButton>

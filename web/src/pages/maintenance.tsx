@@ -45,7 +45,7 @@ export default function Maintenance() {
 
           <MaintenanceIllustration sx={{ my: 10, height: 240 }} />
 
-          <NextLink href="/" passHref>
+          <NextLink href="/" passHref style={{ textDecoration: 'none' }}>
             <Button size="large" variant="contained">
               Go to Home
             </Button>

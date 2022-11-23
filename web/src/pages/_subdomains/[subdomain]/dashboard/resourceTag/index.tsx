@@ -142,7 +142,7 @@ export default function TeamList({ teams }: Props) {
             { name: 'List' },
           ]}
           action={
-            <NextLink href={PATH_DASHBOARD.team.new} passHref>
+            <NextLink href={PATH_DASHBOARD.team.new} passHref style={{ textDecoration: 'none' }}>
               <Button variant='contained' startIcon={<Iconify icon={'eva:plus-fill'} />}>
                 New Team
               </Button>

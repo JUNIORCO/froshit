@@ -53,7 +53,7 @@ export default function Page500() {
             <SeverErrorIllustration sx={{ height: 260, my: { xs: 5, sm: 10 } }} />
           </m.div>
 
-          <NextLink href="/" passHref>
+          <NextLink href="/" passHref style={{ textDecoration: 'none' }}>
             <Button size="large" variant="contained">
               Go to Home
             </Button>
