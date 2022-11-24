@@ -3,9 +3,13 @@ import createAvatar from '../utils/createAvatar';
 //
 import Avatar, { Props as AvatarProps } from './Avatar';
 import useProfile from '../hooks/useProfile';
+import { useUser } from '@supabase/auth-helpers-react';
 
 export default function MyAvatar({ ...other }: AvatarProps) {
+  const user = useUser();
   const { profile } = useProfile();
+
+  const getFirstName = () => profile ? profile.firstName : user?.user_metadata.firstName;
 
   return (
     <Avatar
@@ -13,7 +17,7 @@ export default function MyAvatar({ ...other }: AvatarProps) {
       alt={profile?.firstName}
       {...other}
     >
-      {createAvatar(`${profile?.firstName} ${profile?.lastName}`).name}
+      {createAvatar(getFirstName()).name}
     </Avatar>
   );
 }

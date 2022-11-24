@@ -4,47 +4,58 @@ import { MenuItem, Stack } from '@mui/material';
 // hooks
 import useLocales from '../../../hooks/useLocales';
 // components
-import Image from '../../../components/Image';
 import MenuPopover from '../../../components/MenuPopover';
 import { IconButtonAnimate } from '../../../components/animate';
-
+import Iconify from '../../../components/Iconify';
+import useSettings from '../../../hooks/useSettings';
 // ----------------------------------------------------------------------
 
 export default function LanguagePopover() {
+  const { onToggleMode } = useSettings();
   const { allLangs, currentLang, onChangeLang } = useLocales();
 
-  const [open, setOpen] = useState<HTMLElement | null>(null);
+  const [openLanguage, setOpenLanguage] = useState<HTMLElement | null>(null);
 
-  const handleOpen = (event: React.MouseEvent<HTMLElement>) => {
-    setOpen(event.currentTarget);
+  const handleLanguageOpen = (event: React.MouseEvent<HTMLElement>) => {
+    setOpenLanguage(event.currentTarget);
   };
 
-  const handleClose = () => {
-    setOpen(null);
+  const handleLanguageClose = () => {
+    setOpenLanguage(null);
   };
 
   const handleChangeLang = (newLang: string) => {
     onChangeLang(newLang);
-    handleClose();
+    handleLanguageClose();
   };
 
   return (
     <>
       <IconButtonAnimate
-        onClick={handleOpen}
+        onClick={handleLanguageOpen}
         sx={{
           width: 40,
           height: 40,
-          ...(open && { bgcolor: 'action.selected' }),
+          ...(openLanguage && { bgcolor: 'action.selected' }),
         }}
       >
-        <Image disabledEffect src={currentLang.icon} alt={currentLang.label} />
+        <Iconify icon='material-symbols:language' />
+      </IconButtonAnimate>
+
+      <IconButtonAnimate
+        onClick={onToggleMode}
+        sx={{
+          width: 40,
+          height: 40,
+        }}
+      >
+        <Iconify icon='ph:moon-bold' />
       </IconButtonAnimate>
 
       <MenuPopover
-        open={Boolean(open)}
-        anchorEl={open}
-        onClose={handleClose}
+        open={Boolean(openLanguage)}
+        anchorEl={openLanguage}
+        onClose={handleLanguageClose}
         sx={{
           mt: 1.5,
           ml: 0.75,
@@ -59,13 +70,6 @@ export default function LanguagePopover() {
               selected={option.value === currentLang.value}
               onClick={() => handleChangeLang(option.value)}
             >
-              <Image
-                disabledEffect
-                alt={option.label}
-                src={option.icon}
-                sx={{ width: 28, mr: 2 }}
-              />
-
               {option.label}
             </MenuItem>
           ))}

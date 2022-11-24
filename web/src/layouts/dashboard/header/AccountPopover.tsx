@@ -14,14 +14,10 @@ import useIsMountedRef from '../../../hooks/useIsMountedRef';
 import MyAvatar from '../../../components/MyAvatar';
 import MenuPopover from '../../../components/MenuPopover';
 import { IconButtonAnimate } from '../../../components/animate';
-import { useSupabaseClient } from '@supabase/auth-helpers-react';
+import { useSupabaseClient, useUser } from '@supabase/auth-helpers-react';
 import useProfile from '../../../hooks/useProfile';
 
 const MENU_OPTIONS = [
-  {
-    label: 'Home',
-    linkTo: '/',
-  },
   {
     label: 'Profile',
     linkTo: PATH_DASHBOARD.user.profile,
@@ -35,8 +31,13 @@ const MENU_OPTIONS = [
 export default function AccountPopover() {
   const router = useRouter();
 
+  const user = useUser();
   const { profile } = useProfile();
+
   const supabaseClient = useSupabaseClient();
+
+  console.log('profile : ', profile);
+  console.log('user : ', user);
 
   const isMountedRef = useIsMountedRef();
 
@@ -65,6 +66,9 @@ export default function AccountPopover() {
       enqueueSnackbar('Unable to logout!', { variant: 'error' });
     }
   };
+
+  const getName = () => profile ? `${profile.firstName} ${profile.lastName}` : `${user?.user_metadata.firstName} ${user?.user_metadata.lastName}`;
+  const getEmail = () => profile ? profile.email : user?.email;
 
   return (
     <>
@@ -104,10 +108,10 @@ export default function AccountPopover() {
       >
         <Box sx={{ my: 1.5, px: 2.5 }}>
           <Typography variant='subtitle2' noWrap>
-            {`${profile?.firstName} ${profile?.lastName}`}
+            {getName()}
           </Typography>
           <Typography variant='body2' sx={{ color: 'text.secondary' }} noWrap>
-            {profile?.email}
+            {getEmail()}
           </Typography>
         </Box>
 
@@ -115,7 +119,7 @@ export default function AccountPopover() {
 
         <Stack sx={{ p: 1 }}>
           {MENU_OPTIONS.map((option) => (
-            <NextLink key={option.label} href={option.linkTo} passHref style={{ textDecoration: 'none' }}>
+            <NextLink key={option.label} href={option.linkTo} passHref style={{ textDecoration: 'none', color: 'inherit' }}>
               <MenuItem key={option.label} onClick={handleClose}>
                 {option.label}
               </MenuItem>

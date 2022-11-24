@@ -101,13 +101,13 @@ export const allLangs = [
     label: 'English',
     value: 'en',
     systemValue: enUS,
-    icon: '/assets/icons/flags/ic_flag_en.svg',
+    // icon: '/assets/icons/flags/ic_flag_en.svg',
   },
   {
     label: 'French',
     value: 'fr',
     systemValue: frFR,
-    icon: '/assets/icons/flags/ic_flag_fr.svg',
+    // icon: '/assets/icons/flags/ic_flag_fr.svg',
   },
 ];
 

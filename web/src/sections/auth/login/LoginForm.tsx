@@ -11,11 +11,11 @@ import { LoadingButton } from '@mui/lab';
 // routes
 import { PATH_AUTH } from '../../../routes/paths';
 // hooks
-import useIsMountedRef from '../../../hooks/useIsMountedRef';
 // components
 import Iconify from '../../../components/Iconify';
 import { FormProvider, RHFCheckbox, RHFTextField } from '../../../components/hook-form';
 import { useSupabaseClient } from '@supabase/auth-helpers-react';
+import { Role } from '../../../../prisma/types';
 
 // ----------------------------------------------------------------------
 
@@ -26,10 +26,8 @@ type FormValuesProps = {
   afterSubmit?: string;
 };
 
-export default function LoginForm() {
+export default function LoginForm({ subdomain }: any) {
   const supabaseClient = useSupabaseClient();
-
-  const isMountedRef = useIsMountedRef();
 
   const [showPassword, setShowPassword] = useState(false);
 
@@ -50,23 +48,44 @@ export default function LoginForm() {
   });
 
   const {
-    reset,
     setError,
     handleSubmit,
     formState: { errors, isSubmitting },
   } = methods;
 
-  const onSubmit = async (data: FormValuesProps) => {
-    try {
-      const { data: dataa, error } = await supabaseClient.auth.signInWithPassword({ email: data.email, password: data.password });
-    } catch (error) {
-      console.error(error);
+  const onSubmit = async (profile: FormValuesProps) => {
+    const { data: dbProfile, error: dbProfileError } = await supabaseClient
+      .from('profile')
+      .select('email, role, university (subdomain)')
+      .eq('email', profile.email)
+      .single();
 
-      reset();
+    if (dbProfileError || !dbProfile) {
+      setError('afterSubmit', { ...dbProfileError, message: 'User not found' });
+      return;
+    }
 
-      if (isMountedRef.current) {
-        setError('afterSubmit', { ...error, message: error.message });
-      }
+    // @ts-ignore
+    if (dbProfile.university.subdomain !== subdomain) {
+      setError('afterSubmit', { message: 'User does not belong to this university' });
+      return;
+    }
+
+    if (![Role.Admin, Role.Organizer].includes(dbProfile.role)) {
+      setError('afterSubmit', { message: 'User is not an Admin or Organizer' });
+      return;
+    }
+
+    const { data: createdProfile, error: createdProfileError } = await supabaseClient
+      .auth
+      .signInWithPassword({
+        email: profile.email,
+        password: profile.password,
+      });
+
+    if (createdProfileError || !createdProfile) {
+      setError('afterSubmit', { message: 'Failed to login' });
+      return;
     }
   };
 
