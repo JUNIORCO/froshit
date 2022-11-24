@@ -1,6 +1,5 @@
 import * as Yup from 'yup';
 // next
-import { useRouter } from 'next/router';
 // form
 import { yupResolver } from '@hookform/resolvers/yup';
 import { useForm } from 'react-hook-form';
@@ -11,6 +10,7 @@ import { LoadingButton } from '@mui/lab';
 import { PATH_AUTH } from '../../../routes/paths';
 // components
 import { FormProvider, RHFTextField } from '../../../components/hook-form';
+import { useSupabaseClient } from '@supabase/auth-helpers-react';
 
 // ----------------------------------------------------------------------
 
@@ -19,7 +19,7 @@ type FormValuesProps = {
 };
 
 export default function ResetPasswordForm() {
-  const { push } = useRouter();
+  const supabaseClient = useSupabaseClient();
 
   const ResetPasswordSchema = Yup.object().shape({
     email: Yup.string().email('Email must be a valid email address').required('Email is required'),
@@ -27,7 +27,6 @@ export default function ResetPasswordForm() {
 
   const methods = useForm<FormValuesProps>({
     resolver: yupResolver(ResetPasswordSchema),
-    defaultValues: { email: 'demo@froshit.com' },
   });
 
   const {
@@ -37,11 +36,7 @@ export default function ResetPasswordForm() {
 
   const onSubmit = async (data: FormValuesProps) => {
     try {
-      await new Promise((resolve) => setTimeout(resolve, 500));
-
-      sessionStorage.setItem('email-recovery', data.email);
-
-      push(PATH_AUTH.newPassword);
+      await supabaseClient.auth.resetPasswordForEmail(data.email, { redirectTo: PATH_AUTH.login });
     } catch (error) {
       console.error(error);
     }
@@ -50,13 +45,13 @@ export default function ResetPasswordForm() {
   return (
     <FormProvider methods={methods} onSubmit={handleSubmit(onSubmit)}>
       <Stack spacing={3}>
-        <RHFTextField name="email" label="Email address" />
+        <RHFTextField name='email' label='Email address' />
 
         <LoadingButton
           fullWidth
-          size="large"
-          type="submit"
-          variant="contained"
+          size='large'
+          type='submit'
+          variant='contained'
           loading={isSubmitting}
         >
           Send Request

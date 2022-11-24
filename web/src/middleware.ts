@@ -17,7 +17,7 @@ function checkValidSubdomain(subdomain: string) {
   return validSubdomains.includes(subdomain);
 }
 
-const unprotectedPages = [PATH_AUTH.login, PATH_AUTH.register];
+const unprotectedPages = [PATH_AUTH.login, PATH_AUTH.register, PATH_AUTH.resetPassword];
 
 const hostIsSubdomain = (host: string) => host !== process.env.ROOT_DOMAIN;
 

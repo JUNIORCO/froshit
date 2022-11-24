@@ -7,9 +7,6 @@ import Page from '../../../../components/Page';
 import Logo from '../../../../components/Logo';
 import { LoginForm } from '../../../../sections/auth/login';
 import GuestGuard from '../../../../guards/GuestGuard';
-import { GetServerSideProps, GetServerSidePropsContext } from 'next';
-import { Query } from '../../../../@types/query';
-import AuthApi from '../../../../../prisma/api/AuthApi';
 
 const RootStyle = styled('div')(({ theme }) => ({
   [theme.breakpoints.up('md')]: {
@@ -88,7 +85,7 @@ export default function Login({ subdomain }: LoginProps) {
                 Use email : <strong>demo@froshit.com</strong> / password :<strong> demo1234</strong>
               </Alert>}
 
-              <LoginForm subdomain={subdomain}/>
+              <LoginForm subdomain={subdomain} />
 
               {!smUp && (
                 <Typography variant='body2' align='center' sx={{ mt: 3 }}>

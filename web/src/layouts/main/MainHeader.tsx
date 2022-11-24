@@ -83,7 +83,6 @@ export default function MainHeader() {
 
           <Stack spacing={2} direction='row' alignItems='center'>
             <LanguagePopover />
-            <ThemeMode  />
           </Stack>
 
           {!isDesktop && <MenuMobile isOffset={isOffset} isHome={isHome} navConfig={navConfig} />}

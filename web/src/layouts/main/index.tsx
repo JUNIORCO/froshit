@@ -1,13 +1,7 @@
 import { ReactNode } from 'react';
-// next
-// @mui
 import { Box, Stack } from '@mui/material';
-// components
-//
 import MainFooter from './MainFooter';
 import MainHeader from './MainHeader';
-
-// ----------------------------------------------------------------------
 
 type Props = {
   children: ReactNode;
