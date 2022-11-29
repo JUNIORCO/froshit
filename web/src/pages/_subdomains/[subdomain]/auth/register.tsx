@@ -1,12 +1,10 @@
-import { capitalCase } from 'change-case';
 import NextLink from 'next/link';
 import { styled } from '@mui/material/styles';
-import { Box, Card, Container, Link, Tooltip, Typography } from '@mui/material';
+import { Box, Card, Container, Link, Typography } from '@mui/material';
 import useResponsive from '../../../../hooks/useResponsive';
 import { PATH_AUTH } from '../../../../routes/paths';
 import Page from '../../../../components/Page';
 import Logo from '../../../../components/Logo';
-import Image from '../../../../components/Image';
 import { RegisterForm } from '../../../../sections/auth/register';
 import GuestGuard from '../../../../guards/GuestGuard';
 import { GetServerSideProps } from 'next';
@@ -73,75 +71,40 @@ export default function Register({ universities }: RegisterProps) {
         <RootStyle>
           <HeaderStyle>
             <Logo />
-            {smUp && (
-              <Typography variant='body2' sx={{ mt: { md: -2 } }}>
-                Already have an account? {''}
-                <NextLink href={PATH_AUTH.login} passHref style={{ textDecoration: 'none' }}>
-                  <Link variant='subtitle2'>Login</Link>
-                </NextLink>
-              </Typography>
-            )}
           </HeaderStyle>
-
-          {mdUp && (
-            <SectionStyle>
-              <Typography variant='h3' sx={{ px: 5, mt: 10, mb: 5 }}>
-                Manage the job more effectively with Minimal
-              </Typography>
-              <Image
-                visibleByDefault
-                disabledEffect
-                alt='register'
-                src='/assets/illustrations/illustration_register.png'
-              />
-            </SectionStyle>
-          )}
 
           <Container>
             <ContentStyle>
-              <Box sx={{ mb: 5, display: 'flex', alignItems: 'center' }}>
+              <Box sx={{ mb: 3, display: 'flex', alignItems: 'center' }}>
                 <Box sx={{ flexGrow: 1 }}>
                   <Typography variant='h4' gutterBottom>
-                    Get started absolutely free.
-                  </Typography>
-                  <Typography sx={{ color: 'text.secondary' }}>
-                    Free forever. No credit card needed.
+                    Create an account
                   </Typography>
                 </Box>
-                <Tooltip title={capitalCase(method)}>
-                  <>
-                    <Image
-                      disabledEffect
-                      alt={method}
-                      src={`https://minimal-assets-api-dev.vercel.app/assets/icons/auth/ic_${method}.png`}
-                      sx={{ width: 32, height: 32 }}
-                    />
-                  </>
-                </Tooltip>
+                {/* TODO change to university logo */}
+                <Logo sx={{ width: 64, height: 64 }} />
               </Box>
 
               <RegisterForm universities={universities} />
 
-              <Typography variant='body2' align='center' sx={{ color: 'text.secondary', mt: 3 }}>
-                By registering, I agree to Minimal&nbsp;
-                <Link underline='always' color='text.primary' href='#'>
-                  Terms of Service
-                </Link>
-                {''}and{''}
-                <Link underline='always' color='text.primary' href='#'>
-                  Privacy Policy
-                </Link>
-                .
-              </Typography>
+              {/*<Typography variant='body2' align='center' sx={{ color: 'text.secondary', mt: 3 }}>*/}
+              {/*  By registering, I agree to Minimal&nbsp;*/}
+              {/*  <Link underline='always' color='text.primary' href='#'>*/}
+              {/*    Terms of Service*/}
+              {/*  </Link>*/}
+              {/*  {''}and{''}*/}
+              {/*  <Link underline='always' color='text.primary' href='#'>*/}
+              {/*    Privacy Policy*/}
+              {/*  </Link>*/}
+              {/*  .*/}
+              {/*</Typography>*/}
 
-              {!smUp && (
-                <Typography variant='body2' sx={{ mt: 3, textAlign: 'center' }}>
-                  Already have an account?{' '}
-                  <NextLink href={PATH_AUTH.login} passHref style={{ textDecoration: 'none' }}>
-                    <Link variant='subtitle2'>Login</Link>
-                  </NextLink>
-                </Typography>
-              )}
+              <Typography variant='body2' sx={{ mt: 3, textAlign: 'center' }}>
+                Already have an account?{' '}
+                <NextLink href={PATH_AUTH.login} passHref style={{ textDecoration: 'none' }}>
+                  <Link variant='subtitle2'>Login</Link>
+                </NextLink>
+              </Typography>
             </ContentStyle>
           </Container>
         </RootStyle>
@@ -161,7 +124,6 @@ export const getServerSideProps: GetServerSideProps = async () => {
       },
     };
   } catch (error) {
-    console.log(error);
     return {
       props: {
         universities: [],

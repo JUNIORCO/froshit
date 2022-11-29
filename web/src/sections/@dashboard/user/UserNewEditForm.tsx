@@ -1,3 +1,4 @@
+// @ts-nocheck
 import * as Yup from 'yup';
 import { useCallback, useEffect, useMemo } from 'react';
 import useSWRMutation from 'swr/mutation';
@@ -9,13 +10,13 @@ import { LoadingButton } from '@mui/lab';
 import { Box, Card, FormControlLabel, Grid, Stack, Switch, Typography } from '@mui/material';
 import { fData } from '../../../utils/formatNumber';
 import { PATH_DASHBOARD } from '../../../routes/paths';
-import { UserManager } from '../../../@types/user';
 import Label from '../../../components/Label';
 import { CustomFile } from '../../../components/upload';
 import { FormProvider, RHFSelect, RHFTextField, RHFUploadAvatar } from '../../../components/hook-form';
 import { RHFMultiSelect } from '../../../components/hook-form/RHFMultiSelect';
 import { FullProfile } from '../../../../prisma/api/@types';
-import { Frosh, Program, Team, Role, Interest } from '../../../../prisma/types';
+import { Frosh, Interest, Profile, Program, Role, Team } from '../../../../prisma/types';
+import useProfile from '../../../hooks/useProfile';
 
 const sendProfileRequest = async (url: string, { arg }: any) => {
   const { method, ...profile } = arg;
@@ -30,7 +31,7 @@ const sendProfileRequest = async (url: string, { arg }: any) => {
   return res.json();
 };
 
-interface FormValuesProps extends Omit<UserManager, 'avatarUrl'> {
+interface FormValuesProps extends Omit<Profile, 'avatarUrl'> {
   avatarUrl: CustomFile | string | null;
 }
 
@@ -47,6 +48,7 @@ export default function UserNewEditForm({
                                           froshs,
                                           teams,
                                         }: Props) {
+  const { profile } = useProfile();
   const url = !currentUser ? '/api/profile' : `/api/profile/${currentUser.id}`;
   const method = !currentUser ? 'POST' : 'PATCH';
   const { trigger } = useSWRMutation(url, sendProfileRequest);
@@ -60,11 +62,11 @@ export default function UserNewEditForm({
     lastName: Yup.string().required('Last name is required'),
     email: Yup.string().required('Email is required').email(),
     phoneNumber: Yup.string().required('Phone number is required'),
-    role: Yup.string().required('Role Number is required'),
-    programId: Yup.string().optional(),
-    interests: Yup.array().optional(),
-    froshId: Yup.string().optional(),
-    teamId: Yup.string().optional(),
+    role: Yup.mixed().oneOf(Object.values(Role)).required('Role is required'),
+    interests: Yup.array().defined(),
+    programId: Yup.string().defined(),
+    froshId: Yup.string().defined(),
+    teamId: Yup.string().defined(),
   });
 
   const defaultValues = useMemo(
@@ -73,12 +75,12 @@ export default function UserNewEditForm({
       lastName: currentUser?.lastName || '',
       email: currentUser?.email || '',
       phoneNumber: currentUser?.phoneNumber || '',
-      role: currentUser?.role || '',
-      programId: currentUser?.programId || '',
+      role: currentUser?.role,
       interests: currentUser?.interests || [],
+      programId: currentUser?.programId || '',
       froshId: currentUser?.froshId || '',
       teamId: currentUser?.teamId || '',
-      universityId: currentUser?.universityId || '1678f7bf-7a13-477c-942c-c85dcadfdd40',
+      universityId: profile?.universityId,
     }),
     [currentUser],
   );
@@ -103,15 +105,19 @@ export default function UserNewEditForm({
     if (currentUser) {
       reset(defaultValues);
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [currentUser]);
 
   const onSubmit = async (data: FormValuesProps) => {
     try {
-      await trigger({ ...data, method });
-      reset();
-      enqueueSnackbar(!currentUser ? 'Create success!' : 'Update success!');
-      push(PATH_DASHBOARD.user.root);
+      await trigger({
+        ...data,
+        programId: data.programId || null,
+        froshId: data.froshId || null,
+        teamId: data.teamId || null,
+        method,
+      });
+      enqueueSnackbar(!currentUser ? 'Created user' : 'Updated user');
+      void push(PATH_DASHBOARD.user.root);
     } catch (error) {
       console.error(error);
     }
@@ -220,7 +226,6 @@ export default function UserNewEditForm({
               <RHFTextField name='phoneNumber' label='Phone Number' />
 
               <RHFSelect name='role' label='Role' placeholder='Role'>
-                <option value='' />
                 {Object.values(Role).map((role) => (
                   <option key={role} value={role}>
                     {role}

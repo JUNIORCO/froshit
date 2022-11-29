@@ -7,10 +7,6 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     if (req.method === 'PATCH') {
       const { id } = req.query as any;
 
-      if (!id) {
-        throw new Error('No id found');
-      }
-
       const { name, froshId } = req.body as Prisma.TeamUncheckedUpdateInput;
       const { profiles }: { profiles: number[] } = req.body;
 
@@ -44,7 +40,12 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       res.status(400).end('Unsupported request');
     }
   } catch (error) {
-    console.error(error);
-    res.status(500).send(error.toString());
+    res.status(422).json({
+      error: {
+        message: error.message,
+        code: error.code,
+        meta: error.meta,
+      },
+    });
   }
 }

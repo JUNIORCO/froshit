@@ -38,7 +38,7 @@ import AuthApi from '../../../../../../prisma/api/AuthApi';
 const TAB_OPTIONS = ['All', 'Paid', 'Unpaid', 'Unassigned Frosh', 'Unassigned Team'];
 
 const TABLE_HEAD = [
-  { id: 'name', label: 'Name', align: 'left' },
+  { id: 'firstName', label: 'Name', align: 'left' },
   { id: 'email', label: 'Email', align: 'left' },
   { id: 'phoneNumber', label: 'Phone Number', align: 'left' },
   { id: 'role', label: 'Role', align: 'left' },
@@ -64,10 +64,6 @@ export default function UserList({ users }: UserListProps) {
     orderBy,
     rowsPerPage,
     setPage,
-    selected,
-    setSelected,
-    onSelectRow,
-    onSelectAllRows,
     onSort,
     onChangeDense,
     onChangePage,
@@ -113,6 +109,8 @@ export default function UserList({ users }: UserListProps) {
     filterRole,
     filterTab,
   });
+
+  console.log(dataFiltered);
 
   const denseHeight = dense ? 52 : 72;
 
@@ -216,11 +214,12 @@ export default function UserList({ users }: UserListProps) {
             onFilterName={handleFilterName}
             onFilterRole={handleFilterRole}
             optionsRole={ROLE_OPTIONS}
+            currentTab={filterTab}
           />
 
           <Scrollbar>
             <TableContainer sx={{ minWidth: 800, position: 'relative' }}>
-              <Table size={dense ? 'small' : 'medium'}>
+              <Table size='small'>
                 <TableHeadCustom
                   order={order}
                   orderBy={orderBy}
@@ -260,12 +259,6 @@ export default function UserList({ users }: UserListProps) {
               page={page}
               onPageChange={onChangePage}
               onRowsPerPageChange={onChangeRowsPerPage}
-            />
-
-            <FormControlLabel
-              control={<Switch checked={dense} onChange={onChangeDense} />}
-              label='Dense'
-              sx={{ px: 3, py: 1.5, top: 0, position: { md: 'absolute' } }}
             />
           </Box>
         </Card>

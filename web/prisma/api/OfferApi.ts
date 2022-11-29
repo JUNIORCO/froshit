@@ -9,6 +9,14 @@ class OfferApi {
     this.profile = profile;
   }
 
+  public async getOfferById(id: string): Promise<Offer> {
+    return prisma.offer.findUniqueOrThrow({
+      where: {
+        id: id,
+      },
+    });
+  }
+
   public async getOffers(): Promise<Offer[]> {
     return prisma.offer.findMany({
       where: {

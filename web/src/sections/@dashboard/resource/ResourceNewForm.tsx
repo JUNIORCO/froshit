@@ -73,7 +73,6 @@ export default function ResourceNewForm({
   const onSubmit = async (payload: FormValuesProps) => {
     try {
       await trigger({ ...payload, universityId: '1678f7bf-7a13-477c-942c-c85dcadfdd40' });
-      reset();
       enqueueSnackbar('Create success!');
       push(PATH_DASHBOARD.resource.root);
     } catch (error) {

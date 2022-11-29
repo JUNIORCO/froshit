@@ -29,8 +29,8 @@ export default function UserTableRow({
   };
 
   const displayPaidIcon = () => {
-    if (role === Role.Admin || role === Role.Organizer) {
-      return;
+    if (role !== Role.Froshee) {
+      return null;
     }
 
     if (paid) {

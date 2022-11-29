@@ -8,6 +8,8 @@ import { GetServerSideProps } from 'next';
 import { FullEvent } from '../../../../../../../prisma/api/@types';
 import { Query } from '../../../../../../@types/query';
 import AuthApi from '../../../../../../../prisma/api/AuthApi';
+import EventEditForm from '../../../../../../sections/@dashboard/event/EventEditForm';
+import React from 'react';
 
 EventView.getLayout = function getLayout(page: React.ReactElement) {
   return <Layout>{page}</Layout>;
@@ -31,16 +33,14 @@ export default function EventView({ event }: Props) {
             { name: 'View' },
           ]}
         />
-
-        <Box sx={{ mb: 5 }} />
-
+        <EventEditForm view currentEvent={event}  />
       </Container>
     </Page>
   );
 }
 
 export const getServerSideProps: GetServerSideProps = async (ctx) => {
-  const { subdomain, id } = ctx.query as Query;
+  const { id } = ctx.query as Query;
   const api = new AuthApi({ ctx });
   const event = await api.Event.getEventById(id);
 

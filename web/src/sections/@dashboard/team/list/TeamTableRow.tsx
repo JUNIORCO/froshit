@@ -1,15 +1,12 @@
 import { useState } from 'react';
-// @mui
-import { useTheme } from '@mui/material/styles';
-import { Avatar, Checkbox, MenuItem, TableCell, TableRow, Typography } from '@mui/material';
-// components
+import { MenuItem, TableCell, TableRow, Typography } from '@mui/material';
 import Iconify from '../../../../components/Iconify';
 import { TableMoreMenu } from '../../../../components/table';
-
-// ----------------------------------------------------------------------
+import { FullTeam } from '../../../../../prisma/api/@types';
+import { Role } from '../../../../../prisma/types';
 
 type Props = {
-  row: any;
+  row: FullTeam;
   selected: boolean;
   onEditRow: VoidFunction;
   onSelectRow: VoidFunction;
@@ -20,12 +17,9 @@ export default function TeamTableRow({
                                        row,
                                        selected,
                                        onEditRow,
-                                       onSelectRow,
                                        onViewRow,
                                      }: Props) {
-  const theme = useTheme();
-
-  const { name: teamName, frosh, profiles } = row;
+  const { name: teamName, number: teamNumber, frosh, profiles } = row;
 
   const [openMenu, setOpenMenuActions] = useState<HTMLElement | null>(null);
 
@@ -37,6 +31,8 @@ export default function TeamTableRow({
     setOpenMenuActions(null);
   };
 
+  console.log(profiles);
+
   return (
     <TableRow hover selected={selected}>
       <TableCell sx={{ alignItems: 'center' }}>
@@ -46,15 +42,19 @@ export default function TeamTableRow({
       </TableCell>
 
       <TableCell align='left'>
-        {frosh.name}
+        {teamNumber}
       </TableCell>
 
       <TableCell align='left'>
-        {profiles.filter((profile: any) => profile.role === 'Leader').map((profile: any) => profile.name).join(', ').slice(0, 100)}
+        {frosh?.name}
       </TableCell>
 
       <TableCell align='left'>
-        {profiles.filter((profile: any) => profile.role === 'Froshee').map((profile: any) => profile.name).join(', ').slice(0, 100)}
+        {profiles?.filter((profile) => profile.role === Role.Leader).map((profile) => `${profile.firstName} ${profile.lastName}`).join(', ').slice(0, 100)}
+      </TableCell>
+
+      <TableCell align='left'>
+        {profiles?.filter((profile) => profile.role === Role.Froshee).map((profile) => `${profile.firstName} ${profile.lastName}`).join(', ').slice(0, 100)}
       </TableCell>
 
       <TableCell align='right'>

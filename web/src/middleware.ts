@@ -49,7 +49,10 @@ export default async function middleware(req: NextRequest) {
           .single();
 
         if (!profile) {
-          throw new Error(`[Middleware] No profile found for logged in user ${userId}`);
+          console.error(`[Middleware] No profile found for session ${userId}`);
+          await supabase.auth.signOut();
+          url.pathname = `${PATH_AUTH.login}`;
+          return NextResponse.redirect(url);
         }
 
         // rewrite url to correct page

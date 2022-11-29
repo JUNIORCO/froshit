@@ -3,7 +3,7 @@ import NextLink from 'next/link';
 // @mui
 import { useTheme } from '@mui/material/styles';
 import { Box, BoxProps } from '@mui/material';
-
+import Image from 'next/image';
 // ----------------------------------------------------------------------
 
 interface Props extends BoxProps {
@@ -20,10 +20,11 @@ const Logo = forwardRef<any, Props>(({ disabledLink = false, sx }, ref) => {
   const PRIMARY_DARK = theme.palette.primary.dark;
 
   const logo = (
-    <Box
-      component="img"
+    <Image
+      alt="Logo"
       src="https://firebasestorage.googleapis.com/v0/b/froshit-prod.appspot.com/o/logos%2Fhigh-res-transparent.svg?alt=media&token=1244df09-d721-41b3-86bb-e4a0f5929b6d"
-      sx={{ width: 50, height: 50, cursor: 'pointer', ...sx }}
+      width={50}
+      height={50}
     />
   );
 

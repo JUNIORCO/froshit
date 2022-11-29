@@ -83,7 +83,6 @@ export default function ResourceEditForm({ resource, resourceTags }: Props) {
   const onSubmit = async (resourceToUpdate: FormValuesProps) => {
     try {
       await trigger({ ...resourceToUpdate, universityId: '1678f7bf-7a13-477c-942c-c85dcadfdd40' });
-      reset();
       enqueueSnackbar('Update success!');
       void push(PATH_DASHBOARD.resource.root);
     } catch (error) {

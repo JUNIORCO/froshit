@@ -8,6 +8,7 @@
     "prettier"
   ],
   "rules": {
+    "react-hooks/exhaustive-deps": 0,
     "arrow-body-style": 1,
     "react/display-name": 0,
     "import/no-duplicates": 1,

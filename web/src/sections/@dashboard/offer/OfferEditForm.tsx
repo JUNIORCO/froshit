@@ -1,27 +1,17 @@
 import * as Yup from 'yup';
 import { useEffect, useMemo } from 'react';
-import useSWRMutation from 'swr/mutation';
 import { useSnackbar } from 'notistack';
 import { useRouter } from 'next/router';
 import { useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 import { LoadingButton } from '@mui/lab';
-import { Box, Card, Grid, Stack, Typography } from '@mui/material';
+import { Box, Card, Grid, Stack } from '@mui/material';
 import { PATH_DASHBOARD } from '../../../routes/paths';
-import { FormProvider, RHFSlider, RHFTextField } from '../../../components/hook-form';
-import { Frosh } from '../../../../prisma/types';
-
-const sendFroshRequest = async (url: string, { arg }: any) => {
-  const res = await fetch(url, {
-    method: 'PATCH',
-    headers: {
-      'Accept': 'application/json',
-      'Content-Type': 'application/json',
-    },
-    body: JSON.stringify(arg),
-  });
-  return res.json();
-};
+import { FormProvider, RHFTextField } from '../../../components/hook-form';
+import { Offer } from '../../../../prisma/types';
+import { useSupabaseClient } from '@supabase/auth-helpers-react';
+import useProfile from '../../../hooks/useProfile';
+import { uuid } from '@supabase/gotrue-js/dist/main/lib/helpers';
 
 type FormValuesProps = {
   name: string;
@@ -30,30 +20,41 @@ type FormValuesProps = {
 };
 
 type Props = {
-  currentFrosh: Frosh;
+  currentOffer: Offer;
+  view?: boolean;
 };
 
-export default function OfferEditForm({ currentFrosh }: Props) {
-  const { trigger } = useSWRMutation(`/api/frosh/${currentFrosh.id}`, sendFroshRequest);
+export default function OfferEditForm({ currentOffer, view }: Props) {
+  const { profile } = useProfile();
+  const supabaseClient = useSupabaseClient();
 
   const { push } = useRouter();
 
   const { enqueueSnackbar } = useSnackbar();
 
   const NewTeamSchema = Yup.object().shape({
-    name: Yup.string().required('Frosh name is required'),
+    title: Yup.string().required('Title is required'),
     description: Yup.string().required('Description is required'),
-    ticketPrice: Yup.number().required().min(5, 'Ticket price is required'),
+    location: Yup.string().required('Location is required'),
+    provider: Yup.string().required('Provider is required'),
+    icon: Yup.string().required('Icon is required'),
+    color: Yup.string().required('Color is required'),
+    universityId: Yup.string().required('University is required'),
   });
 
   const defaultValues = useMemo(
     () => ({
-      name: currentFrosh.name,
-      description: currentFrosh.description,
-      ticketPrice: currentFrosh.ticketPrice,
+      id: uuid(),
+      title: currentOffer.title,
+      description: currentOffer.description,
+      location: currentOffer.location,
+      provider: currentOffer.provider,
+      icon: currentOffer.icon,
+      color: currentOffer.color,
+      universityId: profile?.universityId,
     }),
     // eslint-disable-next-line react-hooks/exhaustive-deps
-    [currentFrosh],
+    [currentOffer],
   );
 
   const methods = useForm<FormValuesProps>({
@@ -68,31 +69,22 @@ export default function OfferEditForm({ currentFrosh }: Props) {
   } = methods;
 
   useEffect(() => {
-    if (currentFrosh) {
+    if (currentOffer) {
       reset(defaultValues);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [currentFrosh]);
+  }, [currentOffer]);
 
-  const onSubmit = async (froshToUpdate: FormValuesProps) => {
-    try {
-      await trigger(froshToUpdate);
-      reset();
-      enqueueSnackbar('Update success!');
-      void push(PATH_DASHBOARD.frosh.root);
-    } catch (error) {
-      console.error(error);
+  const onSubmit = async (offerToUpdate: FormValuesProps) => {
+    const { error } = await supabaseClient.from('offer').update(offerToUpdate).match({ id: currentOffer.id });
+    if (error) {
+      enqueueSnackbar(`Error ${error.message}`, { variant: 'error' });
+      return;
     }
+
+    enqueueSnackbar('Offer updated');
+    void push(PATH_DASHBOARD.offer.root);
   };
-
-  const marksLabel = [...Array(21)].map((_, index) => {
-    const value = index * 10;
-
-    return {
-      value,
-      label: index % 2 ? '' : `$${value}`,
-    };
-  });
 
   return (
     <FormProvider methods={methods} onSubmit={handleSubmit(onSubmit)}>
@@ -107,33 +99,24 @@ export default function OfferEditForm({ currentFrosh }: Props) {
                 gridTemplateColumns: { xs: 'repeat(1, 1fr)', sm: 'repeat(2, 1fr)' },
               }}
             >
-              <RHFTextField name='name' label='Name' />
+              <RHFTextField name='title' label='Title' disabled={view} />
 
-              <RHFTextField name='description' label='Description' />
+              <RHFTextField name='description' label='Description' disabled={view} />
 
-              <Stack spacing={1} sx={{ pb: 2 }}>
+              <RHFTextField name='location' label='Location' disabled={view} />
 
-                <Typography variant='subtitle1' sx={{ flexGrow: 1 }}>
-                  Ticket Price
-                </Typography>
-                <RHFSlider
-                  name='ticketPrice'
-                  step={5}
-                  min={0}
-                  max={200}
-                  marks={marksLabel}
-                  getAriaValueText={(value) => `$${value}`}
-                  valueLabelFormat={(value) => `$${value}`}
-                  sx={{ alignSelf: 'center', width: `calc(100% - 20px)` }}
-                />
-              </Stack>
+              <RHFTextField name='provider' label='Provider' disabled={view} />
+
+              <RHFTextField name='icon' label='Icon' disabled={view} />
+
+              <RHFTextField name='color' label='Color' disabled={view} />
             </Box>
 
-            <Stack alignItems='flex-end' sx={{ mt: 3 }}>
+            {!view && <Stack alignItems='flex-end' sx={{ mt: 3 }}>
               <LoadingButton type='submit' variant='contained' loading={isSubmitting}>
                 Save Changes
               </LoadingButton>
-            </Stack>
+            </Stack>}
           </Card>
         </Grid>
       </Grid>

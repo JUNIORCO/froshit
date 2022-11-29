@@ -10,8 +10,8 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       const createdTeam = await prisma.team.create({
         data: {
           name,
-          froshId,
           number,
+          froshId,
           profiles: {
             connect: profiles.map((profileId) => ({ id: profileId })) as any,
           },
@@ -22,7 +22,12 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       res.status(400).end('Unsupported request');
     }
   } catch (error) {
-    console.error(error);
-    res.status(500).send(error.toString());
+    res.status(422).json({
+      error: {
+        message: error.message,
+        code: error.code,
+        meta: error.meta,
+      },
+    });
   }
 }

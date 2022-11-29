@@ -39,6 +39,7 @@ const TAB_OPTIONS = ['All', 'No Leaders', 'No Froshees'];
 
 const TABLE_HEAD = [
   { id: 'name', label: 'Name', align: 'left' },
+  { id: 'number', label: 'Number', align: 'left' },
   { id: 'frosh', label: 'Frosh', align: 'left' },
   { id: 'leaders', label: 'Leaders', align: 'left' },
   { id: 'froshees', label: 'Froshees', align: 'left' },
@@ -197,7 +198,7 @@ export default function TeamList({ teams }: Props) {
                 />
               )}
 
-              <Table size={dense ? 'small' : 'medium'}>
+              <Table size='small'>
                 <TableHeadCustom
                   order={order}
                   orderBy={orderBy}
@@ -239,12 +240,6 @@ export default function TeamList({ teams }: Props) {
               page={page}
               onPageChange={onChangePage}
               onRowsPerPageChange={onChangeRowsPerPage}
-            />
-
-            <FormControlLabel
-              control={<Switch checked={dense} onChange={onChangeDense} />}
-              label='Dense'
-              sx={{ px: 3, py: 1.5, top: 0, position: { md: 'absolute' } }}
             />
           </Box>
         </Card>

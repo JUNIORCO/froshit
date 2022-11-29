@@ -12,6 +12,7 @@ import { FormProvider, RHFSelect, RHFTextField } from '../../../components/hook-
 import { RHFMultiSelect } from '../../../components/hook-form/RHFMultiSelect';
 import { Frosh, Profile, Role } from '../../../../prisma/types';
 import type { FullTeam, UnassignedFrosheesAndLeaders } from '../../../../prisma/api/@types';
+import { isEqual } from 'lodash';
 
 const sendTeamRequest = async (url: string, { arg }: any) => {
   const res = await fetch(url, {
@@ -37,12 +38,14 @@ type Props = {
   currentTeam: FullTeam;
   froshs: Frosh[];
   profiles: UnassignedFrosheesAndLeaders[];
+  view?: boolean;
 };
 
 export default function TeamNewForm({
                                       currentTeam,
                                       froshs,
                                       profiles,
+                                      view,
                                     }: Props) {
   const { trigger } = useSWRMutation(`/api/team/${currentTeam.id}`, sendTeamRequest);
 
@@ -111,19 +114,21 @@ export default function TeamNewForm({
 
   const onSubmit = async ({
                             name,
+                            number,
                             froshId,
                             leaderIds,
                             frosheeIds,
                           }: FormValuesProps) => {
-    try {
-      const teamToUpdate = { name, froshId, profiles: leaderIds.concat(frosheeIds) };
-      await trigger(teamToUpdate);
-      reset();
-      enqueueSnackbar('Update success!');
-      push(PATH_DASHBOARD.team.root);
-    } catch (error) {
-      console.error(error);
+    const teamToUpdate = { name, number, froshId, profiles: leaderIds.concat(frosheeIds) };
+    const { error } = await trigger(teamToUpdate);
+    if (error) {
+      if (error.code === 'P2002' && isEqual(error.meta.target, ['froshId', 'number'])) {
+        enqueueSnackbar('Team number already taken for selected frosh', { variant: 'error' });
+      }
+      return;
     }
+    enqueueSnackbar('Team updated');
+    push(PATH_DASHBOARD.team.root);
   };
 
   return (

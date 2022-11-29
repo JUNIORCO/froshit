@@ -1,6 +1,5 @@
 import * as Yup from 'yup';
 import { useEffect, useMemo } from 'react';
-import useSWRMutation from 'swr/mutation';
 import { useSnackbar } from 'notistack';
 import { useRouter } from 'next/router';
 import { useForm } from 'react-hook-form';
@@ -12,18 +11,7 @@ import { FormProvider, RHFSelect, RHFTextField } from '../../../components/hook-
 import { Frosh } from '../../../../prisma/types';
 import { FullEvent } from '../../../../prisma/api/@types';
 import RHFDateTimeRangeSelect from '../../../components/hook-form/RHFDateTimeRangeSelect';
-
-const sendEventRequest = async (url: string, { arg: eventToUpdate }: any) => {
-  const res = await fetch(url, {
-    method: 'PATCH',
-    headers: {
-      'Accept': 'application/json',
-      'Content-Type': 'application/json',
-    },
-    body: JSON.stringify(eventToUpdate),
-  });
-  return res.json();
-};
+import { useSupabaseClient } from '@supabase/auth-helpers-react';
 
 type EventForm = {
   id: string;
@@ -38,14 +26,16 @@ type EventForm = {
 
 type Props = {
   currentEvent: FullEvent;
-  froshs: Frosh[];
+  froshs?: Frosh[];
+  view?: boolean;
 };
 
-export default function EventNewForm({
-                                       currentEvent,
-                                       froshs,
-                                     }: Props) {
-  const { trigger } = useSWRMutation(`/api/event/${currentEvent.id}`, sendEventRequest);
+export default function EventEditForm({
+                                        currentEvent,
+                                        froshs,
+                                        view,
+                                      }: Props) {
+  const supabaseClient = useSupabaseClient();
 
   const { push } = useRouter();
 
@@ -96,14 +86,14 @@ export default function EventNewForm({
   }, [currentEvent]);
 
   const onSubmit = async (updatedEvent: EventForm) => {
-    try {
-      await trigger(updatedEvent);
-      reset();
-      enqueueSnackbar('Update success!');
-      push(PATH_DASHBOARD.event.root);
-    } catch (error) {
-      console.error(error);
+    const { error } = await supabaseClient.from('event').update(updatedEvent).match({ id: currentEvent.id });
+    if (error) {
+      enqueueSnackbar(`Error ${error.message}`, { variant: 'error' });
+      return;
     }
+
+    enqueueSnackbar('Event updated');
+    void push(PATH_DASHBOARD.event.root);
   };
 
   return (
@@ -119,33 +109,37 @@ export default function EventNewForm({
                 gridTemplateColumns: { xs: 'repeat(1, 1fr)', sm: 'repeat(2, 1fr)' },
               }}
             >
-              <RHFTextField name='name' label='Name' />
+              <RHFTextField name='name' label='Name' disabled={view} />
 
-              <RHFTextField name='description' label='Description' />
+              <RHFTextField name='description' label='Description' disabled={view} />
 
-              <RHFTextField name='location' label='Location' />
+              <RHFTextField name='location' label='Location' disabled={view} />
 
-              <RHFTextField name='accessibility' label='Accessibility' />
+              <RHFTextField name='accessibility' label='Accessibility' disabled={view} />
 
-              <RHFSelect name='froshId' label='Frosh' placeholder='Frosh'>
+              <RHFSelect name='froshId' label='Frosh' placeholder='Frosh' disabled={view}>
                 <option value='' />
-                {froshs.map((frosh) => (
+                {view ? (
+                  <option key={currentEvent.frosh.id} value={currentEvent.frosh.id}>
+                    {currentEvent.frosh.name}
+                  </option>
+                ) : froshs?.map((frosh) => (
                   <option key={frosh.id} value={frosh.id}>
                     {frosh.name}
                   </option>
                 ))}
               </RHFSelect>
 
-              <RHFDateTimeRangeSelect name='startDate' label='Start Date' />
+              <RHFDateTimeRangeSelect name='startDate' label='Start Date' disabled={view} />
 
-              <RHFDateTimeRangeSelect name='endDate' label='End Date' />
+              <RHFDateTimeRangeSelect name='endDate' label='End Date' disabled={view} />
             </Box>
 
-            <Stack alignItems='flex-end' sx={{ mt: 3 }}>
+            {!view && <Stack alignItems='flex-end' sx={{ mt: 3 }}>
               <LoadingButton type='submit' variant='contained' loading={isSubmitting}>
                 Save Changes
               </LoadingButton>
-            </Stack>
+            </Stack>}
           </Card>
         </Grid>
       </Grid>

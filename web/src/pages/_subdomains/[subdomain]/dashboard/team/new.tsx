@@ -1,8 +1,5 @@
-// @mui
 import { Container } from '@mui/material';
-// routes
 import { PATH_DASHBOARD } from '../../../../../routes/paths';
-// hooks
 import useSettings from '../../../../../hooks/useSettings';
 import Layout from '../../../../../layouts';
 import Page from '../../../../../components/Page';

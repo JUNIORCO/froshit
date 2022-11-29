@@ -3,49 +3,49 @@ import useSettings from '../../../../../../hooks/useSettings';
 import Layout from '../../../../../../layouts';
 import Page from '../../../../../../components/Page';
 import { GetServerSideProps, GetServerSidePropsContext } from 'next';
-import type { Frosh } from '../../../../../../../prisma/types';
+import type { Offer } from '../../../../../../../prisma/types';
 import HeaderBreadcrumbs from '../../../../../../components/HeaderBreadcrumbs';
 import { PATH_DASHBOARD } from '../../../../../../routes/paths';
-import FroshEditForm from '../../../../../../sections/@dashboard/frosh/FroshEditForm';
+import OfferEditForm from '../../../../../../sections/@dashboard/offer/OfferEditForm';
 import { Query } from '../../../../../../@types/query';
 import AuthApi from '../../../../../../../prisma/api/AuthApi';
 
-FroshEdit.getLayout = function getLayout(page: React.ReactElement) {
+OfferEdit.getLayout = function getLayout(page: React.ReactElement) {
   return <Layout>{page}</Layout>;
 };
 
 type Props = {
-  frosh: Frosh;
+  offer: Offer;
 }
 
-export default function FroshEdit({ frosh }: Props) {
+export default function OfferEdit({ offer }: Props) {
   const { themeStretch } = useSettings();
 
   return (
-    <Page title='Frosh Edit'>
+    <Page title='Offer Edit'>
       <Container maxWidth={themeStretch ? false : 'lg'}>
         <HeaderBreadcrumbs
-          heading='Edit Frosh'
+          heading='Edit Offer'
           links={[
             { name: 'Dashboard', href: PATH_DASHBOARD.root },
-            { name: 'Team', href: PATH_DASHBOARD.frosh.root },
+            { name: 'Offer', href: PATH_DASHBOARD.offer.root },
             { name: 'Edit' },
           ]}
         />
-        <FroshEditForm currentFrosh={frosh} />
+        <OfferEditForm currentOffer={offer} />
       </Container>
     </Page>
   );
 }
 
 export const getServerSideProps: GetServerSideProps = async (ctx: GetServerSidePropsContext) => {
-  const { subdomain, id } = ctx.query as Query;
+  const { id } = ctx.query as Query;
   const api = new AuthApi({ ctx });
-  const frosh = await api.Frosh.getFroshById(id);
+  const offer = await api.Offer.getOfferById(id);
 
   return {
     props: {
-      frosh,
+      offer,
     },
   };
 };

@@ -36,9 +36,6 @@ export default function AccountPopover() {
 
   const supabaseClient = useSupabaseClient();
 
-  console.log('profile : ', profile);
-  console.log('user : ', user);
-
   const isMountedRef = useIsMountedRef();
 
   const { enqueueSnackbar } = useSnackbar();

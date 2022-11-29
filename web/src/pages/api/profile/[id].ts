@@ -5,13 +5,10 @@ import type { Prisma } from '../../../../prisma/types';
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
   try {
     if (req.method === 'PATCH') {
-      const { id } = req.query as any;
-
-      if (!id) {
-        res.status(400).end('No id found');
-      }
-
+      const { id } = req.query  as any;
       const profile = req.body as Prisma.ProfileUpdateInput;
+
+      console.log('profile to update : ', profile);
 
       const user = await prisma.profile.update({ where: { id }, data: profile });
 

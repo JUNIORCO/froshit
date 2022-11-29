@@ -1,25 +1,15 @@
 import * as Yup from 'yup';
-import useSWRMutation from 'swr/mutation';
 import { useSnackbar } from 'notistack';
 import { useRouter } from 'next/router';
 import { useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 import { LoadingButton } from '@mui/lab';
-import { Box, Card, Grid, Stack, Typography } from '@mui/material';
+import { Box, Card, Grid, Stack } from '@mui/material';
 import { PATH_DASHBOARD } from '../../../routes/paths';
-import { FormProvider, RHFSlider, RHFTextField } from '../../../components/hook-form';
-
-const sendOfferCreateRequest = async (url: string, { arg: offer }: any) => {
-  const res = await fetch(url, {
-    method: 'POST',
-    headers: {
-      'Accept': 'application/json',
-      'Content-Type': 'application/json',
-    },
-    body: JSON.stringify(offer),
-  });
-  return res.json();
-};
+import { FormProvider, RHFTextField } from '../../../components/hook-form';
+import { useSupabaseClient } from '@supabase/auth-helpers-react';
+import { v4 as uuid } from 'uuid';
+import useProfile from '../../../hooks/useProfile';
 
 type FormValuesProps = {
   name: string;
@@ -28,7 +18,8 @@ type FormValuesProps = {
 };
 
 export default function OfferNewForm() {
-  const { trigger } = useSWRMutation('/api/offer', sendOfferCreateRequest);
+  const { profile } = useProfile();
+  const supabaseClient = useSupabaseClient();
 
   const { push } = useRouter();
 
@@ -45,13 +36,14 @@ export default function OfferNewForm() {
   });
 
   const defaultValues = {
+    id: uuid(),
     title: '',
     description: '',
     location: '',
     provider: '',
     icon: '',
     color: '',
-    universityId: '1678f7bf-7a13-477c-942c-c85dcadfdd40',
+    universityId: profile?.universityId,
   };
 
   const methods = useForm<FormValuesProps>({
@@ -65,15 +57,15 @@ export default function OfferNewForm() {
     formState: { isSubmitting },
   } = methods;
 
-  const onSubmit = async (froshToCreate: FormValuesProps) => {
-    try {
-      await trigger(froshToCreate);
-      reset();
-      enqueueSnackbar('Created offer!');
-      void push(PATH_DASHBOARD.offer.root);
-    } catch (error) {
-      console.error(error);
+  const onSubmit = async (offerToCreate: FormValuesProps) => {
+    const { error } = await supabaseClient.from('offer').insert(offerToCreate);
+    if (error) {
+      enqueueSnackbar(`Error ${error.message}`, { variant: 'error' });
+      return;
     }
+
+    enqueueSnackbar('Offer created');
+    void push(PATH_DASHBOARD.offer.root);
   };
 
   return (

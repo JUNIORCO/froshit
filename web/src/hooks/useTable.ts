@@ -115,6 +115,10 @@ export default function useTable(props?: Props) {
 // ----------------------------------------------------------------------
 
 export function descendingComparator<T>(a: T, b: T, orderBy: keyof T) {
+  if (a[orderBy] === b[orderBy]) return 0;
+  if (a[orderBy] === null) return -1;
+  if (b[orderBy] === null) return 1;
+
   if (b[orderBy] < a[orderBy]) {
     return -1;
   }

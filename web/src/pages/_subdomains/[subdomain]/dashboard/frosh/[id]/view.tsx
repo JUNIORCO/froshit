@@ -1,15 +1,17 @@
-import { Box, Card, Container, Grid, Slider, Stack, TextField, Typography } from '@mui/material';
-import { PATH_DASHBOARD } from '../../../../../../routes/paths';
+import { Container } from '@mui/material';
 import useSettings from '../../../../../../hooks/useSettings';
 import Layout from '../../../../../../layouts';
 import Page from '../../../../../../components/Page';
-import HeaderBreadcrumbs from '../../../../../../components/HeaderBreadcrumbs';
 import { GetServerSideProps, GetServerSidePropsContext } from 'next';
-import { Frosh } from '../../../../../../../prisma/types';
+import type { Frosh } from '../../../../../../../prisma/types';
+import HeaderBreadcrumbs from '../../../../../../components/HeaderBreadcrumbs';
+import { PATH_DASHBOARD } from '../../../../../../routes/paths';
+import FroshEditForm from '../../../../../../sections/@dashboard/frosh/FroshEditForm';
 import { Query } from '../../../../../../@types/query';
+import type { ReactElement } from 'react';
 import AuthApi from '../../../../../../../prisma/api/AuthApi';
 
-FroshView.getLayout = function getLayout(page: React.ReactElement) {
+FroshView.getLayout = function getLayout(page: ReactElement) {
   return <Layout>{page}</Layout>;
 };
 
@@ -18,78 +20,27 @@ type Props = {
 }
 
 export default function FroshView({ frosh }: Props) {
-  const { name, description, ticketPrice } = frosh;
   const { themeStretch } = useSettings();
 
-  const marksLabel = [...Array(21)].map((_, index) => {
-    const value = index * 10;
-
-    return {
-      value,
-      label: index % 2 ? '' : `$${value}`,
-    };
-  });
-
   return (
-    <Page title='View Frosh'>
+    <Page title='Frosh Edit'>
       <Container maxWidth={themeStretch ? false : 'lg'}>
         <HeaderBreadcrumbs
-          heading='Frosh'
+          heading='Edit Frosh'
           links={[
             { name: 'Dashboard', href: PATH_DASHBOARD.root },
-            { name: 'Frosh', href: PATH_DASHBOARD.frosh.root },
-            { name: 'View' },
+            { name: 'Team', href: PATH_DASHBOARD.frosh.root },
+            { name: 'Edit' },
           ]}
         />
-
-        <Box sx={{ mb: 5 }} />
-
-        <Grid container spacing={3}>
-          <Grid item xs={12} md={8}>
-            <Card sx={{ p: 3 }}>
-              <Box
-                sx={{
-                  display: 'grid',
-                  columnGap: 2,
-                  rowGap: 3,
-                  gridTemplateColumns: { xs: 'repeat(1, 1fr)', sm: 'repeat(2, 1fr)' },
-                }}
-              >
-                <TextField disabled value={name} label='Name' />
-
-                <TextField disabled value={description} label='Description' />
-
-                <Stack spacing={1} sx={{ pb: 2 }}>
-
-                  <Typography variant='subtitle1' sx={{ flexGrow: 1 }}>
-                    Ticket Price
-                  </Typography>
-                  <Slider
-                    disabled
-                    value={ticketPrice}
-                    step={5}
-                    min={0}
-                    max={200}
-                    marks={marksLabel}
-                    getAriaValueText={(value) => `$${value}`}
-                    valueLabelFormat={(value) => `$${value}`}
-                    sx={{ alignSelf: 'center', width: `calc(100% - 20px)` }}
-                    valueLabelDisplay='auto'
-                  />
-                </Stack>
-              </Box>
-
-            </Card>
-          </Grid>
-        </Grid>
-
+        <FroshEditForm currentFrosh={frosh} view />
       </Container>
     </Page>
   );
 }
 
-export const getServerSideProps: GetServerSideProps = async (ctx: GetServerSidePropsContext) => {
-  const { subdomain, id } = ctx.query as Query;
+export const getServerSideProps: GetServerSideProps<Props> = async (ctx: GetServerSidePropsContext) => {
+  const { id } = ctx.query as Query;
   const api = new AuthApi({ ctx });
   const frosh = await api.Frosh.getFroshById(id);
 

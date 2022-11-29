@@ -102,7 +102,7 @@ export default function FroshList({ froshs }: Props) {
         <Card>
           <Scrollbar>
             <TableContainer sx={{ minWidth: 800, position: 'relative' }}>
-              <Table size={dense ? 'small' : 'medium'} sx={{ paddingTop: 1 }}>
+              <Table size='small' sx={{ marginTop: 1 }}>
                 <TableHeadCustom
                   order={order}
                   orderBy={orderBy}
@@ -143,12 +143,6 @@ export default function FroshList({ froshs }: Props) {
               page={page}
               onPageChange={onChangePage}
               onRowsPerPageChange={onChangeRowsPerPage}
-            />
-
-            <FormControlLabel
-              control={<Switch checked={dense} onChange={onChangeDense} />}
-              label='Dense'
-              sx={{ px: 3, py: 1.5, top: 0, position: { md: 'absolute' } }}
             />
           </Box>
         </Card>

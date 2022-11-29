@@ -1,6 +1,5 @@
 import * as Yup from 'yup';
 import { useEffect, useMemo } from 'react';
-import useSWRMutation from 'swr/mutation';
 import { useSnackbar } from 'notistack';
 import { useRouter } from 'next/router';
 import { useForm } from 'react-hook-form';
@@ -10,18 +9,7 @@ import { Box, Card, Grid, Stack, Typography } from '@mui/material';
 import { PATH_DASHBOARD } from '../../../routes/paths';
 import { FormProvider, RHFSlider, RHFTextField } from '../../../components/hook-form';
 import { Frosh } from '../../../../prisma/types';
-
-const sendFroshRequest = async (url: string, { arg }: any) => {
-  const res = await fetch(url, {
-    method: 'PATCH',
-    headers: {
-      'Accept': 'application/json',
-      'Content-Type': 'application/json',
-    },
-    body: JSON.stringify(arg),
-  });
-  return res.json();
-};
+import { useSupabaseClient } from '@supabase/auth-helpers-react';
 
 type FormValuesProps = {
   name: string;
@@ -31,10 +19,11 @@ type FormValuesProps = {
 
 type Props = {
   currentFrosh: Frosh;
+  view?: boolean;
 };
 
-export default function FroshEditForm({ currentFrosh }: Props) {
-  const { trigger } = useSWRMutation(`/api/frosh/${currentFrosh.id}`, sendFroshRequest);
+export default function FroshEditForm({ currentFrosh, view }: Props) {
+  const supabaseClient = useSupabaseClient();
 
   const { push } = useRouter();
 
@@ -75,14 +64,14 @@ export default function FroshEditForm({ currentFrosh }: Props) {
   }, [currentFrosh]);
 
   const onSubmit = async (froshToUpdate: FormValuesProps) => {
-    try {
-      await trigger(froshToUpdate);
-      reset();
-      enqueueSnackbar('Update success!');
-      void push(PATH_DASHBOARD.frosh.root);
-    } catch (error) {
-      console.error(error);
+    const { error } = await supabaseClient.from('frosh').update(froshToUpdate).match({ id: currentFrosh.id });
+    if (error) {
+      enqueueSnackbar(`Error ${error.message}`, { variant: 'error' });
+      return;
     }
+
+    enqueueSnackbar('Frosh updated');
+    void push(PATH_DASHBOARD.frosh.root);
   };
 
   const marksLabel = [...Array(21)].map((_, index) => {
@@ -107,16 +96,16 @@ export default function FroshEditForm({ currentFrosh }: Props) {
                 gridTemplateColumns: { xs: 'repeat(1, 1fr)', sm: 'repeat(2, 1fr)' },
               }}
             >
-              <RHFTextField name='name' label='Name' />
+              <RHFTextField name='name' label='Name' disabled={view}/>
 
-              <RHFTextField name='description' label='Description' />
+              <RHFTextField name='description' label='Description' disabled={view}/>
 
               <Stack spacing={1} sx={{ pb: 2 }}>
-
                 <Typography variant='subtitle1' sx={{ flexGrow: 1 }}>
                   Ticket Price
                 </Typography>
                 <RHFSlider
+                  disabled={view}
                   name='ticketPrice'
                   step={5}
                   min={0}
@@ -129,11 +118,11 @@ export default function FroshEditForm({ currentFrosh }: Props) {
               </Stack>
             </Box>
 
-            <Stack alignItems='flex-end' sx={{ mt: 3 }}>
+            {!view && <Stack alignItems='flex-end' sx={{ mt: 3 }}>
               <LoadingButton type='submit' variant='contained' loading={isSubmitting}>
                 Save Changes
               </LoadingButton>
-            </Stack>
+            </Stack>}
           </Card>
         </Grid>
       </Grid>

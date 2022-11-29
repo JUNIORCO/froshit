@@ -1,4 +1,4 @@
-import { Stack, InputAdornment, TextField, MenuItem } from '@mui/material';
+import { InputAdornment, MenuItem, Stack, TextField } from '@mui/material';
 // components
 import Iconify from '../../../../components/Iconify';
 
@@ -10,21 +10,23 @@ type Props = {
   filterRole: string;
   onFilterName: (value: string) => void;
   onFilterRole: (event: React.ChangeEvent<HTMLInputElement>) => void;
+  currentTab: string;
 };
 
 export default function UserTableToolbar({
-  filterName,
-  filterRole,
-  onFilterName,
-  onFilterRole,
-  optionsRole,
-}: Props) {
+                                           filterName,
+                                           filterRole,
+                                           onFilterName,
+                                           onFilterRole,
+                                           optionsRole,
+                                           currentTab,
+                                         }: Props) {
   return (
     <Stack spacing={2} direction={{ xs: 'column', sm: 'row' }} sx={{ py: 2.5, px: 3 }}>
-      <TextField
+      {currentTab === 'All' && (<TextField
         fullWidth
         select
-        label="Role"
+        label='Role'
         value={filterRole}
         onChange={onFilterRole}
         SelectProps={{
@@ -52,16 +54,16 @@ export default function UserTableToolbar({
             {option}
           </MenuItem>
         ))}
-      </TextField>
+      </TextField>)}
 
       <TextField
         fullWidth
         value={filterName}
         onChange={(event) => onFilterName(event.target.value)}
-        placeholder="Search by email"
+        placeholder='Search by email'
         InputProps={{
           startAdornment: (
-            <InputAdornment position="start">
+            <InputAdornment position='start'>
               <Iconify
                 icon={'eva:search-fill'}
                 sx={{ color: 'text.disabled', width: 20, height: 20 }}

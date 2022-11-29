@@ -87,8 +87,6 @@ export default function RegisterForm({ universities }: RegisterProps) {
         },
       });
     } catch (error) {
-      reset();
-
       if (isMountedRef.current) {
         setError('afterSubmit', { ...error, message: error.message });
       }

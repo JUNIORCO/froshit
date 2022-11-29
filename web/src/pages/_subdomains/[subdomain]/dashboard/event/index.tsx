@@ -168,7 +168,7 @@ export default function EventList({ events }: Props) {
 
           <Scrollbar>
             <TableContainer sx={{ minWidth: 800, position: 'relative' }}>
-              <Table size={dense ? 'small' : 'medium'}>
+              <Table size='small'>
                 <TableHeadCustom
                   order={order}
                   orderBy={orderBy}
@@ -209,12 +209,6 @@ export default function EventList({ events }: Props) {
               page={page}
               onPageChange={onChangePage}
               onRowsPerPageChange={onChangeRowsPerPage}
-            />
-
-            <FormControlLabel
-              control={<Switch checked={dense} onChange={onChangeDense} />}
-              label='Dense'
-              sx={{ px: 3, py: 1.5, top: 0, position: { md: 'absolute' } }}
             />
           </Box>
         </Card>

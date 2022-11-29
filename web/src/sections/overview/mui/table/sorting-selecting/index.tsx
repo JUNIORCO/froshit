@@ -115,7 +115,7 @@ export default function SortingSelecting() {
             />
           )}
 
-          <Table size={dense ? 'small' : 'medium'}>
+          <Table size='small'>
             <TableHeadCustom
               order={order}
               orderBy={orderBy}

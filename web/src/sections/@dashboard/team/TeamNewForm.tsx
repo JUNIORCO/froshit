@@ -1,5 +1,4 @@
 import * as Yup from 'yup';
-import useSWRMutation from 'swr/mutation';
 import { useSnackbar } from 'notistack';
 import { useRouter } from 'next/router';
 import { useForm } from 'react-hook-form';
@@ -9,9 +8,10 @@ import { Box, Card, Grid, Stack } from '@mui/material';
 import { PATH_DASHBOARD } from '../../../routes/paths';
 import { FormProvider, RHFSelect, RHFTextField } from '../../../components/hook-form';
 import { RHFMultiSelect } from '../../../components/hook-form/RHFMultiSelect';
+import useSWRMutation from 'swr/mutation';
+import { isEqual } from 'lodash';
 
-const sendTeamCreateRequest = async (url: string, { arg }: any) => {
-  const { method, ...team } = arg;
+const sendTeamCreateRequest = async (url: string, { arg: team }: any) => {
   const res = await fetch(url, {
     method: 'POST',
     headers: {
@@ -25,14 +25,13 @@ const sendTeamCreateRequest = async (url: string, { arg }: any) => {
 
 type FormValuesProps = {
   name: string;
+  number: string;
   froshId: string;
   leaders: any[];
   froshees: any[];
 };
 
 type Props = {
-  isEdit?: boolean;
-  currentTeam?: any;
   froshs: any[];
   profiles: any[];
 };
@@ -49,6 +48,7 @@ export default function TeamNewForm({
 
   const NewTeamSchema = Yup.object().shape({
     name: Yup.string().required('Team name is required'),
+    number: Yup.string().required('Team number is required'),
     froshId: Yup.string().required('Frosh is required'),
     leaders: Yup.array().optional(),
     froshees: Yup.array().optional(),
@@ -56,6 +56,7 @@ export default function TeamNewForm({
 
   const defaultValues = {
     name: '',
+    number: '',
     froshId: '',
     leaders: [],
     froshees: [],
@@ -69,29 +70,27 @@ export default function TeamNewForm({
   const {
     reset,
     watch,
-    control,
-    setValue,
     handleSubmit,
     formState: { isSubmitting },
   } = methods;
 
-  const values = watch();
-
   const onSubmit = async ({
                             name,
+                            number,
                             froshId,
                             leaders,
                             froshees,
                           }: FormValuesProps) => {
-    try {
-      const teamToCreate = { name, froshId, profiles: leaders.concat(froshees) };
-      await trigger(teamToCreate);
-      reset();
-      enqueueSnackbar('Create success!');
-      push(PATH_DASHBOARD.team.root);
-    } catch (error) {
-      console.error(error);
+    const teamToCreate = { name, number, froshId, profiles: leaders.concat(froshees) };
+    const { error } = await trigger(teamToCreate);
+    if (error) {
+      if (error.code === 'P2002' && isEqual(error.meta.target, ['froshId', 'number'])) {
+        enqueueSnackbar('Team number already taken for selected frosh', { variant: 'error' });
+      }
+      return;
     }
+    enqueueSnackbar('Team created');
+    push(PATH_DASHBOARD.team.root);
   };
 
   return (
@@ -109,6 +108,8 @@ export default function TeamNewForm({
             >
               <RHFTextField name='name' label='Team Name' />
 
+              <RHFTextField name='number' label='Team Number' />
+
               <RHFSelect name='froshId' label='Frosh' placeholder='Frosh'>
                 <option value='' />
                 {froshs.map((frosh) => (
@@ -122,8 +123,8 @@ export default function TeamNewForm({
                 name='leaders'
                 label='Unassigned Leaders'
                 options={profiles
-                  .filter((profile: any) => profile.role === 'Leader').map((profile) => ({
-                    label: profile.name,
+                  .filter((profile) => profile.role === 'Leader').map((profile) => ({
+                    label: `${profile.firstName} ${profile.lastName}`,
                     value: profile.id,
                   }))}
               />
@@ -132,8 +133,8 @@ export default function TeamNewForm({
                 name='froshees'
                 label='Unassigned Froshees'
                 options={profiles
-                  .filter((profile: any) => profile.role === 'Froshee').map((profile) => ({
-                    label: profile.name,
+                  .filter((profile) => profile.role === 'Froshee').map((profile) => ({
+                    label: `${profile.firstName} ${profile.lastName}`,
                     value: profile.id,
                   }))}
               />
