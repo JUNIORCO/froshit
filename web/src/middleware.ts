@@ -17,7 +17,7 @@ function checkValidSubdomain(subdomain: string) {
   return validSubdomains.includes(subdomain);
 }
 
-const UnprotectedPages = Object.values(PATH_AUTH);
+const UNPROTECTED_PAGES = Object.values(PATH_AUTH);
 
 const hostIsSubdomain = (host: string) => host !== process.env.ROOT_DOMAIN;
 
@@ -43,14 +43,14 @@ export default async function middleware(req: NextRequest) {
 
   // invalid subdomain (e.g apple.froshit.com), reroute to 404
   if (!checkValidSubdomain(currentHost)) {
-    console.log('[Middleware] Visiting invalid subdomain, rerouting to 404...');
+    console.log(`[Middleware] Visiting invalid subdomain ${currentHost}, rerouting to 404...`);
     url.pathname = `/_subdomains/${currentHost}/404`;
     return NextResponse.rewrite(url);
   }
 
   // unprotected subdomain page (auth)
-  if (UnprotectedPages.includes(url.pathname)) {
-    console.log('[Middleware] Visiting unprotected page...');
+  if (UNPROTECTED_PAGES.includes(url.pathname)) {
+    console.log(`[Middleware] Visiting unprotected page ${currentHost}${url.pathname}...`);
     url.pathname = `/_subdomains/${currentHost}${url.pathname}`;
     return NextResponse.rewrite(url);
   }

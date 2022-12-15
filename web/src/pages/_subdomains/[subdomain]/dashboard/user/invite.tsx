@@ -20,7 +20,6 @@ import RoleBasedGuard from '../../../../../guards/RoleBasedGuard';
 import { FormProvider, RHFSelect, RHFTextField } from '../../../../../components/hook-form';
 import { LoadingButton } from '@mui/lab';
 import useProfile from '../../../../../hooks/useProfile';
-import { useSupabaseClient } from '@supabase/auth-helpers-react';
 import { useRouter } from 'next/router';
 import { useSnackbar } from 'notistack';
 import * as Yup from 'yup';
@@ -104,7 +103,7 @@ export default function UserInvite({ subdomain, profiles }: Props) {
   const onSubmit = async (userToInvite: FormValuesProps) => {
     const { error } = await trigger({
       ...userToInvite,
-      redirectTo: getSubdomainUrl({ subdomain, path: PATH_AUTH.resetPassword }),
+      redirectTo: getSubdomainUrl({ subdomain, path: PATH_AUTH.setPassword }),
     });
     if (error) {
       enqueueSnackbar(`Error ${error.message}`, { variant: 'error' });

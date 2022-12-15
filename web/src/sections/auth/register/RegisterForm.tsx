@@ -13,6 +13,9 @@ import Iconify from '../../../components/Iconify';
 import { FormProvider, RHFSelect, RHFTextField } from '../../../components/hook-form';
 import { useSupabaseClient } from '@supabase/auth-helpers-react';
 import { Role, University } from '../../../../prisma/types';
+import { PATH_AUTH, PATH_DASHBOARD } from '../../../routes/paths';
+import { useSnackbar } from 'notistack';
+import { useRouter } from 'next/router';
 
 // ----------------------------------------------------------------------
 
@@ -32,8 +35,9 @@ type RegisterProps = {
 }
 
 export default function RegisterForm({ universities }: RegisterProps) {
+  const { push } = useRouter();
+  const { enqueueSnackbar } = useSnackbar();
   const supabaseClient = useSupabaseClient();
-
   const [showPassword, setShowPassword] = useState(false);
 
   const RegisterSchema = Yup.object().shape({
@@ -62,15 +66,11 @@ export default function RegisterForm({ universities }: RegisterProps) {
   });
 
   const {
-    reset,
-
-    setError,
     handleSubmit,
     formState: { errors, isSubmitting },
   } = methods;
 
   const onSubmit = async (data: FormValuesProps) => {
-    console.log(data)
     const { data: signedUpUser, error } = await supabaseClient.auth.signUp({
       email: data.email,
       password: data.password,
@@ -84,8 +84,14 @@ export default function RegisterForm({ universities }: RegisterProps) {
         },
       },
     });
-    if (error) console.error(error);
-    else console.log(signedUpUser);
+
+    if (error) {
+      enqueueSnackbar(`Error ${error.message}`, { variant: 'error' });
+      return;
+    }
+
+    enqueueSnackbar('Successfully registered!');
+    void push(PATH_AUTH.login);
   };
 
   return (
