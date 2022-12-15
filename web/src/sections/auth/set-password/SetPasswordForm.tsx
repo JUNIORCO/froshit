@@ -51,7 +51,7 @@ export default function SetPasswordForm({ email: userEmail }: Props) {
 
   const {
     handleSubmit,
-    formState: { isSubmitting },
+    formState: { isSubmitting, isValid },
   } = methods;
 
   const onSubmit = async (data: FormValuesProps) => {
@@ -108,8 +108,9 @@ export default function SetPasswordForm({ email: userEmail }: Props) {
           variant='contained'
           loading={isSubmitting}
           sx={{ mt: 3 }}
+          disabled={!isValid}
         >
-          Change password
+          Set password
         </LoadingButton>
       </Stack>
     </FormProvider>

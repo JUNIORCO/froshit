@@ -7,13 +7,12 @@ import { yupResolver } from '@hookform/resolvers/yup';
 import { Alert, IconButton, InputAdornment, Stack } from '@mui/material';
 import { LoadingButton } from '@mui/lab';
 // hooks
-import useIsMountedRef from '../../../hooks/useIsMountedRef';
 // components
 import Iconify from '../../../components/Iconify';
 import { FormProvider, RHFSelect, RHFTextField } from '../../../components/hook-form';
 import { useSupabaseClient } from '@supabase/auth-helpers-react';
 import { Role, University } from '../../../../prisma/types';
-import { PATH_AUTH, PATH_DASHBOARD } from '../../../routes/paths';
+import { PATH_AUTH } from '../../../routes/paths';
 import { useSnackbar } from 'notistack';
 import { useRouter } from 'next/router';
 
@@ -67,7 +66,7 @@ export default function RegisterForm({ universities }: RegisterProps) {
 
   const {
     handleSubmit,
-    formState: { errors, isSubmitting },
+    formState: { errors, isSubmitting, isValid },
   } = methods;
 
   const onSubmit = async (data: FormValuesProps) => {
@@ -147,6 +146,7 @@ export default function RegisterForm({ universities }: RegisterProps) {
           type='submit'
           variant='contained'
           loading={isSubmitting}
+          disabled={!isValid}
         >
           Register
         </LoadingButton>

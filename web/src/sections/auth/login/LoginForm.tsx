@@ -48,7 +48,7 @@ export default function LoginForm({ subdomain }: any) {
   const {
     setError,
     handleSubmit,
-    formState: { errors, isSubmitting },
+    formState: { errors, isSubmitting, isValid },
   } = methods;
 
   const onSubmit = async (profile: FormValuesProps) => {
@@ -118,6 +118,7 @@ export default function LoginForm({ subdomain }: any) {
         variant='contained'
         loading={isSubmitting}
         sx={{ my: 2 }}
+        disabled={!isValid}
       >
         Sign in
       </LoadingButton>

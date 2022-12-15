@@ -37,7 +37,7 @@ export default function ResetPasswordForm({ subdomain }: { subdomain: string }) 
 
   const {
     handleSubmit,
-    formState: { isSubmitting },
+    formState: { isSubmitting, isValid },
   } = methods;
 
   const onSubmit = async (data: FormValuesProps) => {
@@ -64,6 +64,7 @@ export default function ResetPasswordForm({ subdomain }: { subdomain: string }) 
           type='submit'
           variant='contained'
           loading={isSubmitting}
+          disabled={!isValid}
         >
           Send Request
         </LoadingButton>
