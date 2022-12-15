@@ -1,6 +1,6 @@
 import * as Yup from 'yup';
 import { useSnackbar } from 'notistack';
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import { useRouter } from 'next/router';
 import { useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
@@ -9,21 +9,23 @@ import { LoadingButton } from '@mui/lab';
 import { PATH_DASHBOARD } from '../../../routes/paths';
 import Iconify from '../../../components/Iconify';
 import { FormProvider, RHFTextField } from '../../../components/hook-form';
+import { useSupabaseClient } from '@supabase/auth-helpers-react';
 
 type FormValuesProps = {
   password: string;
   confirmPassword: string;
 };
 
-export default function SetPasswordForm() {
-  const { push } = useRouter();
+type Props = {
+  email: string;
+}
 
+export default function SetPasswordForm({ email: userEmail }: Props) {
+  const { push } = useRouter();
   const { enqueueSnackbar } = useSnackbar();
+  const supabaseClient = useSupabaseClient();
 
   const [showPassword, setShowPassword] = useState(false);
-
-  const emailRecovery =
-    typeof window !== 'undefined' ? sessionStorage.getItem('email-recovery') : '';
 
   const VerifyCodeSchema = Yup.object().shape({
     email: Yup.string().email('Email must be a valid email address').required('Email is required'),
@@ -36,7 +38,7 @@ export default function SetPasswordForm() {
   });
 
   const defaultValues = {
-    email: emailRecovery || '',
+    email: userEmail,
     password: '',
     confirmPassword: '',
   };
@@ -48,57 +50,26 @@ export default function SetPasswordForm() {
   });
 
   const {
-    setValue,
     handleSubmit,
     formState: { isSubmitting },
   } = methods;
 
-  useEffect(() => {
-    const target = document.querySelector('input.field-code');
-
-    target?.addEventListener('paste', handlePaste);
-
-    return () => {
-      target?.removeEventListener('paste', handlePaste);
-    };
-
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
-
-  const handlePaste = (event: any) => {
-    let data = event.clipboardData.getData('text');
-
-    data = data.split('');
-
-    [].forEach.call(document.querySelectorAll('.field-code'), (node: any, index) => {
-      node.value = data[index];
-
-      const fieldIndex = `code${index + 1}`;
-
-      setValue(fieldIndex as any, data[index]);
-    });
-
-    event.preventDefault();
-  };
-
   const onSubmit = async (data: FormValuesProps) => {
-    try {
-      await new Promise((resolve) => setTimeout(resolve, 500));
+    const { error } = await supabaseClient.auth.updateUser({ password: data.password });
 
-      sessionStorage.removeItem('email-recovery');
-
-      enqueueSnackbar('Change password success!');
-
-      push(PATH_DASHBOARD.root);
-    } catch (error) {
-      console.error(error);
+    if (error) {
+      enqueueSnackbar('Something went wrong...', { variant: 'error' });
+      return;
     }
+
+    enqueueSnackbar('Password set');
+    void push(PATH_DASHBOARD.root);
   };
 
   return (
     <FormProvider methods={methods} onSubmit={handleSubmit(onSubmit)}>
       <Stack spacing={3}>
-        <RHFTextField name='email' label='Email' disabled={!!emailRecovery} />
+        <RHFTextField name='email' label='Email' disabled />
 
         <RHFTextField
           name='password'

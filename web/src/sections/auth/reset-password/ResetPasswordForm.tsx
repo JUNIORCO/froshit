@@ -7,11 +7,14 @@ import { useForm } from 'react-hook-form';
 import { Stack } from '@mui/material';
 import { LoadingButton } from '@mui/lab';
 // routes
-import { PATH_AUTH } from '../../../routes/paths';
+import { PATH_AUTH, PATH_DASHBOARD } from '../../../routes/paths';
 // components
 import { FormProvider, RHFTextField } from '../../../components/hook-form';
 import { useSupabaseClient } from '@supabase/auth-helpers-react';
 import { getSubdomainUrl } from '../../../utils/url';
+import { isEqual } from 'lodash';
+import { useRouter } from 'next/router';
+import { useSnackbar } from 'notistack';
 
 // ----------------------------------------------------------------------
 
@@ -20,6 +23,8 @@ type FormValuesProps = {
 };
 
 export default function ResetPasswordForm({ subdomain }: { subdomain: string }) {
+  const { push } = useRouter();
+  const { enqueueSnackbar } = useSnackbar();
   const supabaseClient = useSupabaseClient();
 
   const ResetPasswordSchema = Yup.object().shape({
@@ -36,12 +41,16 @@ export default function ResetPasswordForm({ subdomain }: { subdomain: string }) 
   } = methods;
 
   const onSubmit = async (data: FormValuesProps) => {
-    try {
-      const redirectTo = getSubdomainUrl({ subdomain, path: PATH_AUTH.newPassword });
-      await supabaseClient.auth.resetPasswordForEmail(data.email, { redirectTo });
-    } catch (error) {
-      console.error(error);
+    const redirectTo = getSubdomainUrl({ subdomain, path: PATH_AUTH.newPassword });
+    const { error } = await supabaseClient.auth.resetPasswordForEmail(data.email, { redirectTo });
+
+    if (error) {
+      enqueueSnackbar('Error occurred!', { variant: 'error' });
+      return;
     }
+
+    enqueueSnackbar('Password reset');
+    push(PATH_DASHBOARD.team.root);
   };
 
   return (

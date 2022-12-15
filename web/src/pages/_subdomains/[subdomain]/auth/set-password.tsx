@@ -26,38 +26,22 @@ SetPassword.getLayout = function getLayout(page: React.ReactElement) {
 
 export default function SetPassword() {
   const user = useUser();
-  console.log('user : ', user);
-  const { asPath } = useRouter();
-  const fragmentIdentifier = asPath.split('#');
-  let parsedAuthInfo = null;
-
-  if (fragmentIdentifier.length <= 1) {
-    console.log('no fragment found');
-  } else {
-    const authInfo = fragmentIdentifier[1];
-    const parsed = queryString.parse(authInfo);
-    if (!parsed.error) {
-      parsedAuthInfo = parsed;
-    }
-  }
-
-  console.log('parsedAuthInfo : ', parsedAuthInfo);
 
   return (
     <Page title='Set Password'>
       <Container>
         <ContentStyle sx={{ textAlign: 'center' }}>
-          {parsedAuthInfo ? (
+          {user && user.email ? (
             <>
               <SentIcon sx={{ mb: 5, mx: 'auto', height: 120 }} />
               <Typography variant='h3' gutterBottom>
-                Welcome to FROSHIT!
+                Welcome to FROSHIT, {user.user_metadata.firstName} {user.user_metadata.lastName}!
               </Typography>
               <Typography variant='h4'>
                 Set a password
               </Typography>
               <Box sx={{ mt: 5, mb: 3 }}>
-                <SetPasswordForm />
+                <SetPasswordForm email={user.email}/>
               </Box>
             </>) : <Typography>Oops! Looks like you're in the wrong place...</Typography>}
 
