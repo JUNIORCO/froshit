@@ -48,7 +48,6 @@ const sendInviteRequest = async (url: string, { arg }: any) => {
   return res.json();
 };
 
-
 UserInvite.getLayout = function getLayout(page: React.ReactElement) {
   return <Layout>{page}</Layout>;
 };
@@ -105,7 +104,7 @@ export default function UserInvite({ subdomain, profiles }: Props) {
   const onSubmit = async (userToInvite: FormValuesProps) => {
     const { error } = await trigger({
       ...userToInvite,
-      redirectTo: getSubdomainUrl({ subdomain, path: PATH_AUTH.setPassword }),
+      redirectTo: getSubdomainUrl({ subdomain, path: PATH_AUTH.resetPassword }),
     });
     if (error) {
       enqueueSnackbar(`Error ${error.message}`, { variant: 'error' });

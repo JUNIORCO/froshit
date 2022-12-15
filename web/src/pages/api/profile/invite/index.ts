@@ -5,6 +5,16 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
   try {
     if (req.method === 'POST') {
       const { email, firstName, lastName, phoneNumber, role, universityId, redirectTo } = req.body;
+      console.log({
+        redirectTo,
+        data: {
+          firstName,
+          lastName,
+          phoneNumber,
+          role,
+          universityId,
+        },
+      });
 
       const supabase = createClient(
         process.env.NEXT_PUBLIC_SUPABASE_URL ?? '',
