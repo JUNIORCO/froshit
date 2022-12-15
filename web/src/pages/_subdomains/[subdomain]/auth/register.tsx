@@ -32,16 +32,6 @@ const HeaderStyle = styled('header')(({ theme }) => ({
     padding: theme.spacing(7, 5, 0, 7),
   },
 }));
-
-const SectionStyle = styled(Card)(({ theme }) => ({
-  width: '100%',
-  maxWidth: 464,
-  display: 'flex',
-  flexDirection: 'column',
-  justifyContent: 'center',
-  margin: theme.spacing(2, 0, 2, 2),
-}));
-
 const ContentStyle = styled('div')(({ theme }) => ({
   maxWidth: 480,
   margin: 'auto',
@@ -59,12 +49,6 @@ type RegisterProps = {
 }
 
 export default function Register({ universities }: RegisterProps) {
-  const method = 'supabase-auth';
-
-  const smUp = useResponsive('up', 'sm');
-
-  const mdUp = useResponsive('up', 'md');
-
   return (
     <GuestGuard>
       <Page title='Register'>
@@ -87,22 +71,10 @@ export default function Register({ universities }: RegisterProps) {
 
               <RegisterForm universities={universities} />
 
-              {/*<Typography variant='body2' align='center' sx={{ color: 'text.secondary', mt: 3 }}>*/}
-              {/*  By registering, I agree to Minimal&nbsp;*/}
-              {/*  <Link underline='always' color='text.primary' href='#'>*/}
-              {/*    Terms of Service*/}
-              {/*  </Link>*/}
-              {/*  {''}and{''}*/}
-              {/*  <Link underline='always' color='text.primary' href='#'>*/}
-              {/*    Privacy Policy*/}
-              {/*  </Link>*/}
-              {/*  .*/}
-              {/*</Typography>*/}
-
               <Typography variant='body2' sx={{ mt: 3, textAlign: 'center' }}>
                 Already have an account?{' '}
                 <NextLink href={PATH_AUTH.login} passHref style={{ textDecoration: 'none' }}>
-                  <Link variant='subtitle2'>Login</Link>
+                  <Typography component={'span'}  variant='subtitle2'>Login</Typography>
                 </NextLink>
               </Typography>
             </ContentStyle>

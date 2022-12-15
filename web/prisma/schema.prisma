@@ -132,7 +132,7 @@ model Event {
   accessibility String
 
   // associations
-  frosh   Frosh  @relation(fields: [froshId], references: [id])
+  frosh   Frosh  @relation(fields: [froshId], references: [id]) // TODO make one to many
   froshId String
 
   // dates
@@ -173,10 +173,10 @@ model Profile {
   id String @id @default(uuid())
 
   // attributes
-  firstName   String
-  lastName    String
   email       String     @unique
   phoneNumber String     @unique
+  firstName   String
+  lastName    String
   role        Role
   paid        Int?
   interests   Interest[]

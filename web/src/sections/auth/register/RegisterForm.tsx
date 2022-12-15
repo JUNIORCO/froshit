@@ -34,8 +34,6 @@ type RegisterProps = {
 export default function RegisterForm({ universities }: RegisterProps) {
   const supabaseClient = useSupabaseClient();
 
-  const isMountedRef = useIsMountedRef();
-
   const [showPassword, setShowPassword] = useState(false);
 
   const RegisterSchema = Yup.object().shape({
@@ -72,25 +70,22 @@ export default function RegisterForm({ universities }: RegisterProps) {
   } = methods;
 
   const onSubmit = async (data: FormValuesProps) => {
-    try {
-      const res = await supabaseClient.auth.signUp({
-        email: data.email,
-        password: data.password,
-        options: {
-          data: {
-            firstName: data.firstName,
-            lastName: data.lastName,
-            phoneNumber: data.phoneNumber,
-            role: data.role,
-            universityId: data.universityId,
-          },
+    console.log(data)
+    const { data: signedUpUser, error } = await supabaseClient.auth.signUp({
+      email: data.email,
+      password: data.password,
+      options: {
+        data: {
+          firstName: data.firstName,
+          lastName: data.lastName,
+          phoneNumber: data.phoneNumber,
+          role: data.role,
+          universityId: data.universityId,
         },
-      });
-    } catch (error) {
-      if (isMountedRef.current) {
-        setError('afterSubmit', { ...error, message: error.message });
-      }
-    }
+      },
+    });
+    if (error) console.error(error);
+    else console.log(signedUpUser);
   };
 
   return (

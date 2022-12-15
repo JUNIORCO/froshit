@@ -22,6 +22,17 @@ class ProfileApi {
     });
   }
 
+  public async getAdminsAndOrganizersOnly(): Promise<Profile[]> {
+    return prisma.profile.findMany({
+      where: {
+        universityId: this.profile.universityId,
+        role: {
+          in: [Role.Admin, Role.Organizer],
+        },
+      },
+    });
+  }
+
   public async getFullProfileById(id: string): Promise<FullProfile> {
     return prisma.profile.findUniqueOrThrow({
       where: {

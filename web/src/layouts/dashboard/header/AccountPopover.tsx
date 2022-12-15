@@ -1,7 +1,6 @@
 import { useSnackbar } from 'notistack';
 import { useState } from 'react';
 // next
-import NextLink from 'next/link';
 import { useRouter } from 'next/router';
 // @mui
 import { alpha } from '@mui/material/styles';
@@ -14,24 +13,26 @@ import useIsMountedRef from '../../../hooks/useIsMountedRef';
 import MyAvatar from '../../../components/MyAvatar';
 import MenuPopover from '../../../components/MenuPopover';
 import { IconButtonAnimate } from '../../../components/animate';
-import { useSupabaseClient, useUser } from '@supabase/auth-helpers-react';
+import { useSupabaseClient } from '@supabase/auth-helpers-react';
 import useProfile from '../../../hooks/useProfile';
+import { Role } from '../../../../prisma/types';
+import RoleBasedGuard from '../../../guards/RoleBasedGuard';
 
 const MENU_OPTIONS = [
   {
     label: 'Profile',
-    linkTo: PATH_DASHBOARD.user.profile,
+    path: PATH_DASHBOARD.user.profile,
   },
   {
-    label: 'Settings',
-    linkTo: PATH_DASHBOARD.user.account,
+    label: 'Invite',
+    path: PATH_DASHBOARD.user.invite,
+    roles: [Role.Admin],
   },
 ];
 
 export default function AccountPopover() {
   const router = useRouter();
 
-  const user = useUser();
   const { profile } = useProfile();
 
   const supabaseClient = useSupabaseClient();
@@ -50,22 +51,29 @@ export default function AccountPopover() {
     setOpen(null);
   };
 
-  const handleLogout = async () => {
-    try {
-      await supabaseClient.auth.signOut();
-      router.replace(PATH_AUTH.login);
+  const handleNavItemClick = (path: string) => {
+    setOpen(null);
+    void router.push(path);
+  };
 
-      if (isMountedRef.current) {
-        handleClose();
-      }
-    } catch (error) {
+  const handleLogout = async () => {
+    const { error } = await supabaseClient.auth.signOut();
+
+    if (error) {
       console.error(error);
       enqueueSnackbar('Unable to logout!', { variant: 'error' });
+      return;
+    }
+
+    void router.replace(PATH_AUTH.login);
+
+    if (isMountedRef.current) {
+      handleClose();
     }
   };
 
-  const getName = () => profile ? `${profile.firstName} ${profile.lastName}` : `${user?.user_metadata.firstName} ${user?.user_metadata.lastName}`;
-  const getEmail = () => profile ? profile.email : user?.email;
+  const getName = () => `${profile?.firstName} ${profile?.lastName}`;
+  const getEmail = () => profile?.email;
 
   return (
     <>
@@ -116,11 +124,19 @@ export default function AccountPopover() {
 
         <Stack sx={{ p: 1 }}>
           {MENU_OPTIONS.map((option) => (
-            <NextLink key={option.label} href={option.linkTo} passHref style={{ textDecoration: 'none', color: 'inherit' }}>
-              <MenuItem key={option.label} onClick={handleClose}>
-                {option.label}
-              </MenuItem>
-            </NextLink>
+            option.roles ? <RoleBasedGuard roles={option.roles}><Box key={option.label} style={{
+                textDecoration: 'none',
+                color: 'inherit',
+              }}>
+                <MenuItem key={option.label} onClick={() => handleNavItemClick(option.path)}>
+                  {option.label}
+                </MenuItem>
+              </Box> </RoleBasedGuard> :
+              <Box key={option.label} style={{ textDecoration: 'none', color: 'inherit' }}>
+                <MenuItem key={option.label} onClick={() => handleNavItemClick(option.path)}>
+                  {option.label}
+                </MenuItem>
+              </Box>
           ))}
         </Stack>
 

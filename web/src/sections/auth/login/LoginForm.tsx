@@ -6,14 +6,14 @@ import NextLink from 'next/link';
 import { useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 // @mui
-import { Alert, IconButton, InputAdornment, Link, Stack } from '@mui/material';
+import { Alert, IconButton, InputAdornment, Stack, Typography } from '@mui/material';
 import { LoadingButton } from '@mui/lab';
 // routes
 import { PATH_AUTH } from '../../../routes/paths';
 // hooks
 // components
 import Iconify from '../../../components/Iconify';
-import { FormProvider, RHFCheckbox, RHFTextField } from '../../../components/hook-form';
+import { FormProvider, RHFTextField } from '../../../components/hook-form';
 import { useSupabaseClient } from '@supabase/auth-helpers-react';
 import { Role } from '../../../../prisma/types';
 
@@ -22,14 +22,13 @@ import { Role } from '../../../../prisma/types';
 type FormValuesProps = {
   email: string;
   password: string;
-  remember: boolean;
   afterSubmit?: string;
 };
 
 export default function LoginForm({ subdomain }: any) {
   const supabaseClient = useSupabaseClient();
 
-  const [showPassword, setShowPassword] = useState(false);
+  const [showPassword, setShowPassword] = useState(subdomain === 'demo');
 
   const LoginSchema = Yup.object().shape({
     email: Yup.string().email('Email must be a valid email address').required('Email is required'),
@@ -37,9 +36,8 @@ export default function LoginForm({ subdomain }: any) {
   });
 
   const defaultValues = {
-    email: 'demo@froshit.com',
+    email: 'froshit.business@gmail.com',
     password: 'demo1234',
-    remember: true,
   };
 
   const methods = useForm<FormValuesProps>({
@@ -84,6 +82,7 @@ export default function LoginForm({ subdomain }: any) {
       });
 
     if (createdProfileError || !createdProfile) {
+      console.error(createdProfileError);
       setError('afterSubmit', { message: 'Failed to login' });
       return;
     }
@@ -112,22 +111,23 @@ export default function LoginForm({ subdomain }: any) {
         />
       </Stack>
 
-      <Stack direction='row' alignItems='center' justifyContent='space-between' sx={{ my: 2 }}>
-        <RHFCheckbox name='remember' label='Remember me' />
-        <NextLink href={PATH_AUTH.resetPassword} passHref style={{ textDecoration: 'none' }}>
-          <Link variant='subtitle2'>Forgot password?</Link>
-        </NextLink>
-      </Stack>
-
       <LoadingButton
         fullWidth
         size='large'
         type='submit'
         variant='contained'
         loading={isSubmitting}
+        sx={{ my: 2 }}
       >
-        Login
+        Sign in
       </LoadingButton>
+
+      <Typography variant='body2' align='center'>
+        <NextLink href={PATH_AUTH.resetPassword} passHref style={{ textDecoration: 'none', color: 'inherit' }}>
+          Forgot password?
+        </NextLink>
+      </Typography>
+
     </FormProvider>
   );
 }

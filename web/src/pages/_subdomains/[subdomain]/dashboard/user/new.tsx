@@ -30,8 +30,8 @@ export default function UserCreate({ programs, froshs, teams }: Props) {
           heading='Create a New User'
           links={[
             { name: 'Dashboard', href: PATH_DASHBOARD.root },
-            { name: 'User', href: PATH_DASHBOARD.user.root },
-            { name: 'New user' },
+            { name: 'Users', href: PATH_DASHBOARD.user.root },
+            { name: 'New User' },
           ]}
         />
         <UserNewEditForm programs={programs} froshs={froshs} teams={teams} />

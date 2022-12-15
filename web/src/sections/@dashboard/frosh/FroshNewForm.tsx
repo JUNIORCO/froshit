@@ -50,7 +50,10 @@ export default function FroshNewForm() {
     reset,
     handleSubmit,
     formState: { isSubmitting },
+    watch
   } = methods;
+
+  const payload = watch();
 
   const onSubmit = async (froshToCreate: FormValuesProps) => {
     const { error } = await supabaseClient.from('frosh').insert(froshToCreate);

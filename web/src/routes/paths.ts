@@ -14,6 +14,7 @@ export const PATH_AUTH = {
   verify: path(ROOTS_AUTH, '/verify'),
   resetPassword: path(ROOTS_AUTH, '/reset-password'),
   newPassword: path(ROOTS_AUTH, '/new-password'),
+  setPassword: path(ROOTS_AUTH, '/set-password'),
 };
 
 export const DEMO_PAGE = `${process.env.NODE_ENV === 'development' ? 'http://' : 'https://'}demo.${process.env.ROOT_DOMAIN}`;
@@ -49,6 +50,7 @@ export const PATH_DASHBOARD = {
     account: path(ROOTS_DASHBOARD, '/user/account'),
     edit: (id: string) => path(ROOTS_DASHBOARD, `/user/${id}/edit`),
     view: (id: string) => path(ROOTS_DASHBOARD, `/user/${id}/view`),
+    invite: path(ROOTS_DASHBOARD, '/user/invite'),
   },
   team: {
     root: path(ROOTS_DASHBOARD, '/team'),

@@ -8,8 +8,6 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       const { id } = req.query  as any;
       const profile = req.body as Prisma.ProfileUpdateInput;
 
-      console.log('profile to update : ', profile);
-
       const user = await prisma.profile.update({ where: { id }, data: profile });
 
       res.status(200).json(user);

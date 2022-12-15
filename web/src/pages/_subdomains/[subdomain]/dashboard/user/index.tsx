@@ -7,9 +7,7 @@ import {
   Card,
   Container,
   Divider,
-  FormControlLabel,
   Stack,
-  Switch,
   Tab,
   Table,
   TableBody,
@@ -110,8 +108,6 @@ export default function UserList({ users }: UserListProps) {
     filterTab,
   });
 
-  console.log(dataFiltered);
-
   const denseHeight = dense ? 52 : 72;
 
   const isNotFound =
@@ -153,13 +149,13 @@ export default function UserList({ users }: UserListProps) {
           heading='User List'
           links={[
             { name: 'Dashboard', href: PATH_DASHBOARD.general.app },
-            { name: 'User', href: PATH_DASHBOARD.user.root },
+            { name: 'Users', href: PATH_DASHBOARD.user.root },
             { name: 'List' },
           ]}
           action={
             <NextLink href={PATH_DASHBOARD.user.new} passHref style={{ textDecoration: 'none' }}>
               <Button variant='contained' startIcon={<Iconify icon={'eva:plus-fill'} />}>
-                New User
+                New Froshee
               </Button>
             </NextLink>
           }

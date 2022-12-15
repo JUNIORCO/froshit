@@ -17,7 +17,7 @@ function checkValidSubdomain(subdomain: string) {
   return validSubdomains.includes(subdomain);
 }
 
-const unprotectedPages = [PATH_AUTH.login, PATH_AUTH.register, PATH_AUTH.resetPassword];
+const UnprotectedPages = Object.values(PATH_AUTH);
 
 const hostIsSubdomain = (host: string) => host !== process.env.ROOT_DOMAIN;
 
@@ -35,48 +35,65 @@ export default async function middleware(req: NextRequest) {
   }
   const currentHost = hostname.replace(`.${process.env.ROOT_DOMAIN}`, '');
 
-  if (hostIsSubdomain(currentHost)) {
-    if (checkValidSubdomain(currentHost)) {
-      if (unprotectedPages.includes(url.pathname)) {
-        url.pathname = `/_subdomains/${currentHost}${url.pathname}`;
-      } else if (session?.user) {
-        // inject user profile into header
-        const userId = session.user.id;
-        const { data: profile } = await supabase
-          .from('profile')
-          .select('*')
-          .eq('id', userId)
-          .single();
+  // trying to access froshit.com, no middleware needed
+  if (!hostIsSubdomain(currentHost)) {
+    console.log('[Middleware] Visiting main page, no middleware running...');
+    return;
+  }
 
-        if (!profile) {
-          console.error(`[Middleware] No profile found for session ${userId}`);
-          await supabase.auth.signOut();
-          url.pathname = `${PATH_AUTH.login}`;
-          return NextResponse.redirect(url);
-        }
-
-        // rewrite url to correct page
-        url.pathname = `/_subdomains/${currentHost}${url.pathname}`;
-
-        // clone the request headers and set a new header that has user profile
-        const requestHeaders = new Headers(req.headers);
-        requestHeaders.set('profile', JSON.stringify(profile));
-        const response = NextResponse.rewrite(url, {
-          request: {
-            headers: requestHeaders,
-          },
-        });
-
-        // set a new response header with the user profile
-        response.headers.set('profile', JSON.stringify(profile));
-        return response;
-      } else {
-        // User is not authenticated, redirect to login
-        url.pathname = `/_subdomains/${currentHost}${PATH_AUTH.login}`;
-      }
-    } else {
-      url.pathname = `/_subdomains/${currentHost}/404`;
-    }
+  // invalid subdomain (e.g apple.froshit.com), reroute to 404
+  if (!checkValidSubdomain(currentHost)) {
+    console.log('[Middleware] Visiting invalid subdomain, rerouting to 404...');
+    url.pathname = `/_subdomains/${currentHost}/404`;
     return NextResponse.rewrite(url);
   }
+
+  // unprotected subdomain page (auth)
+  if (UnprotectedPages.includes(url.pathname)) {
+    console.log('[Middleware] Visiting unprotected page...');
+    url.pathname = `/_subdomains/${currentHost}${url.pathname}`;
+    return NextResponse.rewrite(url);
+  }
+
+  if (session?.user) {
+    console.log(`[Middleware] Visiting protected page ${url.pathname}, and user session exists...`);
+
+    // inject user profile into header
+    const userId = session.user.id;
+    const { data: profile } = await supabase
+      .from('profile')
+      .select('*')
+      .eq('id', userId)
+      .single();
+
+    if (!profile) {
+      console.error(`[Middleware] No profile found for user ${userId}`);
+      url.pathname = `${PATH_AUTH.login}`;
+      return NextResponse.redirect(url);
+    }
+
+    // rewrite url to correct page
+    url.pathname = `/_subdomains/${currentHost}${url.pathname}`;
+
+    // clone the request headers and set a new header that has user profile
+    const requestHeaders = new Headers(req.headers);
+    requestHeaders.set('profile', JSON.stringify(profile));
+    const response = NextResponse.rewrite(url, {
+      request: {
+        headers: requestHeaders,
+      },
+    });
+
+    // set a new response header with the user profile
+    response.headers.set('profile', JSON.stringify(profile));
+    return response;
+  } else {
+    console.log('[Middleware] Visiting protected page with no user session...');
+    // User is not authenticated, redirect to login
+    url.pathname = `${PATH_AUTH.login}`;
+    return NextResponse.redirect(url);
+  }
+
+
+  return NextResponse.rewrite(url);
 }

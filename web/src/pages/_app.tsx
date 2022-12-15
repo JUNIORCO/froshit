@@ -13,7 +13,7 @@ import 'react-lazy-load-image-component/src/effects/black-and-white.css';
 import '@fullcalendar/common/main.min.css';
 import '@fullcalendar/daygrid/main.min.css';
 import cookie from 'cookie';
-import { ReactElement, ReactNode, useState } from 'react';
+import { ReactElement, ReactNode, useEffect, useState } from 'react';
 import { NextPage } from 'next';
 import Head from 'next/head';
 import App, { AppContext, AppProps } from 'next/app';
@@ -47,10 +47,31 @@ interface MyAppProps extends AppProps<{ initialSession: Session }> {
 }
 
 export default function MyApp(props: MyAppProps) {
-  const { Component, pageProps, settings, subdomain, profile } = props;
+  const { Component, pageProps, settings, subdomain, profile: serverProfile } = props;
+
+  const [clientProfile, setClientProfile] = useState(serverProfile);
   const [supabaseClient] = useState(() => createBrowserSupabaseClient());
 
   const getLayout = Component.getLayout ?? ((page) => page);
+
+  useEffect(() => {
+    setClientProfile(serverProfile);
+  }, [serverProfile]);
+
+  useEffect(() => {
+    const { data: authListener } = supabaseClient.auth.onAuthStateChange(async (event, session) => {
+      if (event == 'PASSWORD_RECOVERY') {
+        console.log('PASSWORD_RECOVERY', session);
+
+        // show screen to update user's password
+        // TODO
+      }
+    });
+
+    return () => {
+      authListener.subscription;
+    };
+  }, []);
 
   return (
     <>
@@ -62,7 +83,7 @@ export default function MyApp(props: MyAppProps) {
         supabaseClient={supabaseClient}
         initialSession={pageProps.initialSession}
       >
-        <ProfileProvider profile={profile}>
+        <ProfileProvider profile={clientProfile}>
           <ReduxProvider store={store}>
             <LocalizationProvider dateAdapter={AdapterDateFns}>
               <CollapseDrawerProvider>
@@ -73,7 +94,7 @@ export default function MyApp(props: MyAppProps) {
                         <NotistackProvider>
                           <ChartStyle />
                           <ProgressBar />
-                          {getLayout(<Component {...pageProps} subdomain={subdomain} profile={profile} />)}
+                          {getLayout(<Component {...pageProps} subdomain={subdomain} />)}
                         </NotistackProvider>
                       </ThemeSettings>
                     </ThemeProvider>
@@ -87,8 +108,6 @@ export default function MyApp(props: MyAppProps) {
     </>
   );
 }
-
-// ----------------------------------------------------------------------
 
 MyApp.getInitialProps = async (context: AppContext) => {
   const appProps = await App.getInitialProps(context);

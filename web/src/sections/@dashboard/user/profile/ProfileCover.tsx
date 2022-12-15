@@ -9,7 +9,6 @@ import cssStyles from '../../../../utils/cssStyles';
 // components
 import MyAvatar from '../../../../components/MyAvatar';
 import Image from '../../../../components/Image';
-import { useUser } from '@supabase/auth-helpers-react';
 import useProfile from '../../../../hooks/useProfile';
 
 // ----------------------------------------------------------------------

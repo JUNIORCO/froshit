@@ -31,8 +31,6 @@ export default function TeamTableRow({
     setOpenMenuActions(null);
   };
 
-  console.log(profiles);
-
   return (
     <TableRow hover selected={selected}>
       <TableCell sx={{ alignItems: 'center' }}>

@@ -26,7 +26,6 @@ import Image from '../../../../components/Image';
 import Iconify from '../../../../components/Iconify';
 import MyAvatar from '../../../../components/MyAvatar';
 import EmojiPicker from '../../../../components/emoji-picker';
-import { useUser } from '@supabase/auth-helpers-react';
 import useProfile from '../../../../hooks/useProfile';
 
 // ----------------------------------------------------------------------

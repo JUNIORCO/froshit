@@ -20,6 +20,7 @@ import {
   AppWidget,
   AppWidgetSummary,
 } from '../../../../sections/@dashboard/general/app';
+import { GetServerSideProps } from 'next';
 // assets
 
 GeneralApp.getLayout = function getLayout(page: React.ReactElement) {
@@ -171,3 +172,15 @@ export default function GeneralApp() {
     </Page>
   );
 }
+
+/**
+ * Why export an empty function?
+ * The _app file uses getInitialProps, which may sometime run on the client
+ * The issue is that when the user first gets to the login page, the profile that is fetched in getInitialProps in _app
+ * will be empty.
+ * Then the user logs in, and getInitialProps runs on the client, so profile is still empty
+ * We have to run getInitialProps in _app on the server again, and this export ensure that
+ */
+export const getServerSideProps: GetServerSideProps = async () => ({
+  props: {},
+});

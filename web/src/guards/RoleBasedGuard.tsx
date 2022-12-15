@@ -2,7 +2,7 @@ import { m } from 'framer-motion';
 import { Container, Typography } from '@mui/material';
 import { MotionContainer, varBounce } from '../components/animate';
 import { ForbiddenIllustration } from '../assets';
-import { useUser } from '@supabase/auth-helpers-react';
+import useProfile from '../hooks/useProfile';
 
 type RoleBasedGuardProp = {
   hasContent?: boolean;
@@ -12,10 +12,10 @@ type RoleBasedGuardProp = {
 
 export default function RoleBasedGuard({ hasContent, roles, children }: RoleBasedGuardProp) {
   // Logic here to get current user role
-  const user = useUser();
+  const { profile } = useProfile();
 
   // const currentRole = 'user';
-  const currentRole = user?.role; // admin;
+  const currentRole = profile?.role; // admin;
 
   if (typeof roles !== 'undefined' && currentRole && !roles.includes(currentRole)) {
     return hasContent ? (

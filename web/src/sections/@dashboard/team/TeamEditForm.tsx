@@ -120,6 +120,7 @@ export default function TeamNewForm({
                             frosheeIds,
                           }: FormValuesProps) => {
     const teamToUpdate = { name, number, froshId, profiles: leaderIds.concat(frosheeIds) };
+
     const { error } = await trigger(teamToUpdate);
     if (error) {
       if (error.code === 'P2002' && isEqual(error.meta.target, ['froshId', 'number'])) {

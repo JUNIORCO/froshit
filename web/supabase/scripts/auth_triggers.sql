@@ -5,11 +5,22 @@ language plpgsql
 security definer set search_path = public
 as $$
 begin
-  insert into public.profile ("id", "email", "firstName", "lastName", "phoneNumber", "role", "universityId")
-  values (new.id, new.email, new.raw_user_meta_data->>'firstName', new.raw_user_meta_data->>'lastName', new.raw_user_meta_data->>'phoneNumber', 'Admin', new.raw_user_meta_data->>'universityId');
+  insert into public.profile ("id", "email", "phoneNumber", "firstName", "lastName", "role", "universityId")
+  values (
+    new.id,
+    new.email,
+    new.raw_user_meta_data->>'phoneNumber',
+    new.raw_user_meta_data->>'firstName',
+    new.raw_user_meta_data->>'lastName',
+    cast(new.raw_user_meta_data->>'role' as "Role"),
+    new.raw_user_meta_data->>'universityId'
+  );
   return new;
 end;
 $$;
+
+-- drop trigger if exists
+drop trigger IF EXISTS on_auth_user_created on auth.users;
 
 -- trigger the function every time a user is created
 create trigger on_auth_user_created

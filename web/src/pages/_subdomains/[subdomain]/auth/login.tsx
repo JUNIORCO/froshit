@@ -1,6 +1,6 @@
 import NextLink from 'next/link';
 import { styled } from '@mui/material/styles';
-import { Alert, Box, Container, Link, Stack, Typography } from '@mui/material';
+import { Alert, Box, Container, Stack, Typography } from '@mui/material';
 import { PATH_AUTH } from '../../../../routes/paths';
 import Page from '../../../../components/Page';
 import Logo from '../../../../components/Logo';
@@ -69,17 +69,10 @@ export default function Login({ subdomain }: LoginProps) {
               </Stack>
 
               {subdomain === 'demo' && <Alert severity='info' sx={{ mb: 3 }}>
-                Use email : <strong>demo@froshit.com</strong> / password :<strong> demo1234</strong>
+                Use email : <strong>froshit.business@gmail.com</strong> / password :<strong> demo1234</strong>
               </Alert>}
 
               <LoginForm subdomain={subdomain} />
-
-              <Typography variant='body2' align='center' sx={{ mt: 3 }}>
-                Don’t have an account?{' '}
-                <NextLink href={PATH_AUTH.register} passHref style={{ textDecoration: 'none' }}>
-                  <Link variant='subtitle2'>Get started</Link>
-                </NextLink>
-              </Typography>
             </ContentStyle>
           </Container>
         </RootStyle>

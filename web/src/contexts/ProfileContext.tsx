@@ -1,4 +1,4 @@
-import { createContext, ReactNode, useMemo } from 'react';
+import { createContext, ReactNode } from 'react';
 import { FullProfile } from '../../prisma/api/@types';
 
 export type ProfileContextProps = {
@@ -20,7 +20,7 @@ function ProfileProvider({ profile, children }: ProfileProviderProps) {
   return (
     <ProfileContext.Provider
       value={{
-        profile: useMemo(() => profile, [profile]),
+        profile,
       }}
     >
       {children}

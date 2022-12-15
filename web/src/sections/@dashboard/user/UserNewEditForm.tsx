@@ -226,7 +226,8 @@ export default function UserNewEditForm({
               <RHFTextField name='phoneNumber' label='Phone Number' />
 
               <RHFSelect name='role' label='Role' placeholder='Role'>
-                {Object.values(Role).map((role) => (
+                <option value='' />
+                {[Role.Froshee].map((role) => (
                   <option key={role} value={role}>
                     {role}
                   </option>

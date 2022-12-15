@@ -11,6 +11,7 @@ import { PATH_AUTH } from '../../../routes/paths';
 // components
 import { FormProvider, RHFTextField } from '../../../components/hook-form';
 import { useSupabaseClient } from '@supabase/auth-helpers-react';
+import { getSubdomainUrl } from '../../../utils/url';
 
 // ----------------------------------------------------------------------
 
@@ -18,7 +19,7 @@ type FormValuesProps = {
   email: string;
 };
 
-export default function ResetPasswordForm() {
+export default function ResetPasswordForm({ subdomain }: { subdomain: string }) {
   const supabaseClient = useSupabaseClient();
 
   const ResetPasswordSchema = Yup.object().shape({
@@ -36,7 +37,8 @@ export default function ResetPasswordForm() {
 
   const onSubmit = async (data: FormValuesProps) => {
     try {
-      await supabaseClient.auth.resetPasswordForEmail(data.email, { redirectTo: PATH_AUTH.login });
+      const redirectTo = getSubdomainUrl({ subdomain, path: PATH_AUTH.newPassword });
+      await supabaseClient.auth.resetPasswordForEmail(data.email, { redirectTo });
     } catch (error) {
       console.error(error);
     }

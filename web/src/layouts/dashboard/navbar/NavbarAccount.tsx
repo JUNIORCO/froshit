@@ -2,7 +2,6 @@ import { styled } from '@mui/material/styles';
 import { Box, Link, Typography } from '@mui/material';
 import MyAvatar from '../../../components/MyAvatar';
 import useProfile from '../../../hooks/useProfile';
-import { useUser } from '@supabase/auth-helpers-react';
 
 const RootStyle = styled('div')(({ theme }) => ({
   display: 'flex',
@@ -20,11 +19,10 @@ type Props = {
 };
 
 export default function NavbarAccount({ isCollapse }: Props) {
-  const user = useUser();
   const { profile } = useProfile();
 
-  const getName = () => profile ? `${profile.firstName} ${profile.lastName}` : `${user?.user_metadata.firstName} ${user?.user_metadata.lastName}`;
-  const getRole = () => profile ? profile.role : user?.user_metadata.role;
+  const getName = () => `${profile?.firstName} ${profile?.lastName}`;
+  const getRole = () => profile?.role;
 
   return (
     <Box>

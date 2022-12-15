@@ -7,7 +7,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     if (req.method === 'PATCH') {
       const { id } = req.query as any;
 
-      const { name, froshId } = req.body as Prisma.TeamUncheckedUpdateInput;
+      const { name, number, froshId } = req.body as Prisma.TeamUncheckedUpdateInput;
       const { profiles }: { profiles: number[] } = req.body;
 
       const currentTeam = await prisma.team.findUniqueOrThrow({
@@ -28,6 +28,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         },
         data: {
           name,
+          number,
           froshId,
           profiles: {
             disconnect: idsToDisconnect,
