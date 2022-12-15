@@ -34,6 +34,7 @@ import AuthApi from '../../../../../../prisma/api/AuthApi';
 import { Profile, Role } from '../../../../../../prisma/types';
 import { AdminOrganizerTableRow } from '../../../../../sections/@dashboard/user/list/invite';
 import { getSubdomainUrl } from '../../../../../utils/url';
+import { useUser } from '@supabase/auth-helpers-react';
 
 const sendInviteRequest = async (url: string, { arg }: any) => {
   const res = await fetch(url, {
@@ -62,6 +63,8 @@ type Props = {
 }
 
 export default function UserInvite({ subdomain, profiles }: Props) {
+  const user = useUser();
+  console.log('user : ', user);
   const { trigger } = useSWRMutation('/api/profile/invite', sendInviteRequest);
 
   const { themeStretch } = useSettings();
@@ -105,6 +108,7 @@ export default function UserInvite({ subdomain, profiles }: Props) {
       ...userToInvite,
       redirectTo: getSubdomainUrl({ subdomain, path: PATH_AUTH.setPassword }),
     });
+
     if (error) {
       enqueueSnackbar(`Error ${error.message}`, { variant: 'error' });
       return;
