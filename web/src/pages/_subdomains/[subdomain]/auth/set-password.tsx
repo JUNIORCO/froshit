@@ -8,6 +8,7 @@ import { SentIcon } from '../../../../assets';
 import { useRouter } from 'next/router';
 import { useState } from 'react';
 import * as queryString from 'querystring';
+import { useUser } from '@supabase/auth-helpers-react';
 
 const ContentStyle = styled('div')(({ theme }) => ({
   maxWidth: 480,
@@ -24,6 +25,8 @@ SetPassword.getLayout = function getLayout(page: React.ReactElement) {
 };
 
 export default function SetPassword() {
+  const user = useUser();
+  console.log('user : ', user);
   const { asPath } = useRouter();
   const fragmentIdentifier = asPath.split('#');
   let parsedAuthInfo = null;

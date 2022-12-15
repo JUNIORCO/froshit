@@ -63,8 +63,6 @@ type Props = {
 }
 
 export default function UserInvite({ subdomain, profiles }: Props) {
-  const user = useUser();
-  console.log('user : ', user);
   const { trigger } = useSWRMutation('/api/profile/invite', sendInviteRequest);
 
   const { themeStretch } = useSettings();
