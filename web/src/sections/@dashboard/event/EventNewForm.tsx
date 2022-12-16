@@ -6,14 +6,17 @@ import { yupResolver } from '@hookform/resolvers/yup';
 import { LoadingButton } from '@mui/lab';
 import { Box, Card, Grid, Stack } from '@mui/material';
 import { PATH_DASHBOARD } from '../../../routes/paths';
-import { FormProvider, RHFSelect, RHFTextField } from '../../../components/hook-form';
+import { FormProvider, RHFSelect, RHFTextField, RHFUploadSingleFile } from '../../../components/hook-form';
 import { Frosh } from '../../../../prisma/types';
 import RHFDateTimeRangeSelect from '../../../components/hook-form/RHFDateTimeRangeSelect';
 import { useSupabaseClient } from '@supabase/auth-helpers-react';
 import { v4 as uuid } from 'uuid';
+import { useCallback } from 'react';
+import { CustomFile } from '../../../components/upload';
 
 type EventForm = {
   id: string;
+  cover: CustomFile | string | null;
   name: string;
   description: string;
   startDate: Date;
@@ -35,6 +38,7 @@ export default function EventNewForm({ froshs }: Props) {
   const { enqueueSnackbar } = useSnackbar();
 
   const NewEventSchema = Yup.object().shape({
+    cover: Yup.mixed().required('Cover is required'),
     name: Yup.string().required('Event name is required'),
     description: Yup.string().required('Description is required'),
     startDate: Yup.date().required(),
@@ -49,6 +53,7 @@ export default function EventNewForm({ froshs }: Props) {
 
   const defaultValues = {
     id: uuid(),
+    cover: null,
     name: '',
     description: '',
     startDate: new Date(),
@@ -64,6 +69,7 @@ export default function EventNewForm({ froshs }: Props) {
   });
 
   const {
+    setValue,
     handleSubmit,
     formState: { isSubmitting },
   } = methods;
@@ -79,11 +85,30 @@ export default function EventNewForm({ froshs }: Props) {
     void push(PATH_DASHBOARD.event.root);
   };
 
+  const handleDrop = useCallback(
+    (acceptedFiles: File[]) => {
+      const file = acceptedFiles[0];
+
+      if (file) {
+        setValue(
+          'cover',
+          Object.assign(file, {
+            preview: URL.createObjectURL(file),
+          }),
+        );
+      }
+    },
+    [setValue],
+  );
+
   return (
     <FormProvider methods={methods} onSubmit={handleSubmit(onSubmit)}>
       <Grid container spacing={3}>
         <Grid item xs={12} md={8}>
           <Card sx={{ p: 3 }}>
+
+            <RHFUploadSingleFile name='cover' maxSize={3145728} onDrop={handleDrop} sx={{ mb: 3 }} />
+
             <Box
               sx={{
                 display: 'grid',
@@ -92,6 +117,7 @@ export default function EventNewForm({ froshs }: Props) {
                 gridTemplateColumns: { xs: 'repeat(1, 1fr)', sm: 'repeat(2, 1fr)' },
               }}
             >
+
               <RHFTextField name='name' label='Name' />
 
               <RHFTextField name='description' label='Description' />

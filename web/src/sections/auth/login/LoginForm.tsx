@@ -36,7 +36,7 @@ export default function LoginForm({ subdomain }: any) {
   });
 
   const defaultValues = {
-    email: 'froshit.business@gmail.com',
+    email: 'sami.juniorco@gmail.com',
     password: 'demo1234',
   };
 

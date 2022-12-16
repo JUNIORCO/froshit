@@ -69,7 +69,7 @@ export default function Login({ subdomain }: LoginProps) {
               </Stack>
 
               {subdomain === 'demo' && <Alert severity='info' sx={{ mb: 3 }}>
-                Use email : <strong>froshit.business@gmail.com</strong> / password :<strong> demo1234</strong>
+                Use email : <strong>sami.juniorco@gmail.com</strong> / password :<strong> demo1234</strong>
               </Alert>}
 
               <LoginForm subdomain={subdomain} />
