@@ -38,12 +38,7 @@ module.exports = withTM({
   },
   images: {
     domains: ['mybvkrkmvnuzeqvzgbzg.supabase.co'],
-    // remotePatterns: [
-    //   {
-    //     protocol: 'https',
-    //     hostname: 'mybvkrkmvnuzeqvzgbzg.supabase.co',
-    //     pathname: '/storage/**',
-    //   },
-    // ],
+    loader: 'custom',
+    loaderFile: './src/loader.ts',
   },
 });
