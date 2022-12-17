@@ -43,11 +43,6 @@ module.exports = withTM({
         hostname: 'mybvkrkmvnuzeqvzgbzg.supabase.co',
         pathname: '/storage/**',
       },
-      {
-        protocol: 'http',
-        hostname: 'localhost',
-        pathname: '/storage/**',
-      },
     ],
   },
 });
