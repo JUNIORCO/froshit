@@ -7,7 +7,7 @@ import Page from '../../../../components/Page';
 import Logo from '../../../../components/Logo';
 import { RegisterForm } from '../../../../sections/auth/register';
 import GuestGuard from '../../../../guards/GuestGuard';
-import { GetServerSideProps } from 'next';
+import { GetServerSideProps, GetServerSidePropsContext } from 'next';
 import { University } from '../../../../../prisma/types';
 import PublicApi from '../../../../../prisma/api/PublicApi';
 
@@ -65,8 +65,7 @@ export default function Register({ universities }: RegisterProps) {
                     Create an account
                   </Typography>
                 </Box>
-                {/* TODO change to university logo */}
-                <Logo sx={{ width: 64, height: 64 }} />
+                <Logo university disabledLink sx={{ width: 64, height: 64 }} />
               </Box>
 
               <RegisterForm universities={universities} />
@@ -85,11 +84,10 @@ export default function Register({ universities }: RegisterProps) {
   );
 }
 
-export const getServerSideProps: GetServerSideProps = async () => {
+export const getServerSideProps: GetServerSideProps = async (ctx: GetServerSidePropsContext) => {
   try {
     const api = new PublicApi();
     const universities = await api.University.getUniversities();
-
     return {
       props: {
         universities,
@@ -102,5 +100,4 @@ export const getServerSideProps: GetServerSideProps = async () => {
       },
     };
   }
-
 };

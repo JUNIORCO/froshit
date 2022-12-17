@@ -62,7 +62,7 @@ export default async function middleware(req: NextRequest) {
     const userId = session.user.id;
     const { data: profile } = await supabase
       .from('profile')
-      .select('*')
+      .select('*, university (imageUrl)')
       .eq('id', userId)
       .single();
 

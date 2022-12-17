@@ -46,7 +46,7 @@ export default function TeamView({ team }: any) {
 }
 
 export const getServerSideProps: GetServerSideProps = async (ctx: GetServerSidePropsContext) => {
-  const { subdomain, id } = ctx.query as Query;
+  const { id } = ctx.query as Query;
   const api = new AuthApi({ ctx });
   const team = await api.Team.getFullTeamById(id);
 

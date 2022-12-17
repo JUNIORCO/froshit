@@ -34,6 +34,7 @@ import MotionLazyContainer from '../components/animate/MotionLazyContainer';
 import { createBrowserSupabaseClient } from '@supabase/auth-helpers-nextjs';
 import { Session, SessionContextProvider } from '@supabase/auth-helpers-react';
 import { ProfileProvider } from '../contexts/ProfileContext';
+import { SubdomainProvider } from '../contexts/SubdomainContext';
 
 type NextPageWithLayout = NextPage & {
   getLayout?: (page: ReactElement) => ReactNode;
@@ -42,21 +43,16 @@ type NextPageWithLayout = NextPage & {
 interface MyAppProps extends AppProps<{ initialSession: Session }> {
   settings: SettingsValueProps;
   Component: NextPageWithLayout;
-  subdomain: string | undefined;
+  subdomain: string | null;
   profile: any | null;
 }
 
 export default function MyApp(props: MyAppProps) {
-  const { Component, pageProps, settings, subdomain, profile: serverProfile } = props;
+  const { Component, pageProps, settings, subdomain, profile } = props;
 
-  const [clientProfile, setClientProfile] = useState(serverProfile);
   const [supabaseClient] = useState(() => createBrowserSupabaseClient());
 
   const getLayout = Component.getLayout ?? ((page) => page);
-
-  useEffect(() => {
-    setClientProfile(serverProfile);
-  }, [serverProfile]);
 
   useEffect(() => {
     const { data: authListener } = supabaseClient.auth.onAuthStateChange(async (event, session) => {
@@ -83,27 +79,29 @@ export default function MyApp(props: MyAppProps) {
         supabaseClient={supabaseClient}
         initialSession={pageProps.initialSession}
       >
-        <ProfileProvider profile={clientProfile}>
-          <ReduxProvider store={store}>
-            <LocalizationProvider dateAdapter={AdapterDateFns}>
-              <CollapseDrawerProvider>
-                <SettingsProvider defaultSettings={settings}>
-                  <MotionLazyContainer>
-                    <ThemeProvider>
-                      <ThemeSettings>
-                        <NotistackProvider>
-                          <ChartStyle />
-                          <ProgressBar />
-                          {getLayout(<Component {...pageProps} subdomain={subdomain} />)}
-                        </NotistackProvider>
-                      </ThemeSettings>
-                    </ThemeProvider>
-                  </MotionLazyContainer>
-                </SettingsProvider>
-              </CollapseDrawerProvider>
-            </LocalizationProvider>
-          </ReduxProvider>
-        </ProfileProvider>
+        <SubdomainProvider subdomain={subdomain || ''}>
+          <ProfileProvider profile={profile}>
+            <ReduxProvider store={store}>
+              <LocalizationProvider dateAdapter={AdapterDateFns}>
+                <CollapseDrawerProvider>
+                  <SettingsProvider defaultSettings={settings}>
+                    <MotionLazyContainer>
+                      <ThemeProvider>
+                        <ThemeSettings>
+                          <NotistackProvider>
+                            <ChartStyle />
+                            <ProgressBar />
+                            {getLayout(<Component {...pageProps} />)}
+                          </NotistackProvider>
+                        </ThemeSettings>
+                      </ThemeProvider>
+                    </MotionLazyContainer>
+                  </SettingsProvider>
+                </CollapseDrawerProvider>
+              </LocalizationProvider>
+            </ReduxProvider>
+          </ProfileProvider>
+        </SubdomainProvider>
       </SessionContextProvider>
     </>
   );
@@ -111,14 +109,13 @@ export default function MyApp(props: MyAppProps) {
 
 MyApp.getInitialProps = async (context: AppContext) => {
   const appProps = await App.getInitialProps(context);
-  const { ctx } = context;
-  const { query, req } = ctx;
-  const { subdomain } = query;
+  const { subdomain } = context.ctx.query;
+  const req = context.ctx.req;
 
   const cookies = cookie.parse(req ? req.headers.cookie || '' : document.cookie);
   const settings = getSettings(cookies);
 
-  const profile = req?.headers.profile ? JSON.parse(req.headers.profile) : null;
+  const profile = req?.headers.profile ? JSON.parse(req.headers.profile as string) : null;
 
   return {
     ...appProps,

@@ -16,6 +16,7 @@ import Iconify from '../../../components/Iconify';
 import { FormProvider, RHFTextField } from '../../../components/hook-form';
 import { useSupabaseClient } from '@supabase/auth-helpers-react';
 import { Role } from '../../../../prisma/types';
+import useSubdomain from '../../../hooks/useSubdomain';
 
 // ----------------------------------------------------------------------
 
@@ -25,7 +26,8 @@ type FormValuesProps = {
   afterSubmit?: string;
 };
 
-export default function LoginForm({ subdomain }: any) {
+export default function LoginForm() {
+  const { subdomain } = useSubdomain();
   const supabaseClient = useSupabaseClient();
 
   const [showPassword, setShowPassword] = useState(subdomain === 'demo');

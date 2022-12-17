@@ -21,8 +21,7 @@ ResetPassword.getLayout = function getLayout(page: React.ReactElement) {
   return <Layout variant='logoOnly'>{page}</Layout>;
 };
 
-export default function ResetPassword({ subdomain }: { subdomain: string }) {
-
+export default function ResetPassword() {
   return (
     <GuestGuard>
       <Page title='Reset Password'>
@@ -37,7 +36,7 @@ export default function ResetPassword({ subdomain }: { subdomain: string }) {
               to reset your password.
             </Typography>
 
-            <ResetPasswordForm subdomain={subdomain}/>
+            <ResetPasswordForm />
 
             <NextLink href={PATH_AUTH.login} passHref style={{ textDecoration: 'none' }}>
               <Button fullWidth size='large' sx={{ mt: 1 }}>

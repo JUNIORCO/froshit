@@ -49,7 +49,7 @@ export default function OfferEditForm({ currentOffer, view }: Props) {
       description: currentOffer.description,
       location: currentOffer.location,
       provider: currentOffer.provider,
-      icon: currentOffer.icon,
+      icon: currentOffer.imageUrl,
       color: currentOffer.color,
       universityId: profile?.universityId,
     }),

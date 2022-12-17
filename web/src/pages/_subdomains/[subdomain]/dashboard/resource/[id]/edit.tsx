@@ -41,7 +41,7 @@ export default function ResourceEdit({ resource, resourceTags }: Props) {
 }
 
 export const getServerSideProps: GetServerSideProps = async (ctx: GetServerSidePropsContext) => {
-  const { subdomain, id } = ctx.query as Query;
+  const { id } = ctx.query as Query;
   const api = new AuthApi({ ctx });
   const resource = await api.Resource.getResourceById(id);
   const resourceTags = await api.Resource.getResourceTags();

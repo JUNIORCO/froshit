@@ -6,6 +6,7 @@ import Page from '../../../../components/Page';
 import Logo from '../../../../components/Logo';
 import { LoginForm } from '../../../../sections/auth/login';
 import GuestGuard from '../../../../guards/GuestGuard';
+import useSubdomain from '../../../../hooks/useSubdomain';
 
 const RootStyle = styled('div')(({ theme }) => ({
   [theme.breakpoints.up('md')]: {
@@ -39,11 +40,9 @@ const ContentStyle = styled('div')(({ theme }) => ({
   padding: theme.spacing(12, 0),
 }));
 
-type LoginProps = {
-  subdomain?: string;
-}
+export default function Login() {
+  const { subdomain } = useSubdomain();
 
-export default function Login({ subdomain }: LoginProps) {
   return (
     <GuestGuard>
       <Page title='Login'>
@@ -64,15 +63,14 @@ export default function Login({ subdomain }: LoginProps) {
                   </Typography>
                 </Box>
 
-                {/* TODO change to university logo */}
-                <Logo sx={{ width: 64, height: 64 }} />
+                <Logo university sx={{ width: 64, height: 64 }} />
               </Stack>
 
               {subdomain === 'demo' && <Alert severity='info' sx={{ mb: 3 }}>
                 Use email : <strong>sami.juniorco@gmail.com</strong> / password :<strong> demo1234</strong>
               </Alert>}
 
-              <LoginForm subdomain={subdomain} />
+              <LoginForm />
             </ContentStyle>
           </Container>
         </RootStyle>

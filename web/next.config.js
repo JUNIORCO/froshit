@@ -40,8 +40,13 @@ module.exports = withTM({
     remotePatterns: [
       {
         protocol: 'https',
-        hostname: 'firebasestorage.googleapis.com',
-        pathname: '/v0/**',
+        hostname: 'mybvkrkmvnuzeqvzgbzg.supabase.co',
+        pathname: '/storage/**',
+      },
+      {
+        protocol: 'http',
+        hostname: 'localhost',
+        pathname: '/storage/**',
       },
     ],
   },

@@ -1,28 +1,54 @@
-import { forwardRef } from 'react';
+import { forwardRef, useEffect, useState } from 'react';
 import NextLink from 'next/link';
 // @mui
 import { useTheme } from '@mui/material/styles';
-import { Box, BoxProps } from '@mui/material';
+import { BoxProps } from '@mui/material';
 import Image from 'next/image';
-// ----------------------------------------------------------------------
+import useProfile from '../hooks/useProfile';
+import { useSupabaseClient } from '@supabase/auth-helpers-react';
+import useSubdomain from '../hooks/useSubdomain';
 
 interface Props extends BoxProps {
   disabledLink?: boolean;
+  university?: boolean;
 }
 
-const Logo = forwardRef<any, Props>(({ disabledLink = false, sx }, ref) => {
-  const theme = useTheme();
+const Logo = forwardRef<any, Props>(({ university = false, disabledLink = false, sx }, ref) => {
+  const { profile }: any = useProfile();
+  const supabaseClient = useSupabaseClient();
+  const { subdomain } = useSubdomain();
 
-  const PRIMARY_LIGHT = theme.palette.primary.light;
+  // const { data: { publicUrl: froshitLogo } } = supabaseClient.storage.from('froshit').getPublicUrl('logo.svg');
+  const froshitLogo = 'https://mybvkrkmvnuzeqvzgbzg.supabase.co/storage/v1/object/public/froshit/logo.svg'
+  const [displayedLogo, setDisplayedLogo] = useState<string | null>();
 
-  const PRIMARY_MAIN = theme.palette.primary.main;
+  const universityLogoFromProfile = profile?.university?.imageUrl;
 
-  const PRIMARY_DARK = theme.palette.primary.dark;
+  const getUniversityLogo = async () => {
+    if (universityLogoFromProfile) {
+      setDisplayedLogo(universityLogoFromProfile);
+      return;
+    }
+
+    const { data, error } = await supabaseClient.from('university').select('*').eq('subdomain', subdomain).single();
+    if (!error) {
+      console.log('data : ', data)
+      setDisplayedLogo(data.imageUrl);
+    }
+  };
+
+  useEffect(() => {
+    if (university) {
+      void getUniversityLogo();
+    } else {
+      setDisplayedLogo(froshitLogo);
+    }
+  }, []);
 
   const logo = (
     <Image
-      alt="Logo"
-      src="https://firebasestorage.googleapis.com/v0/b/froshit-prod.appspot.com/o/logos%2Fhigh-res-transparent.svg?alt=media&token=1244df09-d721-41b3-86bb-e4a0f5929b6d"
+      alt={university ? 'University Logo' : 'FROSHIT Logo'}
+      src={displayedLogo || ''}
       width={50}
       height={50}
     />
@@ -32,7 +58,7 @@ const Logo = forwardRef<any, Props>(({ disabledLink = false, sx }, ref) => {
     return <>{logo}</>;
   }
 
-  return <NextLink href="/" style={{ textDecoration: 'none' }}>{logo}</NextLink>;
+  return <NextLink href='/' style={{ textDecoration: 'none' }}>{logo}</NextLink>;
 });
 
 export default Logo;

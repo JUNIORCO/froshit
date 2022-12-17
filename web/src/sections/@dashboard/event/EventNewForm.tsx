@@ -1,3 +1,4 @@
+// @ts-nocheck
 import * as Yup from 'yup';
 import { useSnackbar } from 'notistack';
 import { useRouter } from 'next/router';
@@ -13,10 +14,11 @@ import { useSupabaseClient } from '@supabase/auth-helpers-react';
 import { v4 as uuid } from 'uuid';
 import { useCallback } from 'react';
 import { CustomFile } from '../../../components/upload';
+import useSubdomain from '../../../hooks/useSubdomain';
 
 type EventForm = {
   id: string;
-  cover: CustomFile | string | null;
+  cover: CustomFile;
   name: string;
   description: string;
   startDate: Date;
@@ -31,6 +33,7 @@ type Props = {
 };
 
 export default function EventNewForm({ froshs }: Props) {
+  const { subdomain } = useSubdomain();
   const supabaseClient = useSupabaseClient();
 
   const { push } = useRouter();
@@ -53,7 +56,7 @@ export default function EventNewForm({ froshs }: Props) {
 
   const defaultValues = {
     id: uuid(),
-    cover: null,
+    cover: undefined,
     name: '',
     description: '',
     startDate: new Date(),
@@ -74,8 +77,25 @@ export default function EventNewForm({ froshs }: Props) {
     formState: { isSubmitting },
   } = methods;
 
-  const onSubmit = async (eventToCreate: EventForm) => {
+  const onSubmit = async (eventForm: EventForm) => {
+    const { cover, ...eventToCreate } = eventForm;
+
+    const { data: storageData, error: storageError } = await supabaseClient.storage
+      .from(subdomain)
+      .upload(`events/${cover.name}`, cover.preview);
+
+    if (!storageData || storageError) {
+      enqueueSnackbar('Error uploading image', { variant: 'error' });
+      console.error(storageError);
+      return;
+    }
+
+    console.log('path : ', storageData.path);
+
     const { error } = await supabaseClient.from('event').insert(eventToCreate);
+
+    supabaseClient.storage.from(subdomain).getPublicUrl(storageData.path);
+
     if (error) {
       enqueueSnackbar(`Error ${error.message}`, { variant: 'error' });
       return;
@@ -88,7 +108,6 @@ export default function EventNewForm({ froshs }: Props) {
   const handleDrop = useCallback(
     (acceptedFiles: File[]) => {
       const file = acceptedFiles[0];
-
       if (file) {
         setValue(
           'cover',

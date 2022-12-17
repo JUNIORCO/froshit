@@ -12,9 +12,9 @@ import { PATH_AUTH, PATH_DASHBOARD } from '../../../routes/paths';
 import { FormProvider, RHFTextField } from '../../../components/hook-form';
 import { useSupabaseClient } from '@supabase/auth-helpers-react';
 import { getSubdomainUrl } from '../../../utils/url';
-import { isEqual } from 'lodash';
 import { useRouter } from 'next/router';
 import { useSnackbar } from 'notistack';
+import useSubdomain from '../../../hooks/useSubdomain';
 
 // ----------------------------------------------------------------------
 
@@ -22,10 +22,11 @@ type FormValuesProps = {
   email: string;
 };
 
-export default function ResetPasswordForm({ subdomain }: { subdomain: string }) {
+export default function ResetPasswordForm() {
   const { push } = useRouter();
   const { enqueueSnackbar } = useSnackbar();
   const supabaseClient = useSupabaseClient();
+  const { subdomain } = useSubdomain();
 
   const ResetPasswordSchema = Yup.object().shape({
     email: Yup.string().email('Email must be a valid email address').required('Email is required'),

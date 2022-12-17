@@ -40,7 +40,7 @@ export default function FroshEdit({ frosh }: Props) {
 }
 
 export const getServerSideProps: GetServerSideProps<Props> = async (ctx: GetServerSidePropsContext) => {
-  const { subdomain, id } = ctx.query as Query;
+  const { id } = ctx.query as Query;
   const api = new AuthApi({ ctx });
   const frosh = await api.Frosh.getFroshById(id);
 

@@ -34,6 +34,7 @@ import AuthApi from '../../../../../../prisma/api/AuthApi';
 import { Profile, Role } from '../../../../../../prisma/types';
 import { AdminOrganizerTableRow } from '../../../../../sections/@dashboard/user/list/invite';
 import { getSubdomainUrl } from '../../../../../utils/url';
+import useSubdomain from '../../../../../hooks/useSubdomain';
 
 const sendInviteRequest = async (url: string, { arg }: any) => {
   const res = await fetch(url, {
@@ -57,11 +58,11 @@ type FormValuesProps = {
 };
 
 type Props = {
-  subdomain: string;
   profiles: Profile[];
 }
 
-export default function UserInvite({ subdomain, profiles }: Props) {
+export default function UserInvite({ profiles }: Props) {
+  const { subdomain } = useSubdomain();
   const { trigger } = useSWRMutation('/api/user', sendInviteRequest);
 
   const { themeStretch } = useSettings();

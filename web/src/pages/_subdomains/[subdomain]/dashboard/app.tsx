@@ -35,26 +35,16 @@ export default function GeneralApp() {
   return (
     <Page title='General: App'>
       <Container maxWidth={themeStretch ? false : 'xl'}>
-        <Grid container spacing={3}>
-          {/*<Grid item xs={12} md={8}>*/}
-          {/*  <AppWelcome*/}
-          {/*    title={`Welcome back! \n ${user?.displayName}`}*/}
-          {/*    description="If you are going to use a passage of Lorem Ipsum, you need to be sure there isn't anything."*/}
-          {/*    img={*/}
-          {/*      <SeoIllustration*/}
-          {/*        sx={{*/}
-          {/*          p: 3,*/}
-          {/*          width: 360,*/}
-          {/*          margin: { xs: 'auto', md: 'inherit' },*/}
-          {/*        }}*/}
-          {/*      />*/}
-          {/*    }*/}
-          {/*    action={<Button variant="contained">Go Now</Button>}*/}
-          {/*  />*/}
-          {/*</Grid>*/}
+        <Grid container spacing={4}>
 
           {/*<Grid item xs={12} md={4}>*/}
-          {/*  <AppFeatured list={_appFeatured} />*/}
+          {/*  <AppWidgetSummary*/}
+          {/*    title='Total Active Users'*/}
+          {/*    percent={2.6}*/}
+          {/*    total={18765}*/}
+          {/*    chartColor={theme.palette.primary.main}*/}
+          {/*    chartData={[5, 18, 12, 51, 68, 11, 39, 37, 27, 20]}*/}
+          {/*  />*/}
           {/*</Grid>*/}
 
           <Grid item xs={12} md={4}>
@@ -129,44 +119,6 @@ export default function GeneralApp() {
             />
           </Grid>
 
-          <Grid item xs={12} lg={8}>
-            <AppNewInvoice
-              title='New Invoice'
-              tableData={_appInvoices}
-              tableLabels={[
-                { id: 'id', label: 'Invoice ID' },
-                { id: 'category', label: 'Category' },
-                { id: 'price', label: 'Price' },
-                { id: 'status', label: 'Status' },
-                { id: '' },
-              ]}
-            />
-          </Grid>
-
-          <Grid item xs={12} md={6} lg={4}>
-            <AppTopRelated title='Top Related Applications' list={_appRelated} />
-          </Grid>
-
-          <Grid item xs={12} md={6} lg={4}>
-            <AppTopInstalledCountries title='Top Installed Countries' list={_appInstalled} />
-          </Grid>
-
-          <Grid item xs={12} md={6} lg={4}>
-            <AppTopAuthors title='Top Authors' list={_appAuthors} />
-          </Grid>
-
-          <Grid item xs={12} md={6} lg={4}>
-            <Stack spacing={3}>
-              <AppWidget title='Conversion' total={38566} icon={'eva:person-fill'} chartData={48} />
-              <AppWidget
-                title='Applications'
-                total={55566}
-                icon={'eva:email-fill'}
-                color='warning'
-                chartData={75}
-              />
-            </Stack>
-          </Grid>
         </Grid>
       </Container>
     </Page>

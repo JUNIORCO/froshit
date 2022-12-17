@@ -1,5 +1,5 @@
 import * as Yup from 'yup';
-import { useEffect, useMemo } from 'react';
+import { useCallback, useEffect, useMemo } from 'react';
 import { useSnackbar } from 'notistack';
 import { useRouter } from 'next/router';
 import { useForm } from 'react-hook-form';
@@ -7,14 +7,16 @@ import { yupResolver } from '@hookform/resolvers/yup';
 import { LoadingButton } from '@mui/lab';
 import { Box, Card, Grid, Stack } from '@mui/material';
 import { PATH_DASHBOARD } from '../../../routes/paths';
-import { FormProvider, RHFSelect, RHFTextField } from '../../../components/hook-form';
+import { FormProvider, RHFSelect, RHFTextField, RHFUploadSingleFile } from '../../../components/hook-form';
 import { Frosh } from '../../../../prisma/types';
 import { FullEvent } from '../../../../prisma/api/@types';
 import RHFDateTimeRangeSelect from '../../../components/hook-form/RHFDateTimeRangeSelect';
 import { useSupabaseClient } from '@supabase/auth-helpers-react';
+import { CustomFile } from '../../../components/upload';
 
 type EventForm = {
   id: string;
+  cover: CustomFile;
   name: string;
   description: string;
   startDate: Date;
@@ -36,12 +38,11 @@ export default function EventEditForm({
                                         view,
                                       }: Props) {
   const supabaseClient = useSupabaseClient();
-
   const { push } = useRouter();
-
   const { enqueueSnackbar } = useSnackbar();
 
   const NewTeamSchema = Yup.object().shape({
+    cover: Yup.mixed().required('Cover is required'),
     name: Yup.string().required('Event name is required'),
     description: Yup.string().required('Description is required'),
     startDate: Yup.date().required(),
@@ -56,6 +57,7 @@ export default function EventEditForm({
 
   const defaultValues = useMemo(
     () => ({
+      cover: undefined,
       name: currentEvent.name,
       description: currentEvent.description,
       startDate: currentEvent.startDate,
@@ -73,6 +75,7 @@ export default function EventEditForm({
   });
 
   const {
+    setValue,
     reset,
     handleSubmit,
     formState: { isSubmitting },
@@ -96,11 +99,30 @@ export default function EventEditForm({
     void push(PATH_DASHBOARD.event.root);
   };
 
+  const handleDrop = useCallback(
+    (acceptedFiles: File[]) => {
+      const file = acceptedFiles[0];
+      console.log(file);
+      if (file) {
+        setValue(
+          'cover',
+          Object.assign(file, {
+            preview: URL.createObjectURL(file),
+          }),
+        );
+      }
+    },
+    [setValue],
+  );
+
   return (
     <FormProvider methods={methods} onSubmit={handleSubmit(onSubmit)}>
       <Grid container spacing={3}>
         <Grid item xs={12} md={8}>
           <Card sx={{ p: 3 }}>
+
+            <RHFUploadSingleFile name='cover' maxSize={3145728} onDrop={handleDrop} sx={{ mb: 3 }} />
+
             <Box
               sx={{
                 display: 'grid',

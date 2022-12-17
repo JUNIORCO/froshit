@@ -85,14 +85,6 @@ export default function AppWidgetSummary({
 
         <Typography variant="h3">{fNumber(total)}</Typography>
       </Box>
-
-      <ReactApexChart
-        type="bar"
-        series={[{ data: chartData }]}
-        options={chartOptions}
-        width={60}
-        height={36}
-      />
     </Card>
   );
 }
