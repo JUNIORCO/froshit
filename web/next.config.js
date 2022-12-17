@@ -37,12 +37,13 @@ module.exports = withTM({
     NEXT_PUBLIC_SUPABASE_SERVICE_ROLE_KEY: process.env.NEXT_PUBLIC_SUPABASE_SERVICE_ROLE_KEY,
   },
   images: {
-    remotePatterns: [
-      {
-        protocol: 'https',
-        hostname: 'mybvkrkmvnuzeqvzgbzg.supabase.co',
-        pathname: '/storage/**',
-      },
-    ],
+    domains: ['mybvkrkmvnuzeqvzgbzg.supabase.co'],
+    // remotePatterns: [
+    //   {
+    //     protocol: 'https',
+    //     hostname: 'mybvkrkmvnuzeqvzgbzg.supabase.co',
+    //     pathname: '/storage/**',
+    //   },
+    // ],
   },
 });
