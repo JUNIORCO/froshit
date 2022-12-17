@@ -1,7 +1,5 @@
 import { forwardRef, useEffect, useState } from 'react';
 import NextLink from 'next/link';
-// @mui
-import { useTheme } from '@mui/material/styles';
 import { BoxProps } from '@mui/material';
 import Image from 'next/image';
 import useProfile from '../hooks/useProfile';
@@ -18,8 +16,7 @@ const Logo = forwardRef<any, Props>(({ university = false, disabledLink = false,
   const supabaseClient = useSupabaseClient();
   const { subdomain } = useSubdomain();
 
-  // const { data: { publicUrl: froshitLogo } } = supabaseClient.storage.from('froshit').getPublicUrl('logo.svg');
-  const froshitLogo = 'https://mybvkrkmvnuzeqvzgbzg.supabase.co/storage/v1/object/public/froshit/logo.svg'
+  const { data: { publicUrl: froshitLogo } } = supabaseClient.storage.from('froshit').getPublicUrl('logo.svg');
   const [displayedLogo, setDisplayedLogo] = useState<string | null>();
 
   const universityLogoFromProfile = profile?.university?.imageUrl;
