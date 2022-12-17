@@ -38,7 +38,5 @@ module.exports = withTM({
   },
   images: {
     domains: ['mybvkrkmvnuzeqvzgbzg.supabase.co'],
-    loader: 'custom',
-    loaderFile: './src/loader.ts',
   },
 });

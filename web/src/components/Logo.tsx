@@ -46,7 +46,7 @@ const Logo = forwardRef<any, Props>(({ university = false, disabledLink = false,
   }, []);
 
   const logo = (
-    <img
+    <Image
       alt={university ? 'University Logo' : 'FROSHIT Logo'}
       src={displayedLogo || ''}
       width={50}
