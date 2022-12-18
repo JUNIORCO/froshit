@@ -17,7 +17,7 @@ const Logo = forwardRef<any, Props>(({ university = false, disabledLink = false,
   const { subdomain } = useSubdomain();
 
   // const { data: { publicUrl: froshitLogo } } = supabaseClient.storage.from('froshit').getPublicUrl('logo.svg');
-  const froshitLogo = 'https://mybvkrkmvnuzeqvzgbzg.supabase.co/storage/v1/object/public/froshit/logo.svg'
+  const froshitLogo = 'https://mybvkrkmvnuzeqvzgbzg.supabase.co/storage/v1/object/public/froshit/logo.svg';
   const [displayedLogo, setDisplayedLogo] = useState<string | null>();
 
   const universityLogoFromProfile = profile?.university?.imageUrl;
@@ -30,7 +30,7 @@ const Logo = forwardRef<any, Props>(({ university = false, disabledLink = false,
 
     const { data, error } = await supabaseClient.from('university').select('*').eq('subdomain', subdomain).single();
     if (!error) {
-      console.log('data : ', data)
+      console.log('data : ', data);
       setDisplayedLogo(data.imageUrl);
     }
   };
@@ -44,15 +44,16 @@ const Logo = forwardRef<any, Props>(({ university = false, disabledLink = false,
   }, []);
 
   useEffect(() => {
-    console.log('displayedLogo : ', displayedLogo)
-  }, [displayedLogo])
+    console.log('displayedLogo : ', displayedLogo);
+  }, [displayedLogo]);
 
-  const logo = (
+  const logo = displayedLogo && (
     <Image
       alt={university ? 'University Logo' : 'FROSHIT Logo'}
-      src={displayedLogo || ''}
+      src={displayedLogo}
       width={50}
       height={50}
+      priority
     />
   );
 
