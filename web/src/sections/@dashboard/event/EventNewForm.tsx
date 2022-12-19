@@ -18,7 +18,7 @@ import useSubdomain from '../../../hooks/useSubdomain';
 
 type EventForm = {
   id: string;
-  cover: CustomFile;
+  imageUrl: CustomFile;
   name: string;
   description: string;
   startDate: Date;
@@ -41,8 +41,8 @@ export default function EventNewForm({ froshs }: Props) {
   const { enqueueSnackbar } = useSnackbar();
 
   const NewEventSchema = Yup.object().shape({
-    cover: Yup.mixed().required('Cover is required'),
-    name: Yup.string().required('Event name is required'),
+    imageUrl: Yup.mixed().required('Image is required'),
+    name: Yup.string().required('Name is required'),
     description: Yup.string().required('Description is required'),
     startDate: Yup.date().required(),
     endDate: Yup.date().min(
@@ -56,7 +56,7 @@ export default function EventNewForm({ froshs }: Props) {
 
   const defaultValues = {
     id: uuid(),
-    cover: undefined,
+    imageUrl: undefined,
     name: '',
     description: '',
     startDate: new Date(),
@@ -77,27 +77,39 @@ export default function EventNewForm({ froshs }: Props) {
     formState: { isSubmitting },
   } = methods;
 
+  console.log(methods.watch());
+
   const onSubmit = async (eventForm: EventForm) => {
-    const { cover, ...eventToCreate } = eventForm;
+    const { imageUrl, ...eventToCreate } = eventForm;
 
-    const { data: storageData, error: storageError } = await supabaseClient.storage
-      .from(subdomain)
-      .upload(`events/${cover.name}`, cover.preview);
+    const imagePath = `event/${imageUrl.name}`;
 
-    if (!storageData || storageError) {
-      enqueueSnackbar('Error uploading image', { variant: 'error' });
-      console.error(storageError);
+    const { data: deleteData, error: deleteError } = await supabaseClient.storage.from(subdomain).remove([imagePath]);
+
+    if (!deleteData || deleteError) {
+      enqueueSnackbar('Error uploading imagee', { variant: 'error' });
+      console.error(deleteError);
       return;
     }
 
-    console.log('path : ', storageData.path);
+    console.log(deleteData)
 
-    const { error } = await supabaseClient.from('event').insert(eventToCreate);
+    const { data: uploadData, error: uploadError } = await supabaseClient.storage
+      .from(subdomain)
+      .upload(imagePath, imageUrl.preview);
 
-    supabaseClient.storage.from(subdomain).getPublicUrl(storageData.path);
+    if (!uploadData || uploadError) {
+      enqueueSnackbar('Error uploading image', { variant: 'error' });
+      console.error(uploadError);
+      return;
+    }
+
+    const { data: { publicUrl: eventImageUrl } } = supabaseClient.storage.from(subdomain).getPublicUrl(uploadData.path);
+
+    const { error } = await supabaseClient.from('event').insert({ ...eventToCreate, imageUrl: eventImageUrl });
 
     if (error) {
-      enqueueSnackbar(`Error ${error.message}`, { variant: 'error' });
+      enqueueSnackbar(`Error creating event`, { variant: 'error' });
       return;
     }
 
@@ -110,7 +122,7 @@ export default function EventNewForm({ froshs }: Props) {
       const file = acceptedFiles[0];
       if (file) {
         setValue(
-          'cover',
+          'imageUrl',
           Object.assign(file, {
             preview: URL.createObjectURL(file),
           }),
@@ -126,7 +138,7 @@ export default function EventNewForm({ froshs }: Props) {
         <Grid item xs={12} md={8}>
           <Card sx={{ p: 3 }}>
 
-            <RHFUploadSingleFile name='cover' maxSize={3145728} onDrop={handleDrop} sx={{ mb: 3 }} />
+            <RHFUploadSingleFile name='imageUrl' maxSize={3145728} onDrop={handleDrop} sx={{ mb: 3 }} />
 
             <Box
               sx={{

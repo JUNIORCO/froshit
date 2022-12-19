@@ -16,7 +16,7 @@ import { CustomFile } from '../../../components/upload';
 
 type EventForm = {
   id: string;
-  cover: CustomFile;
+  imageUrl: CustomFile | string;
   name: string;
   description: string;
   startDate: Date;
@@ -42,7 +42,7 @@ export default function EventEditForm({
   const { enqueueSnackbar } = useSnackbar();
 
   const NewTeamSchema = Yup.object().shape({
-    cover: Yup.mixed().required('Cover is required'),
+    imageUrl: Yup.mixed().test('required', 'Image is required', (value) => value !== ''),
     name: Yup.string().required('Event name is required'),
     description: Yup.string().required('Description is required'),
     startDate: Yup.date().required(),
@@ -57,7 +57,7 @@ export default function EventEditForm({
 
   const defaultValues = useMemo(
     () => ({
-      cover: undefined,
+      imageUrl: currentEvent.imageUrl || '',
       name: currentEvent.name,
       description: currentEvent.description,
       startDate: currentEvent.startDate,
@@ -102,10 +102,9 @@ export default function EventEditForm({
   const handleDrop = useCallback(
     (acceptedFiles: File[]) => {
       const file = acceptedFiles[0];
-      console.log(file);
       if (file) {
         setValue(
-          'cover',
+          'imageUrl',
           Object.assign(file, {
             preview: URL.createObjectURL(file),
           }),
@@ -121,7 +120,7 @@ export default function EventEditForm({
         <Grid item xs={12} md={8}>
           <Card sx={{ p: 3 }}>
 
-            <RHFUploadSingleFile name='cover' maxSize={3145728} onDrop={handleDrop} sx={{ mb: 3 }} />
+            <RHFUploadSingleFile name='imageUrl' maxSize={3145728} onDrop={handleDrop} sx={{ mb: 3 }} />
 
             <Box
               sx={{

@@ -43,11 +43,11 @@ const Logo = forwardRef<any, Props>(({ university = false, disabledLink = false,
     }
   }, []);
 
-  useEffect(() => {
-    console.log('displayedLogo : ', displayedLogo);
-  }, [displayedLogo]);
+  if (!displayedLogo) {
+    return <></>;
+  }
 
-  const logo = displayedLogo && (
+  const logo = (
     <Image
       alt={university ? 'University Logo' : 'FROSHIT Logo'}
       src={displayedLogo}
