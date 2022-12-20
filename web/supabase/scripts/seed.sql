@@ -1,8 +1,8 @@
-INSERT INTO "university" ("id", "name", "subdomain", "imageUrl")
+INSERT INTO "university" ("id", "name", "subdomain", "imageUrl", "color")
 VALUES
-('1678f7bf-7a13-477c-942c-c85dcadfdd40', 'Demo University', 'demo', 'https://mybvkrkmvnuzeqvzgbzg.supabase.co/storage/v1/object/public/demo/logo.png'),
-('b6aee9eb-4b71-4704-9079-149cc926204c', 'McGill University', 'mcgill', 'https://mybvkrkmvnuzeqvzgbzg.supabase.co/storage/v1/object/public/mcgill/logo.jpg'),
-('d253d913-6402-47e0-a62e-7a630ed3cc2a', 'Concordia University', 'concordia', 'https://mybvkrkmvnuzeqvzgbzg.supabase.co/storage/v1/object/public/concordia/logo.jpeg');
+('1678f7bf-7a13-477c-942c-c85dcadfdd40', 'Demo University', 'demo', 'https://mybvkrkmvnuzeqvzgbzg.supabase.co/storage/v1/object/public/demo/logo.png', '#4f23b8'),
+('b6aee9eb-4b71-4704-9079-149cc926204c', 'McGill University', 'mcgill', 'https://mybvkrkmvnuzeqvzgbzg.supabase.co/storage/v1/object/public/mcgill/logo.jpg', '#ed1b2f'),
+('d253d913-6402-47e0-a62e-7a630ed3cc2a', 'Concordia University', 'concordia', 'https://mybvkrkmvnuzeqvzgbzg.supabase.co/storage/v1/object/public/concordia/logo.jpeg', '#912338');
 
 INSERT INTO "program" ("id", "name", "universityId")
 VALUES

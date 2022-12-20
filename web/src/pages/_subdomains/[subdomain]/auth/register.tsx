@@ -1,7 +1,6 @@
 import NextLink from 'next/link';
 import { styled } from '@mui/material/styles';
-import { Box, Card, Container, Link, Typography } from '@mui/material';
-import useResponsive from '../../../../hooks/useResponsive';
+import { Box, Container, Typography } from '@mui/material';
 import { PATH_AUTH } from '../../../../routes/paths';
 import Page from '../../../../components/Page';
 import Logo from '../../../../components/Logo';
@@ -73,7 +72,7 @@ export default function Register({ universities }: RegisterProps) {
               <Typography variant='body2' sx={{ mt: 3, textAlign: 'center' }}>
                 Already have an account?{' '}
                 <NextLink href={PATH_AUTH.login} passHref style={{ textDecoration: 'none' }}>
-                  <Typography component={'span'}  variant='subtitle2'>Login</Typography>
+                  <Typography component={'span'} variant='subtitle2'>Login</Typography>
                 </NextLink>
               </Typography>
             </ContentStyle>
@@ -85,19 +84,11 @@ export default function Register({ universities }: RegisterProps) {
 }
 
 export const getServerSideProps: GetServerSideProps = async (ctx: GetServerSidePropsContext) => {
-  try {
-    const api = new PublicApi();
-    const universities = await api.University.getUniversities();
-    return {
-      props: {
-        universities,
-      },
-    };
-  } catch (error) {
-    return {
-      props: {
-        universities: [],
-      },
-    };
-  }
+  const api = new PublicApi();
+  const universities = await api.getUniversities();
+  return {
+    props: {
+      universities,
+    },
+  };
 };

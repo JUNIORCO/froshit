@@ -13,6 +13,7 @@ import { FullEvent } from '../../../../prisma/api/@types';
 import RHFDateTimeRangeSelect from '../../../components/hook-form/RHFDateTimeRangeSelect';
 import { useSupabaseClient } from '@supabase/auth-helpers-react';
 import { CustomFile } from '../../../components/upload';
+import useSubdomain from '../../../hooks/useSubdomain';
 
 type EventForm = {
   id: string;
@@ -40,6 +41,7 @@ export default function EventEditForm({
   const supabaseClient = useSupabaseClient();
   const { push } = useRouter();
   const { enqueueSnackbar } = useSnackbar();
+  const { subdomain } = useSubdomain();
 
   const NewTeamSchema = Yup.object().shape({
     imageUrl: Yup.mixed().test('required', 'Image is required', (value) => value !== ''),
@@ -89,14 +91,50 @@ export default function EventEditForm({
   }, [currentEvent]);
 
   const onSubmit = async (updatedEvent: EventForm) => {
-    const { error } = await supabaseClient.from('event').update(updatedEvent).match({ id: currentEvent.id });
-    if (error) {
-      enqueueSnackbar(`Error ${error.message}`, { variant: 'error' });
-      return;
-    }
+    const { imageUrl, ...event } = updatedEvent;
 
-    enqueueSnackbar('Event updated');
-    void push(PATH_DASHBOARD.event.root);
+    if (typeof imageUrl !== 'string') {
+      const imagePath = `event/${imageUrl.name}`;
+      const { data: deleteData, error: deleteError } = await supabaseClient.storage.from(subdomain).remove([imagePath]);
+
+      if (!deleteData || deleteError) {
+        enqueueSnackbar(`Error updating event 1`, { variant: 'error' });
+        console.error(deleteError);
+        return;
+      }
+
+      const { data: uploadData, error: uploadError } = await supabaseClient.storage
+        .from(subdomain)
+        .upload(imagePath, imageUrl);
+
+      if (!uploadData || uploadError) {
+        enqueueSnackbar('Error updating event 2', { variant: 'error' });
+        console.error(uploadError);
+        return;
+      }
+
+      const { data: { publicUrl: eventImageUrl } } = supabaseClient.storage.from(subdomain).getPublicUrl(uploadData.path);
+
+      const { error } = await supabaseClient.from('event').update({
+        ...event,
+        imageUrl: eventImageUrl,
+      }).match({ id: event.id });
+
+      if (error) {
+        enqueueSnackbar(`Error updating event 3`, { variant: 'error' });
+        return;
+      }
+      enqueueSnackbar('Event updated');
+      void push(PATH_DASHBOARD.event.root);
+    } else {
+      const { error } = await supabaseClient.from('event').update(event).match({ id: event.id });
+      if (error) {
+        enqueueSnackbar(`Error updating event 4`, { variant: 'error' });
+        return;
+      }
+      enqueueSnackbar('Event updated');
+      void push(PATH_DASHBOARD.event.root);
+    }
   };
 
   const handleDrop = useCallback(
@@ -120,7 +158,7 @@ export default function EventEditForm({
         <Grid item xs={12} md={8}>
           <Card sx={{ p: 3 }}>
 
-            <RHFUploadSingleFile name='imageUrl' maxSize={3145728} onDrop={handleDrop} sx={{ mb: 3 }} disabled={view}/>
+            <RHFUploadSingleFile name='imageUrl' maxSize={3145728} onDrop={handleDrop} sx={{ mb: 3 }} disabled={view} />
 
             <Box
               sx={{

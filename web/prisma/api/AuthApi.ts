@@ -26,7 +26,7 @@ class AuthApi {
   public readonly Offer: OfferApi;
   public readonly Program: ProgramApi;
   public readonly Resource: ResourceApi;
-  public readonly Public: UniversityApi;
+  public readonly University: UniversityApi;
   public readonly Analytics: AnalyticsApi;
 
   constructor({ ctx }: IApiOptions) {
@@ -42,7 +42,7 @@ class AuthApi {
     this.Offer = new OfferApi({ profile });
     this.Program = new ProgramApi({ profile });
     this.Resource = new ResourceApi({ profile });
-    this.Public = new UniversityApi();
+    this.University = new UniversityApi({ profile });
     this.Analytics = new AnalyticsApi({ profile });
   }
 }

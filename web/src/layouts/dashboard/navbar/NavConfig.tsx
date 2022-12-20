@@ -1,5 +1,6 @@
 import { PATH_DASHBOARD } from '../../../routes/paths';
 import Iconify from '../../../components/Iconify';
+import { Role } from 'prisma/types';
 
 const getIcon = (name: string) => (
   <Iconify icon={name} sx={{ width: 1, height: 1 }} />
@@ -94,13 +95,14 @@ const navConfig = [
   {
     subheader: 'Customization',
     items: [
-      { title: 'Branding', path: PATH_DASHBOARD.general.banking, icon: ICONS.branding },
       {
         title: 'Settings',
-        path: PATH_DASHBOARD.general.ecommerce,
+        path: PATH_DASHBOARD.settings.root,
         icon: ICONS.settings,
+        roles: [Role.Admin],
         children: [
-          { title: 'Programs', path: PATH_DASHBOARD.user.root },
+          { title: 'University Identity', path: PATH_DASHBOARD.settings.university_identity },
+          { title: 'Programs', path: PATH_DASHBOARD.settings.programs },
         ],
       },
     ],

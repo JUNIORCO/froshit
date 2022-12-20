@@ -1,10 +1,12 @@
-import UniversityApi from './UniversityApi';
+import { University } from '../types';
+import { prisma } from '../prisma';
 
 class PublicApi {
-  public readonly University: UniversityApi;
-
   constructor() {
-    this.University = new UniversityApi();
+  }
+
+  public async getUniversities(): Promise<University[]> {
+    return prisma.university.findMany();
   }
 }
 

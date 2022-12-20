@@ -88,6 +88,11 @@ export const PATH_DASHBOARD = {
     edit: (id: string) => path(ROOTS_DASHBOARD, `/resourceTag/${id}/edit`),
     view: (id: string) => path(ROOTS_DASHBOARD, `/resourceTag/${id}/view`),
   },
+  settings: {
+    root: path(ROOTS_DASHBOARD, '/settings'),
+    university_identity: path(ROOTS_DASHBOARD, '/settings/university-identity'),
+    programs: path(ROOTS_DASHBOARD, '/settings/programs'),
+  },
   mail: {
     root: path(ROOTS_DASHBOARD, '/mail'),
     all: path(ROOTS_DASHBOARD, '/mail/all'),

@@ -1,12 +1,20 @@
 import { prisma } from '../prisma';
-import { University } from '../types';
+import { IChildApiOptions } from './AuthApi';
+import { Profile, University } from '../types';
 
 class UniversityApi {
-  constructor() {
+  protected readonly profile: Profile;
+
+  constructor({ profile }: IChildApiOptions) {
+    this.profile = profile;
   }
 
-  public async getUniversities(): Promise<University[]> {
-    return prisma.university.findMany();
+  public async getUniversity(): Promise<University> {
+    return prisma.university.findUniqueOrThrow({
+      where: {
+        id: this.profile.universityId,
+      },
+    });
   }
 }
 

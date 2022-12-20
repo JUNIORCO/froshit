@@ -50,8 +50,8 @@ const Logo = forwardRef<any, Props>(({ university = false, disabledLink = false,
     <Image
       alt={university ? 'University Logo' : 'FROSHIT Logo'}
       src={displayedLogo}
-      width={50}
-      height={50}
+      width={university ? 50 : 90}
+      height={university ? 50 : 40}
       priority
     />
   );

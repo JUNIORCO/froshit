@@ -1,5 +1,5 @@
 generator client {
-  provider = "prisma-client-js"
+  provider        = "prisma-client-js"
   previewFeatures = ["filteredRelationCount"]
 }
 
@@ -57,6 +57,7 @@ model University {
   name      String @unique
   subdomain String @unique
   imageUrl  String
+  color     String
 
   // associations
   programs  Program[]
@@ -211,7 +212,7 @@ model ResourceTag {
   id String @id @default(uuid())
 
   // attributes
-  name String
+  name     String
   imageUrl String
 
   // associations
