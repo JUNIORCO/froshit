@@ -42,7 +42,8 @@ export type FrosheesRegistered = {
 
 export type FrosheesRegisteredAnalytics = {
   dates: string[];
-  data: FrosheesRegistered[];
+  dailyData: FrosheesRegistered[];
+  cumulativeData: FrosheesRegistered[];
 };
 
 export type Analytics = {

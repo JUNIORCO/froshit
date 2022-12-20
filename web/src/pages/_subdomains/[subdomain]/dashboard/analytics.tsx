@@ -33,7 +33,8 @@ export default function AnalyticsPage({
                                         frosheesRegisteredAnalytics,
                                       }: Analytics) {
   const theme = useTheme();
-
+  console.log(frosheesRegisteredAnalytics.dailyData)
+  console.log(frosheesRegisteredAnalytics.cumulativeData)
   const { themeStretch } = useSettings();
 
   return (
@@ -115,7 +116,8 @@ export default function AnalyticsPage({
               title='Froshees Registered'
               subheader='Past 7 days only'
               chartLabels={frosheesRegisteredAnalytics.dates}
-              chartData={frosheesRegisteredAnalytics.data}
+              dailyChartData={frosheesRegisteredAnalytics.dailyData}
+              cumulativeChartData={frosheesRegisteredAnalytics.cumulativeData}
             />
           </Grid>
 

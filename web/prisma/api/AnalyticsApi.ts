@@ -114,7 +114,7 @@ class AnalyticsApi {
 
     const initialAccum = [{ froshName: 'All', data: Array(7).fill(0) }] as FrosheesRegistered[];
 
-    const data = frosheesRegistered.reduce((accum, froshee) => {
+    const dailyData = frosheesRegistered.reduce((accum, froshee) => {
       // @ts-ignore
       const frosheeFroshName = froshee.frosh.name;
       const formattedFrosheeCreatedAt = dayjs(froshee.createdAt).format(dateTemplate) as string;
@@ -135,9 +135,20 @@ class AnalyticsApi {
       return accum;
     }, initialAccum);
 
+    const prefixSum = (numbers: number[]) => {
+      let pSum = 0;
+      return numbers.map(x => pSum += x);
+    };
+
+    const cumulativeData = dailyData.map(({ froshName, data }) => ({
+      froshName,
+      data: prefixSum(data),
+    }));
+
     return {
       dates,
-      data,
+      dailyData,
+      cumulativeData,
     };
   };
 
