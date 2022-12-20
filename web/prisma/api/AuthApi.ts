@@ -8,6 +8,7 @@ import OfferApi from './OfferApi';
 import ProgramApi from './ProgramApi';
 import ResourceApi from './ResourceApi';
 import UniversityApi from './UniversityApi';
+import AnalyticsApi from './AnalyticsApi';
 
 export interface IApiOptions {
   ctx: GetServerSidePropsContext;
@@ -26,6 +27,7 @@ class AuthApi {
   public readonly Program: ProgramApi;
   public readonly Resource: ResourceApi;
   public readonly Public: UniversityApi;
+  public readonly Analytics: AnalyticsApi;
 
   constructor({ ctx }: IApiOptions) {
     const profile = ctx.req.headers.profile ? JSON.parse(<string>ctx.req.headers.profile) as Profile : null;
@@ -41,6 +43,7 @@ class AuthApi {
     this.Program = new ProgramApi({ profile });
     this.Resource = new ResourceApi({ profile });
     this.Public = new UniversityApi();
+    this.Analytics = new AnalyticsApi({ profile });
   }
 }
 

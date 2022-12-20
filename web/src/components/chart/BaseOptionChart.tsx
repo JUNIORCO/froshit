@@ -1,6 +1,7 @@
 import { ApexOptions } from 'apexcharts';
 // @mui
 import { useTheme } from '@mui/material/styles';
+import { getAnalysisColors } from '../../config';
 
 // ----------------------------------------------------------------------
 
@@ -26,14 +27,7 @@ export default function BaseOptionChart(): ApexOptions {
 
   return {
     // Colors
-    colors: [
-      theme.palette.primary.main,
-      theme.palette.chart.yellow[0],
-      theme.palette.chart.blue[0],
-      theme.palette.chart.violet[0],
-      theme.palette.chart.green[0],
-      theme.palette.chart.red[0],
-    ],
+    colors: getAnalysisColors(theme),
 
     // Chart
     chart: {

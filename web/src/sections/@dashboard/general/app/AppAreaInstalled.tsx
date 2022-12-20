@@ -1,36 +1,29 @@
 import merge from 'lodash/merge';
 import { useState } from 'react';
-// @mui
-import { Card, CardHeader, Box, TextField, CardProps } from '@mui/material';
-// components
+import { Box, Card, CardHeader, CardProps, TextField } from '@mui/material';
 import ReactApexChart, { BaseOptionChart } from '../../../../components/chart';
-
-// ----------------------------------------------------------------------
 
 interface Props extends CardProps {
   title?: string;
   subheader?: string;
   chartLabels: string[];
   chartData: {
-    year: string;
-    data: {
-      name: string;
-      data: number[];
-    }[];
+    froshName: string;
+    data: number[];
   }[];
 }
 
 export default function AppAreaInstalled({
-  title,
-  subheader,
-  chartLabels,
-  chartData,
-  ...other
-}: Props) {
-  const [seriesData, setSeriesData] = useState('2019');
+                                           title,
+                                           subheader,
+                                           chartLabels,
+                                           chartData,
+                                           ...other
+                                         }: Props) {
+  const [selectedFrosh, setSelectedFrosh] = useState('All');
 
   const handleChangeSeriesData = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setSeriesData(event.target.value);
+    setSelectedFrosh(event.target.value);
   };
 
   const chartOptions = merge(BaseOptionChart(), {
@@ -48,7 +41,7 @@ export default function AppAreaInstalled({
           <TextField
             select
             fullWidth
-            value={seriesData}
+            value={selectedFrosh}
             SelectProps={{ native: true }}
             onChange={handleChangeSeriesData}
             sx={{
@@ -72,8 +65,8 @@ export default function AppAreaInstalled({
             }}
           >
             {chartData.map((option) => (
-              <option key={option.year} value={option.year}>
-                {option.year}
+              <option key={option.froshName} value={option.froshName}>
+                {option.froshName}
               </option>
             ))}
           </TextField>
@@ -81,11 +74,15 @@ export default function AppAreaInstalled({
       />
 
       {chartData.map((item) => (
-        <Box key={item.year} sx={{ mt: 3, mx: 3 }} dir="ltr">
-          {item.year === seriesData && (
-            <ReactApexChart type="line" series={item.data} options={chartOptions} height={364} />
-          )}
-        </Box>
+        item.froshName === selectedFrosh && (
+          <Box key={item.froshName} sx={{ mt: 3, mx: 3 }} dir='ltr'>
+            <ReactApexChart
+              type='line'
+              series={[{ name: item.froshName, data: item.data }]}
+              options={chartOptions}
+              height={364} />
+          </Box>
+        )
       ))}
     </Card>
   );

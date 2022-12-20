@@ -3,7 +3,7 @@ import { useEffect } from 'react';
 import { useRouter } from 'next/router';
 // @mui
 import { styled, useTheme } from '@mui/material/styles';
-import { Box, Stack, Drawer } from '@mui/material';
+import { Box, Drawer, Stack } from '@mui/material';
 // hooks
 import useResponsive from '../../../hooks/useResponsive';
 import useCollapseDrawer from '../../../hooks/useCollapseDrawer';
@@ -73,7 +73,7 @@ export default function NavbarVertical({ isOpenSidebar, onCloseSidebar }: Props)
           ...(isCollapse && { alignItems: 'center' }),
         }}
       >
-        <Stack direction="row" alignItems="center" justifyContent="space-between">
+        <Stack direction='row' alignItems='center' justifyContent='space-between'>
           <Logo university disabledLink />
 
           {isDesktop && !isCollapse && (
@@ -116,7 +116,7 @@ export default function NavbarVertical({ isOpenSidebar, onCloseSidebar }: Props)
       {isDesktop && (
         <Drawer
           open
-          variant="persistent"
+          variant='persistent'
           onMouseEnter={onHoverEnter}
           onMouseLeave={onHoverLeave}
           PaperProps={{

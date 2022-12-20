@@ -4,6 +4,7 @@ import { enUS, frFR } from '@mui/material/locale';
 import { SettingsValueProps } from './components/settings/type';
 // routes
 import { PATH_DASHBOARD } from './routes/paths';
+import type { Theme } from '@mui/material';
 
 // BUSINESS
 // ----------------------------------------------------------------------
@@ -77,14 +78,24 @@ export const allLangs = [
     label: 'English',
     value: 'en',
     systemValue: enUS,
-    // icon: '/assets/icons/flags/ic_flag_en.svg',
   },
   {
     label: 'French',
     value: 'fr',
     systemValue: frFR,
-    // icon: '/assets/icons/flags/ic_flag_fr.svg',
   },
 ];
 
 export const defaultLang = allLangs[0]; // English
+
+export const getAnalysisColors = (theme: Theme) => [
+  theme.palette.primary.main,
+  theme.palette.chart.blue[0],
+  theme.palette.chart.violet[0],
+  '#3ed930',
+  '#30d9b2',
+  '#ac30d9',
+  '#2f2fd6',
+  '#eba534',
+  '#eb3468',
+];

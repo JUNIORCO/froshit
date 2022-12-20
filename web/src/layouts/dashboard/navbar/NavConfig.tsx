@@ -6,7 +6,8 @@ const getIcon = (name: string) => (
 );
 
 const ICONS = {
-  dashboard: getIcon('carbon:dashboard'),
+  overview: getIcon('carbon:home'),
+  analytics: getIcon('carbon:dashboard'),
   event: getIcon('bi:calendar2-event'),
   team: getIcon('carbon:group'),
   frosh: getIcon('carbon:tag-group'),
@@ -25,7 +26,6 @@ const ICONS = {
   invoice: getIcon('ic_invoice'),
   calendar: getIcon('ic_calendar'),
   ecommerce: getIcon('carbon:event'),
-  analytics: getIcon('ic_analytics'),
   menuItem: getIcon('ic_menu_item'),
 };
 
@@ -37,7 +37,8 @@ const navConfig = [
   {
     subheader: 'Dashboards',
     items: [
-      { title: 'Home', path: PATH_DASHBOARD.general.app, icon: ICONS.dashboard },
+      { title: 'Overview', path: PATH_DASHBOARD.general.app, icon: ICONS.overview },
+      { title: 'Analytics', path: PATH_DASHBOARD.general.analytics, icon: ICONS.analytics },
     ],
   },
 

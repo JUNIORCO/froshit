@@ -1,13 +1,7 @@
 import merge from 'lodash/merge';
-// @mui
 import { useTheme, styled } from '@mui/material/styles';
 import { Card, CardHeader, CardProps } from '@mui/material';
-// utils
-import { fNumber } from '../../../../utils/formatNumber';
-// components
 import ReactApexChart, { BaseOptionChart } from '../../../../components/chart';
-
-// ----------------------------------------------------------------------
 
 const CHART_HEIGHT = 392;
 const LEGEND_HEIGHT = 72;
@@ -28,8 +22,6 @@ const ChartWrapperStyle = styled('div')(({ theme }) => ({
   },
 }));
 
-// ----------------------------------------------------------------------
-
 interface Props extends CardProps {
   title?: string;
   subheader?: string;
@@ -38,15 +30,17 @@ interface Props extends CardProps {
     value: number;
   }[];
   chartColors?: string[];
+  labelFormatter: any;
 }
 
 export default function AppCurrentDownload({
-  title,
-  subheader,
-  chartData,
-  chartColors,
-  ...other
-}: Props) {
+                                             title,
+                                             subheader,
+                                             chartData,
+                                             chartColors,
+                                             labelFormatter,
+                                             ...other
+                                           }: Props) {
   const theme = useTheme();
 
   const chartLabels = chartData.map((i) => i.label);
@@ -58,32 +52,25 @@ export default function AppCurrentDownload({
     labels: chartLabels,
     stroke: { colors: [theme.palette.background.paper] },
     legend: { floating: true, horizontalAlign: 'center' },
+    dataLabels: {
+      enabled: true,
+      dropShadow: { enabled: false },
+      textAnchor: 'middle',
+      formatter: function(_val: any, opts: any) {
+        return [opts.w.config.labels[opts.seriesIndex], labelFormatter(opts.w.config.series[opts.seriesIndex])];
+      },
+    },
     tooltip: {
       fillSeriesColor: false,
       y: {
-        formatter: (seriesName: string) => fNumber(seriesName),
+        formatter: (seriesName: string) => labelFormatter(seriesName),
         title: {
           formatter: (seriesName: string) => `${seriesName}`,
         },
       },
     },
     plotOptions: {
-      pie: {
-        donut: {
-          size: '90%',
-          labels: {
-            value: {
-              formatter: (val: number | string) => fNumber(val),
-            },
-            total: {
-              formatter: (w: { globals: { seriesTotals: number[] } }) => {
-                const sum = w.globals.seriesTotals.reduce((a, b) => a + b, 0);
-                return fNumber(sum);
-              },
-            },
-          },
-        },
-      },
+      pie: { donut: { labels: { show: false } } },
     },
   });
 
@@ -91,8 +78,8 @@ export default function AppCurrentDownload({
     <Card {...other}>
       <CardHeader title={title} subheader={subheader} />
 
-      <ChartWrapperStyle dir="ltr">
-        <ReactApexChart type="donut" series={chartSeries} options={chartOptions} height={280} />
+      <ChartWrapperStyle dir='ltr'>
+        <ReactApexChart type='pie' series={chartSeries} options={chartOptions} height={280} />
       </ChartWrapperStyle>
     </Card>
   );
