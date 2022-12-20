@@ -77,14 +77,11 @@ export default function EventNewForm({ froshs }: Props) {
     formState: { isSubmitting },
   } = methods;
 
-  console.log(methods.watch());
-
   const onSubmit = async (eventForm: EventForm) => {
     const { imageUrl, ...eventToCreate } = eventForm;
 
     const imagePath = `event/${imageUrl.name}`;
 
-    console.log('removing old pic...');
     const { data: deleteData, error: deleteError } = await supabaseClient.storage.from(subdomain).remove([imagePath]);
     console.log('deleteData : ', deleteData);
     if (!deleteData || deleteError) {
@@ -95,7 +92,7 @@ export default function EventNewForm({ froshs }: Props) {
 
     const { data: uploadData, error: uploadError } = await supabaseClient.storage
       .from(subdomain)
-      .upload(imagePath, imageUrl.preview);
+      .upload(imagePath, imageUrl);
     console.log('uploadData ', uploadData);
     if (!uploadData || uploadError) {
       enqueueSnackbar('Error uploading image', { variant: 'error' });

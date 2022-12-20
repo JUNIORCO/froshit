@@ -30,7 +30,6 @@ const Logo = forwardRef<any, Props>(({ university = false, disabledLink = false,
 
     const { data, error } = await supabaseClient.from('university').select('*').eq('subdomain', subdomain).single();
     if (!error) {
-      console.log('data : ', data);
       setDisplayedLogo(data.imageUrl);
     }
   };
