@@ -33,8 +33,6 @@ export default function AnalyticsPage({
                                         frosheesRegisteredAnalytics,
                                       }: Analytics) {
   const theme = useTheme();
-  console.log(frosheesRegisteredAnalytics.dailyData)
-  console.log(frosheesRegisteredAnalytics.cumulativeData)
   const { themeStretch } = useSettings();
 
   return (

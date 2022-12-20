@@ -92,7 +92,8 @@ export default function EventEditForm({
 
   const onSubmit = async (updatedEvent: EventForm) => {
     const { imageUrl, ...event } = updatedEvent;
-
+    console.log('imageUrl : ', imageUrl);
+    console.log('event : ', event);
     if (typeof imageUrl !== 'string') {
       const imagePath = `event/${imageUrl.name}`;
       const { data: deleteData, error: deleteError } = await supabaseClient.storage.from(subdomain).remove([imagePath]);
