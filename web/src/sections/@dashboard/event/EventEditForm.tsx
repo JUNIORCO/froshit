@@ -96,8 +96,9 @@ export default function EventEditForm({
     console.log('event : ', event);
     if (typeof imageUrl !== 'string') {
       console.log('not of type string')
-      const imagePath = `event/${imageUrl.name}`;
-      const { data: deleteData, error: deleteError } = await supabaseClient.storage.from(subdomain).remove([imagePath]);
+      const oldImagePath = `event/${currentEvent.imageUrl}`;
+      const newImagePath = `event/${imageUrl.name}`;
+      const { data: deleteData, error: deleteError } = await supabaseClient.storage.from(subdomain).remove([oldImagePath]);
 
       if (!deleteData || deleteError) {
         enqueueSnackbar(`Error updating event 1`, { variant: 'error' });
@@ -107,7 +108,7 @@ export default function EventEditForm({
 
       const { data: uploadData, error: uploadError } = await supabaseClient.storage
         .from(subdomain)
-        .upload(imagePath, imageUrl);
+        .upload(newImagePath, imageUrl);
 
       if (!uploadData || uploadError) {
         enqueueSnackbar('Error updating event 2', { variant: 'error' });
