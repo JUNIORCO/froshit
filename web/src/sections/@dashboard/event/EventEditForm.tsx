@@ -120,7 +120,7 @@ export default function EventEditForm({
         <Grid item xs={12} md={8}>
           <Card sx={{ p: 3 }}>
 
-            <RHFUploadSingleFile name='imageUrl' maxSize={3145728} onDrop={handleDrop} sx={{ mb: 3 }} />
+            <RHFUploadSingleFile name='imageUrl' maxSize={3145728} onDrop={handleDrop} sx={{ mb: 3 }} disabled={view}/>
 
             <Box
               sx={{
