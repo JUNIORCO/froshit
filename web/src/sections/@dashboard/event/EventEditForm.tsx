@@ -95,6 +95,7 @@ export default function EventEditForm({
     console.log('imageUrl : ', imageUrl);
     console.log('event : ', event);
     if (typeof imageUrl !== 'string') {
+      console.log('not of type string')
       const imagePath = `event/${imageUrl.name}`;
       const { data: deleteData, error: deleteError } = await supabaseClient.storage.from(subdomain).remove([imagePath]);
 
@@ -128,7 +129,8 @@ export default function EventEditForm({
       enqueueSnackbar('Event updated');
       void push(PATH_DASHBOARD.event.root);
     } else {
-      const { error } = await supabaseClient.from('event').update(event).match({ id: event.id });
+      console.log('of type string')
+      const { error } = await supabaseClient.from('event').update(event).match({ id: currentEvent.id });
       if (error) {
         enqueueSnackbar(`Error updating event 4`, { variant: 'error' });
         return;
