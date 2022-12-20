@@ -95,16 +95,23 @@ export default function EventEditForm({
     console.log('imageUrl : ', imageUrl);
     console.log('event : ', event);
     if (typeof imageUrl !== 'string') {
-      console.log('not of type string')
-      const oldImagePath = `event/${currentEvent.imageUrl}`;
-      const newImagePath = `event/${imageUrl.name}`;
-      const { data: deleteData, error: deleteError } = await supabaseClient.storage.from(subdomain).remove([oldImagePath]);
+      console.log('not of type string');
+      if (currentEvent.imageUrl) {
+        const splitImageUrl = currentEvent.imageUrl.split('/') || '';
+        const oldImagePath = `event/${splitImageUrl[splitImageUrl.length - 1]}`;
+        const {
+          data: deleteData,
+          error: deleteError,
+        } = await supabaseClient.storage.from(subdomain).remove([oldImagePath]);
 
-      if (!deleteData || deleteError) {
-        enqueueSnackbar(`Error updating event 1`, { variant: 'error' });
-        console.error(deleteError);
-        return;
+        if (!deleteData || deleteError) {
+          enqueueSnackbar(`Error updating event 1`, { variant: 'error' });
+          console.error(deleteError);
+          return;
+        }
       }
+
+      const newImagePath = `event/${imageUrl.name}`;
 
       const { data: uploadData, error: uploadError } = await supabaseClient.storage
         .from(subdomain)
@@ -121,7 +128,7 @@ export default function EventEditForm({
       const { error } = await supabaseClient.from('event').update({
         ...event,
         imageUrl: eventImageUrl,
-      }).match({ id: event.id });
+      }).match({ id: currentEvent.id });
 
       if (error) {
         enqueueSnackbar(`Error updating event 3`, { variant: 'error' });
@@ -130,7 +137,7 @@ export default function EventEditForm({
       enqueueSnackbar('Event updated');
       void push(PATH_DASHBOARD.event.root);
     } else {
-      console.log('of type string')
+      console.log('of type string');
       const { error } = await supabaseClient.from('event').update(event).match({ id: currentEvent.id });
       if (error) {
         enqueueSnackbar(`Error updating event 4`, { variant: 'error' });
