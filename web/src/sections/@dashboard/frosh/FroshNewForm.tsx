@@ -14,7 +14,6 @@ import useProfile from '../../../hooks/useProfile';
 type FormValuesProps = {
   name: string;
   description: string;
-  ticketPrice: number;
   universityId: string;
 };
 
@@ -29,7 +28,6 @@ export default function FroshNewForm() {
   const NewTeamSchema = Yup.object().shape({
     name: Yup.string().required('Frosh name is required'),
     description: Yup.string().required('Description is required'),
-    ticketPrice: Yup.number().required().min(5, 'Ticket price is required'),
     universityId: Yup.string().required(),
   });
 
@@ -37,7 +35,6 @@ export default function FroshNewForm() {
     id: uuid(),
     name: '',
     description: '',
-    ticketPrice: 100,
     universityId: profile?.universityId,
   };
 
@@ -97,16 +94,6 @@ export default function FroshNewForm() {
                 <Typography variant='subtitle1' sx={{ flexGrow: 1 }}>
                   Ticket Price
                 </Typography>
-                <RHFSlider
-                  name='ticketPrice'
-                  step={5}
-                  min={0}
-                  max={200}
-                  marks={marksLabel}
-                  getAriaValueText={(value) => `$${value}`}
-                  valueLabelFormat={(value) => `$${value}`}
-                  sx={{ alignSelf: 'center', width: `calc(100% - 20px)` }}
-                />
               </Stack>
             </Box>
 

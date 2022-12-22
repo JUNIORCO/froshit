@@ -14,7 +14,6 @@ import { useSupabaseClient } from '@supabase/auth-helpers-react';
 type FormValuesProps = {
   name: string;
   description: string;
-  ticketPrice: number;
 };
 
 type Props = {
@@ -32,14 +31,12 @@ export default function FroshEditForm({ currentFrosh, view }: Props) {
   const NewTeamSchema = Yup.object().shape({
     name: Yup.string().required('Frosh name is required'),
     description: Yup.string().required('Description is required'),
-    ticketPrice: Yup.number().required().min(5, 'Ticket price is required'),
   });
 
   const defaultValues = useMemo(
     () => ({
       name: currentFrosh.name,
       description: currentFrosh.description,
-      ticketPrice: currentFrosh.ticketPrice,
     }),
     // eslint-disable-next-line react-hooks/exhaustive-deps
     [currentFrosh],
@@ -104,17 +101,6 @@ export default function FroshEditForm({ currentFrosh, view }: Props) {
                 <Typography variant='subtitle1' sx={{ flexGrow: 1 }}>
                   Ticket Price
                 </Typography>
-                <RHFSlider
-                  disabled={view}
-                  name='ticketPrice'
-                  step={5}
-                  min={0}
-                  max={200}
-                  marks={marksLabel}
-                  getAriaValueText={(value) => `$${value}`}
-                  valueLabelFormat={(value) => `$${value}`}
-                  sx={{ alignSelf: 'center', width: `calc(100% - 20px)` }}
-                />
               </Stack>
             </Box>
 

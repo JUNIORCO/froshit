@@ -21,7 +21,6 @@ import { useSupabaseClient } from '@supabase/auth-helpers-react';
 
 const TABLE_HEAD = [
   { id: 'name', label: 'Name', align: 'left' },
-  { id: 'ticketPrice', label: 'Ticket Price', align: 'center' },
   { id: 'frosheesPaid', label: 'Froshees Paid', align: 'center' },
   { id: 'numFroshees', label: 'Froshees Registered', align: 'center' },
   { id: 'numLeaders', label: 'Number of Leaders', align: 'center' },

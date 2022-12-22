@@ -27,7 +27,6 @@ const sendResourceEditRequest = async (url: string, { arg: resource }: any) => {
 type FormValuesProps = {
   name: string;
   description: string;
-  ticketPrice: number;
 };
 
 type Props = {

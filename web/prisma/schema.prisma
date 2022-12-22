@@ -101,7 +101,6 @@ model Frosh {
   // attributes
   name        String
   description String
-  ticketPrice Int
 
   // associations
   university   University @relation(fields: [universityId], references: [id])

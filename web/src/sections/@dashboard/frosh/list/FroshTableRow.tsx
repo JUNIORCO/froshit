@@ -18,7 +18,7 @@ export default function FroshTableRow({
                                         onViewRow,
                                         onDeleteRow,
                                       }: Props) {
-  const { name, ticketPrice, profiles, _count } = row;
+  const { name, profiles, _count } = row;
 
   const [openMenu, setOpenMenuActions] = useState<HTMLElement | null>(null);
 
@@ -35,10 +35,6 @@ export default function FroshTableRow({
 
       <TableCell align='left'>
         {name}
-      </TableCell>
-
-      <TableCell align='center'>
-        ${ticketPrice}
       </TableCell>
 
       <TableCell align='center'>

@@ -14,7 +14,6 @@ import useProfile from '../../../hooks/useProfile';
 type FormValuesProps = {
   name: string;
   description: string;
-  ticketPrice: number;
 };
 
 export default function OfferNewForm() {

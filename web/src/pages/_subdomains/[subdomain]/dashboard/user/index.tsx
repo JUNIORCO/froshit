@@ -129,7 +129,7 @@ export default function UserList({ users }: UserListProps) {
       accum.totalValuePaid += user.paid;
     } else {
       accum.numberFrosheesUnpaid++;
-      accum.totalValueUnpaid += user.frosh?.ticketPrice || 0; // TODO this is a problem
+      accum.totalValueUnpaid += 0; // TODO this is a problem
     }
 
     accum.totalNumberFroshees++;

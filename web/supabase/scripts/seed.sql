@@ -13,11 +13,11 @@ VALUES
 ('d4c6feac-0986-47ae-a1b6-a2f524f3232b', 'Creative Writing', 'b6aee9eb-4b71-4704-9079-149cc926204c'),
 ('20f56f92-93af-4413-8cc7-4e1b6ee893ca', 'Film', 'd253d913-6402-47e0-a62e-7a630ed3cc2a');
 
-INSERT INTO "frosh" ("id", "name", "description", "universityId", "ticketPrice")
+INSERT INTO "frosh" ("id", "name", "description", "universityId")
 VALUES
-('7419eddd-46ab-49c7-811a-042e476d09b6', 'Engineering Frosh', 'Some description for engineering frosh', '1678f7bf-7a13-477c-942c-c85dcadfdd40', 100),
-('f15ba6dc-e5f6-4361-9d4d-57f1d6e0dc72', 'Science Frosh', 'Some description for science frosh', 'b6aee9eb-4b71-4704-9079-149cc926204c', 150),
-('7ab8131e-cf25-47ae-b698-efd6e14766a4', 'Arts Frosh', 'Some description for arts frosh', 'd253d913-6402-47e0-a62e-7a630ed3cc2a', 125);
+('7419eddd-46ab-49c7-811a-042e476d09b6', 'Engineering Frosh', 'Some description for engineering frosh', '1678f7bf-7a13-477c-942c-c85dcadfdd40'),
+('f15ba6dc-e5f6-4361-9d4d-57f1d6e0dc72', 'Science Frosh', 'Some description for science frosh', 'b6aee9eb-4b71-4704-9079-149cc926204c'),
+('7ab8131e-cf25-47ae-b698-efd6e14766a4', 'Arts Frosh', 'Some description for arts frosh', 'd253d913-6402-47e0-a62e-7a630ed3cc2a');
 
 INSERT INTO "event" ("id", "name", "description", "startDate", "endDate", "location", "accessibility", "imageUrl", "froshId")
 VALUES

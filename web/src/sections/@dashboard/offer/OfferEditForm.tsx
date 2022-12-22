@@ -16,7 +16,6 @@ import { uuid } from '@supabase/gotrue-js/dist/main/lib/helpers';
 type FormValuesProps = {
   name: string;
   description: string;
-  ticketPrice: number;
 };
 
 type Props = {
