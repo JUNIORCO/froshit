@@ -26,3 +26,25 @@ drop trigger IF EXISTS on_auth_user_created on auth.users;
 create trigger on_auth_user_created
   after insert on auth.users
   for each row execute procedure public.handle_new_user();
+
+
+
+
+-- deletes profile when auth user is deleted
+create or replace function public.handle_auth_user_delete()
+returns trigger
+language plpgsql
+security definer set search_path = public
+as $$
+begin
+  delete from public.profile where id = new.id;
+end;
+$$;
+
+-- drop trigger if exists
+drop trigger IF EXISTS on_auth_user_deleted on auth.users;
+
+-- trigger the function every time a user is deleted
+create trigger on_auth_user_deleted
+  after delete on auth.users
+  for each row execute procedure public.handle_auth_user_delete();

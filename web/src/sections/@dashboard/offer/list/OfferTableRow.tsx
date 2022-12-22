@@ -1,23 +1,22 @@
 import { useState } from 'react';
-import { useTheme } from '@mui/material/styles';
-import { Checkbox, MenuItem, TableCell, TableRow } from '@mui/material';
+import { MenuItem, TableCell, TableRow } from '@mui/material';
 import Iconify from '../../../../components/Iconify';
 import { TableMoreMenu } from '../../../../components/table';
-import { Offer, Role } from '../../../../../prisma/types';
+import { Offer } from '../../../../../prisma/types';
 
 type Props = {
   row: Offer;
   onEditRow: VoidFunction;
   onViewRow: VoidFunction;
+  onDeleteRow: VoidFunction;
 };
 
 export default function OfferTableRow({
                                         row,
                                         onEditRow,
                                         onViewRow,
+                                        onDeleteRow,
                                       }: Props) {
-  const theme = useTheme();
-
   const { title, description, location, provider } = row;
 
   const [openMenu, setOpenMenuActions] = useState<HTMLElement | null>(null);
@@ -73,6 +72,16 @@ export default function OfferTableRow({
               >
                 <Iconify icon={'eva:edit-fill'} />
                 Edit
+              </MenuItem>
+              <MenuItem
+                onClick={() => {
+                  onDeleteRow();
+                  handleCloseMenu();
+                }}
+                sx={{ color: 'error.main' }}
+              >
+                <Iconify icon={'eva:trash-2-outline'} />
+                Delete
               </MenuItem>
             </>
           }

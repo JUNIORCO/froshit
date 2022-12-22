@@ -24,13 +24,9 @@ const ContentStyle = styled('div')(({ theme }) => ({
   padding: theme.spacing(12, 0),
 }));
 
-// ----------------------------------------------------------------------
-
 Page404.getLayout = function getLayout(page: React.ReactElement) {
   return <Layout variant="logoOnly">{page}</Layout>;
 };
-
-// ----------------------------------------------------------------------
 
 export default function Page404() {
   return (

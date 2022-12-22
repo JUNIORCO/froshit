@@ -46,6 +46,14 @@ class ResourceApi {
       },
     });
   }
+
+  public async getResourceTagById(id: string): Promise<ResourceTag> {
+    return prisma.resourceTag.findUniqueOrThrow({
+      where: {
+        id,
+      },
+    });
+  }
 }
 
 export default ResourceApi;

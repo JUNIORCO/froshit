@@ -174,7 +174,7 @@ class AnalyticsApi {
     const frosheesRegisteredAnalytics = frosheeRegistrationsResult.status === 'fulfilled' ? frosheeRegistrationsResult.value : {} as FrosheesRegisteredAnalytics;
 
     return {
-      totalAmountPaid: sumBy(froshsTotalAmountPaid, ({ totalAmountPaid }) => totalAmountPaid),
+      totalAmountPaid: sumBy(froshsTotalAmountPaid, ({ totalAmountPaid }) => totalAmountPaid) || 0,
 
       // role counts
       totalOrganizers: roleCounts[Role.Organizer],

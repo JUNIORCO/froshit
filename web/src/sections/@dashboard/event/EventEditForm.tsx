@@ -92,52 +92,9 @@ export default function EventEditForm({
 
   const onSubmit = async (updatedEvent: EventForm) => {
     const { imageUrl, ...event } = updatedEvent;
-    console.log('imageUrl : ', imageUrl);
-    console.log('event : ', event);
-    if (typeof imageUrl !== 'string') {
-      console.log('not of type string');
-      if (currentEvent.imageUrl) {
-        const splitImageUrl = currentEvent.imageUrl.split('/') || '';
-        const oldImagePath = `event/${splitImageUrl[splitImageUrl.length - 1]}`;
-        const {
-          data: deleteData,
-          error: deleteError,
-        } = await supabaseClient.storage.from(subdomain).remove([oldImagePath]);
 
-        if (!deleteData || deleteError) {
-          enqueueSnackbar(`Error updating event 1`, { variant: 'error' });
-          console.error(deleteError);
-          return;
-        }
-      }
-
-      const newImagePath = `event/${imageUrl.name}`;
-
-      const { data: uploadData, error: uploadError } = await supabaseClient.storage
-        .from(subdomain)
-        .upload(newImagePath, imageUrl);
-
-      if (!uploadData || uploadError) {
-        enqueueSnackbar('Error updating event 2', { variant: 'error' });
-        console.error(uploadError);
-        return;
-      }
-
-      const { data: { publicUrl: eventImageUrl } } = supabaseClient.storage.from(subdomain).getPublicUrl(uploadData.path);
-
-      const { error } = await supabaseClient.from('event').update({
-        ...event,
-        imageUrl: eventImageUrl,
-      }).match({ id: currentEvent.id });
-
-      if (error) {
-        enqueueSnackbar(`Error updating event 3`, { variant: 'error' });
-        return;
-      }
-      enqueueSnackbar('Event updated');
-      void push(PATH_DASHBOARD.event.root);
-    } else {
-      console.log('of type string');
+    // user has not updated image
+    if (typeof imageUrl === 'string') {
       const { error } = await supabaseClient.from('event').update(event).match({ id: currentEvent.id });
       if (error) {
         enqueueSnackbar(`Error updating event 4`, { variant: 'error' });
@@ -145,7 +102,47 @@ export default function EventEditForm({
       }
       enqueueSnackbar('Event updated');
       void push(PATH_DASHBOARD.event.root);
+      return;
     }
+
+    if (currentEvent.imageUrl) {
+      const splitImageUrl = currentEvent.imageUrl.split('/') || '';
+      const oldImagePath = `event/${splitImageUrl[splitImageUrl.length - 1]}`;
+      const {
+        data: deleteData,
+        error: deleteError,
+      } = await supabaseClient.storage.from(subdomain).remove([oldImagePath]);
+
+      if (!deleteData || deleteError) {
+        enqueueSnackbar(`Error updating event 1`, { variant: 'error' });
+        return;
+      }
+    }
+
+    const newImagePath = `event/${imageUrl.name}`;
+
+    const { data: uploadData, error: uploadError } = await supabaseClient.storage
+      .from(subdomain)
+      .upload(newImagePath, imageUrl);
+
+    if (!uploadData || uploadError) {
+      enqueueSnackbar('Error updating event 2', { variant: 'error' });
+      return;
+    }
+
+    const { data: { publicUrl: eventImageUrl } } = supabaseClient.storage.from(subdomain).getPublicUrl(uploadData.path);
+
+    const { error } = await supabaseClient.from('event').update({
+      ...event,
+      imageUrl: eventImageUrl,
+    }).match({ id: currentEvent.id });
+
+    if (error) {
+      enqueueSnackbar(`Error updating event 3`, { variant: 'error' });
+      return;
+    }
+    enqueueSnackbar('Event updated');
+    void push(PATH_DASHBOARD.event.root);
   };
 
   const handleDrop = useCallback(

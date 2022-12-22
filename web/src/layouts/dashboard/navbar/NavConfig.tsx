@@ -12,7 +12,6 @@ const ICONS = {
   event: getIcon('bi:calendar2-event'),
   team: getIcon('carbon:group'),
   frosh: getIcon('carbon:tag-group'),
-  notification: getIcon('carbon:notification'),
   offer: getIcon('tabler:discount'),
   resource: getIcon('carbon:security'),
   branding: getIcon('gala:image'),
@@ -57,11 +56,6 @@ const navConfig = [
         title: 'Froshs',
         path: PATH_DASHBOARD.frosh.root,
         icon: ICONS.frosh,
-      },
-      {
-        title: 'Notifications',
-        path: PATH_DASHBOARD.blog.root,
-        icon: ICONS.notification,
       },
       {
         title: 'Offers',

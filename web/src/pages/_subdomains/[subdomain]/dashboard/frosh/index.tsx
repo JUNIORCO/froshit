@@ -1,18 +1,7 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import NextLink from 'next/link';
 import { useRouter } from 'next/router';
-import {
-  Box,
-  Button,
-  Card,
-  Container,
-  FormControlLabel,
-  Switch,
-  Table,
-  TableBody,
-  TableContainer,
-  TablePagination,
-} from '@mui/material';
+import { Box, Button, Card, Container, Table, TableBody, TableContainer, TablePagination } from '@mui/material';
 import { PATH_DASHBOARD } from '../../../../../routes/paths';
 import useSettings from '../../../../../hooks/useSettings';
 import useTable, { emptyRows } from '../../../../../hooks/useTable';
@@ -26,8 +15,9 @@ import { GetServerSideProps, GetServerSidePropsContext } from 'next';
 import { FroshsWithStats } from '../../../../../../prisma/api/@types';
 import { FroshTableRow } from '../../../../../sections/@dashboard/frosh/list';
 import AuthApi from '../../../../../../prisma/api/AuthApi';
-
-const TAB_OPTIONS = ['All', 'No Leaders', 'No Froshees'];
+import useRefresh from '../../../../../hooks/useRefresh';
+import { useSnackbar } from 'notistack';
+import { useSupabaseClient } from '@supabase/auth-helpers-react';
 
 const TABLE_HEAD = [
   { id: 'name', label: 'Name', align: 'left' },
@@ -45,20 +35,26 @@ FroshList.getLayout = function getLayout(page: React.ReactElement) {
 };
 
 type Props = {
-  froshs: FroshsWithStats[];
+  initialFroshs: FroshsWithStats[];
 }
 
-export default function FroshList({ froshs }: Props) {
+export default function FroshList({ initialFroshs }: Props) {
+  const [froshs, setFroshs] = useState<FroshsWithStats[]>(initialFroshs);
+  useEffect(() => {
+    setFroshs(initialFroshs);
+  }, [initialFroshs]);
+
+  const { refreshData } = useRefresh();
+  const { enqueueSnackbar } = useSnackbar();
+  const supabaseClient = useSupabaseClient();
+
   const {
     dense,
     page,
     order,
     orderBy,
     rowsPerPage,
-    selected,
-    onSelectRow,
     onSort,
-    onChangeDense,
     onChangePage,
     onChangeRowsPerPage,
   } = useTable();
@@ -74,6 +70,16 @@ export default function FroshList({ froshs }: Props) {
 
   const handleEditRow = (id: string) => {
     void push(PATH_DASHBOARD.frosh.edit(id));
+  };
+
+  const handleDeleteRow = async (id: string) => {
+    const { error } = await supabaseClient.from('frosh').delete().eq('id', id);
+    if (error) {
+      console.error(error);
+      enqueueSnackbar('Error deleting frosh', { variant: 'error' });
+      return;
+    }
+    refreshData();
   };
 
   const denseHeight = dense ? 52 : 72;
@@ -120,6 +126,7 @@ export default function FroshList({ froshs }: Props) {
                         row={row}
                         onViewRow={() => handleViewRow(row.id)}
                         onEditRow={() => handleEditRow(row.id)}
+                        onDeleteRow={() => handleDeleteRow(row.id)}
                       />
                     ))}
 
@@ -153,11 +160,11 @@ export default function FroshList({ froshs }: Props) {
 
 export const getServerSideProps: GetServerSideProps = async (ctx: GetServerSidePropsContext) => {
   const api = new AuthApi({ ctx });
-  const froshs = await api.Frosh.getFroshsWithStats();
+  const initialFroshs = await api.Frosh.getFroshsWithStats();
 
   return {
     props: {
-      froshs,
+      initialFroshs,
     },
   };
 };

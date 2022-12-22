@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import NextLink from 'next/link';
 import { useRouter } from 'next/router';
 import {
@@ -7,8 +7,6 @@ import {
   Card,
   Container,
   Divider,
-  FormControlLabel,
-  Switch,
   Tab,
   Table,
   TableBody,
@@ -32,6 +30,9 @@ import dayjs from 'dayjs';
 import { EventTableRow, EventTableToolbar } from '../../../../../sections/@dashboard/event/list';
 import isBetween from 'dayjs/plugin/isBetween';
 import AuthApi from '../../../../../../prisma/api/AuthApi';
+import { useSupabaseClient } from '@supabase/auth-helpers-react';
+import { useSnackbar } from 'notistack';
+import useRefresh from '../../../../../hooks/useRefresh';
 
 dayjs.extend(isBetween);
 
@@ -51,10 +52,19 @@ EventList.getLayout = function getLayout(page: React.ReactElement) {
 };
 
 type Props = {
-  events: FullEvent[];
+  initialEvents: FullEvent[];
 }
 
-export default function EventList({ events }: Props) {
+export default function EventList({ initialEvents }: Props) {
+  const [tableData, setTableData] = useState<FullEvent[]>(initialEvents);
+  useEffect(() => {
+    setTableData(initialEvents);
+  }, [initialEvents]);
+
+  const { refreshData } = useRefresh();
+  const { enqueueSnackbar } = useSnackbar();
+  const supabaseClient = useSupabaseClient();
+
   const {
     dense,
     page,
@@ -64,12 +74,11 @@ export default function EventList({ events }: Props) {
     setPage,
     selected,
     onSort,
-    onChangeDense,
     onChangePage,
     onChangeRowsPerPage,
   } = useTable();
 
-  const uniqueFroshsFromEvents = events.reduce((accum, { frosh }) => {
+  const uniqueFroshsFromEvents = tableData.reduce((accum, { frosh }) => {
     if (!frosh || accum.includes(frosh.name)) {
       return accum;
     }
@@ -82,8 +91,6 @@ export default function EventList({ events }: Props) {
   const { themeStretch } = useSettings();
 
   const { push } = useRouter();
-
-  const [tableData, setTableData] = useState<FullEvent[]>(events);
 
   const [filterName, setFilterName] = useState<string>('');
 
@@ -100,12 +107,12 @@ export default function EventList({ events }: Props) {
     setFilterFrosh(event.target.value);
   };
 
-  const handleViewRow = (id: number) => {
-    void push(PATH_DASHBOARD.event.view(String(id)));
+  const handleViewRow = (id: string) => {
+    void push(PATH_DASHBOARD.event.view(id));
   };
 
-  const handleEditRow = (id: number) => {
-    void push(PATH_DASHBOARD.event.edit(String(id)));
+  const handleEditRow = (id: string) => {
+    void push(PATH_DASHBOARD.event.edit(id));
   };
 
   const dataFiltered = applySortFilter({
@@ -122,6 +129,16 @@ export default function EventList({ events }: Props) {
     (!dataFiltered.length && !!filterName) ||
     (!dataFiltered.length && !!filterFrosh) ||
     (!dataFiltered.length && !!filterTab);
+
+  const handleDeleteRow = async (id: string) => {
+    const { error } = await supabaseClient.from('event').delete().eq('id', id);
+    if (error) {
+      console.error(error);
+      enqueueSnackbar('Error deleting event', { variant: 'error' });
+      return;
+    }
+    refreshData();
+  };
 
   return (
     <Page title='Event List'>
@@ -186,6 +203,7 @@ export default function EventList({ events }: Props) {
                         selected={selected.includes(row.id)}
                         onViewRow={() => handleViewRow(row.id)}
                         onEditRow={() => handleEditRow(row.id)}
+                        onDeleteRow={() => handleDeleteRow(row.id)}
                       />
                     ))}
 
@@ -269,11 +287,11 @@ function applySortFilter({
 
 export const getServerSideProps: GetServerSideProps = async (ctx: GetServerSidePropsContext) => {
   const api = new AuthApi({ ctx });
-  const events = await api.Event.getFullEvents();
+  const initialEvents = await api.Event.getFullEvents();
 
   return {
     props: {
-      events,
+      initialEvents,
     },
   };
 };

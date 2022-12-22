@@ -1,45 +1,38 @@
-// @mui
-import { Box, Container } from '@mui/material';
-// routes
-import { PATH_DASHBOARD } from '../../../../../../routes/paths';
-// hooks
+import { Container } from '@mui/material';
 import useSettings from '../../../../../../hooks/useSettings';
-// _mock_
-// layouts
 import Layout from '../../../../../../layouts';
-// components
 import Page from '../../../../../../components/Page';
-import HeaderBreadcrumbs from '../../../../../../components/HeaderBreadcrumbs';
-// sections
 import { GetServerSideProps, GetServerSidePropsContext } from 'next';
+import { ResourceTag } from '../../../../../../../prisma/types';
+import HeaderBreadcrumbs from '../../../../../../components/HeaderBreadcrumbs';
+import { PATH_DASHBOARD } from '../../../../../../routes/paths';
 import { Query } from '../../../../../../@types/query';
 import AuthApi from '../../../../../../../prisma/api/AuthApi';
+import ResourceTagEditForm from 'src/sections/@dashboard/resource-tags/ResourceTagEditForm';
 
-// ----------------------------------------------------------------------
-
-TeamView.getLayout = function getLayout(page: React.ReactElement) {
+ResourceEdit.getLayout = function getLayout(page: React.ReactElement) {
   return <Layout>{page}</Layout>;
 };
 
-// ----------------------------------------------------------------------
+type Props = {
+  resourceTag: ResourceTag;
+}
 
-export default function TeamView({ team }: any) {
+export default function ResourceEdit({ resourceTag }: Props) {
   const { themeStretch } = useSettings();
 
   return (
-    <Page title='View Team'>
+    <Page title='Resource Tag Edit'>
       <Container maxWidth={themeStretch ? false : 'lg'}>
         <HeaderBreadcrumbs
-          heading='Team'
+          heading='Edit Resource Tag'
           links={[
             { name: 'Dashboard', href: PATH_DASHBOARD.root },
-            { name: 'Team', href: PATH_DASHBOARD.team.root },
-            { name: 'View' },
+            { name: 'Resource Tags', href: PATH_DASHBOARD.resourceTag.root },
+            { name: 'Edit' },
           ]}
         />
-
-        <Box sx={{ mb: 5 }} />
-
+        <ResourceTagEditForm currentResourceTag={resourceTag} />
       </Container>
     </Page>
   );
@@ -48,12 +41,11 @@ export default function TeamView({ team }: any) {
 export const getServerSideProps: GetServerSideProps = async (ctx: GetServerSidePropsContext) => {
   const { id } = ctx.query as Query;
   const api = new AuthApi({ ctx });
-  ;
-  const team = await api.Team.getFullTeamById(id);
+  const resourceTag = await api.Resource.getResourceTagById(id);
 
   return {
     props: {
-      team,
+      resourceTag,
     },
   };
 };

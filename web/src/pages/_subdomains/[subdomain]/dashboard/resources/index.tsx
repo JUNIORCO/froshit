@@ -12,40 +12,41 @@ import Scrollbar from '../../../../../components/Scrollbar';
 import HeaderBreadcrumbs from '../../../../../components/HeaderBreadcrumbs';
 import { TableEmptyRows, TableHeadCustom, TableNoData } from '../../../../../components/table';
 import { GetServerSideProps, GetServerSidePropsContext } from 'next';
-import { Offer } from '../../../../../../prisma/types';
-import { OfferTableRow, OfferTableToolbar } from '../../../../../sections/@dashboard/offer/list';
+import { FullResource } from '../../../../../../prisma/api/@types';
+import { ResourceTableRow, ResourceTableToolbar } from '../../../../../sections/@dashboard/resource/list';
 import AuthApi from '../../../../../../prisma/api/AuthApi';
 import useRefresh from '../../../../../hooks/useRefresh';
 import { useSnackbar } from 'notistack';
 import { useSupabaseClient } from '@supabase/auth-helpers-react';
 
 const TABLE_HEAD = [
-  { id: 'provider', label: 'Provider', align: 'left' },
   { id: 'title', label: 'Title', align: 'left' },
+  { id: 'tag', label: 'Tag', align: 'left' },
   { id: 'description', label: 'Description', align: 'left' },
-  { id: 'location', label: 'Location', align: 'left' },
+  { id: 'phoneNumber', label: 'Phone Number', align: 'left' },
+  { id: 'email', label: 'Email', align: 'left' },
   { id: '' },
 ];
 
-OfferList.getLayout = function getLayout(page: React.ReactElement) {
+ResourceList.getLayout = function getLayout(page: React.ReactElement) {
   return <Layout>{page}</Layout>;
 };
 
 type Props = {
-  initialOffers: Offer[];
+  initialResources: FullResource[];
 }
 
-export default function OfferList({ initialOffers }: Props) {
-  const [tableData, setTableData] = useState<Offer[]>(initialOffers);
+export default function ResourceList({ initialResources }: Props) {
+  const [tableData, setTableData] = useState<FullResource[]>(initialResources);
+
   useEffect(() => {
-    setTableData(initialOffers);
-  }, [initialOffers]);
+    setTableData(initialResources);
+  }, [initialResources]);
 
   const { refreshData } = useRefresh();
   const { enqueueSnackbar } = useSnackbar();
   const supabaseClient = useSupabaseClient();
-  const { themeStretch } = useSettings();
-  const { push } = useRouter();
+
   const {
     dense,
     page,
@@ -58,26 +59,40 @@ export default function OfferList({ initialOffers }: Props) {
     onChangeRowsPerPage,
   } = useTable();
 
+  const uniqueTags = new Set(tableData.map(({ resourceTag }) => resourceTag.name));
+
+  const RESOURCE_TAG_OPTIONS: string[] = ['All', ...uniqueTags];
+
+  const { themeStretch } = useSettings();
+
+  const { push } = useRouter();
+
   const [filterName, setFilterName] = useState<string>('');
+
+  const [filterResourceTag, setFilterResourceTag] = useState<string>('All');
 
   const handleFilterName = (filterName: string) => {
     setFilterName(filterName);
     setPage(0);
   };
 
+  const handleFilterResourceTag = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setFilterResourceTag(event.target.value);
+  };
+
   const handleViewRow = (id: string) => {
-    void push(PATH_DASHBOARD.offer.view(id));
+    void push(PATH_DASHBOARD.resource.view(id));
   };
 
   const handleEditRow = (id: string) => {
-    void push(PATH_DASHBOARD.offer.edit(id));
+    void push(PATH_DASHBOARD.resource.edit(id));
   };
 
   const handleDeleteRow = async (id: string) => {
-    const { error } = await supabaseClient.from('offer').delete().eq('id', id);
+    const { error } = await supabaseClient.from('resource').delete().eq('id', id);
     if (error) {
       console.error(error);
-      enqueueSnackbar('Error deleting offer', { variant: 'error' });
+      enqueueSnackbar('Error deleting resources', { variant: 'error' });
       return;
     }
     refreshData();
@@ -87,53 +102,58 @@ export default function OfferList({ initialOffers }: Props) {
     tableData,
     comparator: getComparator(order, orderBy),
     filterName,
+    filterResourceTag,
   });
 
   const denseHeight = dense ? 52 : 72;
 
-  const isNotFound = !tableData.length;
+  const isNotFound =
+    (!dataFiltered.length && !!filterName) ||
+    (!dataFiltered.length && !!filterResourceTag);
 
   return (
-    <Page title='Offers List'>
+    <Page title='Resources List'>
       <Container maxWidth={themeStretch ? false : 'lg'}>
         <HeaderBreadcrumbs
-          heading='Offers List'
+          heading='Resources List'
           links={[
             { name: 'Dashboard', href: PATH_DASHBOARD.root },
-            { name: 'Offers', href: PATH_DASHBOARD.offer.root },
+            { name: 'Resource', href: PATH_DASHBOARD.resource.root },
             { name: 'List' },
           ]}
           action={
-            <NextLink href={PATH_DASHBOARD.offer.new} passHref style={{ textDecoration: 'none' }}>
+            <NextLink href={PATH_DASHBOARD.resource.new} passHref style={{ textDecoration: 'none' }}>
               <Button variant='contained' startIcon={<Iconify icon={'eva:plus-fill'} />}>
-                New Offer
+                New Resource
               </Button>
             </NextLink>
           }
         />
 
         <Card>
-          <OfferTableToolbar
+          <ResourceTableToolbar
             filterName={filterName}
+            filterResourceTag={filterResourceTag}
             onFilterName={handleFilterName}
+            onFilterResourceTag={handleFilterResourceTag}
+            optionsRole={RESOURCE_TAG_OPTIONS}
           />
 
           <Scrollbar>
             <TableContainer sx={{ minWidth: 800, position: 'relative' }}>
-              <Table size='small' sx={{ paddingTop: 1 }}>
+              <Table size='small'>
                 <TableHeadCustom
                   order={order}
                   orderBy={orderBy}
                   headLabel={TABLE_HEAD}
                   onSort={onSort}
-                  sx={{ paddingTop: 1 }}
                 />
 
                 <TableBody>
                   {dataFiltered
                     .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
-                    .map((row) => (
-                      <OfferTableRow
+                    .map((row: any) => (
+                      <ResourceTableRow
                         key={row.id}
                         row={row}
                         onViewRow={() => handleViewRow(row.id)}
@@ -176,10 +196,12 @@ function applySortFilter({
                            tableData,
                            comparator,
                            filterName,
+                           filterResourceTag,
                          }: {
-  tableData: Offer[];
+  tableData: FullResource[];
   comparator: (a: any, b: any) => number;
   filterName: string;
+  filterResourceTag: string;
 }) {
   const stabilizedThis = tableData.map((el, index) => [el, index] as const);
 
@@ -193,10 +215,13 @@ function applySortFilter({
 
   if (filterName) {
     tableData = tableData.filter(
-      (offer) =>
-        // @ts-ignore
-        offer.provider.toLowerCase().indexOf(filterName.toLowerCase()) !== -1,
+      (resource) =>
+        resource.title.toLowerCase().indexOf(filterName.toLowerCase()) !== -1,
     );
+  }
+
+  if (filterResourceTag !== 'All') {
+    tableData = tableData.filter(({ resourceTag }) => resourceTag.name === filterResourceTag);
   }
 
   return tableData;
@@ -204,11 +229,11 @@ function applySortFilter({
 
 export const getServerSideProps: GetServerSideProps = async (ctx: GetServerSidePropsContext) => {
   const api = new AuthApi({ ctx });
-  const initialOffers = await api.Offer.getOffers();
+  const initialResources = await api.Resource.getResources();
 
   return {
     props: {
-      initialOffers,
+      initialResources,
     },
   };
 };

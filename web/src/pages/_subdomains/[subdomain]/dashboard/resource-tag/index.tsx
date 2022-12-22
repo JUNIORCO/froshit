@@ -1,20 +1,8 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import NextLink from 'next/link';
 import { useRouter } from 'next/router';
-import {
-  Box,
-  Button,
-  Card,
-  Container,
-  FormControlLabel,
-  Switch,
-  Table,
-  TableBody,
-  TableContainer,
-  TablePagination,
-} from '@mui/material';
+import { Box, Button, Card, Container, Table, TableBody, TableContainer, TablePagination } from '@mui/material';
 import { PATH_DASHBOARD } from '../../../../../routes/paths';
-import useTabs from '../../../../../hooks/useTabs';
 import useSettings from '../../../../../hooks/useSettings';
 import useTable, { emptyRows, getComparator } from '../../../../../hooks/useTable';
 import Layout from '../../../../../layouts';
@@ -24,30 +12,37 @@ import Scrollbar from '../../../../../components/Scrollbar';
 import HeaderBreadcrumbs from '../../../../../components/HeaderBreadcrumbs';
 import { TableEmptyRows, TableHeadCustom, TableNoData } from '../../../../../components/table';
 import { GetServerSideProps, GetServerSidePropsContext } from 'next';
-import { FullResource } from '../../../../../../prisma/api/@types';
-import { ResourceTableRow, ResourceTableToolbar } from '../../../../../sections/@dashboard/resource/list';
 import AuthApi from '../../../../../../prisma/api/AuthApi';
-
-const TAB_OPTIONS = ['All', 'No Leaders', 'No Froshees'];
+import useRefresh from '../../../../../hooks/useRefresh';
+import { useSnackbar } from 'notistack';
+import { useSupabaseClient } from '@supabase/auth-helpers-react';
+import { ResourceTag } from '../../../../../../prisma/types';
+import { ResourceTagTableRow, ResourceTagTableToolbar } from '../../../../../sections/@dashboard/resource-tags/list';
 
 const TABLE_HEAD = [
-  { id: 'title', label: 'Title', align: 'left' },
-  { id: 'tag', label: 'Tag', align: 'left' },
-  { id: 'description', label: 'Description', align: 'left' },
-  { id: 'phoneNumber', label: 'Phone Number', align: 'left' },
-  { id: 'email', label: 'Email', align: 'left' },
+  { id: 'name', label: 'Name', align: 'left' },
   { id: '' },
 ];
 
-ResourceList.getLayout = function getLayout(page: React.ReactElement) {
+ResourceTagsList.getLayout = function getLayout(page: React.ReactElement) {
   return <Layout>{page}</Layout>;
 };
 
 type Props = {
-  resources: FullResource[];
+  initialResourceTags: ResourceTag[];
 }
 
-export default function ResourceList({ resources }: Props) {
+export default function ResourceTagsList({ initialResourceTags }: Props) {
+  const [tableData, setTableData] = useState<ResourceTag[]>(initialResourceTags);
+
+  useEffect(() => {
+    setTableData(initialResourceTags);
+  }, [initialResourceTags]);
+
+  const { refreshData } = useRefresh();
+  const { enqueueSnackbar } = useSnackbar();
+  const supabaseClient = useSupabaseClient();
+
   const {
     dense,
     page,
@@ -56,85 +51,73 @@ export default function ResourceList({ resources }: Props) {
     rowsPerPage,
     setPage,
     onSort,
-    onChangeDense,
     onChangePage,
     onChangeRowsPerPage,
   } = useTable();
-
-  const uniqueTags = new Set(resources.map(({ resourceTag }) => resourceTag.name));
-
-  const RESOURCE_TAG_OPTIONS: string[] = ['All', ...uniqueTags];
 
   const { themeStretch } = useSettings();
 
   const { push } = useRouter();
 
-  const [tableData, setTableData] = useState<FullResource[]>(resources);
-
   const [filterName, setFilterName] = useState<string>('');
-
-  const [filterResourceTag, setFilterResourceTag] = useState<string>('All');
-
-  const { currentTab: filterTab, onChangeTab: onChangeFilterTab } = useTabs('All');
 
   const handleFilterName = (filterName: string) => {
     setFilterName(filterName);
     setPage(0);
   };
 
-  const handleFilterResourceTag = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setFilterResourceTag(event.target.value);
-  };
-
   const handleViewRow = (id: string) => {
-    void push(PATH_DASHBOARD.resource.view(id));
+    void push(PATH_DASHBOARD.resourceTag.view(id));
   };
 
   const handleEditRow = (id: string) => {
-    void push(PATH_DASHBOARD.resource.edit(id));
+    void push(PATH_DASHBOARD.resourceTag.edit(id));
+  };
+
+  const handleDeleteRow = async (id: string) => {
+    const { error } = await supabaseClient.from('resource_tag').delete().eq('id', id);
+    if (error) {
+      console.error(error);
+      enqueueSnackbar('Error deleting resource tag', { variant: 'error' });
+      return;
+    }
+    refreshData();
   };
 
   const dataFiltered = applySortFilter({
     tableData,
     comparator: getComparator(order, orderBy),
     filterName,
-    filterResourceTag,
-    filterTab,
   });
 
   const denseHeight = dense ? 52 : 72;
 
   const isNotFound =
-    (!dataFiltered.length && !!filterName) ||
-    (!dataFiltered.length && !!filterResourceTag) ||
-    (!dataFiltered.length && !!filterTab);
+    (!dataFiltered.length && !!filterName);
 
   return (
-    <Page title='Resources List'>
+    <Page title='Resource Tags List'>
       <Container maxWidth={themeStretch ? false : 'lg'}>
         <HeaderBreadcrumbs
-          heading='Resources List'
+          heading='Resource Tags List'
           links={[
             { name: 'Dashboard', href: PATH_DASHBOARD.root },
-            { name: 'Resource', href: PATH_DASHBOARD.resource.root },
+            { name: 'Resource Tags', href: PATH_DASHBOARD.resourceTag.root },
             { name: 'List' },
           ]}
           action={
-            <NextLink href={PATH_DASHBOARD.resource.new} passHref style={{ textDecoration: 'none' }}>
+            <NextLink href={PATH_DASHBOARD.resourceTag.new} passHref style={{ textDecoration: 'none' }}>
               <Button variant='contained' startIcon={<Iconify icon={'eva:plus-fill'} />}>
-                New Resource
+                New Resource Tag
               </Button>
             </NextLink>
           }
         />
 
         <Card>
-          <ResourceTableToolbar
+          <ResourceTagTableToolbar
             filterName={filterName}
-            filterResourceTag={filterResourceTag}
             onFilterName={handleFilterName}
-            onFilterResourceTag={handleFilterResourceTag}
-            optionsRole={RESOURCE_TAG_OPTIONS}
           />
 
           <Scrollbar>
@@ -151,11 +134,12 @@ export default function ResourceList({ resources }: Props) {
                   {dataFiltered
                     .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
                     .map((row: any) => (
-                      <ResourceTableRow
+                      <ResourceTagTableRow
                         key={row.id}
                         row={row}
                         onViewRow={() => handleViewRow(row.id)}
                         onEditRow={() => handleEditRow(row.id)}
+                        onDeleteRow={() => handleDeleteRow(row.id)}
                       />
                     ))}
 
@@ -193,14 +177,10 @@ function applySortFilter({
                            tableData,
                            comparator,
                            filterName,
-                           filterTab,
-                           filterResourceTag,
                          }: {
-  tableData: FullResource[];
+  tableData: ResourceTag[];
   comparator: (a: any, b: any) => number;
   filterName: string;
-  filterTab: string;
-  filterResourceTag: string;
 }) {
   const stabilizedThis = tableData.map((el, index) => [el, index] as const);
 
@@ -215,12 +195,8 @@ function applySortFilter({
   if (filterName) {
     tableData = tableData.filter(
       (resource) =>
-        resource.title.toLowerCase().indexOf(filterName.toLowerCase()) !== -1,
+        resource.name.toLowerCase().indexOf(filterName.toLowerCase()) !== -1,
     );
-  }
-
-  if (filterResourceTag !== 'All') {
-    tableData = tableData.filter(({ resourceTag }) => resourceTag.name === filterResourceTag);
   }
 
   return tableData;
@@ -228,11 +204,11 @@ function applySortFilter({
 
 export const getServerSideProps: GetServerSideProps = async (ctx: GetServerSidePropsContext) => {
   const api = new AuthApi({ ctx });
-  const resources = await api.Resource.getResources();
+  const initialResourceTags = await api.Resource.getResourceTags();
 
   return {
     props: {
-      resources,
+      initialResourceTags,
     },
   };
 };

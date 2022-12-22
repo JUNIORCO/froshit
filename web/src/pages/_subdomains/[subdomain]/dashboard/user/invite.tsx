@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import {
   Box,
   Card,
@@ -35,10 +35,23 @@ import { Profile, Role } from '../../../../../../prisma/types';
 import { AdminOrganizerTableRow } from '../../../../../sections/@dashboard/user/list/invite';
 import { getSubdomainUrl } from '../../../../../utils/url';
 import useSubdomain from '../../../../../hooks/useSubdomain';
+import useRefresh from '../../../../../hooks/useRefresh';
 
 const sendInviteRequest = async (url: string, { arg }: any) => {
   const res = await fetch(url, {
     method: 'POST',
+    headers: {
+      'Accept': 'application/json',
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify(arg),
+  });
+  return res.json();
+};
+
+const deleteUserRequest = async (url: string, { arg }: any) => {
+  const res = await fetch(url, {
+    method: 'DELETE',
     headers: {
       'Accept': 'application/json',
       'Content-Type': 'application/json',
@@ -58,19 +71,22 @@ type FormValuesProps = {
 };
 
 type Props = {
-  profiles: Profile[];
+  initialProfiles: Profile[];
 }
 
-export default function UserInvite({ profiles }: Props) {
+export default function UserInvite({ initialProfiles }: Props) {
+  const [profiles, setProfiles] = useState<Profile[]>(initialProfiles);
+  useEffect(() => {
+    setProfiles(initialProfiles);
+  }, [initialProfiles]);
+
   const { subdomain } = useSubdomain();
-  const { trigger } = useSWRMutation('/api/user', sendInviteRequest);
-
+  const { refreshData } = useRefresh();
+  const { trigger: sendInviteAPI } = useSWRMutation('/api/user', sendInviteRequest);
+  const { trigger: deleteUserAPI } = useSWRMutation('/api/user', deleteUserRequest);
   const { themeStretch } = useSettings();
-
   const { profile } = useProfile();
-
   const { push } = useRouter();
-
   const { enqueueSnackbar } = useSnackbar();
 
   const InviteUserSchema = Yup.object().shape({
@@ -102,7 +118,7 @@ export default function UserInvite({ profiles }: Props) {
   } = methods;
 
   const onSubmit = async (userToInvite: FormValuesProps) => {
-    const { error } = await trigger({
+    const { error } = await sendInviteAPI({
       ...userToInvite,
       redirectTo: getSubdomainUrl({ subdomain, path: PATH_AUTH.setPassword }),
     });
@@ -114,6 +130,16 @@ export default function UserInvite({ profiles }: Props) {
 
     enqueueSnackbar('User invited');
     void push(PATH_DASHBOARD.user.root);
+  };
+
+  const handleDeleteRow = async (id: string) => {
+    const { error } = await deleteUserAPI({ id });
+    if (error) {
+      console.error(error);
+      enqueueSnackbar('Error deleting user', { variant: 'error' });
+      return;
+    }
+    refreshData();
   };
 
   const {
@@ -191,6 +217,7 @@ export default function UserInvite({ profiles }: Props) {
                         <AdminOrganizerTableRow
                           key={row.id}
                           row={row}
+                          onDeleteRow={() => handleDeleteRow(row.id)}
                         />
                       ))}
 
@@ -226,11 +253,11 @@ export default function UserInvite({ profiles }: Props) {
 
 export const getServerSideProps: GetServerSideProps = async (ctx) => {
   const api = new AuthApi({ ctx });
-  const profiles = await api.Profile.getAdminsAndOrganizersOnly();
+  const initialProfiles = await api.Profile.getAdminsAndOrganizersOnly();
 
   return {
     props: {
-      profiles,
+      initialProfiles,
     },
   };
 };

@@ -33,9 +33,9 @@ VALUES
 
 INSERT INTO "profile" ("id", "firstName", "lastName", "email", "phoneNumber", "role", "paid", "interests", "imageUrl", "programId", "universityId", "froshId", "teamId")
 VALUES
-('cd9721e9-674c-45d6-91c5-0926ba52fe4d', 'Lionel', 'Messi', 'messi@barcelona.com', '1234567890', 'Admin', NULL, NULL, NULL, NULL, '1678f7bf-7a13-477c-942c-c85dcadfdd40', '7419eddd-46ab-49c7-811a-042e476d09b6', 'b3c4a208-52fc-4064-a43a-0c85be2ce42f'),
-('5953b9e5-9484-4ba1-bc50-91bad7dc7e4e', 'Cristiano', 'Ronaldo', 'ronaldo@madrid.com', '1234567891', 'Admin', NULL, NULL, NULL, NULL, 'b6aee9eb-4b71-4704-9079-149cc926204c', 'f15ba6dc-e5f6-4361-9d4d-57f1d6e0dc72', 'a2d5b5e4-cb50-4eb2-800c-0e2bd61bfb12'),
-('04c12425-e4db-4714-a9b3-c70f1e0fe3ba', 'Luis', 'Suarez', 'suarez@liverpool.com', '1234567892', 'Admin', NULL, NULL, NULL, NULL, 'd253d913-6402-47e0-a62e-7a630ed3cc2a', '7ab8131e-cf25-47ae-b698-efd6e14766a4', 'ba2d0f12-f90b-4d0d-a540-83c6f453e995'),
+('cd9721e9-674c-45d6-91c5-0926ba52fe4d', 'Lionel', 'Messi', 'messi@barcelona.com', '1234567890', 'Organizer', NULL, NULL, NULL, NULL, '1678f7bf-7a13-477c-942c-c85dcadfdd40', '7419eddd-46ab-49c7-811a-042e476d09b6', 'b3c4a208-52fc-4064-a43a-0c85be2ce42f'),
+('5953b9e5-9484-4ba1-bc50-91bad7dc7e4e', 'Cristiano', 'Ronaldo', 'ronaldo@madrid.com', '1234567891', 'Organizer', NULL, NULL, NULL, NULL, 'b6aee9eb-4b71-4704-9079-149cc926204c', 'f15ba6dc-e5f6-4361-9d4d-57f1d6e0dc72', 'a2d5b5e4-cb50-4eb2-800c-0e2bd61bfb12'),
+('04c12425-e4db-4714-a9b3-c70f1e0fe3ba', 'Luis', 'Suarez', 'suarez@liverpool.com', '1234567892', 'Organizer', NULL, NULL, NULL, NULL, 'd253d913-6402-47e0-a62e-7a630ed3cc2a', '7ab8131e-cf25-47ae-b698-efd6e14766a4', 'ba2d0f12-f90b-4d0d-a540-83c6f453e995'),
 
 ('1c7272a5-6346-4eae-9c7f-e63574b20f61', 'Neymar', 'Jr', 'neymar@barcelona.com', '1234567893', 'Organizer', NULL, NULL, NULL, NULL, '1678f7bf-7a13-477c-942c-c85dcadfdd40', '7419eddd-46ab-49c7-811a-042e476d09b6', 'b3c4a208-52fc-4064-a43a-0c85be2ce42f'),
 ('7363173a-9d08-4efb-965d-cfcaf92bbefe', 'Karim', 'Benzema', 'benzema@madrid.com', '1234567894', 'Organizer', NULL, NULL, NULL, NULL, 'b6aee9eb-4b71-4704-9079-149cc926204c', 'f15ba6dc-e5f6-4361-9d4d-57f1d6e0dc72', 'a2d5b5e4-cb50-4eb2-800c-0e2bd61bfb12'),

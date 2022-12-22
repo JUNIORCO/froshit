@@ -107,10 +107,9 @@ model Frosh {
   university   University @relation(fields: [universityId], references: [id])
   universityId String
 
-  events       Event[]
-  teams        Team[]
-  profiles     Profile[]
-  Notification Notification[]
+  events   Event[]
+  teams    Team[]
+  profiles Profile[]
 
   // dates
   createdAt DateTime @default(now())
@@ -136,7 +135,7 @@ model Event {
   imageUrl      String?
 
   // associations
-  frosh   Frosh  @relation(fields: [froshId], references: [id]) // TODO make one to many
+  frosh   Frosh  @relation(fields: [froshId], references: [id], onDelete: Cascade) // TODO make one to many
   froshId String
 
   // dates
@@ -156,11 +155,10 @@ model Team {
   number String
 
   // associations
-  frosh   Frosh  @relation(fields: [froshId], references: [id])
+  frosh   Frosh  @relation(fields: [froshId], references: [id], onDelete: Cascade)
   froshId String
 
-  profiles     Profile[]
-  Notification Notification[]
+  profiles Profile[]
 
   // dates
   createdAt DateTime @default(now())
@@ -193,10 +191,10 @@ model Profile {
   program   Program? @relation(fields: [programId], references: [id])
   programId String? // optional because admin/organizers are not part of a program
 
-  frosh   Frosh?  @relation(fields: [froshId], references: [id]) // optional because admin/organizers are not part of a frosh
+  frosh   Frosh?  @relation(fields: [froshId], references: [id], onDelete: SetNull) // optional because admin/organizers are not part of a frosh
   froshId String?
 
-  team   Team?   @relation(fields: [teamId], references: [id]) // optional because admin/organizers are not part of a team
+  team   Team?   @relation(fields: [teamId], references: [id], onDelete: SetNull) // optional because admin/organizers are not part of a team
   teamId String?
 
   // dates
@@ -237,7 +235,7 @@ model Resource {
   email       String?
 
   // associations
-  resourceTag   ResourceTag @relation(fields: [resourceTagId], references: [id])
+  resourceTag   ResourceTag @relation(fields: [resourceTagId], references: [id], onDelete: Cascade)
   resourceTagId String
 
   university   University @relation(fields: [universityId], references: [id])
@@ -274,27 +272,4 @@ model Offer {
 
   // map
   @@map("offer")
-}
-
-model Notification {
-  // id
-  id String @id @default(uuid())
-
-  // attributes
-  title String
-  body  String
-
-  // associations
-  frosh   Frosh?  @relation(fields: [froshId], references: [id])
-  froshId String?
-
-  team   Team?   @relation(fields: [teamId], references: [id])
-  teamId String?
-
-  // dates
-  createdAt DateTime @default(now())
-  updatedAt DateTime @default(now()) @updatedAt
-
-  // map
-  @@map("notification")
 }

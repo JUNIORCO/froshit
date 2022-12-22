@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import NextLink from 'next/link';
 import { useRouter } from 'next/router';
 import {
@@ -32,8 +32,11 @@ import { GetServerSideProps, GetServerSidePropsContext } from 'next';
 import { FullTeam } from '../../../../../../prisma/api/@types';
 import TeamTableRow from '../../../../../sections/@dashboard/team/list/TeamTableRow';
 import { TeamTableToolbar } from '../../../../../sections/@dashboard/team/list';
-import { Role } from '../../../../../../prisma/types';
+import { Offer, Role } from '../../../../../../prisma/types';
 import AuthApi from '../../../../../../prisma/api/AuthApi';
+import useRefresh from '../../../../../hooks/useRefresh';
+import { useSnackbar } from 'notistack';
+import { useSupabaseClient } from '@supabase/auth-helpers-react';
 
 const TAB_OPTIONS = ['All', 'No Leaders', 'No Froshees'];
 
@@ -51,10 +54,21 @@ TeamList.getLayout = function getLayout(page: React.ReactElement) {
 };
 
 type Props = {
-  teams: FullTeam[];
+  initialTeams: FullTeam[];
 }
 
-export default function TeamList({ teams }: Props) {
+export default function TeamList({ initialTeams }: Props) {
+  const [tableData, setTableData] = useState<FullTeam[]>(initialTeams);
+  useEffect(() => {
+    setTableData(initialTeams);
+  }, [initialTeams]);
+
+  const { push } = useRouter();
+  const { themeStretch } = useSettings();
+  const { refreshData } = useRefresh();
+  const { enqueueSnackbar } = useSnackbar();
+  const supabaseClient = useSupabaseClient();
+
   const {
     dense,
     page,
@@ -67,12 +81,11 @@ export default function TeamList({ teams }: Props) {
     onSelectRow,
     onSelectAllRows,
     onSort,
-    onChangeDense,
     onChangePage,
     onChangeRowsPerPage,
   } = useTable();
 
-  const uniqueFroshsFromTeams = teams.reduce((accum, { frosh }) => {
+  const uniqueFroshsFromTeams = tableData.reduce((accum, { frosh }) => {
     if (!frosh || accum.includes(frosh.name)) {
       return accum;
     }
@@ -81,12 +94,6 @@ export default function TeamList({ teams }: Props) {
   }, [] as string[]);
 
   const FROSH_OPTIONS: string[] = ['All', ...uniqueFroshsFromTeams];
-
-  const { themeStretch } = useSettings();
-
-  const { push } = useRouter();
-
-  const [tableData, setTableData] = useState<FullTeam[]>(teams);
 
   const [filterName, setFilterName] = useState<string>('');
 
@@ -103,8 +110,8 @@ export default function TeamList({ teams }: Props) {
     setFilterFrosh(event.target.value);
   };
 
-  const handleViewRow = (id: number) => {
-    void push(PATH_DASHBOARD.team.view(String(id)));
+  const handleViewRow = (id: string) => {
+    void push(PATH_DASHBOARD.team.view(id));
   };
 
   const handleDeleteRows = (selected: number[]) => {
@@ -113,8 +120,18 @@ export default function TeamList({ teams }: Props) {
     setTableData(deleteRows);
   };
 
-  const handleEditRow = (id: number) => {
-    void push(PATH_DASHBOARD.team.edit(String(id)));
+  const handleEditRow = (id: string) => {
+    void push(PATH_DASHBOARD.team.edit(id));
+  };
+
+  const handleDeleteRow = async (id: string) => {
+    const { error } = await supabaseClient.from('team').delete().eq('id', id);
+    if (error) {
+      console.error(error);
+      enqueueSnackbar('Error deleting team', { variant: 'error' });
+      return;
+    }
+    refreshData();
   };
 
   const dataFiltered = applySortFilter({
@@ -217,6 +234,7 @@ export default function TeamList({ teams }: Props) {
                         onSelectRow={() => onSelectRow(row.id)}
                         onViewRow={() => handleViewRow(row.id)}
                         onEditRow={() => handleEditRow(row.id)}
+                        onDeleteRow={() => handleDeleteRow(row.id)}
                       />
                     ))}
 
@@ -301,11 +319,11 @@ function applySortFilter({
 
 export const getServerSideProps: GetServerSideProps = async (ctx: GetServerSidePropsContext) => {
   const api = new AuthApi({ ctx });
-  const teams = await api.Team.getTeamsWithFrosh();
+  const initialTeams = await api.Team.getTeamsWithFrosh();
 
   return {
     props: {
-      teams,
+      initialTeams,
     },
   };
 };

@@ -30,6 +30,20 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       }
 
       res.status(200).json(user);
+    } else if (req.method === 'DELETE') {
+      const { id } = req.body;
+
+      const supabase = createClient(
+        process.env.NEXT_PUBLIC_SUPABASE_URL ?? '',
+        process.env.NEXT_PUBLIC_SUPABASE_SERVICE_ROLE_KEY ?? '',
+      );
+
+      const { data: user, error } = await supabase.auth.admin.deleteUser(id);
+      if (error) {
+        throw error;
+      }
+
+      res.status(200).json(user);
     } else {
       res.status(400).end('Unsupported request');
     }

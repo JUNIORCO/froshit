@@ -11,6 +11,7 @@ type Props = {
   onEditRow: VoidFunction;
   onSelectRow: VoidFunction;
   onViewRow: VoidFunction;
+  onDeleteRow: VoidFunction;
 };
 
 export default function TeamTableRow({
@@ -18,6 +19,7 @@ export default function TeamTableRow({
                                        selected,
                                        onEditRow,
                                        onViewRow,
+                                       onDeleteRow,
                                      }: Props) {
   const { name: teamName, number: teamNumber, frosh, profiles } = row;
 
@@ -79,6 +81,16 @@ export default function TeamTableRow({
               >
                 <Iconify icon={'eva:edit-fill'} />
                 Edit
+              </MenuItem>
+              <MenuItem
+                onClick={() => {
+                  onDeleteRow();
+                  handleCloseMenu();
+                }}
+                sx={{ color: 'error.main' }}
+              >
+                <Iconify icon={'eva:trash-2-outline'} />
+                Delete
               </MenuItem>
             </>
           }

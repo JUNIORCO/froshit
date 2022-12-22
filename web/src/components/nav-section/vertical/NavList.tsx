@@ -25,7 +25,6 @@ export default function NavList({
   const { pathname, asPath, push } = useRouter();
 
   const active = getActive(data.path, pathname, asPath);
-
   const [open, setOpen] = useState(active);
 
   const handleClickItem = () => {

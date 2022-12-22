@@ -37,7 +37,7 @@ type Props = {
 export default function ResourceNewForm({
                                           resourceTags,
                                         }: Props) {
-  const { trigger } = useSWRMutation('/api/resource', sendResourceCreateRequest);
+  const { trigger } = useSWRMutation('/api/resources', sendResourceCreateRequest);
 
   const { push } = useRouter();
 

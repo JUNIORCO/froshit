@@ -1,5 +1,4 @@
 import { useState } from 'react';
-import { useTheme } from '@mui/material/styles';
 import { MenuItem, TableCell, TableRow, Typography } from '@mui/material';
 import Iconify from '../../../../components/Iconify';
 import { TableMoreMenu } from '../../../../components/table';
@@ -11,6 +10,7 @@ type Props = {
   selected: boolean;
   onEditRow: VoidFunction;
   onViewRow: VoidFunction;
+  onDeleteRow: VoidFunction;
 };
 
 export default function EventTableRow({
@@ -18,9 +18,8 @@ export default function EventTableRow({
                                         selected,
                                         onEditRow,
                                         onViewRow,
+                                        onDeleteRow,
                                       }: Props) {
-  const theme = useTheme();
-
   const { name, frosh, startDate, endDate, location } = row;
 
   const [openMenu, setOpenMenuActions] = useState<HTMLElement | null>(null);
@@ -81,6 +80,16 @@ export default function EventTableRow({
               >
                 <Iconify icon={'eva:edit-fill'} />
                 Edit
+              </MenuItem>
+              <MenuItem
+                onClick={() => {
+                  onDeleteRow();
+                  handleCloseMenu();
+                }}
+                sx={{ color: 'error.main' }}
+              >
+                <Iconify icon={'eva:trash-2-outline'} />
+                Delete
               </MenuItem>
             </>
           }

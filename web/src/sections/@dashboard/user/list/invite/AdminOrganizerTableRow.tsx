@@ -1,12 +1,14 @@
 import React from 'react';
-import { Avatar, TableCell, TableRow, Typography } from '@mui/material';
+import { Avatar, MenuItem, TableCell, TableRow, Typography } from '@mui/material';
 import { Profile } from '../../../../../../prisma/types';
+import Iconify from '../../../../../components/Iconify';
 
 type Props = {
   row: Profile;
+  onDeleteRow: VoidFunction;
 };
 
-export default function AdminOrganizerTableRow({ row }: Props) {
+export default function AdminOrganizerTableRow({ row, onDeleteRow }: Props) {
   const { firstName, lastName, email, phoneNumber, role } = row;
 
   return (
@@ -31,7 +33,14 @@ export default function AdminOrganizerTableRow({ row }: Props) {
       <TableCell align='left' sx={{ textTransform: 'capitalize' }}>
         {role}
       </TableCell>
-
+      <TableCell align='center'>
+        <MenuItem
+          onClick={onDeleteRow}
+          sx={{ color: 'error.main' }}
+        >
+          <Iconify icon={'eva:trash-2-outline'} />
+        </MenuItem>
+      </TableCell>
     </TableRow>
   );
 }

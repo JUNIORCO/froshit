@@ -1,6 +1,5 @@
 import { useState } from 'react';
-import { useTheme } from '@mui/material/styles';
-import { Checkbox, MenuItem, TableCell, TableRow } from '@mui/material';
+import { MenuItem, TableCell, TableRow } from '@mui/material';
 import Iconify from '../../../../components/Iconify';
 import { TableMoreMenu } from '../../../../components/table';
 import { Role } from '../../../../../prisma/types';
@@ -10,15 +9,15 @@ type Props = {
   row: FroshsWithStats;
   onEditRow: VoidFunction;
   onViewRow: VoidFunction;
+  onDeleteRow: VoidFunction;
 };
 
 export default function FroshTableRow({
                                         row,
                                         onEditRow,
                                         onViewRow,
+                                        onDeleteRow,
                                       }: Props) {
-  const theme = useTheme();
-
   const { name, ticketPrice, profiles, _count } = row;
 
   const [openMenu, setOpenMenuActions] = useState<HTMLElement | null>(null);
@@ -86,6 +85,16 @@ export default function FroshTableRow({
               >
                 <Iconify icon={'eva:edit-fill'} />
                 Edit
+              </MenuItem>
+              <MenuItem
+                onClick={() => {
+                  onDeleteRow();
+                  handleCloseMenu();
+                }}
+                sx={{ color: 'error.main' }}
+              >
+                <Iconify icon={'eva:trash-2-outline'} />
+                Delete
               </MenuItem>
             </>
           }

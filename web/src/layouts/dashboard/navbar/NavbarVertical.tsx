@@ -1,27 +1,18 @@
 import { useEffect } from 'react';
-// next
 import { useRouter } from 'next/router';
-// @mui
 import { styled, useTheme } from '@mui/material/styles';
 import { Box, Drawer, Stack } from '@mui/material';
-// hooks
 import useResponsive from '../../../hooks/useResponsive';
 import useCollapseDrawer from '../../../hooks/useCollapseDrawer';
-// utils
 import cssStyles from '../../../utils/cssStyles';
-// config
 import { NAVBAR } from '../../../config';
-// components
 import Logo from '../../../components/Logo';
 import Scrollbar from '../../../components/Scrollbar';
 import { NavSectionVertical } from '../../../components/nav-section';
-//
 import navConfig from './NavConfig';
 import NavbarDocs from './NavbarDocs';
 import NavbarAccount from './NavbarAccount';
 import CollapseButton from './CollapseButton';
-
-// ----------------------------------------------------------------------
 
 const RootStyle = styled('div')(({ theme }) => ({
   [theme.breakpoints.up('lg')]: {
@@ -31,8 +22,6 @@ const RootStyle = styled('div')(({ theme }) => ({
     }),
   },
 }));
-
-// ----------------------------------------------------------------------
 
 type Props = {
   isOpenSidebar: boolean;

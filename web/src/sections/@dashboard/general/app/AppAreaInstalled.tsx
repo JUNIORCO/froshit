@@ -20,8 +20,8 @@ export default function AppAreaInstalled({
                                            title,
                                            subheader,
                                            chartLabels,
-                                           dailyChartData,
-                                           cumulativeChartData,
+                                           dailyChartData = [],
+                                           cumulativeChartData = [],
                                            ...other
                                          }: Props) {
   const [selectedFrosh, setSelectedFrosh] = useState('All');

@@ -1,24 +1,23 @@
 import { useState } from 'react';
-import { useTheme } from '@mui/material/styles';
-import { MenuItem, TableCell, TableRow, Typography } from '@mui/material';
+import { Avatar, MenuItem, TableCell, TableRow, Typography } from '@mui/material';
 import Iconify from '../../../../components/Iconify';
 import { TableMoreMenu } from '../../../../components/table';
-import { FullResource } from '../../../../../prisma/api/@types';
+import { ResourceTag } from '../../../../../prisma/types';
 
 type Props = {
-  row: FullResource;
+  row: ResourceTag;
   onEditRow: VoidFunction;
   onViewRow: VoidFunction;
   onDeleteRow: VoidFunction;
 };
 
-export default function ResourceTableRow({
-                                           row,
-                                           onEditRow,
-                                           onViewRow,
-                                           onDeleteRow,
-                                         }: Props) {
-  const { title, description, phoneNumber, email, resourceTag } = row;
+export default function ResourceTagTableRow({
+                                              row,
+                                              onEditRow,
+                                              onViewRow,
+                                              onDeleteRow,
+                                            }: Props) {
+  const { name, imageUrl } = row;
 
   const [openMenu, setOpenMenuActions] = useState<HTMLElement | null>(null);
 
@@ -32,26 +31,11 @@ export default function ResourceTableRow({
 
   return (
     <TableRow hover>
-      <TableCell sx={{ alignItems: 'center' }}>
-        <Typography variant='subtitle2'>
-          {title}
+      <TableCell sx={{ display: 'flex', alignItems: 'center' }}>
+        <Avatar alt={name} src={imageUrl} sx={{ mr: 2 }} />
+        <Typography variant='subtitle2' noWrap>
+          {name}
         </Typography>
-      </TableCell>
-
-      <TableCell align='left'>
-        {resourceTag.name}
-      </TableCell>
-
-      <TableCell align='left'>
-        {description}
-      </TableCell>
-
-      <TableCell align='left'>
-        {phoneNumber}
-      </TableCell>
-
-      <TableCell align='left'>
-        {email}
       </TableCell>
 
       <TableCell align='right'>
