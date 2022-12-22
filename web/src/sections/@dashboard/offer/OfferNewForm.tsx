@@ -28,8 +28,8 @@ export default function OfferNewForm() {
     title: Yup.string().required('Frosh title is required'),
     description: Yup.string().required('Description is required'),
     location: Yup.string().required('Location is required'),
-    provider: Yup.string().required('Ticket price is required'),
-    icon: Yup.string().required('Ticket price is required'),
+    provider: Yup.string().required('Provider is required'),
+    icon: Yup.string().required('Icon is required'),
     color: Yup.string().required('Ticket price is required'),
     universityId: Yup.string().required(),
   });

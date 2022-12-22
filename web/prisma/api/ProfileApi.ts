@@ -22,12 +22,12 @@ class ProfileApi {
     });
   }
 
-  public async getAdminsAndOrganizersOnly(): Promise<Profile[]> {
+  public async getOrganizersAndLeadersOnly(): Promise<Profile[]> {
     return prisma.profile.findMany({
       where: {
         universityId: this.profile.universityId,
         role: {
-          in: [Role.Admin, Role.Organizer],
+          in: [Role.Organizer, Role.Leader],
         },
       },
     });

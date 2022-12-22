@@ -253,7 +253,7 @@ export default function UserInvite({ initialProfiles }: Props) {
 
 export const getServerSideProps: GetServerSideProps = async (ctx) => {
   const api = new AuthApi({ ctx });
-  const initialProfiles = await api.Profile.getAdminsAndOrganizersOnly();
+  const initialProfiles = await api.Profile.getOrganizersAndLeadersOnly();
 
   return {
     props: {

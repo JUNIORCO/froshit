@@ -96,12 +96,6 @@ export default function FroshEditForm({ currentFrosh, view }: Props) {
               <RHFTextField name='name' label='Name' disabled={view}/>
 
               <RHFTextField name='description' label='Description' disabled={view}/>
-
-              <Stack spacing={1} sx={{ pb: 2 }}>
-                <Typography variant='subtitle1' sx={{ flexGrow: 1 }}>
-                  Ticket Price
-                </Typography>
-              </Stack>
             </Box>
 
             {!view && <Stack alignItems='flex-end' sx={{ mt: 3 }}>

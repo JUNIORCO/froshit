@@ -88,13 +88,6 @@ export default function FroshNewForm() {
               <RHFTextField name='name' label='Name' />
 
               <RHFTextField name='description' label='Description' />
-
-              <Stack spacing={1} sx={{ pb: 2 }}>
-
-                <Typography variant='subtitle1' sx={{ flexGrow: 1 }}>
-                  Ticket Price
-                </Typography>
-              </Stack>
             </Box>
 
             <Stack alignItems='flex-end' sx={{ mt: 3 }}>
