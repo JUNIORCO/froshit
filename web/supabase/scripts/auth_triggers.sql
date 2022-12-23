@@ -37,7 +37,8 @@ language plpgsql
 security definer set search_path = public
 as $$
 begin
-  delete from public.profile where id = new.id;
+  delete from public.profile where id = old.id::text;
+  return old;
 end;
 $$;
 
