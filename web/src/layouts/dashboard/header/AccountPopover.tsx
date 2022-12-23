@@ -19,10 +19,10 @@ import { Role } from '../../../../prisma/types';
 import RoleBasedGuard from '../../../guards/RoleBasedGuard';
 
 const MENU_OPTIONS = [
-  {
-    label: 'Profile',
-    path: PATH_DASHBOARD.user.profile,
-  },
+  // {
+  //   label: 'Profile',
+  //   path: PATH_DASHBOARD.user.profile,
+  // },
   {
     label: 'Invite',
     path: PATH_DASHBOARD.user.invite,

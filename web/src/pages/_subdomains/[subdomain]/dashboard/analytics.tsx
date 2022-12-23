@@ -128,7 +128,7 @@ export default function AnalyticsPage({
 export const getServerSideProps: GetServerSideProps = async (ctx: GetServerSidePropsContext) => {
   const api = new AuthApi({ ctx });
   const analytics = await api.Analytics.getAnalyticsForDashboard();
-  console.log(analytics)
+
   return {
     props: {
       ...analytics,

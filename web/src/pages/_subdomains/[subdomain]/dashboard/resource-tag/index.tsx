@@ -92,8 +92,7 @@ export default function ResourceTagsList({ initialResourceTags }: Props) {
 
   const denseHeight = dense ? 52 : 72;
 
-  const isNotFound =
-    (!dataFiltered.length && !!filterName);
+  const isNotFound = !dataFiltered.length;
 
   return (
     <Page title='Resource Tags List'>

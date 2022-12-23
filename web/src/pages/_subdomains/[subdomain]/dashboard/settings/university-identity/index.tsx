@@ -43,7 +43,7 @@ export default function UniversityIdentityPage({ university }: UniversityIdentit
     imageUrl: Yup.mixed().test('required', 'University logo is required', (value) => value !== ''),
     color: Yup.string().required('Main color is required'),
   });
-  console.log(university);
+
   const defaultValues = useMemo(
     () => ({
       imageUrl: university.imageUrl || '',
