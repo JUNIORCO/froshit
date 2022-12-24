@@ -21,7 +21,7 @@ export const styles = StyleSheet.create({
 });
 
 
-export default function NotificationsScreen() {
+export default function ChatScreen() {
   const {
     isLoading: teamIsLoading,
     isError: teamIsError,

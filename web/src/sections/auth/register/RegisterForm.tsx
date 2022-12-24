@@ -15,6 +15,8 @@ import { Role, University } from '../../../../prisma/types';
 import { PATH_AUTH } from '../../../routes/paths';
 import { useSnackbar } from 'notistack';
 import { useRouter } from 'next/router';
+import { getSubdomainUrl } from '../../../utils/url';
+import useSubdomain from '../../../hooks/useSubdomain';
 
 // ----------------------------------------------------------------------
 
@@ -38,6 +40,7 @@ export default function RegisterForm({ universities }: RegisterProps) {
   const { enqueueSnackbar } = useSnackbar();
   const supabaseClient = useSupabaseClient();
   const [showPassword, setShowPassword] = useState(false);
+  const { subdomain } = useSubdomain();
 
   const RegisterSchema = Yup.object().shape({
     email: Yup.string().email('Email must be a valid email address').required('Email is required'),
@@ -74,6 +77,7 @@ export default function RegisterForm({ universities }: RegisterProps) {
       email: data.email,
       password: data.password,
       options: {
+        emailRedirectTo: getSubdomainUrl({ subdomain, path: PATH_AUTH.setPassword }),
         data: {
           firstName: data.firstName,
           lastName: data.lastName,
