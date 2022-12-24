@@ -7,7 +7,7 @@ import Page from '../../../../../components/Page';
 import HeaderBreadcrumbs from '../../../../../components/HeaderBreadcrumbs';
 import UserNewEditForm from '../../../../../sections/@dashboard/user/UserNewEditForm';
 import { GetServerSideProps } from 'next';
-import type { Frosh, Program, Team } from '../../../../../../prisma/types';
+import type { Frosh, Team } from '../../../../../../prisma/types';
 import AuthApi from '../../../../../../prisma/api/AuthApi';
 
 UserCreate.getLayout = function getLayout(page: React.ReactElement) {
@@ -15,12 +15,11 @@ UserCreate.getLayout = function getLayout(page: React.ReactElement) {
 };
 
 type Props = {
-  programs: Program[];
   froshs: Frosh[];
   teams: Team[];
 }
 
-export default function UserCreate({ programs, froshs, teams }: Props) {
+export default function UserCreate({ froshs, teams }: Props) {
   const { themeStretch } = useSettings();
 
   return (
@@ -34,7 +33,7 @@ export default function UserCreate({ programs, froshs, teams }: Props) {
             { name: 'New User' },
           ]}
         />
-        <UserNewEditForm programs={programs} froshs={froshs} teams={teams} />
+        <UserNewEditForm froshs={froshs} teams={teams} />
       </Container>
     </Page>
   );
@@ -42,11 +41,10 @@ export default function UserCreate({ programs, froshs, teams }: Props) {
 
 export const getServerSideProps: GetServerSideProps = async (ctx) => {
   const api = new AuthApi({ ctx });
-  const [programs, froshs, teams] = await Promise.all([api.Program.getPrograms(), api.Frosh.getFroshs(), api.Team.getTeamsWithFrosh()]);
+  const [froshs, teams] = await Promise.all([api.Frosh.getFroshs(), api.Team.getTeamsWithFrosh()]);
 
   return {
     props: {
-      programs,
       froshs,
       teams,
     },

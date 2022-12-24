@@ -15,7 +15,7 @@ import { CustomFile } from '../../../components/upload';
 import { FormProvider, RHFSelect, RHFTextField, RHFUploadAvatar } from '../../../components/hook-form';
 import { RHFMultiSelect } from '../../../components/hook-form/RHFMultiSelect';
 import { FullProfile } from '../../../../prisma/api/@types';
-import { Frosh, Interest, Profile, Program, Role, Team } from '../../../../prisma/types';
+import { Frosh, Profile, Role, Team } from '../../../../prisma/types';
 import useProfile from '../../../hooks/useProfile';
 
 const sendProfileRequest = async (url: string, { arg }: any) => {
@@ -37,14 +37,12 @@ interface FormValuesProps extends Omit<Profile, 'avatarUrl'> {
 
 type Props = {
   currentUser?: FullProfile;
-  programs: Program[];
   froshs: Frosh[];
   teams: Team[];
 };
 
 export default function UserNewEditForm({
                                           currentUser,
-                                          programs,
                                           froshs,
                                           teams,
                                         }: Props) {
@@ -63,8 +61,6 @@ export default function UserNewEditForm({
     email: Yup.string().required('Email is required').email(),
     phoneNumber: Yup.string().required('Phone number is required'),
     role: Yup.mixed().oneOf(Object.values(Role)).required('Role is required'),
-    interests: Yup.array().defined(),
-    programId: Yup.string().defined(),
     froshId: Yup.string().defined(),
     teamId: Yup.string().defined(),
   });
@@ -76,8 +72,6 @@ export default function UserNewEditForm({
       email: currentUser?.email || '',
       phoneNumber: currentUser?.phoneNumber || '',
       role: currentUser?.role,
-      interests: currentUser?.interests || [],
-      programId: currentUser?.programId || '',
       froshId: currentUser?.froshId || '',
       teamId: currentUser?.teamId || '',
       universityId: profile?.universityId,
@@ -111,7 +105,6 @@ export default function UserNewEditForm({
     try {
       await trigger({
         ...data,
-        programId: data.programId || null,
         froshId: data.froshId || null,
         teamId: data.teamId || null,
         method,
@@ -230,24 +223,6 @@ export default function UserNewEditForm({
                 {[Role.Froshee].map((role) => (
                   <option key={role} value={role}>
                     {role}
-                  </option>
-                ))}
-              </RHFSelect>
-
-              <RHFMultiSelect
-                name='interests'
-                label='Interests'
-                options={Object.values(Interest).map((interest) => ({
-                  label: interest,
-                  value: interest,
-                }))}
-              />
-
-              <RHFSelect name='programId' label='Program' placeholder='Program'>
-                <option value='' />
-                {programs.map((program) => (
-                  <option key={program.id} value={program.id}>
-                    {program.name}
                   </option>
                 ))}
               </RHFSelect>

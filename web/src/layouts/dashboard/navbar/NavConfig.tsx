@@ -96,7 +96,6 @@ const navConfig = [
         roles: [Role.Admin],
         children: [
           { title: 'University Identity', path: PATH_DASHBOARD.settings.university_identity },
-          { title: 'Programs', path: PATH_DASHBOARD.settings.programs },
         ],
       },
     ],

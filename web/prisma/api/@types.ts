@@ -1,4 +1,4 @@
-import type { Event, Frosh, Profile, Program, Resource, ResourceTag, Team, Role } from '../types';
+import type { Event, Frosh, Profile, Resource, ResourceTag, Team, Role } from '../types';
 
 /** Event **/
 export type FullEvent = Event & { frosh: Frosh };
@@ -9,7 +9,7 @@ export type FroshsWithStats = Frosh & { profiles: Profile[], _count: { events: n
 /** User **/
 export type UsersForUserList = Profile & { frosh: Frosh | null, team: Team | null };
 
-export type FullProfile = Profile & { frosh: Frosh | null, team: Team | null, program: Program | null };
+export type FullProfile = Profile & { frosh: Frosh | null, team: Team | null };
 
 export type UnassignedFrosheesAndLeaders = Profile & { frosh: Frosh | null };
 

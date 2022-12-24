@@ -39,7 +39,6 @@ class ProfileApi {
         id,
       },
       include: {
-        program: true,
         frosh: true,
         team: true,
       },

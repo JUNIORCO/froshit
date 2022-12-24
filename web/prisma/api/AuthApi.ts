@@ -5,7 +5,6 @@ import FroshApi from './FroshApi';
 import ProfileApi from './ProfileApi';
 import TeamApi from './TeamApi';
 import OfferApi from './OfferApi';
-import ProgramApi from './ProgramApi';
 import ResourceApi from './ResourceApi';
 import UniversityApi from './UniversityApi';
 import AnalyticsApi from './AnalyticsApi';
@@ -24,7 +23,6 @@ class AuthApi {
   public readonly Profile: ProfileApi;
   public readonly Team: TeamApi;
   public readonly Offer: OfferApi;
-  public readonly Program: ProgramApi;
   public readonly Resource: ResourceApi;
   public readonly University: UniversityApi;
   public readonly Analytics: AnalyticsApi;
@@ -40,7 +38,6 @@ class AuthApi {
     this.Profile = new ProfileApi({ profile });
     this.Team = new TeamApi({ profile });
     this.Offer = new OfferApi({ profile });
-    this.Program = new ProgramApi({ profile });
     this.Resource = new ResourceApi({ profile });
     this.University = new UniversityApi({ profile });
     this.Analytics = new AnalyticsApi({ profile });

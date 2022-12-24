@@ -91,7 +91,6 @@ export const PATH_DASHBOARD = {
   settings: {
     root: path(ROOTS_DASHBOARD, '/settings'),
     university_identity: path(ROOTS_DASHBOARD, '/settings/university-identity'),
-    programs: path(ROOTS_DASHBOARD, '/settings/programs'),
   },
   mail: {
     root: path(ROOTS_DASHBOARD, '/mail'),

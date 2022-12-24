@@ -15,38 +15,9 @@ enum Role {
   Froshee
 }
 
-enum Interest {
-  Travel
-  Outdoors
-  Adventure
-  Hiking
-  Fishing
-  Hunting
-  Camping
-  Beach
-  Music
-  Books
-  Gaming
-  Netflix
-  Movies
-  Writing
-  Concerts
-  Cooking
-  Beer
-  Food
-  Wine
-  Pizza
-  Coffee
-  Sports
-  Gym
-  Walks
-  Fitness
-  Dancing
-  Football
-  Basketball
-  Baseball
-  Hockey
-  Pets
+enum PaymentType {
+  Manual
+  Online
 }
 
 model University {
@@ -60,7 +31,6 @@ model University {
   color     String
 
   // associations
-  programs  Program[]
   froshs    Frosh[]
   profiles  Profile[]
   resources Resource[]
@@ -72,26 +42,6 @@ model University {
 
   // map
   @@map("university")
-}
-
-model Program {
-  // id
-  id String @id @default(uuid())
-
-  // attributes
-  name     String
-  profiles Profile[]
-
-  // associations
-  university   University @relation(fields: [universityId], references: [id])
-  universityId String
-
-  // dates
-  createdAt DateTime @default(now())
-  updatedAt DateTime @default(now()) @updatedAt
-
-  // map
-  @@map("program")
 }
 
 model Frosh {
@@ -174,21 +124,20 @@ model Profile {
   id String @id @default(uuid())
 
   // attributes
-  email       String     @unique
-  phoneNumber String     @unique
-  firstName   String
-  lastName    String
-  role        Role
-  paid        Int?
-  interests   Interest[]
-  imageUrl    String?
+  email         String       @unique
+  phoneNumber   String       @unique
+  firstName     String
+  lastName      String
+  role          Role
+  paid          Int?
+  paymentAmount Int?
+  paymentType   PaymentType?
+  interests     String?
+  imageUrl      String?
 
   // associations
   university   University @relation(fields: [universityId], references: [id])
   universityId String
-
-  program   Program? @relation(fields: [programId], references: [id])
-  programId String? // optional because admin/organizers are not part of a program
 
   frosh   Frosh?  @relation(fields: [froshId], references: [id], onDelete: SetNull) // optional because admin/organizers are not part of a frosh
   froshId String?

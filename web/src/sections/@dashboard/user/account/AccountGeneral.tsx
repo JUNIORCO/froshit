@@ -67,18 +67,6 @@ export default function AccountGeneral({ user }: any) {
             <TextField
               disabled
               fullWidth
-              value={user.interests}
-              label='Interests'
-            />
-            <TextField
-              disabled
-              fullWidth
-              value={user.program.name}
-              label='Program'
-            />
-            <TextField
-              disabled
-              fullWidth
               value={user.frosh?.name}
               label='Frosh'
             />
