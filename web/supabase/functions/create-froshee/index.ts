@@ -5,21 +5,46 @@
 // This enables autocomplete, go to definition, etc.
 
 import { serve } from 'https://deno.land/std@0.131.0/http/server.ts';
+import { supabaseAdmin } from '../_shared/supabaseAdmin.ts';
 import { supabaseClient } from '../_shared/supabaseClient.ts';
 
 serve(async (req: Request) => {
   try {
-    // Set the Auth context of the user that called the function.
-    // This way your row-level-security (RLS) policies are applied.
-    // supabaseClient.auth.setAuth(req.headers.get('Authorization')!.replace('Bearer ', ''));
+    if (req.method !== 'POST') {
+      return new Response(JSON.stringify({ error: 'Unsupported method' }), {
+        headers: { 'Content-Type': 'application/json' },
+        status: 403,
+      });
+    }
 
-    const { data, error } = await supabaseClient.auth.api.createUser({
-      email: 'user@email.com',
-      password: 'password',
-      user_metadata: { name: 'Yoda' }
-    })
+    const body = await req.json();
+    const { email, firstName, lastName, froshName, phoneNumber, universityId } = body;
+    console.log('req body : ', body);
+    const { data: authUser, error: authUserError } = await supabaseAdmin.auth.admin.createUser({
+      email,
+      email_confirm: true,
+      user_metadata: {
+        firstName,
+        lastName,
+        phoneNumber,
+        role: 'Froshee',
+        universityId,
+      },
+    });
+    console.log('authUser : ', authUser);
 
-    return new Response(JSON.stringify({ data, error }), {
+    if (authUserError) {
+      throw authUserError;
+    }
+
+    const { data: selectedFrosh } = await supabaseClient.from('frosh').select('*').match({
+      name: froshName,
+      universityId,
+    });
+    console.log('selectedFrosh : ', selectedFrosh);
+    const { error: userProfile } = await supabaseClient.from('profile').update({ froshId: selectedFrosh.id }).match({ id: authUser.id });
+    console.log('userProfile : ', userProfile);
+    return new Response(JSON.stringify(userProfile), {
       headers: { 'Content-Type': 'application/json' },
       status: 200,
     });
