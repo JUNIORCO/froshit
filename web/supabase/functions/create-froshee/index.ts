@@ -32,19 +32,20 @@ serve(async (req: Request) => {
       },
     });
     console.log('authUser : ', authUser);
+    //
+    // if (authUserError) {
+    //   throw authUserError;
+    // }
+    //
+    // const { data: selectedFrosh } = await supabaseClient.from('frosh').select('*').match({
+    //   name: froshName,
+    //   universityId,
+    // });
+    // console.log('selectedFrosh : ', selectedFrosh);
+    // const { error: userProfile } = await supabaseClient.from('profile').update({ froshId: selectedFrosh.id }).match({ id: authUser.id });
+    // console.log('userProfile : ', userProfile);
 
-    if (authUserError) {
-      throw authUserError;
-    }
-
-    const { data: selectedFrosh } = await supabaseClient.from('frosh').select('*').match({
-      name: froshName,
-      universityId,
-    });
-    console.log('selectedFrosh : ', selectedFrosh);
-    const { error: userProfile } = await supabaseClient.from('profile').update({ froshId: selectedFrosh.id }).match({ id: authUser.id });
-    console.log('userProfile : ', userProfile);
-    return new Response(JSON.stringify(userProfile), {
+    return new Response(JSON.stringify({ userProfile: '' }), {
       headers: { 'Content-Type': 'application/json' },
       status: 200,
     });
