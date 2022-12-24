@@ -34,10 +34,10 @@ export default function SetPassword() {
           {user && user.email ? (
             <>
               <SentIcon sx={{ mb: 5, mx: 'auto', height: 120 }} />
-              <Typography variant='h3' gutterBottom>
+              <Typography variant='h4' gutterBottom>
                 Welcome to FROSHIT, {user.user_metadata.firstName} {user.user_metadata.lastName}!
               </Typography>
-              <Typography variant='h4'>
+              <Typography variant='h5'>
                 Set a password
               </Typography>
               <Box sx={{ mt: 5, mb: 3 }}>

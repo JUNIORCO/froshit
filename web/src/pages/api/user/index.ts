@@ -35,7 +35,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         return res.status(200).json(user);
       }
 
-      if (role === Role.Froshee) {
+      if (role === Role.Leader) {
         const { data: user, error } = await supabase.auth.admin.generateLink({
           type: 'magiclink',
           email,
