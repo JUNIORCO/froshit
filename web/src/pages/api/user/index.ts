@@ -56,7 +56,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 
         return res.status(200).json(user);
       }
-
+      res.status(400).end('Unsupported user request');
     } else if (req.method === 'DELETE') {
       const { id } = req.body;
 
