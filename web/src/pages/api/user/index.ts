@@ -1,5 +1,6 @@
 import type { NextApiRequest, NextApiResponse } from 'next';
 import { createClient } from '@supabase/supabase-js';
+import { Role } from 'prisma/types';
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
   try {
@@ -11,25 +12,51 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         process.env.NEXT_PUBLIC_SUPABASE_SERVICE_ROLE_KEY ?? '',
       );
 
-      const {
-        data: user,
-        error,
-      } = await supabase.auth.admin.inviteUserByEmail(email, {
-        redirectTo,
-        data: {
-          firstName,
-          lastName,
-          phoneNumber,
-          role,
-          universityId,
-        },
-      });
+      // use the inviteUserByEmail api
+      if (role === Role.Organizer) {
+        const {
+          data: user,
+          error,
+        } = await supabase.auth.admin.inviteUserByEmail(email, {
+          redirectTo,
+          data: {
+            firstName,
+            lastName,
+            phoneNumber,
+            role,
+            universityId,
+          },
+        });
 
-      if (error) {
-        throw error;
+        if (error) {
+          throw error;
+        }
+
+        return res.status(200).json(user);
       }
 
-      res.status(200).json(user);
+      if (role === Role.Froshee) {
+        const { data: user, error } = await supabase.auth.admin.generateLink({
+          type: 'magiclink',
+          email,
+          options: {
+            data: {
+              firstName,
+              lastName,
+              phoneNumber,
+              role,
+              universityId,
+            },
+          },
+        });
+
+        if (error) {
+          throw error;
+        }
+
+        return res.status(200).json(user);
+      }
+
     } else if (req.method === 'DELETE') {
       const { id } = req.body;
 
