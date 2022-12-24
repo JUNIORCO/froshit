@@ -38,7 +38,8 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       if (role === Role.Leader) {
         const { data: user, error } = await supabase.auth.admin.createUser({
           email,
-          data: {
+          email_confirm: true,
+          user_metadata: {
             firstName,
             lastName,
             phoneNumber,
