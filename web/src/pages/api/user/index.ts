@@ -36,17 +36,14 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       }
 
       if (role === Role.Leader) {
-        const { data: user, error } = await supabase.auth.admin.generateLink({
-          type: 'magiclink',
+        const { data: user, error } = await supabase.auth.admin.createUser({
           email,
-          options: {
-            data: {
-              firstName,
-              lastName,
-              phoneNumber,
-              role,
-              universityId,
-            },
+          data: {
+            firstName,
+            lastName,
+            phoneNumber,
+            role,
+            universityId,
           },
         });
 
@@ -56,6 +53,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 
         return res.status(200).json(user);
       }
+
       res.status(400).end('Unsupported user request');
     } else if (req.method === 'DELETE') {
       const { id } = req.body;
