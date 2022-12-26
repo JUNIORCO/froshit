@@ -110,8 +110,9 @@ model Team {
   profiles Profile[]
 
   // dates
-  createdAt DateTime @default(now())
-  updatedAt DateTime @default(now()) @updatedAt
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @default(now()) @updatedAt
+  Message   Message[]
 
   // uniqueness
   @@unique([froshId, number]) // can't have two teams with the same number and frosh
@@ -134,6 +135,7 @@ model Profile {
   paymentType   PaymentType?
   interests     String?
   imageUrl      String?
+  program       String?
 
   // associations
   university   University @relation(fields: [universityId], references: [id])
@@ -146,11 +148,28 @@ model Profile {
   teamId String?
 
   // dates
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @default(now()) @updatedAt
+  Message   Message[]
+
+  // map
+  @@map("profile")
+}
+
+model Payment {
+  // id
+  id String @id @default(uuid())
+
+  // attributes
+  amount String
+  type   PaymentType
+
+  // dates
   createdAt DateTime @default(now())
   updatedAt DateTime @default(now()) @updatedAt
 
   // map
-  @@map("profile")
+  @@map("payment")
 }
 
 model ResourceTag {
@@ -220,4 +239,25 @@ model Offer {
 
   // map
   @@map("offer")
+}
+
+model Message {
+  // id
+  id String @id @default(uuid())
+
+  // attributes
+  content String
+
+  // associations
+  profile   Profile @relation(fields: [profileId], references: [id])
+  profileId String
+
+  team   Team   @relation(fields: [teamId], references: [id])
+  teamId String
+
+  // dates
+  createdAt DateTime @default(now())
+
+  // map
+  @@map("message")
 }
