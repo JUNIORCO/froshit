@@ -246,17 +246,17 @@ model Message {
   id String @id @default(uuid())
 
   // attributes
-  content String
-
-  // associations
-  profile   Profile @relation(fields: [profileId], references: [id])
-  profileId String
+  content          String
+  profileId        String
+  profileFirstName String
+  profileLastName  String
 
   team   Team   @relation(fields: [teamId], references: [id])
   teamId String
 
   // dates
   createdAt DateTime @default(now())
+  Profile   Profile  @relation(fields: [profileId], references: [id])
 
   // map
   @@map("message")
