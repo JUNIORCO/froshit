@@ -18,6 +18,8 @@ import AuthApi from '../../../../../../../prisma/api/AuthApi';
 import { Role, University } from 'prisma/types';
 import { CustomFile } from '../../../../../../components/upload';
 import RoleBasedGuard from '../../../../../../guards/RoleBasedGuard';
+import useSubdomain from '../../../../../../hooks/useSubdomain';
+import useRefresh from '../../../../../../hooks/useRefresh';
 
 UniversityIdentityPage.getLayout = function getLayout(page: React.ReactElement) {
   return <Layout>{page}</Layout>;
@@ -34,10 +36,11 @@ type UniversityIdentityPageProps = {
 
 export default function UniversityIdentityPage({ university }: UniversityIdentityPageProps) {
   const { themeStretch } = useSettings();
-
+  const { subdomain } = useSubdomain();
   const supabaseClient = useSupabaseClient();
   const { replace } = useRouter();
   const { enqueueSnackbar } = useSnackbar();
+  const { refreshData } = useRefresh();
 
   const NewTeamSchema = Yup.object().shape({
     imageUrl: Yup.mixed().test('required', 'University logo is required', (value) => value !== ''),
@@ -72,10 +75,52 @@ export default function UniversityIdentityPage({ university }: UniversityIdentit
   }, [university]);
 
   const onSubmit = async ({ imageUrl, color }: UniversityIdentityForm) => {
-    // const imagePath = `event/${imageUrl.name}`;
+    // user has not updated image
+    if (typeof imageUrl === 'string') {
+      enqueueSnackbar('Should update color only');
+      refreshData();
+      return;
+    }
 
-    enqueueSnackbar('University Identity updated');
-    void replace(PATH_DASHBOARD.settings.university_identity);
+    const splitImageUrl = university.imageUrl.split('/') || '';
+    const oldImagePath = splitImageUrl[splitImageUrl.length - 1];
+    const {
+      data: deleteData,
+      error: deleteError,
+    } = await supabaseClient
+      .storage
+      .from(subdomain)
+      .remove([oldImagePath]);
+
+    if (!deleteData || deleteError) {
+      enqueueSnackbar(`Error deleting old logo`, { variant: 'error' });
+      return;
+    }
+
+    const newImagePath = imageUrl.name;
+
+    const { data: uploadData, error: uploadError } = await supabaseClient
+      .storage
+      .from(subdomain)
+      .upload(newImagePath, imageUrl);
+
+    if (!uploadData || uploadError) {
+      enqueueSnackbar('Error uploading new logo', { variant: 'error' });
+      return;
+    }
+
+    const { data: { publicUrl: universityLogoUrl } } = supabaseClient
+      .storage
+      .from(subdomain)
+      .getPublicUrl(uploadData.path);
+
+    const { error } = await supabaseClient
+      .from('university')
+      .update({ imageUrl: universityLogoUrl })
+      .match({ id: university.id });
+
+    enqueueSnackbar(error ? 'Error updating row' : 'Logo updated', { variant: error ? 'error' : 'success' });
+    refreshData();
   };
 
   const handleDrop = useCallback(
