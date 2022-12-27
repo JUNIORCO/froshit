@@ -4,12 +4,14 @@ import { styles } from "./TeamCard.styles";
 import { Linking, View } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 
-export default function LeaderCard({ avatarUrl, name, phoneNumber, interests, programId }) {
+export default function LeaderCard({ imageUrl, firstName, lastName, phoneNumber, interests }) {
   const handlePhonePress = () => {
     void Linking.openURL(`tel:${phoneNumber}`);
   }
 
-  const LeftContent = props => <Avatar.Icon {...props} icon="account-circle-outline"/>;
+  const avatarIconProps = imageUrl ? { src: { uri: imageUrl } } : { icon: 'account-circle-outline' };
+
+  const LeftContent = props => <Avatar.Icon {...props} {...avatarIconProps} />;
 
   const RightContent = () => (
     <View style={{ marginRight: 12 }}>
@@ -20,8 +22,8 @@ export default function LeaderCard({ avatarUrl, name, phoneNumber, interests, pr
   return (
     <Card style={styles.container}>
       <Card.Title
-        title={name}
-        subtitle={`Program - ${programId.name}\nInterests - ${interests.join(', ')}`}
+        title={`${firstName} ${lastName}`}
+        subtitle={`Program - \nInterests - `}
         subtitleNumberOfLines={2}
         left={LeftContent}
         right={RightContent}

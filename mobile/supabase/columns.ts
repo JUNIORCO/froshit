@@ -1,6 +1,8 @@
 export const Tables = {
-  EVENT: 'Event',
-  PROFILE: 'Profile',
-  RESOURCE: 'Resource',
-  OFFER: 'Offer',
+  EVENT: 'event',
+  PROFILE: 'profile',
+  RESOURCE: 'resource',
+  MESSAGE: 'message',
+  OFFER: 'offer',
+  UNIVERSITY: 'university',
 };

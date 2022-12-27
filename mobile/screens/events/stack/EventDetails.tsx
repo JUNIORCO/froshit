@@ -1,5 +1,5 @@
 import { Image, Linking, Platform, Pressable, SafeAreaView, StyleSheet, Text, View } from "react-native";
-import EventsProvider from "../../../context/EventsContext";
+import EventsProvider from "../../../contexts/EventsContext";
 import React from "react";
 import { FontAwesome, Ionicons } from '@expo/vector-icons';
 import dayjs from "dayjs";
@@ -27,7 +27,7 @@ const styles = StyleSheet.create({
 });
 
 export default function EventDetails({ route }) {
-  const { name, location, startDate, endDate, description, accessibility } = route.params;
+  const { imageUrl, name, location, startDate, endDate, description, accessibility } = route.params;
 
   const handleLocationPress = () => {
     const scheme = Platform.select({ ios: 'maps:0,0?q=', android: 'geo:0,0?q=' });
@@ -38,7 +38,7 @@ export default function EventDetails({ route }) {
   return (
     <EventsProvider>
       <SafeAreaView style={styles.container}>
-        <Image source={{ uri: 'https://picsum.photos/700' }} style={{ width: '100%', height: 248, marginBottom: 16, }}/>
+        <Image source={{ uri: imageUrl }} style={{ width: '100%', height: 248, marginBottom: 16, }}/>
         <Text style={styles.titleText}>{name}</Text>
         <Text style={styles.descriptionText}>{description}</Text>
 

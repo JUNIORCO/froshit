@@ -2,7 +2,7 @@ import React, { useContext } from 'react';
 import { FlatList, Pressable, Text, View } from 'react-native';
 import { styles } from "./Calendar.styles";
 import HorizontalItemSeparatorComponent from "../../common/HorizontalItemSeparatorComponent";
-import { EventsContext } from "../../../context/EventsContext";
+import { EventsContext } from "../../../contexts/EventsContext";
 import { getDatesBetween } from "../../../utils/date";
 import dayjs from "../../../utils/dayjs";
 

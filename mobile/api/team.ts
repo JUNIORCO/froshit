@@ -1,18 +1,23 @@
 import { supabase } from "../supabase/supabase";
 import { Tables } from "../supabase/columns";
 import type { QueryKey } from "@tanstack/react-query";
+import { QueryFunctionContext } from "@tanstack/react-query";
 
-export const fetchTeam = async ({ queryKey }: QueryKey): Promise<any> => {
-  const [_key, { id }] = queryKey;
-  console.log(`api -> Fetching team ${id}`)
+type QueryKeyArg = {
+  teamId: string;
+}
+
+export const fetchTeam = async ({ queryKey }: QueryFunctionContext<[string, QueryKeyArg]>): Promise<any> => {
+  const [_key, { teamId }] = queryKey;
+  console.log(`api -> Fetching team ${teamId}`)
   const {
     data: team,
     error
   } = await supabase
     .from(Tables.PROFILE)
-    .select('id, role, name, phoneNumber, interests, programId (name), teamId (name)')
-    .eq('teamId', id)
-    .order('name', { ascending: true });
+    .select('*, teamId (name)')
+    .eq('teamId', teamId)
+    .order('firstName', { ascending: true });
 
   if (error) {
     console.error(`fetchTeam -> ${error.message}`);

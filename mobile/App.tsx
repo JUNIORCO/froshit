@@ -1,14 +1,13 @@
 import 'react-native-url-polyfill/auto';
 import { useEffect, useState } from 'react';
 import { supabase } from './supabase/supabase';
-import Auth from './components/Auth';
 import { Session } from '@supabase/supabase-js';
 import { NavigationContainer } from '@react-navigation/native';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import BOTTOM_TABS from "./layout/BottomTabs";
 import { focusManager, QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import type { AppStateStatus } from "react-native"
-import { Platform } from 'react-native'
+import { Alert, Platform } from 'react-native'
 import { useOnlineManager } from "./hooks/useOnlineManager";
 import { useAppState } from "./hooks/useAppState";
 import AppLoader from "./AppLoader";
@@ -17,6 +16,14 @@ import HeaderLeft from "./layout/HeaderLeft";
 import HeaderTitle from "./layout/HeaderTitle";
 import TabBarIcon from "./layout/TabBarIcon";
 import HeaderRight from "./layout/HeaderRight";
+import AuthAppLoader from "./AuthAppLoader";
+import { createStackNavigator } from '@react-navigation/stack';
+import UniversitySelectScreen from "./screens/auth/UniversitySelectScreen";
+import EmailInputScreen from "./screens/auth/EmailInputScreen";
+import VerifyCodeScreen from './screens/auth/VerifyCodeScreen';
+import { SessionProvider } from "./contexts/SessionContext";
+import { SignInProvider } from "./contexts/SignInContext";
+import { SignInScreenNames } from "./@types/navigation";
 
 export default function App() {
   /********************************************************************************************************************/
@@ -27,6 +34,8 @@ export default function App() {
       queries: {
         retry: 2,
         staleTime: 30 * 60000,
+        refetchOnWindowFocus: false,
+        refetchOnReconnect: true,
       }
     },
   });
@@ -45,15 +54,15 @@ export default function App() {
   /*                                                navigators                                                        */
   /********************************************************************************************************************/
   const Tab = createBottomTabNavigator();
-
+  const Stack = createStackNavigator();
 
   /********************************************************************************************************************/
   /*                                                   auth                                                           */
   /********************************************************************************************************************/
-  const [session, setSession] = useState<Session | null>(null);
+  const [session, setSession] = useState<Session | null>();
+  const [profile, setProfile] = useState<Record<string, any> | null>();
 
   useEffect(() => {
-    console.log('App.tsx -> App mounted...')
     supabase.auth.getSession().then(({ data: { session } }) => {
       setSession(session);
     });
@@ -63,47 +72,84 @@ export default function App() {
     });
   }, []);
 
-  // TODO only for development
-  if (!(session && session.user)) {
+  const fetchProfile = async (session: Session) => {
+    const userId = session.user.id;
+
+    const { data: userProfile, error: userProfileError } = await supabase
+      .from('profile')
+      .select('*, team(*)')
+      .eq('id', userId)
+      .single();
+
+    if (!userProfile || userProfileError) {
+      Alert.alert(userProfileError!.message);
+      return;
+    }
+
+    setProfile(userProfile);
+  }
+
+  useEffect(() => {
+    if (session && session.user) {
+      void fetchProfile(session);
+    }
+  }, [session])
+
+  if (session && session.user && profile) {
     return (
       <QueryClientProvider client={queryClient}>
-        <AppLoader
-          loadingComponent={<SplashImage/>}
-          minimumLoadingTime={__DEV__ ? 500 : 2000}
-        >
-          <NavigationContainer>
-            <Tab.Navigator
-              initialRouteName={BOTTOM_TABS.EVENTS.name}
-              screenOptions={{
-                headerStyle: {
-                  backgroundColor: '#ed1b2f'
-                },
-                tabBarActiveTintColor: '#ed1b2f',
-                headerTitle: (props) => <HeaderTitle {...props} />,
-                headerLeft: (props) => <HeaderLeft {...props}/>,
-                headerRight: (props) => <HeaderRight {...props}/>,
-              }}
-            >
-              {Object.entries(BOTTOM_TABS).map(([tabName, options]) => (
-                <Tab.Screen
-                  key={tabName}
-                  name={options.name}
-                  component={options.component}
-                  options={{
-                    tabBarIcon: (props) => <TabBarIcon name={options.icon} {...props}/>,
-                  }}
-                />
-              ))}
-            </Tab.Navigator>
-          </NavigationContainer>
-        </AppLoader>
+        <SessionProvider session={session} profile={profile}>
+          <AppLoader
+            loadingComponent={<SplashImage/>}
+            minimumLoadingTime={__DEV__ ? 500 : 2000}
+          >
+            <NavigationContainer>
+              <Tab.Navigator
+                initialRouteName={BOTTOM_TABS.EVENTS.name}
+                screenOptions={{
+                  headerStyle: {
+                    backgroundColor: '#ed1b2f'
+                  },
+                  tabBarActiveTintColor: '#ed1b2f',
+                  headerTitle: (props) => <HeaderTitle {...props} />,
+                  headerLeft: (props) => <HeaderLeft {...props}/>,
+                  headerRight: (props) => <HeaderRight {...props}/>,
+                }}
+              >
+                {Object.entries(BOTTOM_TABS).map(([tabName, options]) => (
+                  <Tab.Screen
+                    key={tabName}
+                    name={options.name}
+                    component={options.component}
+                    options={{
+                      tabBarIcon: (props) => <TabBarIcon name={options.icon} {...props}/>,
+                    }}
+                  />
+                ))}
+              </Tab.Navigator>
+            </NavigationContainer>
+          </AppLoader>
+        </SessionProvider>
       </QueryClientProvider>
     );
   }
 
   return (
     <QueryClientProvider client={queryClient}>
-      <Auth/>
+      <AuthAppLoader
+        loadingComponent={<SplashImage/>}
+        minimumLoadingTime={500}
+      >
+        <SignInProvider>
+          <NavigationContainer>
+            <Stack.Navigator screenOptions={{ headerShown: false }}>
+              <Stack.Screen name={SignInScreenNames.UNIVERSITY_SELECT} component={UniversitySelectScreen}/>
+              <Stack.Screen name={SignInScreenNames.EMAIL_INPUT} component={EmailInputScreen}/>
+              <Stack.Screen name={SignInScreenNames.VERIFY_CODE} component={VerifyCodeScreen}/>
+            </Stack.Navigator>
+          </NavigationContainer>
+        </SignInProvider>
+      </AuthAppLoader>
     </QueryClientProvider>
   );
 }

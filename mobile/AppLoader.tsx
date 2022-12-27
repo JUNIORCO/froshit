@@ -1,11 +1,7 @@
 // courtesy of https://javascript.plainenglish.io/how-to-handle-and-design-the-startup-of-a-react-application-da779f3727e5
 import { every } from "lodash";
 import React, { FC, Fragment, memo, ReactElement, useEffect, useState } from "react";
-import { useQuery } from "@tanstack/react-query";
-import QueryKeys from "./hooks/query/QueryKeys";
-import { fetchEvents } from "./api/events";
-import { fetchTeam } from "./api/team";
-import { useGetEvents, useGetOffers, useGetResources, useGetTeam } from "./hooks/query";
+import { useGetEvents, useGetMessages, useGetOffers, useGetResources, useGetTeam } from "./hooks/query";
 
 interface LoadingProcess {
   name: string;
@@ -28,6 +24,8 @@ interface Props {
    * @memberof Props
    */
   loadingComponent: ReactElement;
+
+  children: any;
 }
 
 /**
@@ -41,6 +39,7 @@ const AppLoader: FC<Props> = memo(props => {
   const { isLoading: teamIsLoading } = useGetTeam();
   const { isLoading: offersIsLoading } = useGetOffers();
   const { isLoading: resourcesIsLoading } = useGetResources();
+  const { isLoading: messagesIsLoading } = useGetMessages();
 
   // As long as not all screens are ready, display splashscreen
   const loadingProcesses: LoadingProcess[] = [
@@ -60,6 +59,10 @@ const AppLoader: FC<Props> = memo(props => {
       name: "fetch_resources",
       isReady: !resourcesIsLoading,
     },
+    {
+      name: "fetch_messaages",
+      isReady: !messagesIsLoading,
+    }
   ];
 
   // Handle potential minimum duration

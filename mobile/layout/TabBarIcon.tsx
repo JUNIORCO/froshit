@@ -1,8 +1,7 @@
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 
 interface Props {
-  icon: string;
-  props: any;
+  name: string;
 }
 
 export default function TabBarIcon({ name, ...props }: Props) {

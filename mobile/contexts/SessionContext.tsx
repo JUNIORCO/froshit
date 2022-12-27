@@ -1,22 +1,35 @@
-import { createContext, useState } from "react";
+import { createContext, ReactNode } from 'react';
 import { Session } from "@supabase/supabase-js";
 
-export const SessionContext = createContext({
-  session: {
-    user: null
-  },
-  setSession: (session: Session | null) => {},
-});
+export type ProfileContextProps = {
+  session: Session | null;
+  profile: Record<string, any> | null;
+}
 
-export default function SessionProvider({ children }: any) {
-  const [session, setSession] = useState<Session | null>(null);
+const initialState: ProfileContextProps = {
+  session: null,
+  profile: null,
+};
 
+const SessionContext = createContext(initialState);
+
+type ProfileProviderProps = {
+  session: Session | null;
+  profile: Record<string, any> | null;
+  children: ReactNode;
+};
+
+function SessionProvider({ session, profile, children }: ProfileProviderProps) {
   return (
     <SessionContext.Provider
       value={{
         session,
-        setSession
-      }}>
+        profile,
+      }}
+    >
       {children}
-    </SessionContext.Provider>);
+    </SessionContext.Provider>
+  );
 }
+
+export { SessionProvider, SessionContext };

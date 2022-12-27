@@ -1,9 +1,13 @@
-import React from 'react';
-import { FlatList, RefreshControl, SafeAreaView, StyleSheet, Text } from 'react-native';
-import VerticalItemSeparatorComponent from "../components/common/VerticalItemSeparatorComponent";
-import { useRefetchByUser } from "../hooks/useRefetchByUser";
-import { useGetOffers } from "../hooks/query";
-import OfferCard from "../components/offers/OfferCard";
+import React, { useEffect, useState } from 'react';
+import { StyleSheet } from 'react-native';
+import { Chat, MessageType } from '../components/chat'
+import useSession from "../hooks/useSession";
+import { uuid } from "@supabase/supabase-js/dist/main/lib/helpers";
+import { supabase } from "../supabase/supabase";
+import { useGetMessages } from "../hooks/query";
+import { formatMessage } from "../helpers/messageFormatter";
+import { Message } from "../@types/message";
+import { Tables } from "../supabase/columns";
 
 export const styles = StyleSheet.create({
   container: {
@@ -20,34 +24,73 @@ export const styles = StyleSheet.create({
   },
 });
 
-
 export default function ChatScreen() {
   const {
-    isLoading: teamIsLoading,
-    isError: teamIsError,
-    data: offers,
-    error: teamError,
-  } = useGetOffers();
-  const { isRefetchingByUser, refetchByUser } = useRefetchByUser();
+    isLoading: eventsIsLoading,
+    isError: eventsIsError,
+    data: messages,
+    error: eventsError,
+    refetch: refetchMessages,
+  } = useGetMessages();
 
-  const renderOfferCard = ({ item: offer }) => <OfferCard {...offer}/>;
+  const { profile } = useSession();
+  const user = { id: profile!.id };
+  const [displayedMessages, setDisplayedMessages] = useState<MessageType.Text[]>([]);
+
+  useEffect(() => {
+    if (messages) {
+      setDisplayedMessages(messages);
+    }
+  }, [messages])
+
+
+  const channel = supabase.channel('messages');
+
+  const handleSendPress = async (message: MessageType.PartialText) => {
+    const { data, error } = await supabase.from(Tables.MESSAGE).insert({
+      id: uuid(),
+      teamId: profile!.teamId,
+      profileId: profile!.id,
+      content: message.text,
+      profileFirstName: profile!.firstName,
+      profileLastName: profile!.lastName,
+      profileImageUrl: profile!.imageUrl || '',
+      profileRole: profile!.role,
+    })
+    console.log(error)
+  }
+
+  channel.on(
+    'postgres_changes',
+    {
+      event: 'INSERT',
+      schema: 'public',
+      table: 'message',
+      filter: `teamId=eq.${profile!.teamId}`,
+    },
+    (payload) => {
+      console.log('[realtime] new message receievd!')
+      const formattedMessage: MessageType.Text = formatMessage(payload.new as Message);
+      console.log('[realtime] formattedMessage : ', formattedMessage)
+      setDisplayedMessages((prev) => [formattedMessage, ...prev]);
+    }
+  )
+
+  channel.subscribe(async (status) => {
+    if (status === 'SUBSCRIBED') {
+      console.log('subscribed!');
+    }
+  })
 
   return (
-    <SafeAreaView style={styles.container}>
-      <Text style={styles.title}>Offers</Text>
-      <FlatList
-        data={offers}
-        showsVerticalScrollIndicator={false}
-        renderItem={renderOfferCard}
-        keyExtractor={item => item.id}
-        ItemSeparatorComponent={VerticalItemSeparatorComponent}
-        refreshControl={
-          <RefreshControl
-            refreshing={isRefetchingByUser}
-            onRefresh={refetchByUser}
-          />
-        }
-      />
-    </SafeAreaView>
+    <Chat
+      messages={displayedMessages}
+      onSendPress={handleSendPress}
+      user={user}
+      showUserAvatars
+      showUserNames
+      enableAnimation
+      timeFormat='h:m a'
+    />
   )
 }

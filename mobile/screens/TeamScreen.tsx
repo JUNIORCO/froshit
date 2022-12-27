@@ -5,6 +5,7 @@ import { useRefetchByUser } from "../hooks/useRefetchByUser";
 import { useGetTeam } from "../hooks/query";
 import LeaderCard from "../components/team/LeaderCard";
 import FrosheeCard from "../components/team/FrosheeCard";
+import useSession from "../hooks/useSession";
 
 export const styles = StyleSheet.create({
   container: {
@@ -23,6 +24,7 @@ export const styles = StyleSheet.create({
 
 
 export default function TeamScreen() {
+  const { profile } = useSession();
   const {
     isLoading: teamIsLoading,
     isError: teamIsError,
@@ -64,7 +66,7 @@ export default function TeamScreen() {
 
   return (
     <SafeAreaView style={styles.container}>
-      <Text style={styles.title}>{team[0]?.teamId.name}</Text>
+      <Text style={styles.title}>{profile!.team.name}</Text>
       <SectionList
         sections={formattedTeam}
         showsVerticalScrollIndicator={false}

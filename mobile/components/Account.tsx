@@ -1,6 +1,6 @@
-import { useState, useEffect } from 'react'
+import { useEffect, useState } from 'react'
 import { supabase } from '../supabase/supabase'
-import { StyleSheet, View, Alert } from 'react-native'
+import { Alert, StyleSheet, View } from 'react-native'
 import { Button, Input } from 'react-native-elements'
 import { Session } from '@supabase/supabase-js'
 
@@ -80,7 +80,7 @@ export default function Account({ session }: { session: Session }) {
   return (
     <View>
       <View style={[styles.verticallySpaced, styles.mt20]}>
-        <Input label="Email" value={session?.user?.email} disabled />
+        <Input label="Email" value={session?.user?.email} disabled/>
       </View>
       <View style={styles.verticallySpaced}>
         <Input
@@ -108,7 +108,7 @@ export default function Account({ session }: { session: Session }) {
       </View>
 
       <View style={styles.verticallySpaced}>
-        <Button title="Sign Out" onPress={() => supabase.auth.signOut()} />
+        <Button title="Sign Out" onPress={() => supabase.auth.signOut()}/>
       </View>
     </View>
   )

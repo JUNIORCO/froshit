@@ -3,7 +3,7 @@ import { FlatList, RefreshControl, Text, View } from 'react-native';
 import { styles } from "./EventList.styles";
 import EventCard from "./EventCard";
 import VerticalItemSeparatorComponent from "../../common/VerticalItemSeparatorComponent";
-import { EventsContext } from "../../../context/EventsContext";
+import { EventsContext } from "../../../contexts/EventsContext";
 import { useNavigation } from '@react-navigation/native';
 import { useRefetchByUser } from "../../../hooks/useRefetchByUser";
 

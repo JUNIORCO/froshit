@@ -1,12 +1,18 @@
-import { createContext, useEffect, useState } from "react";
+import { createContext, ReactNode, useEffect, useState } from "react";
 import dayjs from "../utils/dayjs";
 import { useGetEvents } from "../hooks/query";
 
-export const EventsContext = createContext({
-  selectedDate: null,
-});
+export type EventsContextProps = {};
 
-export default function EventsProvider({ children }) {
+const initialState: EventsContextProps = {};
+
+export const EventsContext = createContext(initialState);
+
+type EventsProviderProps = {
+  children: ReactNode;
+};
+
+export default function EventsProvider({ children }: EventsProviderProps) {
   const {
     isLoading: eventsIsLoading,
     isError: eventsIsError,
@@ -21,7 +27,7 @@ export default function EventsProvider({ children }) {
 
   useEffect(() => {
     if (selectedDate && events && events.length) {
-      setFilteredEvents(events.filter(({ startDate }) => dayjs(startDate).isSame(selectedDate, 'day')))
+      setFilteredEvents(events.filter(({ startDate }: any) => dayjs(startDate).isSame(selectedDate, 'day')))
     }
   }, [events, selectedDate]);
 

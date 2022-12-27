@@ -1,8 +1,13 @@
 import { useQuery } from "@tanstack/react-query";
-import QueryKeys from "./QueryKeys";
+import QueryKeys from "../../@types/QueryKeys";
 import { fetchOffers } from "../../api/offers";
+import useSession from "../useSession";
 
-export const useGetOffers = () => useQuery({
-  queryKey: [QueryKeys.OFFERS, { id: '1678f7bf-7a13-477c-942c-c85dcadfdd40' }],
-  queryFn: fetchOffers
-});
+export const useGetOffers = () => {
+  const { profile } = useSession();
+  const universityId = profile!.universityId;
+  return useQuery({
+    queryKey: [QueryKeys.OFFERS, { universityId }],
+    queryFn: fetchOffers
+  })
+};

@@ -1,5 +1,5 @@
 import { SafeAreaView, StyleSheet } from "react-native";
-import EventsProvider from "../../../context/EventsContext";
+import EventsProvider from "../../../contexts/EventsContext";
 import Calendar from "../../../components/events/Calendar/Calendar";
 import EventList from "../../../components/events/EventList/EventList";
 

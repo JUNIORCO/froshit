@@ -1,16 +1,20 @@
 {
   "expo": {
-    "name": "froshit",
-    "slug": "froshit",
+    "name": "FROSHIT",
+    "slug": "FROSHIT",
     "owner": "froshit",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
-    "userInterfaceStyle": "light",
+    "privacy": "hidden",
+    "platforms": [
+      "ios",
+      "android"
+    ],
     "splash": {
-      "image": "./assets/splash.png",
+      "image": "./assets/icon.png",
       "resizeMode": "contain",
-      "backgroundColor": "#ffffff"
+      "backgroundColor": "#AEAEAE"
     },
     "updates": {
       "fallbackToCacheTimeout": 0
@@ -20,18 +24,19 @@
     ],
     "ios": {
       "supportsTablet": false,
-      "infoPlist": {
-        "NSAllowsArbitraryLoads": true
-      }
+      "bundleIdentifier": "com.domainname.froshit",
     },
     "android": {
       "adaptiveIcon": {
-        "foregroundImage": "./assets/adaptive-icon.png",
-        "backgroundColor": "#FFFFFF"
-      }
+        "foregroundImage": "./assets/icon.png",
+        "backgroundColor": "#AEAEAE"
+      },
+      "package": "com.domainname.froshit"
     },
-    "web": {
-      "favicon": "./assets/favicon.png"
+    "extra": {
+      "eas": {
+        "projectId": "461772ce-36c0-41dd-8837-4cb669bab20f"
+      }
     }
   }
 }
