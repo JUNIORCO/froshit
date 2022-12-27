@@ -16,7 +16,6 @@ import useSettings from '../../../../../hooks/useSettings';
 import Layout from '../../../../../layouts';
 import Page from '../../../../../components/Page';
 import HeaderBreadcrumbs from '../../../../../components/HeaderBreadcrumbs';
-import RoleBasedGuard from '../../../../../guards/RoleBasedGuard';
 import { FormProvider, RHFSelect, RHFTextField } from '../../../../../components/hook-form';
 import { LoadingButton } from '@mui/lab';
 import useProfile from '../../../../../hooks/useProfile';
@@ -129,7 +128,7 @@ export default function UserInvite({ initialProfiles }: Props) {
     }
 
     enqueueSnackbar('User invited');
-    refreshData()
+    refreshData();
   };
 
   const handleDeleteRow = async (id: string) => {
@@ -154,103 +153,101 @@ export default function UserInvite({ initialProfiles }: Props) {
   const roleOptions = profile!.role === Role.Admin ? [Role.Organizer, Role.Leader] : [Role.Leader];
 
   return (
-    <RoleBasedGuard hasContent roles={[Role.Admin]}>
-      <Page title='Invite User'>
-        <Container maxWidth={themeStretch ? false : 'lg'}>
-          <HeaderBreadcrumbs
-            heading={profile!.role === Role.Admin ? 'Invite an Organizer/Leader' : 'Invite a Leader'}
-            links={[
-              { name: 'Dashboard', href: PATH_DASHBOARD.root },
-              { name: 'Invite' },
-            ]}
-          />
+    <Page title='Invite User'>
+      <Container maxWidth={themeStretch ? false : 'lg'}>
+        <HeaderBreadcrumbs
+          heading={profile!.role === Role.Admin ? 'Invite an Organizer/Leader' : 'Invite a Leader'}
+          links={[
+            { name: 'Dashboard', href: PATH_DASHBOARD.root },
+            { name: 'Invite' },
+          ]}
+        />
 
-          <FormProvider methods={methods} onSubmit={handleSubmit(onSubmit)}>
-            <Grid container spacing={3}>
-              <Grid item xs={12} md={8}>
-                <Card sx={{ p: 3 }}>
-                  <Box
-                    sx={{
-                      display: 'grid',
-                      columnGap: 2,
-                      rowGap: 3,
-                      gridTemplateColumns: { xs: 'repeat(1, 1fr)', sm: 'repeat(2, 1fr)' },
-                    }}
-                  >
-                    <RHFTextField name='email' label='Email' />
+        <FormProvider methods={methods} onSubmit={handleSubmit(onSubmit)}>
+          <Grid container spacing={3}>
+            <Grid item xs={12} md={8}>
+              <Card sx={{ p: 3 }}>
+                <Box
+                  sx={{
+                    display: 'grid',
+                    columnGap: 2,
+                    rowGap: 3,
+                    gridTemplateColumns: { xs: 'repeat(1, 1fr)', sm: 'repeat(2, 1fr)' },
+                  }}
+                >
+                  <RHFTextField name='email' label='Email' />
 
-                    <RHFTextField name='firstName' label='First Name' />
+                  <RHFTextField name='firstName' label='First Name' />
 
-                    <RHFTextField name='lastName' label='Last Name' />
+                  <RHFTextField name='lastName' label='Last Name' />
 
-                    <RHFTextField name='phoneNumber' label='Phone Number' />
+                  <RHFTextField name='phoneNumber' label='Phone Number' />
 
-                    <RHFSelect name='role' label='Role' placeholder='Role' disabled={profile!.role === Role.Organizer}>
-                      <option value='' />
-                      {roleOptions.map((role) => (
-                        <option key={role} value={role}>
-                          {role}
-                        </option>
-                      ))}
-                    </RHFSelect>
-                  </Box>
+                  <RHFSelect name='role' label='Role' placeholder='Role' disabled={profile!.role === Role.Organizer}>
+                    <option value='' />
+                    {roleOptions.map((role) => (
+                      <option key={role} value={role}>
+                        {role}
+                      </option>
+                    ))}
+                  </RHFSelect>
+                </Box>
 
-                  <Stack alignItems='flex-end' sx={{ mt: 3 }}>
-                    <LoadingButton type='submit' variant='contained' loading={isSubmitting}>
-                      Invite User
-                    </LoadingButton>
-                  </Stack>
-                </Card>
-              </Grid>
+                <Stack alignItems='flex-end' sx={{ mt: 3 }}>
+                  <LoadingButton type='submit' variant='contained' loading={isSubmitting}>
+                    Invite User
+                  </LoadingButton>
+                </Stack>
+              </Card>
             </Grid>
-          </FormProvider>
+          </Grid>
+        </FormProvider>
 
-          <Typography variant='h5' paragraph sx={{ mt: 5 }}>
-            Invited Organizers & Leaders
-          </Typography>
+        <Typography variant='h5' paragraph sx={{ mt: 5 }}>
+          Invited Organizers & Leaders
+        </Typography>
 
-          <Card>
-            <Scrollbar>
-              <TableContainer sx={{ minWidth: 800, position: 'relative' }}>
-                <Table size='small'>
-                  <TableBody>
-                    {profiles
-                      .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
-                      .map((row) => (
-                        <AdminOrganizerTableRow
-                          key={row.id}
-                          row={row}
-                          onDeleteRow={() => handleDeleteRow(row.id)}
-                        />
-                      ))}
+        <Card>
+          <Scrollbar>
+            <TableContainer sx={{ minWidth: 800, position: 'relative' }}>
+              <Table size='small'>
+                <TableBody>
+                  {profiles
+                    .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
+                    .map((row) => (
+                      <AdminOrganizerTableRow
+                        key={row.id}
+                        row={row}
+                        onDeleteRow={() => handleDeleteRow(row.id)}
+                      />
+                    ))}
 
-                    <TableEmptyRows
-                      height={52}
-                      emptyRows={emptyRows(page, rowsPerPage, profiles.length)}
-                    />
+                  <TableEmptyRows
+                    height={52}
+                    emptyRows={emptyRows(page, rowsPerPage, profiles.length)}
+                  />
 
-                    <TableNoData isNotFound={isNotFound} />
-                  </TableBody>
-                </Table>
-              </TableContainer>
-            </Scrollbar>
+                  <TableNoData isNotFound={isNotFound} />
+                </TableBody>
+              </Table>
+            </TableContainer>
+          </Scrollbar>
 
-            <Box sx={{ position: 'relative' }}>
-              <TablePagination
-                rowsPerPageOptions={[5, 10, 25]}
-                component='div'
-                count={profiles.length}
-                rowsPerPage={rowsPerPage}
-                page={page}
-                onPageChange={onChangePage}
-                onRowsPerPageChange={onChangeRowsPerPage}
-              />
-            </Box>
+          <Box sx={{ position: 'relative' }}>
+            <TablePagination
+              rowsPerPageOptions={[5, 10, 25]}
+              component='div'
+              count={profiles.length}
+              rowsPerPage={rowsPerPage}
+              page={page}
+              onPageChange={onChangePage}
+              onRowsPerPageChange={onChangeRowsPerPage}
+            />
+          </Box>
 
-          </Card>
-        </Container>
-      </Page>
-    </RoleBasedGuard>
+        </Card>
+      </Container>
+    </Page>
   );
 }
 
