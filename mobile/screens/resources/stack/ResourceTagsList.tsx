@@ -67,7 +67,7 @@ export default function ResourceTagsList() {
 
   return (
     <SafeAreaView style={styles.container}>
-      <Text style={styles.title}>Offers</Text>
+      <Text style={styles.title}>Resources</Text>
       <FlatList
         columnWrapperStyle={{ justifyContent: 'space-between' }}
         data={resourcesGroupedByResourceTag}

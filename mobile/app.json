@@ -11,11 +11,6 @@
       "ios",
       "android"
     ],
-    "splash": {
-      "image": "./assets/icon.png",
-      "resizeMode": "contain",
-      "backgroundColor": "#AEAEAE"
-    },
     "updates": {
       "fallbackToCacheTimeout": 0
     },

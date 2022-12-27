@@ -49,7 +49,7 @@ class AnalyticsApi {
   }));
 
   /**
-   * Gets the number of froshees in each frosh
+   * Gets the number of froshees in each froshs
    */
   private async getFroshProfilesCount({ role }: { role: Role }): Promise<FormattedFroshProfileCount[]> {
     const froshProfileCount = await prisma.frosh.findMany({
@@ -73,7 +73,7 @@ class AnalyticsApi {
   };
 
   /**
-   * Gets the total amount paid per frosh
+   * Gets the total amount paid per froshs
    */
   private async getFroshsTotalAmountPaid(): Promise<FroshTotalAmountPaid[]> {
     const froshTotalAmountPaid = await prisma.$queryRaw<FroshTotalAmountPaid[]>(
@@ -181,12 +181,12 @@ class AnalyticsApi {
       totalLeaders: roleCounts[Role.Leader],
       totalFroshees: roleCounts[Role.Froshee],
 
-      // frosh analytics
+      // froshs analytics
       froshFrosheeCount,
       froshLeaderCount,
       froshsTotalAmountPaid,
 
-      // froshee registration analytics
+      // froshees registration analytics
       frosheesRegisteredAnalytics,
     };
   }

@@ -10,7 +10,7 @@ import { GetServerSideProps } from 'next';
 import type { Frosh, Team } from '../../../../../../prisma/types';
 import AuthApi from '../../../../../../prisma/api/AuthApi';
 
-UserCreate.getLayout = function getLayout(page: React.ReactElement) {
+UserCreateFroshee.getLayout = function getLayout(page: React.ReactElement) {
   return <Layout>{page}</Layout>;
 };
 
@@ -19,18 +19,18 @@ type Props = {
   teams: Team[];
 }
 
-export default function UserCreate({ froshs, teams }: Props) {
+export default function UserCreateFroshee({ froshs, teams }: Props) {
   const { themeStretch } = useSettings();
 
   return (
-    <Page title='Create User'>
+    <Page title='Create Froshee'>
       <Container maxWidth={themeStretch ? false : 'lg'}>
         <HeaderBreadcrumbs
-          heading='Create a New User'
+          heading='Create a New Froshee'
           links={[
             { name: 'Dashboard', href: PATH_DASHBOARD.root },
-            { name: 'Users', href: PATH_DASHBOARD.user.root },
-            { name: 'New User' },
+            { name: 'Froshees', href: PATH_DASHBOARD.froshees.root },
+            { name: 'New' },
           ]}
         />
         <UserNewEditForm froshs={froshs} teams={teams} />

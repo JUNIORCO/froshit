@@ -14,6 +14,7 @@ class ProfileApi {
     return prisma.profile.findMany({
       where: {
         universityId: this.profile.universityId,
+        role: Role.Froshee,
       },
       include: {
         frosh: true,

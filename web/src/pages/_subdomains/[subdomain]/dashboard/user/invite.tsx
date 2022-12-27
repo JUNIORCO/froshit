@@ -103,7 +103,7 @@ export default function UserInvite({ initialProfiles }: Props) {
     firstName: '',
     lastName: '',
     phoneNumber: '',
-    role: '',
+    role: profile!.role === Role.Admin ? '' : Role.Leader,
     universityId: profile?.universityId,
   };
 
@@ -129,7 +129,7 @@ export default function UserInvite({ initialProfiles }: Props) {
     }
 
     enqueueSnackbar('User invited');
-    void push(PATH_DASHBOARD.user.root);
+    refreshData()
   };
 
   const handleDeleteRow = async (id: string) => {
@@ -151,15 +151,16 @@ export default function UserInvite({ initialProfiles }: Props) {
 
   const isNotFound = !profiles.length;
 
+  const roleOptions = profile!.role === Role.Admin ? [Role.Organizer, Role.Leader] : [Role.Leader];
+
   return (
     <RoleBasedGuard hasContent roles={[Role.Admin]}>
       <Page title='Invite User'>
         <Container maxWidth={themeStretch ? false : 'lg'}>
           <HeaderBreadcrumbs
-            heading='Invite a New Organizer/Leader'
+            heading={profile!.role === Role.Admin ? 'Invite an Organizer/Leader' : 'Invite a Leader'}
             links={[
               { name: 'Dashboard', href: PATH_DASHBOARD.root },
-              { name: 'Users', href: PATH_DASHBOARD.user.root },
               { name: 'Invite' },
             ]}
           />
@@ -184,9 +185,9 @@ export default function UserInvite({ initialProfiles }: Props) {
 
                     <RHFTextField name='phoneNumber' label='Phone Number' />
 
-                    <RHFSelect name='role' label='Role' placeholder='Role'>
+                    <RHFSelect name='role' label='Role' placeholder='Role' disabled={profile!.role === Role.Organizer}>
                       <option value='' />
-                      {[Role.Organizer, Role.Leader].map((role) => (
+                      {roleOptions.map((role) => (
                         <option key={role} value={role}>
                           {role}
                         </option>
@@ -203,9 +204,11 @@ export default function UserInvite({ initialProfiles }: Props) {
               </Grid>
             </Grid>
           </FormProvider>
+
           <Typography variant='h5' paragraph sx={{ mt: 5 }}>
-            Invited Users
+            Invited Organizers & Leaders
           </Typography>
+
           <Card>
             <Scrollbar>
               <TableContainer sx={{ minWidth: 800, position: 'relative' }}>

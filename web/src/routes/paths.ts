@@ -44,13 +44,14 @@ export const PATH_DASHBOARD = {
     booking: path(ROOTS_DASHBOARD, '/booking'),
   },
   user: {
-    root: path(ROOTS_DASHBOARD, '/user'),
-    new: path(ROOTS_DASHBOARD, '/user/new'),
     profile: path(ROOTS_DASHBOARD, '/user/profile'),
-    account: path(ROOTS_DASHBOARD, '/user/account'),
-    edit: (id: string) => path(ROOTS_DASHBOARD, `/user/${id}/edit`),
-    view: (id: string) => path(ROOTS_DASHBOARD, `/user/${id}/view`),
     invite: path(ROOTS_DASHBOARD, '/user/invite'),
+  },
+  froshees: {
+    root: path(ROOTS_DASHBOARD, '/froshees'),
+    new: path(ROOTS_DASHBOARD, '/froshees/new'),
+    edit: (id: string) => path(ROOTS_DASHBOARD, `/froshees/${id}/edit`),
+    view: (id: string) => path(ROOTS_DASHBOARD, `/froshees/${id}/view`),
   },
   team: {
     root: path(ROOTS_DASHBOARD, '/team'),
@@ -58,9 +59,9 @@ export const PATH_DASHBOARD = {
     edit: (id: string) => path(ROOTS_DASHBOARD, `/team/${id}/edit`),
     view: (id: string) => path(ROOTS_DASHBOARD, `/team/${id}/view`),
   },
-  frosh: {
-    root: path(ROOTS_DASHBOARD, '/frosh'),
-    new: path(ROOTS_DASHBOARD, '/frosh/new'),
+  froshs: {
+    root: path(ROOTS_DASHBOARD, '/froshs'),
+    new: path(ROOTS_DASHBOARD, '/froshs/new'),
     edit: (id: string) => path(ROOTS_DASHBOARD, `/frosh/${id}/edit`),
     view: (id: string) => path(ROOTS_DASHBOARD, `/frosh/${id}/view`),
   },

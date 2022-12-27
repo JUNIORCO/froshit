@@ -57,10 +57,31 @@ npm run next:dev
 
 It will be running on [http://localhost:3000](http://localhost:3000)
 
-## Deployment
+### Web Deployment
 
 Automatic deployment when you push to `main` branch. Make sure you verify the build before deploying!
 
 ```bash
 npm run next:build
 ```
+
+[Link to Vercel](https://vercel.com/juniorco/froshit)
+
+## Mobile
+### Expo Go Development
+
+Will open the app in Expo Go, so you can debug on the downloaded Expo Go app on your phone or on a simulator.
+
+```bash
+expo start
+```
+
+### Testing Deployment
+
+To invite a user, run `eas device:create`
+
+`eas build --profile preview --platform all`
+
+`npx expo prebuild -p ios && xed ios`
+
+

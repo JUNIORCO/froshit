@@ -10,16 +10,11 @@ import { StackNavigationProp } from '@react-navigation/stack';
 import { SignInScreenNames, SignInStackParamList } from "../../@types/navigation";
 
 export default function EmailInputScreen() {
-  const { selectedUniversityId, email, setEmail, resetSignInFields } = useSignIn();
+  const { email, setEmail, resetSignInFields } = useSignIn();
   const navigation = useNavigation<StackNavigationProp<SignInStackParamList>>();
 
   const handleNextScreen = () => {
     navigation.navigate(SignInScreenNames.VERIFY_CODE);
-  };
-
-  const handleBackPress = () => {
-    resetSignInFields();
-    navigation.navigate(SignInScreenNames.UNIVERSITY_SELECT);
   };
 
   async function signInWithEmail() {
@@ -33,12 +28,6 @@ export default function EmailInputScreen() {
 
     if (!dbProfile || profileError) {
       Alert.alert('User not found');
-      return;
-    }
-
-    // check if profile belongs to university
-    if (dbProfile.university.id !== selectedUniversityId) {
-      Alert.alert('User does not belong to this university');
       return;
     }
 
@@ -81,10 +70,6 @@ export default function EmailInputScreen() {
           title="Sign in"
           disabled={!email.match(/^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/)}
           onPress={signInWithEmail}
-        />
-        <BackButton
-          title="Back"
-          onPress={handleBackPress}
         />
       </View>
     </View>

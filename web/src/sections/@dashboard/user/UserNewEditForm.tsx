@@ -10,12 +10,10 @@ import { LoadingButton } from '@mui/lab';
 import { Box, Card, FormControlLabel, Grid, Stack, Switch, Typography } from '@mui/material';
 import { fData } from '../../../utils/formatNumber';
 import { PATH_DASHBOARD } from '../../../routes/paths';
-import Label from '../../../components/Label';
 import { CustomFile } from '../../../components/upload';
 import { FormProvider, RHFSelect, RHFTextField, RHFUploadAvatar } from '../../../components/hook-form';
-import { RHFMultiSelect } from '../../../components/hook-form/RHFMultiSelect';
 import { FullProfile } from '../../../../prisma/api/@types';
-import { Frosh, Profile, Role, Team } from '../../../../prisma/types';
+import { Frosh, Profile, Team } from '../../../../prisma/types';
 import useProfile from '../../../hooks/useProfile';
 
 const sendProfileRequest = async (url: string, { arg }: any) => {
@@ -41,11 +39,7 @@ type Props = {
   teams: Team[];
 };
 
-export default function UserNewEditForm({
-                                          currentUser,
-                                          froshs,
-                                          teams,
-                                        }: Props) {
+export default function UserNewEditForm({ currentUser, froshs, teams }: Props) {
   const { profile } = useProfile();
   const url = !currentUser ? '/api/profile' : `/api/profile/${currentUser.id}`;
   const method = !currentUser ? 'POST' : 'PATCH';
@@ -60,7 +54,6 @@ export default function UserNewEditForm({
     lastName: Yup.string().required('Last name is required'),
     email: Yup.string().required('Email is required').email(),
     phoneNumber: Yup.string().required('Phone number is required'),
-    role: Yup.mixed().oneOf(Object.values(Role)).required('Role is required'),
     froshId: Yup.string().defined(),
     teamId: Yup.string().defined(),
   });
@@ -71,7 +64,6 @@ export default function UserNewEditForm({
       lastName: currentUser?.lastName || '',
       email: currentUser?.email || '',
       phoneNumber: currentUser?.phoneNumber || '',
-      role: currentUser?.role,
       froshId: currentUser?.froshId || '',
       teamId: currentUser?.teamId || '',
       universityId: profile?.universityId,
@@ -86,14 +78,11 @@ export default function UserNewEditForm({
 
   const {
     reset,
-    watch,
     control,
     setValue,
     handleSubmit,
     formState: { isSubmitting },
   } = methods;
-
-  const values = watch();
 
   useEffect(() => {
     if (currentUser) {
@@ -110,7 +99,7 @@ export default function UserNewEditForm({
         method,
       });
       enqueueSnackbar(!currentUser ? 'Created user' : 'Updated user');
-      void push(PATH_DASHBOARD.user.root);
+      void push(PATH_DASHBOARD.froshees.root);
     } catch (error) {
       console.error(error);
     }
@@ -137,15 +126,6 @@ export default function UserNewEditForm({
       <Grid container spacing={3}>
         <Grid item xs={12} md={4}>
           <Card sx={{ py: 10, px: 3 }}>
-            {currentUser && (
-              <Label
-                color={values.status !== 'active' ? 'error' : 'success'}
-                sx={{ textTransform: 'uppercase', position: 'absolute', top: 24, right: 24 }}
-              >
-                {values.status}
-              </Label>
-            )}
-
             <Box sx={{ mb: 5 }}>
               <RHFUploadAvatar
                 name='avatarUrl'
@@ -162,7 +142,7 @@ export default function UserNewEditForm({
                       color: 'text.secondary',
                     }}
                   >
-                    Allowed *.jpeg, *.jpg, *.png, *.gif
+                    Allowed *.jpeg, *.jpg, *.png
                     <br /> max size of {fData(3145728)}
                   </Typography>
                 }
@@ -214,18 +194,12 @@ export default function UserNewEditForm({
               }}
             >
               <RHFTextField name='firstName' label='First Name' />
-              <RHFTextField name='lastName' label='Last Name' />
-              <RHFTextField name='email' label='Email Address' />
-              <RHFTextField name='phoneNumber' label='Phone Number' />
 
-              <RHFSelect name='role' label='Role' placeholder='Role'>
-                <option value='' />
-                {[Role.Froshee].map((role) => (
-                  <option key={role} value={role}>
-                    {role}
-                  </option>
-                ))}
-              </RHFSelect>
+              <RHFTextField name='lastName' label='Last Name' />
+
+              <RHFTextField name='email' label='Email Address' />
+
+              <RHFTextField name='phoneNumber' label='Phone Number' />
 
               <RHFSelect name='froshId' label='Frosh' placeholder='Frosh'>
                 <option value='' />

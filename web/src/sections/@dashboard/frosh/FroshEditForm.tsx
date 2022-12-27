@@ -68,7 +68,7 @@ export default function FroshEditForm({ currentFrosh, view }: Props) {
     }
 
     enqueueSnackbar('Frosh updated');
-    void push(PATH_DASHBOARD.frosh.root);
+    void push(PATH_DASHBOARD.froshs.root);
   };
 
   const marksLabel = [...Array(21)].map((_, index) => {

@@ -85,7 +85,7 @@ export default function TeamNewForm({
     const { error } = await trigger(teamToCreate);
     if (error) {
       if (error.code === 'P2002' && isEqual(error.meta.target, ['froshId', 'number'])) {
-        enqueueSnackbar('Team number already taken for selected frosh', { variant: 'error' });
+        enqueueSnackbar('Team number already taken for selected froshs', { variant: 'error' });
       }
       return;
     }

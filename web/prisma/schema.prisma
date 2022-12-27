@@ -115,7 +115,7 @@ model Team {
   Message   Message[]
 
   // uniqueness
-  @@unique([froshId, number]) // can't have two teams with the same number and frosh
+  @@unique([froshId, number]) // can't have two teams with the same number and froshs
   // map
   @@map("team")
 }
@@ -126,7 +126,7 @@ model Profile {
 
   // attributes
   email         String       @unique
-  phoneNumber   String       @unique
+  phoneNumber   String?       @unique
   firstName     String
   lastName      String
   role          Role
@@ -141,16 +141,17 @@ model Profile {
   university   University @relation(fields: [universityId], references: [id])
   universityId String
 
-  frosh   Frosh?  @relation(fields: [froshId], references: [id], onDelete: SetNull) // optional because admin/organizers are not part of a frosh
+  frosh   Frosh?  @relation(fields: [froshId], references: [id], onDelete: SetNull) // optional because admin/organizers are not part of a froshs
   froshId String?
 
   team   Team?   @relation(fields: [teamId], references: [id], onDelete: SetNull) // optional because admin/organizers are not part of a team
   teamId String?
 
+  messages   Message[]
+
   // dates
   createdAt DateTime  @default(now())
   updatedAt DateTime  @default(now()) @updatedAt
-  Message   Message[]
 
   // map
   @@map("profile")
@@ -229,7 +230,7 @@ model Offer {
   color       String
 
   // associations
-  // TODO maybe change to frosh?
+  // TODO maybe change to froshs?
   university   University @relation(fields: [universityId], references: [id])
   universityId String
 
@@ -249,7 +250,7 @@ model Message {
   content          String
   profileFirstName String
   profileLastName  String
-  profileImageUrl  String
+  profileImageUrl  String?
   profileRole      Role
 
   // associations

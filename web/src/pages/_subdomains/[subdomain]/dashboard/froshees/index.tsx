@@ -39,7 +39,6 @@ const TABLE_HEAD = [
   { id: 'firstName', label: 'Name', align: 'left' },
   { id: 'email', label: 'Email', align: 'left' },
   { id: 'phoneNumber', label: 'Phone Number', align: 'left' },
-  { id: 'role', label: 'Role', align: 'left' },
   { id: 'froshId', label: 'Frosh', align: 'left' },
   { id: 'teamId', label: 'Team', align: 'left' },
   { id: 'paid', label: 'Paid', align: 'left' },
@@ -63,23 +62,16 @@ export default function UserList({ users }: UserListProps) {
     rowsPerPage,
     setPage,
     onSort,
-    onChangeDense,
     onChangePage,
     onChangeRowsPerPage,
   } = useTable();
-
-  const ROLE_OPTIONS = ['All', ...Object.values(Role)];
 
   const theme = useTheme();
   const { themeStretch } = useSettings();
 
   const { push } = useRouter();
 
-  const [tableData, setTableData] = useState<UsersForUserList[]>(users);
-
   const [filterName, setFilterName] = useState<string>('');
-
-  const [filterRole, setFilterRole] = useState<string>('All');
 
   const { currentTab: filterTab, onChangeTab: onChangeFilterTab } = useTabs('All');
 
@@ -88,23 +80,18 @@ export default function UserList({ users }: UserListProps) {
     setPage(0);
   };
 
-  const handleFilterRole = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setFilterRole(event.target.value);
-  };
-
   const handleViewRow = (id: string) => {
-    void push(PATH_DASHBOARD.user.view(id));
+    void push(PATH_DASHBOARD.froshees.view(id));
   };
 
   const handleEditRow = (id: string) => {
-    void push(PATH_DASHBOARD.user.edit(id));
+    void push(PATH_DASHBOARD.froshees.edit(id));
   };
 
   const dataFiltered = applySortFilter({
-    tableData,
+    tableData: users,
     comparator: getComparator(order, orderBy),
     filterName,
-    filterRole,
     filterTab,
   });
 
@@ -112,7 +99,6 @@ export default function UserList({ users }: UserListProps) {
 
   const isNotFound =
     (!dataFiltered.length && !!filterName) ||
-    (!dataFiltered.length && !!filterRole) ||
     (!dataFiltered.length && !!filterTab);
 
   const {
@@ -143,17 +129,17 @@ export default function UserList({ users }: UserListProps) {
   });
 
   return (
-    <Page title='User List'>
+    <Page title='Froshees List'>
       <Container maxWidth={themeStretch ? false : 'lg'}>
         <HeaderBreadcrumbs
-          heading='User List'
+          heading='Froshees List'
           links={[
             { name: 'Dashboard', href: PATH_DASHBOARD.general.app },
-            { name: 'Users', href: PATH_DASHBOARD.user.root },
+            { name: 'Froshees', href: PATH_DASHBOARD.froshees.root },
             { name: 'List' },
           ]}
           action={
-            <NextLink href={PATH_DASHBOARD.user.new} passHref style={{ textDecoration: 'none' }}>
+            <NextLink href={PATH_DASHBOARD.froshees.new} passHref style={{ textDecoration: 'none' }}>
               <Button variant='contained' startIcon={<Iconify icon={'eva:plus-fill'} />}>
                 New Froshee
               </Button>
@@ -206,11 +192,7 @@ export default function UserList({ users }: UserListProps) {
 
           <UserTableToolbar
             filterName={filterName}
-            filterRole={filterRole}
             onFilterName={handleFilterName}
-            onFilterRole={handleFilterRole}
-            optionsRole={ROLE_OPTIONS}
-            currentTab={filterTab}
           />
 
           <Scrollbar>
@@ -237,7 +219,7 @@ export default function UserList({ users }: UserListProps) {
 
                   <TableEmptyRows
                     height={denseHeight}
-                    emptyRows={emptyRows(page, rowsPerPage, tableData.length)}
+                    emptyRows={emptyRows(page, rowsPerPage, users.length)}
                   />
 
                   <TableNoData isNotFound={isNotFound} />
@@ -268,13 +250,11 @@ const applySortFilter = ({
                            comparator,
                            filterName,
                            filterTab,
-                           filterRole,
                          }: {
   tableData: UsersForUserList[];
   comparator: (a: any, b: any) => number;
   filterName: string;
   filterTab: string;
-  filterRole: string;
 }): UsersForUserList[] => {
   const stabilizedThis = tableData.map((el, index) => [el, index] as const);
 
@@ -310,10 +290,6 @@ const applySortFilter = ({
         tableData = tableData.filter((user) => [Role.Leader, Role.Froshee].includes(user.role) && user.team === null);
         break;
     }
-  }
-
-  if (filterRole !== 'All') {
-    tableData = tableData.filter((item) => item.role === filterRole);
   }
 
   return tableData;

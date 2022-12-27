@@ -23,13 +23,13 @@ export default function UserEdit({ user, froshs, teams }: UserEditProps) {
   const { themeStretch } = useSettings();
 
   return (
-    <Page title='User Edit'>
+    <Page title='Edit Froshee'>
       <Container maxWidth={themeStretch ? false : 'lg'}>
         <Box sx={{ mb: 5 }}>
           <Box sx={{ display: 'flex', alignItems: 'center' }}>
             <Box sx={{ flexGrow: 1 }}>
               <Typography variant='h4' gutterBottom>
-                Edit User
+                Edit Froshee
               </Typography>
             </Box>
           </Box>

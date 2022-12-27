@@ -18,7 +18,6 @@ import TabBarIcon from "./layout/TabBarIcon";
 import HeaderRight from "./layout/HeaderRight";
 import AuthAppLoader from "./AuthAppLoader";
 import { createStackNavigator } from '@react-navigation/stack';
-import UniversitySelectScreen from "./screens/auth/UniversitySelectScreen";
 import EmailInputScreen from "./screens/auth/EmailInputScreen";
 import VerifyCodeScreen from './screens/auth/VerifyCodeScreen';
 import { SessionProvider } from "./contexts/SessionContext";
@@ -143,7 +142,6 @@ export default function App() {
         <SignInProvider>
           <NavigationContainer>
             <Stack.Navigator screenOptions={{ headerShown: false }}>
-              <Stack.Screen name={SignInScreenNames.UNIVERSITY_SELECT} component={UniversitySelectScreen}/>
               <Stack.Screen name={SignInScreenNames.EMAIL_INPUT} component={EmailInputScreen}/>
               <Stack.Screen name={SignInScreenNames.VERIFY_CODE} component={VerifyCodeScreen}/>
             </Stack.Navigator>

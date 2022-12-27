@@ -1,10 +1,6 @@
-import { createContext, Dispatch, LegacyRef, ReactNode, SetStateAction, useRef, useState } from 'react';
-import SelectDropdown from "react-native-select-dropdown";
+import { createContext, Dispatch, ReactNode, SetStateAction, useState } from 'react';
 
 export type SignInContextProps = {
-  dropdownRef: LegacyRef<SelectDropdown | undefined>;
-  selectedUniversityId: string;
-  setSelectedUniversityId: Dispatch<SetStateAction<string>>;
   email: string;
   setEmail: Dispatch<SetStateAction<string>>;
   otp: string;
@@ -13,9 +9,6 @@ export type SignInContextProps = {
 };
 
 const initialState: SignInContextProps = {
-  dropdownRef: { current: undefined },
-  selectedUniversityId: '',
-  setSelectedUniversityId: () => {},
   email: '',
   setEmail: () => {},
   otp: '',
@@ -30,14 +23,10 @@ type SignInProviderProps = {
 };
 
 function SignInProvider({ children }: SignInProviderProps) {
-  const dropdownRef = useRef<SelectDropdown | undefined>();
-  const [selectedUniversityId, setSelectedUniversityId] = useState<string>('');
   const [email, setEmail] = useState<string>('');
   const [otp, setOtp] = useState<string>('');
 
   const resetSignInFields = () => {
-    dropdownRef.current?.reset();
-    setSelectedUniversityId('');
     setEmail('');
     setOtp('');
   }
@@ -45,9 +34,6 @@ function SignInProvider({ children }: SignInProviderProps) {
   return (
     <SignInContext.Provider
       value={{
-        dropdownRef,
-        selectedUniversityId,
-        setSelectedUniversityId,
         email,
         setEmail,
         otp,

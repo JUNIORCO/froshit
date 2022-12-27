@@ -11,7 +11,6 @@ import Scrollbar from '../../../components/Scrollbar';
 import { NavSectionVertical } from '../../../components/nav-section';
 import navConfig from './NavConfig';
 import NavbarDocs from './NavbarDocs';
-import NavbarAccount from './NavbarAccount';
 import CollapseButton from './CollapseButton';
 
 const RootStyle = styled('div')(({ theme }) => ({
@@ -69,8 +68,6 @@ export default function NavbarVertical({ isOpenSidebar, onCloseSidebar }: Props)
             <CollapseButton onToggleCollapse={onToggleCollapse} collapseClick={collapseClick} />
           )}
         </Stack>
-
-        <NavbarAccount isCollapse={isCollapse} />
       </Stack>
 
       <NavSectionVertical navConfig={navConfig} isCollapse={isCollapse} />

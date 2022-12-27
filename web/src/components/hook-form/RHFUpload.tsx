@@ -47,8 +47,6 @@ export function RHFUploadAvatar({ name, ...other }: Props) {
   );
 }
 
-// ----------------------------------------------------------------------
-
 export function RHFUploadSingleFile({ name, ...other }: Props) {
   const { control } = useFormContext();
 

@@ -1,32 +1,31 @@
 import { useSnackbar } from 'notistack';
 import { useState } from 'react';
-// next
 import { useRouter } from 'next/router';
-// @mui
 import { alpha } from '@mui/material/styles';
 import { Box, Divider, MenuItem, Stack, Typography } from '@mui/material';
-// routes
 import { PATH_AUTH, PATH_DASHBOARD } from '../../../routes/paths';
-// hooks
 import useIsMountedRef from '../../../hooks/useIsMountedRef';
-// components
 import MyAvatar from '../../../components/MyAvatar';
 import MenuPopover from '../../../components/MenuPopover';
 import { IconButtonAnimate } from '../../../components/animate';
 import { useSupabaseClient } from '@supabase/auth-helpers-react';
 import useProfile from '../../../hooks/useProfile';
-import { Role } from '../../../../prisma/types';
 import RoleBasedGuard from '../../../guards/RoleBasedGuard';
 
-const MENU_OPTIONS = [
-  // {
-  //   label: 'Profile',
-  //   path: PATH_DASHBOARD.user.profile,
-  // },
+type MenuOption = {
+  label: string;
+  path: string;
+  roles?: string[];
+}
+
+const MENU_OPTIONS: MenuOption[] = [
+  {
+    label: 'Profile',
+    path: PATH_DASHBOARD.user.profile,
+  },
   {
     label: 'Invite',
     path: PATH_DASHBOARD.user.invite,
-    roles: [Role.Admin],
   },
 ];
 

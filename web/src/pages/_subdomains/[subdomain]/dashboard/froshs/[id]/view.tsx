@@ -29,7 +29,7 @@ export default function FroshView({ frosh }: Props) {
           heading='Edit Frosh'
           links={[
             { name: 'Dashboard', href: PATH_DASHBOARD.root },
-            { name: 'Team', href: PATH_DASHBOARD.frosh.root },
+            { name: 'Team', href: PATH_DASHBOARD.froshs.root },
             { name: 'Edit' },
           ]}
         />

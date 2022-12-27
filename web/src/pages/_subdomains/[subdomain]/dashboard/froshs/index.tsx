@@ -64,18 +64,18 @@ export default function FroshList({ initialFroshs }: Props) {
   const { push } = useRouter();
 
   const handleViewRow = (id: string) => {
-    void push(PATH_DASHBOARD.frosh.view(id));
+    void push(PATH_DASHBOARD.froshs.view(id));
   };
 
   const handleEditRow = (id: string) => {
-    void push(PATH_DASHBOARD.frosh.edit(id));
+    void push(PATH_DASHBOARD.froshs.edit(id));
   };
 
   const handleDeleteRow = async (id: string) => {
     const { error } = await supabaseClient.from('frosh').delete().eq('id', id);
     if (error) {
       console.error(error);
-      enqueueSnackbar('Error deleting frosh', { variant: 'error' });
+      enqueueSnackbar('Error deleting froshs', { variant: 'error' });
       return;
     }
     refreshData();
@@ -92,11 +92,11 @@ export default function FroshList({ initialFroshs }: Props) {
           heading='Frosh List'
           links={[
             { name: 'Dashboard', href: PATH_DASHBOARD.root },
-            { name: 'Frosh', href: PATH_DASHBOARD.frosh.root },
+            { name: 'Frosh', href: PATH_DASHBOARD.froshs.root },
             { name: 'List' },
           ]}
           action={
-            <NextLink href={PATH_DASHBOARD.frosh.new} passHref style={{ textDecoration: 'none' }}>
+            <NextLink href={PATH_DASHBOARD.froshs.new} passHref style={{ textDecoration: 'none' }}>
               <Button variant='contained' startIcon={<Iconify icon={'eva:plus-fill'} />}>
                 New Frosh
               </Button>

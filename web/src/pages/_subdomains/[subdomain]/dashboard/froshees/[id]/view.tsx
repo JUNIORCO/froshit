@@ -46,7 +46,7 @@ export default function UserView({ user }: UserViewProps) {
           heading='Account'
           links={[
             { name: 'Dashboard', href: PATH_DASHBOARD.root },
-            { name: 'Users', href: PATH_DASHBOARD.user.root },
+            { name: 'Froshee', href: PATH_DASHBOARD.froshees.root },
             { name: 'View' },
           ]}
         />

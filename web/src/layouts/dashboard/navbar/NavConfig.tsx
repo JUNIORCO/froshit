@@ -48,14 +48,24 @@ const navConfig = [
     subheader: 'Management',
     items: [
       {
+        title: 'Froshees',
+        path: PATH_DASHBOARD.froshees.root,
+        icon: ICONS.user,
+      },
+      {
+        title: 'Froshs',
+        path: PATH_DASHBOARD.froshs.root,
+        icon: ICONS.frosh,
+      },
+      {
         title: 'Events',
         path: PATH_DASHBOARD.event.root,
         icon: ICONS.event,
       },
       {
-        title: 'Froshs',
-        path: PATH_DASHBOARD.frosh.root,
-        icon: ICONS.frosh,
+        title: 'Teams',
+        path: PATH_DASHBOARD.team.root,
+        icon: ICONS.team,
       },
       {
         title: 'Offers',
@@ -70,16 +80,6 @@ const navConfig = [
           { title: 'Resources', path: PATH_DASHBOARD.resource.root },
           { title: 'Tags', path: PATH_DASHBOARD.resourceTag.root },
         ],
-      },
-      {
-        title: 'Teams',
-        path: PATH_DASHBOARD.team.root,
-        icon: ICONS.team,
-      },
-      {
-        title: 'Users',
-        path: PATH_DASHBOARD.user.root,
-        icon: ICONS.user,
       },
     ],
   },
