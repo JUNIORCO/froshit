@@ -43,7 +43,7 @@ export default function SetPassword() {
               <Box sx={{ mt: 5, mb: 3 }}>
                 <SetPasswordForm email={user.email}/>
               </Box>
-            </>) : <Typography>Oops! Looks like you're in the wrong place...</Typography>}
+            </>) : null}
 
         </ContentStyle>
       </Container>

@@ -193,13 +193,10 @@ export default function UserNewEditForm({ currentUser, froshs, teams }: Props) {
                 gridTemplateColumns: { xs: 'repeat(1, 1fr)', sm: 'repeat(2, 1fr)' },
               }}
             >
-              <RHFTextField name='firstName' label='First Name' />
-
-              <RHFTextField name='lastName' label='Last Name' />
-
               <RHFTextField name='email' label='Email Address' />
-
               <RHFTextField name='phoneNumber' label='Phone Number' />
+              <RHFTextField name='firstName' label='First Name' />
+              <RHFTextField name='lastName' label='Last Name' />
 
               <RHFSelect name='froshId' label='Frosh' placeholder='Frosh'>
                 <option value='' />

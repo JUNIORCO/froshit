@@ -192,11 +192,11 @@ export default function UserInvite({ initialProfiles }: Props) {
                 >
                   <RHFTextField name='email' label='Email' />
 
+                  <RHFTextField name='phoneNumber' label='Phone Number' />
+
                   <RHFTextField name='firstName' label='First Name' />
 
                   <RHFTextField name='lastName' label='Last Name' />
-
-                  <RHFTextField name='phoneNumber' label='Phone Number' />
 
                   {profile!.role === Role.Admin && (
                     <RHFSelect name='role' label='Role' placeholder='Role'>
@@ -211,7 +211,7 @@ export default function UserInvite({ initialProfiles }: Props) {
 
                 <Stack alignItems='flex-end' sx={{ mt: 3 }}>
                   <LoadingButton type='submit' variant='contained' loading={isSubmitting}>
-                    Invite
+                    {profile!.role === Role.Admin ? 'Invite' : 'Invite Leader'}
                   </LoadingButton>
                 </Stack>
               </Card>

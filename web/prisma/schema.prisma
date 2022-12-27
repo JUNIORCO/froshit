@@ -16,7 +16,7 @@ enum Role {
 }
 
 enum PaymentType {
-  Manual
+  Cash
   Online
 }
 

@@ -38,7 +38,7 @@ const navConfig = [
     subheader: 'Dashboards',
     items: [
       { title: 'Overview', path: PATH_DASHBOARD.general.app, icon: ICONS.overview },
-      { title: 'Analytics', path: PATH_DASHBOARD.general.analytics, icon: ICONS.analytics },
+      // { title: 'Analytics', path: PATH_DASHBOARD.general.analytics, icon: ICONS.analytics },
     ],
   },
 
