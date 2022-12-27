@@ -8,9 +8,9 @@ type Props = {
 
 export default function UserTableToolbar({ filterName, onFilterName }: Props) {
   return (
-    <Stack spacing={2} direction={{ xs: 'column', sm: 'row' }} sx={{ py: 2.5, px: 3 }}>
+    <Stack spacing={2} direction={{ xs: 'column', sm: 'row' }} sx={{ py: 2.5, px: 3, justifyContent: 'flex-end' }}>
       <TextField
-        fullWidth
+        sx={{ width: '25%' }}
         value={filterName}
         onChange={(event) => onFilterName(event.target.value)}
         placeholder='Search by email'

@@ -19,7 +19,6 @@ import HeaderBreadcrumbs from '../../../../../components/HeaderBreadcrumbs';
 import { FormProvider, RHFSelect, RHFTextField } from '../../../../../components/hook-form';
 import { LoadingButton } from '@mui/lab';
 import useProfile from '../../../../../hooks/useProfile';
-import { useRouter } from 'next/router';
 import { useSnackbar } from 'notistack';
 import * as Yup from 'yup';
 import { useForm } from 'react-hook-form';
@@ -28,13 +27,14 @@ import useSWRMutation from 'swr/mutation';
 import { GetServerSideProps } from 'next';
 import Scrollbar from '../../../../../components/Scrollbar';
 import { TableEmptyRows, TableNoData } from '../../../../../components/table';
-import useTable, { emptyRows } from '../../../../../hooks/useTable';
+import useTable, { emptyRows, getComparator } from '../../../../../hooks/useTable';
 import AuthApi from '../../../../../../prisma/api/AuthApi';
 import { Profile, Role } from '../../../../../../prisma/types';
 import { AdminOrganizerTableRow } from '../../../../../sections/@dashboard/user/list/invite';
 import { getSubdomainUrl } from '../../../../../utils/url';
 import useSubdomain from '../../../../../hooks/useSubdomain';
 import useRefresh from '../../../../../hooks/useRefresh';
+import { UserTableToolbar } from '../../../../../sections/@dashboard/user/list';
 
 const sendInviteRequest = async (url: string, { arg }: any) => {
   const res = await fetch(url, {
@@ -85,8 +85,19 @@ export default function UserInvite({ initialProfiles }: Props) {
   const { trigger: deleteUserAPI } = useSWRMutation('/api/user', deleteUserRequest);
   const { themeStretch } = useSettings();
   const { profile } = useProfile();
-  const { push } = useRouter();
   const { enqueueSnackbar } = useSnackbar();
+
+  const [filterName, setFilterName] = useState<string>('');
+
+  const {
+    page,
+    rowsPerPage,
+    onChangePage,
+    onChangeRowsPerPage,
+    setPage,
+    order,
+    orderBy,
+  } = useTable();
 
   const InviteUserSchema = Yup.object().shape({
     email: Yup.string().email().required('Email is required'),
@@ -141,14 +152,18 @@ export default function UserInvite({ initialProfiles }: Props) {
     refreshData();
   };
 
-  const {
-    page,
-    rowsPerPage,
-    onChangePage,
-    onChangeRowsPerPage,
-  } = useTable();
+  const handleFilterName = (filterName: string) => {
+    setFilterName(filterName);
+    setPage(0);
+  };
 
-  const isNotFound = !profiles.length;
+  const dataFiltered = applySortFilter({
+    tableData: profiles,
+    comparator: getComparator(order, orderBy),
+    filterName,
+  });
+
+  const isNotFound = !dataFiltered.length;
 
   const roleOptions = profile!.role === Role.Admin ? [Role.Organizer, Role.Leader] : [Role.Leader];
 
@@ -183,19 +198,20 @@ export default function UserInvite({ initialProfiles }: Props) {
 
                   <RHFTextField name='phoneNumber' label='Phone Number' />
 
-                  <RHFSelect name='role' label='Role' placeholder='Role' disabled={profile!.role === Role.Organizer}>
-                    <option value='' />
-                    {roleOptions.map((role) => (
-                      <option key={role} value={role}>
-                        {role}
-                      </option>
-                    ))}
-                  </RHFSelect>
+                  {profile!.role === Role.Admin && (
+                    <RHFSelect name='role' label='Role' placeholder='Role'>
+                      <option value='' />
+                      {roleOptions.map((role) => (
+                        <option key={role} value={role}>
+                          {role}
+                        </option>
+                      ))}
+                    </RHFSelect>)}
                 </Box>
 
                 <Stack alignItems='flex-end' sx={{ mt: 3 }}>
                   <LoadingButton type='submit' variant='contained' loading={isSubmitting}>
-                    Invite User
+                    Invite
                   </LoadingButton>
                 </Stack>
               </Card>
@@ -208,11 +224,17 @@ export default function UserInvite({ initialProfiles }: Props) {
         </Typography>
 
         <Card>
+
+          <UserTableToolbar
+            filterName={filterName}
+            onFilterName={handleFilterName}
+          />
+
           <Scrollbar>
             <TableContainer sx={{ minWidth: 800, position: 'relative' }}>
               <Table size='small'>
                 <TableBody>
-                  {profiles
+                  {dataFiltered
                     .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
                     .map((row) => (
                       <AdminOrganizerTableRow
@@ -224,7 +246,7 @@ export default function UserInvite({ initialProfiles }: Props) {
 
                   <TableEmptyRows
                     height={52}
-                    emptyRows={emptyRows(page, rowsPerPage, profiles.length)}
+                    emptyRows={emptyRows(page, rowsPerPage, dataFiltered.length)}
                   />
 
                   <TableNoData isNotFound={isNotFound} />
@@ -237,7 +259,7 @@ export default function UserInvite({ initialProfiles }: Props) {
             <TablePagination
               rowsPerPageOptions={[5, 10, 25]}
               component='div'
-              count={profiles.length}
+              count={dataFiltered.length}
               rowsPerPage={rowsPerPage}
               page={page}
               onPageChange={onChangePage}
@@ -250,6 +272,35 @@ export default function UserInvite({ initialProfiles }: Props) {
     </Page>
   );
 }
+
+const applySortFilter = ({
+                           tableData,
+                           comparator,
+                           filterName,
+                         }: {
+  tableData: Profile[];
+  comparator: (a: any, b: any) => number;
+  filterName: string;
+}): Profile[] => {
+  const stabilizedThis = tableData.map((el, index) => [el, index] as const);
+
+  stabilizedThis.sort((a, b) => {
+    const order = comparator(a[0], b[0]);
+    if (order !== 0) return order;
+    return a[1] - b[1];
+  });
+
+  tableData = stabilizedThis.map((el) => el[0]);
+
+  if (filterName) {
+    tableData = tableData.filter(
+      (item) =>
+        item.email.toLowerCase().indexOf(filterName.toLowerCase()) !== -1,
+    );
+  }
+
+  return tableData;
+};
 
 export const getServerSideProps: GetServerSideProps = async (ctx) => {
   const api = new AuthApi({ ctx });
