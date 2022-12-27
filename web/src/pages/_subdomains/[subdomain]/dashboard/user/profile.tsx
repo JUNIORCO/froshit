@@ -1,3 +1,4 @@
+// @ts-nocheck
 import React, { useCallback } from 'react';
 import { Box, Card, Container, Grid, Stack, Typography } from '@mui/material';
 import { PATH_DASHBOARD } from '../../../../../routes/paths';
