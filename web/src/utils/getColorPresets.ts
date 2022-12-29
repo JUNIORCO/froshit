@@ -1,9 +1,5 @@
-// theme
 import palette from '../theme/palette';
-// @type
 import { ThemeColorPresets } from '../components/settings/type';
-
-// ----------------------------------------------------------------------
 
 export const colorPresets = [
   // DEFAULT

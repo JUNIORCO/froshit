@@ -1,20 +1,26 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { createMiddlewareSupabaseClient } from '@supabase/auth-helpers-nextjs';
 import { PATH_AUTH } from './routes/paths';
+import type { SupabaseClient } from '@supabase/supabase-js';
 
 export const config = {
   matcher: ['/((?!api|_next|fonts|examples|[\\w-]+\\.\\w+).*)'],
 };
 
-// todo use supabase-js library instead of prisma as prisma is unsupported in the browser
-function checkValidSubdomain(subdomain: string) {
-  const validSubdomains = [
-    'demo',
-    'mcgill',
-    'concordia',
-    'uoft',
-  ];
-  return validSubdomains.includes(subdomain);
+type CheckValidSubdomainArgs = {
+  supabase: SupabaseClient;
+  subdomain: string
+};
+
+// todo use cache here
+async function checkValidSubdomain({ supabase, subdomain }: CheckValidSubdomainArgs) {
+  const { data, error } = await supabase
+    .from('university')
+    .select('subdomain')
+    .eq('subdomain', subdomain)
+    .single();
+
+  return !!data && !error;
 }
 
 const UNPROTECTED_PAGES = Object.values(PATH_AUTH);
@@ -42,7 +48,7 @@ export default async function middleware(req: NextRequest) {
   }
 
   // invalid subdomain (e.g apple.froshit.com), reroute to 404
-  if (!checkValidSubdomain(currentHost)) {
+  if (!checkValidSubdomain({ supabase, subdomain: currentHost })) {
     console.log(`[Middleware] Visiting invalid subdomain ${currentHost}, rerouting to 404...`);
     url.pathname = `/_subdomains/${currentHost}/404`;
     return NextResponse.rewrite(url);
@@ -87,13 +93,9 @@ export default async function middleware(req: NextRequest) {
     // set a new response header with the user profile
     response.headers.set('profile', JSON.stringify(profile));
     return response;
-  } else {
-    console.log('[Middleware] Visiting protected page with no user session...');
-    // User is not authenticated, redirect to login
-    url.pathname = `${PATH_AUTH.login}`;
-    return NextResponse.redirect(url);
   }
 
-
-  return NextResponse.rewrite(url);
+  console.log('[Middleware] Visiting protected page with no user session...');
+  url.pathname = `${PATH_AUTH.login}`;
+  return NextResponse.redirect(url);
 }

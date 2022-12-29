@@ -3,7 +3,6 @@ import { Avatar, MenuItem, TableCell, TableRow, Typography } from '@mui/material
 import Iconify from '../../../../components/Iconify';
 import { TableMoreMenu } from '../../../../components/table';
 import type { UsersForUserList } from '../../../../../prisma/api/@types';
-import { Role } from '../../../../../prisma/types';
 import createAvatar from '../../../../utils/createAvatar';
 
 type Props = {

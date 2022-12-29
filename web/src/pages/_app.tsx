@@ -54,21 +54,21 @@ export default function MyApp(props: MyAppProps) {
 
   const getLayout = Component.getLayout ?? ((page) => page);
 
-  useEffect(() => {
-    const { data: authListener } = supabaseClient.auth.onAuthStateChange(async (event, session) => {
-      if (event == 'PASSWORD_RECOVERY') {
-        console.log('PASSWORD_RECOVERY', session);
-
-        // show screen to update user's password
-        // TODO
-        //
-      }
-    });
-
-    return () => {
-      authListener.subscription;
-    };
-  }, []);
+  // useEffect(() => {
+  //   const { data: authListener } = supabaseClient.auth.onAuthStateChange(async (event, session) => {
+  //     if (event == 'PASSWORD_RECOVERY') {
+  //       console.log('PASSWORD_RECOVERY', session);
+  //
+  //       // show screen to update user's password
+  //       // TODO
+  //       //
+  //     }
+  //   });
+  //
+  //   return () => {
+  //     authListener.subscription;
+  //   };
+  // }, []);
 
   return (
     <>

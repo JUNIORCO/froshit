@@ -49,7 +49,7 @@ const PAYMENT_OPTIONS: PaymentOption[] = [
   {
     value: 'credit_card',
     title: 'Credit / Debit Card',
-    description: 'We support Mastercard, Visa, Discover and Stripe.',
+    description: 'We support Mastercard, Visa, Discover and stripeClient.',
     icons: [
       'https://minimal-assets-api-dev.vercel.app/assets/icons/ic_mastercard.svg',
       'https://minimal-assets-api-dev.vercel.app/assets/icons/ic_visa.svg',

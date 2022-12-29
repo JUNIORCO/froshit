@@ -19,6 +19,7 @@ class ProfileApi {
       include: {
         frosh: true,
         team: true,
+        payment: true,
       },
     });
   }

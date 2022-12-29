@@ -1,51 +1,58 @@
 import Cookies from 'js-cookie';
-import { ReactNode, createContext, Dispatch, SetStateAction, useEffect, useState } from 'react';
-// utils
+import { createContext, Dispatch, ReactNode, SetStateAction, useEffect, useState } from 'react';
 import getColorPresets, { colorPresets, defaultPreset } from '../utils/getColorPresets';
-// config
-import { defaultSettings, cookiesKey, cookiesExpires } from '../config';
-// @type
+import { cookiesExpires, cookiesKey, defaultSettings } from '../config';
 import {
-  ThemeMode,
-  ThemeLayout,
-  ThemeContrast,
-  ThemeDirection,
-  ThemeColorPresets,
   SettingsContextProps,
   SettingsValueProps,
+  ThemeColorPresets,
+  ThemeContrast,
+  ThemeDirection,
+  ThemeLayout,
+  ThemeMode,
 } from '../components/settings/type';
-
-// ----------------------------------------------------------------------
 
 const initialState: SettingsContextProps = {
   ...defaultSettings,
   // Mode
-  onToggleMode: () => {},
-  onChangeMode: () => {},
+  onToggleMode: () => {
+  },
+  onChangeMode: () => {
+  },
 
   // Direction
-  onToggleDirection: () => {},
-  onChangeDirection: () => {},
-  onChangeDirectionByLang: () => {},
+  onToggleDirection: () => {
+  },
+  onChangeDirection: () => {
+  },
+  onChangeDirectionByLang: () => {
+  },
 
   // Layout
-  onToggleLayout: () => {},
-  onChangeLayout: () => {},
+  onToggleLayout: () => {
+  },
+  onChangeLayout: () => {
+  },
 
   // Contrast
-  onToggleContrast: () => {},
-  onChangeContrast: () => {},
+  onToggleContrast: () => {
+  },
+  onChangeContrast: () => {
+  },
 
   // Color
-  onChangeColor: () => {},
+  onChangeColor: () => {
+  },
   setColor: defaultPreset,
   colorOption: [],
 
   // Stretch
-  onToggleStretch: () => {},
+  onToggleStretch: () => {
+  },
 
   // Reset
-  onResetSetting: () => {},
+  onResetSetting: () => {
+  },
 };
 
 const SettingsContext = createContext(initialState);
@@ -220,7 +227,7 @@ export { SettingsProvider, SettingsContext };
 // ----------------------------------------------------------------------
 
 function useSettingCookies(
-  defaultSettings: SettingsValueProps
+  defaultSettings: SettingsValueProps,
 ): [SettingsValueProps, Dispatch<SetStateAction<SettingsValueProps>>] {
   const [settings, setSettings] = useState<SettingsValueProps>(defaultSettings);
 
