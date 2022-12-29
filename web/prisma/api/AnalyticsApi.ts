@@ -78,7 +78,7 @@ class AnalyticsApi {
   private async getFroshsTotalAmountPaid(): Promise<FroshTotalAmountPaid[]> {
     const froshTotalAmountPaid = await prisma.$queryRaw<FroshTotalAmountPaid[]>(
       Prisma.sql`
-        SELECT frosh.name as "froshName", SUM(profile.paid) as "totalAmountPaid"
+        SELECT frosh.name as "froshName", SUM(profile.paid) as "totalAmountPaid" -- // todo fix
         FROM frosh
         INNER JOIN profile ON frosh.id = profile."froshId"
         WHERE profile."universityId" = ${this.profile.universityId} 

@@ -38,7 +38,11 @@ class FroshApi {
             teams: true,
           },
         },
-        profiles: true,
+        profiles: {
+          include: {
+            payment: true,
+          }
+        },
       },
     });
   }

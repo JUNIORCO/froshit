@@ -20,7 +20,7 @@ export default function EventTableRow({
                                         onViewRow,
                                         onDeleteRow,
                                       }: Props) {
-  const { name, frosh, startDate, endDate, location } = row;
+  const { name, froshs, startDate, endDate, location } = row;
 
   const [openMenu, setOpenMenuActions] = useState<HTMLElement | null>(null);
 
@@ -41,7 +41,7 @@ export default function EventTableRow({
       </TableCell>
 
       <TableCell align='left'>
-        {frosh.name}
+        {froshs.map(({ name }) => name)}
       </TableCell>
 
       <TableCell align='left'>

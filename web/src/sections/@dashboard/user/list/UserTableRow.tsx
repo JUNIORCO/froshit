@@ -16,7 +16,7 @@ export default function UserTableRow({
                                        onEditRow,
                                        onViewRow,
                                      }: Props) {
-  const { firstName, lastName, email, phoneNumber, frosh, team, paid, imageUrl } = row;
+  const { firstName, lastName, email, phoneNumber, frosh, team, payment, imageUrl } = row;
 
   const [openMenu, setOpenMenuActions] = useState<HTMLElement | null>(null);
 
@@ -29,7 +29,7 @@ export default function UserTableRow({
   };
 
   const displayPaidIcon = () => {
-    if (paid) {
+    if (payment) {
       return (<Iconify
         icon={'eva:checkmark-circle-fill'}
         sx={{

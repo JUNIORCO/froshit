@@ -38,7 +38,7 @@ export default function FroshTableRow({
       </TableCell>
 
       <TableCell align='center'>
-        {profiles.filter((profile) => profile.role === Role.Froshee && profile.paid).length}
+        {profiles.filter((profile) => profile.role === Role.Froshee && profile.payment).length}
       </TableCell>
 
       <TableCell align='center'>

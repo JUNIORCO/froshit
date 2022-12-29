@@ -1,10 +1,10 @@
 import type { Event, Frosh, Profile, Resource, ResourceTag, Team, Role, Payment } from '../types';
 
 /** Event **/
-export type FullEvent = Event & { frosh: Frosh };
+export type FullEvent = Event & { froshs: Frosh[] };
 
 /** Frosh **/
-export type FroshsWithStats = Frosh & { profiles: Profile[], _count: { events: number, teams: number, } };
+export type FroshsWithStats = Frosh & { profiles: (Profile & { payment: Payment | null})[], _count: { events: number, teams: number, } };
 
 /** User **/
 export type UsersForUserList = Profile & { frosh: Frosh | null, team: Team | null, payment: Payment | null };

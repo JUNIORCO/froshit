@@ -13,12 +13,14 @@ class EventApi {
   public async getFullEvents(): Promise<FullEvent[]> {
     return prisma.event.findMany({
       where: {
-        frosh: {
-          universityId: this.profile.universityId,
+        froshs: {
+          some: {
+            universityId: this.profile.universityId,
+          },
         },
       },
       include: {
-        frosh: true,
+        froshs: true,
       },
     });
   }
@@ -29,7 +31,7 @@ class EventApi {
         id,
       },
       include: {
-        frosh: true,
+        froshs: true,
       },
     });
   }

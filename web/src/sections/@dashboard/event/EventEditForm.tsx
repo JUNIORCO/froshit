@@ -7,13 +7,14 @@ import { yupResolver } from '@hookform/resolvers/yup';
 import { LoadingButton } from '@mui/lab';
 import { Box, Card, Grid, Stack } from '@mui/material';
 import { PATH_DASHBOARD } from '../../../routes/paths';
-import { FormProvider, RHFSelect, RHFTextField, RHFUploadSingleFile } from '../../../components/hook-form';
+import { FormProvider, RHFTextField, RHFUploadSingleFile } from '../../../components/hook-form';
 import { Frosh } from '../../../../prisma/types';
 import { FullEvent } from '../../../../prisma/api/@types';
 import RHFDateTimeRangeSelect from '../../../components/hook-form/RHFDateTimeRangeSelect';
 import { useSupabaseClient } from '@supabase/auth-helpers-react';
 import { CustomFile } from '../../../components/upload';
 import useSubdomain from '../../../hooks/useSubdomain';
+import { RHFMultiSelect } from '../../../components/hook-form/RHFMultiSelect';
 
 type EventForm = {
   id: string;
@@ -24,7 +25,7 @@ type EventForm = {
   endDate: Date;
   location: string;
   accessibility: string;
-  froshId: string;
+  froshIds: string[];
 };
 
 type Props = {
@@ -54,7 +55,7 @@ export default function EventEditForm({
     ),
     location: Yup.string().required('Location is required'),
     accessibility: Yup.string().required('Accessibility is required'),
-    froshId: Yup.string().required('Frosh is required'),
+    froshIds: Yup.array().of(Yup.string()).required('At least one Frosh is required'),
   });
 
   const defaultValues = useMemo(
@@ -66,7 +67,7 @@ export default function EventEditForm({
       endDate: currentEvent.endDate,
       location: currentEvent.location,
       accessibility: currentEvent.accessibility,
-      froshId: currentEvent.froshId,
+      froshIds: currentEvent.froshs.map(frosh => frosh.id),
     }),
     [currentEvent],
   );
@@ -184,18 +185,11 @@ export default function EventEditForm({
 
               <RHFTextField name='accessibility' label='Accessibility' disabled={view} />
 
-              <RHFSelect name='froshId' label='Frosh' placeholder='Frosh' disabled={view}>
-                <option value='' />
-                {view ? (
-                  <option key={currentEvent.frosh.id} value={currentEvent.frosh.id}>
-                    {currentEvent.frosh.name}
-                  </option>
-                ) : froshs?.map((frosh) => (
-                  <option key={frosh.id} value={frosh.id}>
-                    {frosh.name}
-                  </option>
-                ))}
-              </RHFSelect>
+              {froshs && <RHFMultiSelect
+                name='froshIds'
+                label='Froshs'
+                options={froshs.map(frosh => ({ label: frosh.name, value: frosh.id }))}
+              />}
 
               <RHFDateTimeRangeSelect name='startDate' label='Start Date' disabled={view} />
 

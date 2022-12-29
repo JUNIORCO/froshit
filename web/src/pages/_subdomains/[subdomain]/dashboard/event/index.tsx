@@ -78,11 +78,15 @@ export default function EventList({ initialEvents }: Props) {
     onChangeRowsPerPage,
   } = useTable();
 
-  const uniqueFroshsFromEvents = tableData.reduce((accum, { frosh }) => {
-    if (!frosh || accum.includes(frosh.name)) {
+  const uniqueFroshsFromEvents = tableData.reduce((accum, { froshs }) => {
+    if (!froshs.length) {
       return accum;
     }
-    accum.push(frosh.name);
+
+    froshs.forEach(({ name }) => {
+      if (!accum.includes(name)) accum.push(name);
+    });
+
     return accum;
   }, [] as string[]);
 
@@ -279,7 +283,7 @@ function applySortFilter({
   }
 
   if (filterFrosh !== 'All') {
-    tableData = tableData.filter(({ frosh }) => frosh.name === filterFrosh || false);
+    tableData = tableData.filter(({ froshs }) => froshs.some(frosh => frosh.name === filterFrosh));
   }
 
   return tableData;

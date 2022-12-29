@@ -30,10 +30,9 @@ import { GetServerSideProps, GetServerSidePropsContext } from 'next';
 import type { UsersForUserList } from '../../../../../../prisma/api/@types';
 import UserAnalytic from '../../../../../sections/@dashboard/user/UserAnalytic';
 import { useTheme } from '@mui/material/styles';
-import { Role } from '../../../../../../prisma/types';
 import AuthApi from '../../../../../../prisma/api/AuthApi';
 
-const TAB_OPTIONS = ['All', 'Paid', 'Unpaid', 'Unassigned Frosh', 'Unassigned Team'];
+const TAB_OPTIONS = ['All', 'Unassigned Frosh', 'Unassigned Team'];
 
 const TABLE_HEAD = [
   { id: 'firstName', label: 'Name', align: 'left' },
@@ -41,7 +40,6 @@ const TABLE_HEAD = [
   { id: 'phoneNumber', label: 'Phone Number', align: 'left' },
   { id: 'froshId', label: 'Frosh', align: 'left' },
   { id: 'teamId', label: 'Team', align: 'left' },
-  { id: 'paid', label: 'Paid', align: 'left' },
   { id: '' },
 ];
 
@@ -108,11 +106,9 @@ export default function UserList({ users }: UserListProps) {
     numberFrosheesUnpaid,
     totalNumberFroshees,
   } = users.reduce((accum, user) => {
-    if (user.role !== Role.Froshee) return accum;
-
-    if (user.paid) {
+    if (user.payment) {
       accum.numberFrosheesPaid++;
-      accum.totalValuePaid += user.paid;
+      accum.totalValuePaid += user.payment.amount;
     } else {
       accum.numberFrosheesUnpaid++;
       accum.totalValueUnpaid += 0;
@@ -275,19 +271,13 @@ const applySortFilter = ({
 
   if (filterTab !== 'All') {
     switch (filterTab) {
-      case 'Paid':
-        tableData = tableData.filter((user) => user.paid && user.role === Role.Froshee);
-        break;
-      case 'Unpaid':
-        tableData = tableData.filter((user) => !user.paid && user.role === Role.Froshee);
-        break;
       case 'Unassigned Frosh':
         // @ts-ignore
-        tableData = tableData.filter((user) => [Role.Leader, Role.Froshee].includes(user.role) && user.frosh === null);
+        tableData = tableData.filter((user) => user.frosh === null);
         break;
       case 'Unassigned Team':
         // @ts-ignore
-        tableData = tableData.filter((user) => [Role.Leader, Role.Froshee].includes(user.role) && user.team === null);
+        tableData = tableData.filter((user) => user.team === null);
         break;
     }
   }

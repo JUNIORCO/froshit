@@ -1,10 +1,10 @@
 // @ts-nocheck
 import { serve } from 'https://deno.land/std@0.131.0/http/server.ts';
 import { supabaseClient } from '../_utils/supabaseClient.ts';
-import { FroshPayload, OnboardUniversitySchema } from './types';
-import { stripe } from '../_utils/stripe';
-import { uuid } from '../_utils/uuid';
-import { async } from '../_utils/async';
+import { FroshPayload, OnboardUniversitySchema } from './types.ts';
+import { stripe } from '../_utils/stripe.ts';
+import { v4 as uuid } from '../_utils/uuid.ts';
+import async from '../_utils/async.ts';
 
 /**
  * I hit this endpoint manually when onboarding a university
