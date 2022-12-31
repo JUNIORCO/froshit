@@ -79,10 +79,6 @@ export default function UserTableRow({
         {team && team.name}
       </TableCell>
 
-      <TableCell align='left'>
-        {displayPaidIcon()}
-      </TableCell>
-
       <TableCell align='right'>
         <TableMoreMenu
           open={openMenu}

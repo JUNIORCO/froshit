@@ -7,6 +7,7 @@ import { yupResolver } from '@hookform/resolvers/yup';
 import Stripe from 'stripe';
 // @ts-ignore
 import { stripePromise } from '../stripe';
+import { useRouter } from 'next/router';
 
 export type FormRegisterProps = {
   firstName: string;
@@ -45,6 +46,8 @@ type SubdomainProviderProps = {
 };
 
 function FrosheeRegistrationProvider({ university, children }: SubdomainProviderProps) {
+  const router = useRouter();
+
   const [activeStep, setActiveStep] = useState<FrosheeRegistrationSteps>(FrosheeRegistrationSteps.PERSONAL_INFORMATION);
   const [loadingPaymentIntent, setLoadingPaymentIntent] = useState<boolean>(false);
   const [errorMessage, setErrorMessage] = useState<string>('');
@@ -83,16 +86,17 @@ function FrosheeRegistrationProvider({ university, children }: SubdomainProvider
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ formPayload: formValues, university }),
     });
+
     const {
       session,
       error,
-    } = await res.json() as { session: Stripe.Response<Stripe.Checkout.Session>; error: string | null };
+    } = await res.json() as { session: Stripe.Response<Stripe.Checkout.Session> | null; error: string | null };
 
     setLoadingPaymentIntent(false);
 
-    if (session.url) window.open(session.url, '_ blank');
+    if (session?.url) void router.push(session.url);
     else if (error) setErrorMessage(error);
-    else setErrorMessage('Something went wrong');
+    else setErrorMessage('Something went wrong. Please try again later.');
   };
 
   return (

@@ -1,6 +1,6 @@
 // @mui
 import { useTheme } from '@mui/material/styles';
-import { Container, Grid } from '@mui/material';
+import { Button, Container, Grid } from '@mui/material';
 // hooks
 import useSettings from '../../../../hooks/useSettings';
 // layouts
@@ -16,6 +16,11 @@ import { Analytics } from '../../../../../prisma/api/@types';
 import { getAnalysisColors } from 'src/config';
 import { fCurrency, fNumber } from '../../../../utils/formatNumber';
 import { AnalyticsWidgetSummary } from '../../../../sections/@dashboard/general/analytics';
+import NextLink from 'next/link';
+import Iconify from '../../../../components/Iconify';
+import React from 'react';
+import useProfile from '../../../../hooks/useProfile';
+import { Role } from 'prisma/types';
 // assets
 
 AnalyticsPage.getLayout = function getLayout(page: React.ReactElement) {
@@ -23,6 +28,7 @@ AnalyticsPage.getLayout = function getLayout(page: React.ReactElement) {
 };
 
 export default function AnalyticsPage({
+                                        university,
                                         totalAmountPaid,
                                         totalOrganizers,
                                         totalLeaders,
@@ -32,6 +38,7 @@ export default function AnalyticsPage({
                                         froshsTotalAmountPaid,
                                         frosheesRegisteredAnalytics,
                                       }: Analytics) {
+  const { profile } = useProfile();
   const theme = useTheme();
   const { themeStretch } = useSettings();
 
@@ -40,9 +47,22 @@ export default function AnalyticsPage({
       <Container maxWidth={themeStretch ? false : 'xl'}>
         <Grid container spacing={3}>
 
+          {profile!.role === Role.Admin &&
+          (<Grid item xs={12} md={12} sx={{ textAlign: 'end' }}>
+            <NextLink href={university.stripeConnectedAccountLink} target='_blank' rel='noreferrer' passHref
+                      style={{ textDecoration: 'none' }}>
+              <Button
+                variant='contained'
+                endIcon={<Iconify icon={'material-symbols:arrow-circle-right-outline-rounded'} />}
+              >
+                Stripe Dashboard
+              </Button>
+            </NextLink>
+          </Grid>)}
+
           <Grid item xs={12} md={3}>
             <AnalyticsWidgetSummary
-              title='Total Amount Paid'
+              title='Approx. Amount Collected'
               total={totalAmountPaid}
               color='success'
               formatter={fCurrency}
@@ -126,8 +146,9 @@ export default function AnalyticsPage({
 }
 
 export const getServerSideProps: GetServerSideProps = async (ctx: GetServerSidePropsContext) => {
+  const { subdomain } = ctx.query;
   const api = new AuthApi({ ctx });
-  const analytics = await api.Analytics.getAnalyticsForDashboard();
+  const analytics = await api.Analytics.getAnalyticsForDashboard(subdomain as string);
 
   return {
     props: {

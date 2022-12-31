@@ -10,7 +10,7 @@ import {
   GroupedRole,
 } from './@types';
 import { IChildApiOptions } from './AuthApi';
-import { Prisma, Profile, Role } from '../types';
+import { Prisma, Profile, Role, University } from '../types';
 import dayjs from 'dayjs';
 import { reverse, sumBy } from 'lodash';
 
@@ -66,7 +66,6 @@ class AnalyticsApi {
       orderBy: {
         name: 'asc',
       },
-      take: 10,
     });
 
     return this.formatFroshProfileCount(froshProfileCount);
@@ -76,17 +75,21 @@ class AnalyticsApi {
    * Gets the total amount paid per froshs
    */
   private async getFroshsTotalAmountPaid(): Promise<FroshTotalAmountPaid[]> {
+    console.log('here')
+
     const froshTotalAmountPaid = await prisma.$queryRaw<FroshTotalAmountPaid[]>(
       Prisma.sql`
-        SELECT frosh.name as "froshName", SUM(profile.paid) as "totalAmountPaid" -- // todo fix
+        SELECT frosh.name as "froshName", SUM(payment.amount) / 100 * 0.93 as "totalAmountPaid"
         FROM frosh
         INNER JOIN profile ON frosh.id = profile."froshId"
+        INNER JOIN payment ON profile."paymentId" = payment.id
         WHERE profile."universityId" = ${this.profile.universityId} 
           AND profile.role = 'Froshee'
-          AND profile.paid IS NOT NULL
+          AND profile."paymentId" IS NOT NULL
         GROUP BY frosh.name
       `,
     );
+
     // Note: have to do this because of a bug in prisma where it returns big int instead of number for raw queries
     return froshTotalAmountPaid.map(result => ({ ...result, totalAmountPaid: Number(result.totalAmountPaid) }));
   };
@@ -152,14 +155,24 @@ class AnalyticsApi {
     };
   };
 
-  public async getAnalyticsForDashboard(): Promise<Analytics> {
+  private async getUniversity(subdomain: string): Promise<University> {
+    return prisma.university.findUniqueOrThrow({
+      where: {
+        subdomain,
+      },
+    });
+  }
+
+  public async getAnalyticsForDashboard(subdomain: string): Promise<Analytics> {
     const [
+      universityResult,
       roleCountsResult,
       froshFrosheeCountResult,
       froshLeaderCountResult,
       froshsTotalAmountPaidResult,
       frosheeRegistrationsResult,
     ] = await Promise.allSettled([
+      this.getUniversity(subdomain),
       this.getRoleCounts(),
       this.getFroshProfilesCount({ role: Role.Froshee }),
       this.getFroshProfilesCount({ role: Role.Leader }),
@@ -167,6 +180,7 @@ class AnalyticsApi {
       this.getFrosheeRegistrationAnalytics(),
     ]);
 
+    const university = universityResult.status === 'fulfilled' ? universityResult.value : {} as University;
     const roleCounts = roleCountsResult.status === 'fulfilled' ? roleCountsResult.value : {} as FormattedGroupRole;
     const froshFrosheeCount = froshFrosheeCountResult.status === 'fulfilled' ? froshFrosheeCountResult.value : [] as FormattedFroshProfileCount[];
     const froshLeaderCount = froshLeaderCountResult.status === 'fulfilled' ? froshLeaderCountResult.value : [] as FormattedFroshProfileCount[];
@@ -174,6 +188,8 @@ class AnalyticsApi {
     const frosheesRegisteredAnalytics = frosheeRegistrationsResult.status === 'fulfilled' ? frosheeRegistrationsResult.value : {} as FrosheesRegisteredAnalytics;
 
     return {
+      university,
+
       totalAmountPaid: sumBy(froshsTotalAmountPaid, ({ totalAmountPaid }) => totalAmountPaid) || 0,
 
       // role counts

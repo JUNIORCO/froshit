@@ -3,6 +3,7 @@ import { Frosh, University } from 'prisma/types';
 import { stripe } from '../_utils/stripe';
 import { PATH_FROSHEE_REGISTER } from '../../../routes/paths';
 import { FormRegisterProps } from '../../../contexts/FrosheeRegistrationContext';
+import { supabaseAdmin } from '../_utils/supabaseAdmin';
 
 type CreateCheckoutBody = {
   formPayload: FormRegisterProps;
@@ -16,6 +17,16 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     }
 
     const { formPayload, university }: CreateCheckoutBody = req.body;
+
+    const { data: existingProfile, error: existingProfileError } = await supabaseAdmin
+      .from('profile')
+      .select('*')
+      .or(`email.eq.${formPayload.email},phoneNumber.eq.${formPayload.phoneNumber}`)
+      .single();
+
+    if (existingProfile && !existingProfileError) throw new Error('We found a user already associated to this email or phone number.');
+    // code PGRST116 is thrown when no row is returned
+    if (existingProfileError && existingProfileError.code !== 'PGRST116') throw existingProfileError;
 
     const session = await stripe.checkout.sessions.create({
       line_items: [
@@ -47,8 +58,8 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         receipt_email: formPayload.email,
       },
       custom_text: {
-        submit: { message: `Review your university email before paying: ${formPayload.email}` }
-      }
+        submit: { message: `Review your university email before paying: ${formPayload.email}` },
+      },
     });
 
     res.status(303).json({ session, error: null });

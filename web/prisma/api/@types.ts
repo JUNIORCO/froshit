@@ -1,4 +1,4 @@
-import type { Event, Frosh, Profile, Resource, ResourceTag, Team, Role, Payment } from '../types';
+import type { Event, Frosh, Profile, Resource, ResourceTag, Team, Role, Payment, University } from '../types';
 
 /** Event **/
 export type FullEvent = Event & { froshs: Frosh[] };
@@ -47,6 +47,8 @@ export type FrosheesRegisteredAnalytics = {
 };
 
 export type Analytics = {
+  university: University;
+
   totalAmountPaid: number;
 
   totalOrganizers: number;

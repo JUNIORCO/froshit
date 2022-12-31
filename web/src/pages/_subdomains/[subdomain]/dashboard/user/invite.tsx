@@ -103,9 +103,8 @@ export default function UserInvite({ initialProfiles }: Props) {
     email: Yup.string().email().required('Email is required'),
     firstName: Yup.string().required('First name is required'),
     lastName: Yup.string().required('Last name is required'),
-    phoneNumber: Yup.string().required('Phone number is required'),
+    phoneNumber: Yup.string().nullable(),
     role: Yup.string().required('Role is required'),
-    universityId: Yup.string().required('University is required'),
   });
 
   const defaultValues = {
@@ -114,7 +113,6 @@ export default function UserInvite({ initialProfiles }: Props) {
     lastName: '',
     phoneNumber: '',
     role: profile!.role === Role.Admin ? '' : Role.Leader,
-    universityId: profile?.universityId,
   };
 
   const methods = useForm<FormValuesProps>({
@@ -130,11 +128,12 @@ export default function UserInvite({ initialProfiles }: Props) {
   const onSubmit = async (userToInvite: FormValuesProps) => {
     const { error } = await sendInviteAPI({
       ...userToInvite,
+      universityId: profile?.universityId,
       redirectTo: getSubdomainUrl({ subdomain, path: PATH_AUTH.setPassword }),
     });
 
     if (error) {
-      enqueueSnackbar(`Error ${error.message}`, { variant: 'error' });
+      enqueueSnackbar(error, { variant: 'error' });
       return;
     }
 

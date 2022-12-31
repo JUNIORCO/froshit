@@ -72,7 +72,7 @@ export default function AccountPopover() {
   };
 
   const getName = () => `${profile?.firstName} ${profile?.lastName}`;
-  const getEmail = () => profile?.email;
+  const getRole = () => profile?.role;
 
   return (
     <>
@@ -115,7 +115,7 @@ export default function AccountPopover() {
             {getName()}
           </Typography>
           <Typography variant='body2' sx={{ color: 'text.secondary' }} noWrap>
-            {getEmail()}
+            {getRole()}
           </Typography>
         </Box>
 

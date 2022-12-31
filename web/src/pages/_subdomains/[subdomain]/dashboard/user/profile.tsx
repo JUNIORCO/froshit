@@ -26,7 +26,7 @@ UserProfile.getLayout = function getLayout(page: React.ReactElement) {
 
 type FormValuesProps = {
   email: string;
-  phoneNumber: string;
+  phoneNumber: string | null;
   firstName: string;
   lastName: string;
   role: string;
@@ -43,7 +43,7 @@ export default function UserProfile() {
 
   const UpdateProfileSchema = Yup.object().shape({
     email: Yup.string().email().required('Email is required'),
-    phoneNumber: Yup.string().required('Phone number is required'),
+    phoneNumber: Yup.string().nullable(),
     firstName: Yup.string().required('First name is required'),
     lastName: Yup.string().required('Last name is required'),
     role: Yup.string().required('Role is required'),

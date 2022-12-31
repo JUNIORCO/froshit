@@ -16,19 +16,15 @@ import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import Iconify from '../Iconify';
 import { Frosh } from '../../../prisma/types';
 import { formatFroshPrice } from './utils';
-import { stripePromise } from '../../stripe';
 
 export default function SelectFrosh() {
   const {
     university,
     setActiveStep,
     loadingPaymentIntent,
-    setLoadingPaymentIntent,
     errorMessage,
-    setErrorMessage,
     methods,
     formPayload,
-    createCheckout,
   } = useFrosheeRegistration();
   const { setValue, formState: { isValid } } = methods;
 
@@ -65,10 +61,6 @@ export default function SelectFrosh() {
             expandIcon={<ExpandMoreIcon />}
             aria-controls='panel1a-content'
             id='panel1a-header'
-            // sx={{
-            //   padding: 0,
-            //   margin: 0,
-            // }}
           >
             <Typography sx={{ width: '33%', flexShrink: 0 }}>{frosh.name}</Typography>
             <Typography sx={{ color: 'text.secondary' }}>{formatFroshPrice(frosh.price)}</Typography>
@@ -111,7 +103,7 @@ export default function SelectFrosh() {
           role='link'
           disabled={!isValid}
         >
-          Go to Payment
+          Pay
         </LoadingButton>
       </Stack>
     </Stack>

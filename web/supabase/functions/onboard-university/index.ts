@@ -19,6 +19,7 @@ serve(async (req: Request) => {
   try {
     const body = await req.json();
     const { university, froshs, admin } = OnboardUniversitySchema.parse(body) as OnboardPayload;
+    console.log('[Onboard University] Passed zod validation');
 
     const supabaseAdmin = getAdminSupabase();
 
@@ -32,6 +33,8 @@ serve(async (req: Request) => {
       });
 
     if (universityCreateError) throw universityCreateError;
+
+    console.log('[Onboard University] Created university');
 
     // create the admin in supabase
     const { error: authUserCreateError } = await supabaseAdmin
@@ -47,11 +50,16 @@ serve(async (req: Request) => {
             phoneNumber: admin.phoneNumber,
             role: 'Admin',
             universityId,
+            froshId: null,
+            teamId: null,
+            paymentId: null,
           },
         },
       });
 
     if (authUserCreateError) throw authUserCreateError;
+
+    console.log('[Onboard University] Created auth user');
 
     // create the froshs in Supabase and in Stripe
     for (const frosh of froshs) {
@@ -62,7 +70,7 @@ serve(async (req: Request) => {
       };
       const stripeCreatedPrice = await stripe.prices.create({
         currency: 'cad',
-        unit_amount: frosh.price, // in cents
+        unit_amount: frosh.price,
         nickname: `Price of ${frosh.name} at ${university.name}`,
         metadata,
         product_data: {
@@ -70,6 +78,8 @@ serve(async (req: Request) => {
           metadata,
         },
       });
+
+      console.log(`[Onboard University] Created frosh ${frosh.name} in Stripe`);
 
       const { error: createDbFroshError } = await supabaseAdmin
         .from('frosh')
@@ -85,9 +95,13 @@ serve(async (req: Request) => {
         });
 
       if (createDbFroshError) throw createDbFroshError;
+
+      console.log(`[Onboard University] Created frosh ${frosh.name} in Supabase`);
     }
 
-    return new Response('Success!', {
+    console.log('[Onboard University] Success!');
+
+    return new Response(JSON.stringify({ error: null }), {
       headers: { 'Content-Type': 'application/json' },
       status: 200,
     });

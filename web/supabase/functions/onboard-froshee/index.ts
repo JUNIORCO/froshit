@@ -1,10 +1,98 @@
 // @ts-nocheck
 import { serve } from 'https://deno.land/std@0.131.0/http/server.ts';
-import { stripe, cryptoProvider } from '../_utils/stripe.ts';
+import { cryptoProvider, stripe } from '../_utils/stripe.ts';
 import { getAdminSupabase } from '../_utils/supabaseAdmin.ts';
+import groupBy from '../_utils/lodash.ts';
+import { v4 as uuid } from '../_utils/uuid.ts';
+
+const createTeam = async ({ supabaseAdmin, newTeamId, newTeamNumber, froshId }): Promise<string | null> => {
+  const { error: teamCreateError } = await supabaseAdmin
+    .from('team')
+    .insert({
+      id: newTeamId,
+      number: newTeamNumber,
+      name: `Team ${newTeamNumber}`,
+      froshId,
+    });
+
+  return teamCreateError ? null : newTeamId;
+};
+
+const autoAssignTeam = async ({ supabaseAdmin, universityId, froshId }): Promise<string | null> => {
+  const { data: university, error: universityError } = await supabaseAdmin
+    .from('university')
+    .select('maxTeamCapacity')
+    .match({ id: universityId })
+    .single();
+  console.log('Found university ', university, universityError);
+  if (!university || universityError) return null;
+
+  const { maxTeamCapacity } = university;
+
+  const { data: profiles, error: profilesError } = await supabaseAdmin
+    .from('profile')
+    .select('*, team(*)')
+    .match({ froshId });
+
+  console.log('Found profiles ', profiles, profilesError);
+
+  if (!profiles || profilesError) return null;
+
+  if (!profiles.length) {
+    return createTeam({
+      supabaseAdmin,
+      newTeamId: uuid(),
+      newTeamNumber: 1,
+      froshId,
+    });
+  }
+
+  const groupedProfiles = groupBy(profiles, (profile) => profile.teamId);
+
+  console.log('groupedProfiles ', groupedProfiles);
+
+  const [froshIdFound] = Object.entries(groupedProfiles)
+    .find(([_froshId, profiles]) => profiles.length < maxTeamCapacity) || [];
+
+  console.log('froshIdFound ', froshIdFound);
+
+  // if a frosh with capacity exists, return it
+  if (froshIdFound) return froshIdFound;
+
+  // otherwise create one
+  return createTeam({
+    supabaseAdmin,
+    newTeamId: uuid(),
+    newTeamNumber: String(Object.values(groupedProfiles).length + 1),
+    froshId,
+  });
+
+};
 
 const handleCheckoutSessionCompleted = async (session: any) => {
   const supabaseAdmin = getAdminSupabase();
+
+  console.log(`[Onboard Froshee] Starting handler for email ${session.client_reference_id} and payment intent id ${session.payment_intent}`);
+
+  const paymentId = uuid();
+  const { error: createPaymentError } = await supabaseAdmin
+    .from('payment')
+    .insert({
+      id: paymentId,
+      amount: session.amount_total,
+      type: 'Online',
+      stripePaymentIntentId: session.payment_intent,
+    });
+
+  if (createPaymentError) throw createPaymentError;
+
+  console.log(`[Onboard Froshee] Created payment in Supabase ${paymentId} for email ${session.client_reference_id}`);
+
+  const teamId = await autoAssignTeam({
+    supabaseAdmin,
+    universityId: session.metadata.universityId,
+    froshId: session.metadata.froshId,
+  });
 
   const { data: { user: authFroshee }, error: frosheeCreateError } = await supabaseAdmin
     .auth
@@ -18,20 +106,15 @@ const handleCheckoutSessionCompleted = async (session: any) => {
         phoneNumber: session.metadata.phoneNumber,
         role: 'Froshee',
         universityId: session.metadata.universityId,
+        froshId: session.metadata.froshId,
+        teamId,
+        paymentId,
       },
     });
 
   if (!authFroshee || frosheeCreateError) throw frosheeCreateError;
 
-  const { error: updateError } = await supabaseAdmin
-    .from('profile')
-    .update({
-      froshId: session.metadata.froshId,
-      paymentId: session.payment_intent,
-    })
-    .match({ id: authFroshee.id });
-
-  if (updateError) throw updateError;
+  console.log(`[Onboard Froshee] Created auth user ${authFroshee.id} for email ${session.client_reference_id}`);
 };
 
 /**
@@ -58,16 +141,15 @@ serve(async (req: Request) => {
       stripeSignature,
       stripeSecretKey,
       undefined,
-      cryptoProvider
+      cryptoProvider,
     );
 
     switch (event.type) {
       case 'checkout.session.completed':
-        console.log('handling checkout.session.completed')
+        console.log('handling checkout.session.completed');
         const session = event.data.object;
         await handleCheckoutSessionCompleted(session);
         break;
-      // ... handle other event types
       default:
         console.log(`Unhandled event type ${event.type}`);
     }

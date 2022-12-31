@@ -8,6 +8,7 @@ export const UniversityPayloadSchema = z.object({
   color: z.string(),
   stripeConnectedAccountId: z.string(),
   stripeConnectedAccountLink: z.string(),
+  maxTeamCapacity: z.number(),
 });
 
 export const FroshPayloadSchema = z.object({
