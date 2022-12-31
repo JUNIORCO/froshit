@@ -80,18 +80,12 @@ serve(async (req: Request) => {
           stripeProductId: stripeCreatedPrice.product,
           stripePriceId: stripeCreatedPrice.id,
           price: stripeCreatedPrice.unit_amount,
+          applicationFee: frosh.applicationFee,
           universityId,
         });
 
       if (createDbFroshError) throw createDbFroshError;
     }
-
-    // create the bucket for the university
-    const { error: bucketCreateError } = await supabaseAdmin
-      .storage
-      .createBucket(university.subdomain, { public: true });
-
-    if (bucketCreateError) throw bucketCreateError;
 
     return new Response('Success!', {
       headers: { 'Content-Type': 'application/json' },

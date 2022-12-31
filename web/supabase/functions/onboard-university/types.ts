@@ -14,6 +14,7 @@ export const FroshPayloadSchema = z.object({
   name: z.string(),
   description: z.string(),
   price: z.number(),
+  applicationFee: z.number(),
 });
 
 export const AdminPayloadSchema = z.object({

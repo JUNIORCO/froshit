@@ -50,7 +50,8 @@ serve(async (req: Request) => {
     const stripeSignature = req.headers.get('Stripe-Signature');
     const stripeSecretKey = Deno.env.get('STRIPE_ONBOARD_FROSHEE_SECRET');
 
-    if (!stripeSignature || !stripeSecretKey) throw new Error('No key found');
+    if (!stripeSignature) throw new Error('No Stripe signature found');
+    if (!stripeSecretKey) throw new Error('No Stripe secret key found');
 
     const event = await stripe.webhooks.constructEventAsync(
       body,

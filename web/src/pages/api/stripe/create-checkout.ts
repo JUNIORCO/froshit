@@ -40,10 +40,11 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         universityStripeConnectedAccountId: university.stripeConnectedAccountId,
       },
       payment_intent_data: {
-        application_fee_amount: 1,
+        application_fee_amount: formPayload.frosh!.applicationFee,
         transfer_data: {
           destination: university.stripeConnectedAccountId,
         },
+        receipt_email: formPayload.email,
       },
       custom_text: {
         submit: { message: `Review your university email before paying: ${formPayload.email}` }
