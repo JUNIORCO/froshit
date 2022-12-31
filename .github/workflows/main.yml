@@ -26,4 +26,6 @@ jobs:
       - run: PGPASSWORD=$PRODUCTION_DB_PASSWORD psql -h db.mybvkrkmvnuzeqvzgbzg.supabase.co -p 5432 -d postgres -U postgres -f web/supabase/scripts/auth_triggers.sql
       - run: PGPASSWORD=$PRODUCTION_DB_PASSWORD psql -h db.mybvkrkmvnuzeqvzgbzg.supabase.co -p 5432 -d postgres -U postgres -f web/supabase/scripts/add_realtime_tables.sql
       - run: PGPASSWORD=$PRODUCTION_DB_PASSWORD psql -h db.mybvkrkmvnuzeqvzgbzg.supabase.co -p 5432 -d postgres -U postgres -f web/supabase/scripts/storage_policies.sql
+      - run: cd web && supabase functions deploy onboard-university --project-ref mybvkrkmvnuzeqvzgbzg
+      - run: cd web && supabase functions deploy onboard-froshee --project-ref mybvkrkmvnuzeqvzgbzg --no-verify-jwt
       - run: PGPASSWORD=$PRODUCTION_DB_PASSWORD psql -h db.mybvkrkmvnuzeqvzgbzg.supabase.co -p 5432 -d postgres -U postgres -f web/supabase/scripts/auth_fix.sql
