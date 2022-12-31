@@ -47,6 +47,14 @@ To clear the Supabase instance (i.e delete all data and drop all tables), run
 npm run supabase:reset
 ```
 
+#### Emails
+
+Inbucket URL `http://localhost:54324`
+
+#### Functions
+
+`supabase functions serve onboard-university --env-file ./supabase/.env.local`
+
 ### Frontend
 
 Start another terminal and run
