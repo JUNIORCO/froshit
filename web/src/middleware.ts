@@ -47,12 +47,15 @@ export default async function middleware(req: NextRequest) {
     return;
   }
 
+  const isValidSubdomain = await checkValidSubdomain({ supabase, subdomain: currentHost });
+
   // invalid subdomain (e.g apple.froshit.com), reroute to 404
-  if (!checkValidSubdomain({ supabase, subdomain: currentHost })) {
-    console.log(`[Middleware] Visiting invalid subdomain ${currentHost}, rerouting to 404...`);
-    url.pathname = `/_subdomains/${currentHost}/404`;
-    return NextResponse.rewrite(url);
+  if (!isValidSubdomain) {
+    console.log(`[Middleware] Visiting invalid subdomain ${currentHost}, rerouting to froshit.com...`);
+    return NextResponse.redirect('https://froshit.com');
   }
+
+  console.log(`[Middleware] Visiting valid subdomain ${currentHost}...`);
 
   // unprotected subdomain page (auth)
   if (UNPROTECTED_PAGES.includes(url.pathname)) {
