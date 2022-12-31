@@ -25,11 +25,12 @@ model University {
   id String @id @default(uuid())
 
   // attributes
-  name                     String @unique
-  subdomain                String @unique
-  imageUrl                 String
-  color                    String
-  stripeConnectedAccountId String @unique
+  name                       String @unique
+  subdomain                  String @unique
+  imageUrl                   String
+  color                      String
+  stripeConnectedAccountId   String @unique
+  stripeConnectedAccountLink String @unique
 
   // associations
   froshs    Frosh[]
@@ -52,8 +53,8 @@ model Frosh {
   // attributes
   name            String
   description     String
-  stripeProductId String
-  stripePriceId   String
+  stripeProductId String @unique
+  stripePriceId   String @unique
   price           Int
 
   // associations
@@ -103,8 +104,8 @@ model Team {
   id String @id @default(uuid())
 
   // attributes
-  name   String
   number String
+  name   String
 
   // associations
   frosh   Frosh  @relation(fields: [froshId], references: [id], onDelete: Cascade)
@@ -166,8 +167,9 @@ model Payment {
   id String @id @default(uuid())
 
   // attributes
-  amount Int
-  type   PaymentType
+  amount                Int
+  type                  PaymentType
+  stripePaymentIntentId String
 
   // associations
   profile Profile?

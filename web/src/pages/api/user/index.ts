@@ -1,23 +1,18 @@
 import type { NextApiRequest, NextApiResponse } from 'next';
-import { createClient } from '@supabase/supabase-js';
 import { Role } from 'prisma/types';
+import { supabaseAdmin } from '../_utils/supabaseAdmin';
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
   try {
     if (req.method === 'POST') {
       const { email, firstName, lastName, phoneNumber, role, universityId, redirectTo } = req.body;
 
-      const supabase = createClient(
-        process.env.NEXT_PUBLIC_SUPABASE_URL ?? '',
-        process.env.NEXT_PUBLIC_SUPABASE_SERVICE_ROLE_KEY ?? '',
-      );
-
       // use the inviteUserByEmail api
       if (role === Role.Organizer) {
         const {
           data: user,
           error,
-        } = await supabase.auth.admin.inviteUserByEmail(email, {
+        } = await supabaseAdmin.auth.admin.inviteUserByEmail(email, {
           redirectTo,
           data: {
             firstName,
@@ -36,7 +31,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       }
 
       if (role === Role.Leader) {
-        const { data: user, error } = await supabase.auth.admin.createUser({
+        const { data: user, error } = await supabaseAdmin.auth.admin.createUser({
           email,
           email_confirm: true,
           user_metadata: {
@@ -59,12 +54,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     } else if (req.method === 'DELETE') {
       const { id } = req.body;
 
-      const supabase = createClient(
-        process.env.NEXT_PUBLIC_SUPABASE_URL ?? '',
-        process.env.NEXT_PUBLIC_SUPABASE_SERVICE_ROLE_KEY ?? '',
-      );
-
-      const { data: user, error } = await supabase.auth.admin.deleteUser(id);
+      const { data: user, error } = await supabaseAdmin.auth.admin.deleteUser(id);
       if (error) {
         throw error;
       }

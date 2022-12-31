@@ -7,6 +7,7 @@ export const UniversityPayloadSchema = z.object({
   imageUrl: z.string(),
   color: z.string(),
   stripeConnectedAccountId: z.string(),
+  stripeConnectedAccountLink: z.string(),
 });
 
 export const FroshPayloadSchema = z.object({

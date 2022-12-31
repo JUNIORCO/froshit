@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { createMiddlewareSupabaseClient } from '@supabase/auth-helpers-nextjs';
-import { PATH_AUTH } from './routes/paths';
+import { PATH_AUTH, PATH_FROSHEE_REGISTER } from './routes/paths';
 import type { SupabaseClient } from '@supabase/supabase-js';
 
 export const config = {
@@ -23,7 +23,7 @@ async function checkValidSubdomain({ supabase, subdomain }: CheckValidSubdomainA
   return !!data && !error;
 }
 
-const UNPROTECTED_PAGES = Object.values(PATH_AUTH);
+const UNPROTECTED_PAGES = [...Object.values(PATH_AUTH), ...Object.values(PATH_FROSHEE_REGISTER)];
 
 const hostIsSubdomain = (host: string) => host !== process.env.ROOT_DOMAIN;
 

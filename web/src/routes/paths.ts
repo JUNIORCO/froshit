@@ -4,6 +4,12 @@ function path(root: string, sublink: string) {
 
 const ROOTS_AUTH = '/auth';
 const ROOTS_DASHBOARD = '/dashboard';
+const ROOTS_FROSHEE_REGISTER = '/froshee';
+
+export const PATH_FROSHEE_REGISTER = {
+  register: path(ROOTS_FROSHEE_REGISTER, '/register'),
+  success: path(ROOTS_FROSHEE_REGISTER, '/payment-success'),
+};
 
 export const PATH_AUTH = {
   root: ROOTS_AUTH,

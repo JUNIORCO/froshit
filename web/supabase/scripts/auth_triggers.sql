@@ -29,7 +29,6 @@ create trigger on_auth_user_created
 
 
 
-
 -- deletes profile when auth user is deleted
 create or replace function public.handle_auth_user_delete()
 returns trigger

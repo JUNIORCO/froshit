@@ -1,12 +1,19 @@
-import { University } from '../types';
+import { Frosh, University } from '../types';
 import { prisma } from '../prisma';
 
 class PublicApi {
   constructor() {
   }
 
-  public async getUniversities(): Promise<University[]> {
-    return prisma.university.findMany();
+  public async getUniversityForFrosheeRegistration(subdomain: string): Promise<University & { froshs: Frosh[] }> {
+    return prisma.university.findUniqueOrThrow({
+      where: {
+        subdomain,
+      },
+      include: {
+        froshs: true,
+      },
+    });
   }
 }
 

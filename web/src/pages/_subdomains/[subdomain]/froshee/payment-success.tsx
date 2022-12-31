@@ -1,13 +1,10 @@
-import NextLink from 'next/link';
+import React from 'react';
 import { styled } from '@mui/material/styles';
 import { Box, Container, Typography } from '@mui/material';
-import { PATH_AUTH } from '../../../../routes/paths';
 import Page from '../../../../components/Page';
 import Logo from '../../../../components/Logo';
-import { RegisterForm } from '../../../../sections/auth/register';
 import GuestGuard from '../../../../guards/GuestGuard';
 import { GetServerSideProps, GetServerSidePropsContext } from 'next';
-import { University } from '../../../../../prisma/types';
 import PublicApi from '../../../../../prisma/api/PublicApi';
 
 const RootStyle = styled('div')(({ theme }) => ({
@@ -41,40 +38,24 @@ const ContentStyle = styled('div')(({ theme }) => ({
   padding: theme.spacing(12, 0),
 }));
 
-// ----------------------------------------------------------------------
-
-type RegisterProps = {
-  universities: University[];
-}
-
-export default function Register({ universities }: RegisterProps) {
+export default function PaymentSuccess() {
   return (
     <GuestGuard>
-      <Page title='Register'>
+      <Page title='Payment Success'>
         <RootStyle>
           <HeaderStyle>
             <Logo />
           </HeaderStyle>
-
           <Container>
             <ContentStyle>
               <Box sx={{ mb: 3, display: 'flex', alignItems: 'center' }}>
                 <Box sx={{ flexGrow: 1 }}>
                   <Typography variant='h4' gutterBottom>
-                    Create an account
+                    Payment Success
                   </Typography>
                 </Box>
                 <Logo university disabledLink sx={{ width: 64, height: 64 }} />
               </Box>
-
-              <RegisterForm universities={universities} />
-
-              <Typography variant='body2' sx={{ mt: 3, textAlign: 'center' }}>
-                Already have an account?{' '}
-                <NextLink href={PATH_AUTH.login} passHref style={{ textDecoration: 'none' }}>
-                  <Typography component={'span'} variant='subtitle2'>Login</Typography>
-                </NextLink>
-              </Typography>
             </ContentStyle>
           </Container>
         </RootStyle>
@@ -84,11 +65,14 @@ export default function Register({ universities }: RegisterProps) {
 }
 
 export const getServerSideProps: GetServerSideProps = async (ctx: GetServerSidePropsContext) => {
+  const { subdomain } = ctx.query;
   const api = new PublicApi();
-  const universities = await api.getUniversities();
+  //
+  // const university = await api.getUniversityForFrosheeRegistration(subdomain as string);
+
   return {
     props: {
-      universities,
+      // university,
     },
   };
 };
