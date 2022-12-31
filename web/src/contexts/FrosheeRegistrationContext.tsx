@@ -64,7 +64,7 @@ function FrosheeRegistrationProvider({ university, children }: SubdomainProvider
     firstName: '',
     lastName: '',
     email: '',
-    phoneNumber: '',
+    phoneNumber: null,
     frosh: null,
   };
 

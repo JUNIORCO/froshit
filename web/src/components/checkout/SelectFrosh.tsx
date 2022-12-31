@@ -44,7 +44,6 @@ export default function SelectFrosh() {
   return (
     <Stack spacing={3}>
       <Typography variant='h5'>Select a Frosh</Typography>
-      <Typography variant='caption' style={{ marginTop: 0 }}>Taxes included in all prices</Typography>
 
       {university.froshs.map(frosh => (
         <Accordion

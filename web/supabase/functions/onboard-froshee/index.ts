@@ -2,8 +2,14 @@
 import { serve } from 'https://deno.land/std@0.131.0/http/server.ts';
 import { cryptoProvider, stripe } from '../_utils/stripe.ts';
 import { getAdminSupabase } from '../_utils/supabaseAdmin.ts';
-import groupBy from '../_utils/lodash.ts';
 import { v4 as uuid } from '../_utils/uuid.ts';
+
+const groupBy = function(xs, key) {
+  return xs.reduce(function(rv, x) {
+    (rv[x[key]] = rv[x[key]] || []).push(x);
+    return rv;
+  }, {});
+};
 
 const createTeam = async ({ supabaseAdmin, newTeamId, newTeamNumber, froshId }): Promise<string | null> => {
   const { error: teamCreateError } = await supabaseAdmin
