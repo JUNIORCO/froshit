@@ -53,12 +53,12 @@ const autoAssignTeam = async ({ supabaseAdmin, universityId, froshId }): Promise
     });
   }
 
-  const groupedProfiles = groupBy(profiles, (profile) => profile.teamId);
+  const groupedProfiles = groupBy(profiles, 'teamId');
 
   console.log('groupedProfiles ', groupedProfiles);
 
   const [froshIdFound] = Object.entries(groupedProfiles)
-    .find(([_froshId, profiles]) => profiles.length < maxTeamCapacity) || [];
+    .find(([_, profiles]) => profiles.length < maxTeamCapacity) || [];
 
   console.log('froshIdFound ', froshIdFound);
 
