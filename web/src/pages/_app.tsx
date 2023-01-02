@@ -13,14 +13,12 @@ import 'react-lazy-load-image-component/src/effects/black-and-white.css';
 import '@fullcalendar/common/main.min.css';
 import '@fullcalendar/daygrid/main.min.css';
 import cookie from 'cookie';
-import { ReactElement, ReactNode, useEffect, useState } from 'react';
+import { ReactElement, ReactNode, useState } from 'react';
 import { NextPage } from 'next';
 import Head from 'next/head';
 import App, { AppContext, AppProps } from 'next/app';
-import { Provider as ReduxProvider } from 'react-redux';
 import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
 import { LocalizationProvider } from '@mui/x-date-pickers';
-import { store } from '../redux/store';
 import { getSettings } from '../utils/getSettings';
 import { SettingsProvider } from '../contexts/SettingsContext';
 import { CollapseDrawerProvider } from '../contexts/CollapseDrawerContext';
@@ -54,22 +52,6 @@ export default function MyApp(props: MyAppProps) {
 
   const getLayout = Component.getLayout ?? ((page) => page);
 
-  // useEffect(() => {
-  //   const { data: authListener } = supabaseClient.auth.onAuthStateChange(async (event, session) => {
-  //     if (event == 'PASSWORD_RECOVERY') {
-  //       console.log('PASSWORD_RECOVERY', session);
-  //
-  //       // show screen to update user's password
-  //       // TODO
-  //       //
-  //     }
-  //   });
-  //
-  //   return () => {
-  //     authListener.subscription;
-  //   };
-  // }, []);
-
   return (
     <>
       <Head>
@@ -82,25 +64,23 @@ export default function MyApp(props: MyAppProps) {
       >
         <SubdomainProvider subdomain={subdomain || ''}>
           <ProfileProvider profile={profile}>
-            <ReduxProvider store={store}>
-              <LocalizationProvider dateAdapter={AdapterDateFns}>
-                <CollapseDrawerProvider>
-                  <SettingsProvider defaultSettings={settings}>
-                    <MotionLazyContainer>
-                      <ThemeProvider>
-                        <ThemeSettings>
-                          <NotistackProvider>
-                            <ChartStyle />
-                            <ProgressBar />
-                            {getLayout(<Component {...pageProps} />)}
-                          </NotistackProvider>
-                        </ThemeSettings>
-                      </ThemeProvider>
-                    </MotionLazyContainer>
-                  </SettingsProvider>
-                </CollapseDrawerProvider>
-              </LocalizationProvider>
-            </ReduxProvider>
+            <LocalizationProvider dateAdapter={AdapterDateFns}>
+              <CollapseDrawerProvider>
+                <SettingsProvider defaultSettings={settings}>
+                  <MotionLazyContainer>
+                    <ThemeProvider>
+                      <ThemeSettings>
+                        <NotistackProvider>
+                          <ChartStyle />
+                          <ProgressBar />
+                          {getLayout(<Component {...pageProps} />)}
+                        </NotistackProvider>
+                      </ThemeSettings>
+                    </ThemeProvider>
+                  </MotionLazyContainer>
+                </SettingsProvider>
+              </CollapseDrawerProvider>
+            </LocalizationProvider>
           </ProfileProvider>
         </SubdomainProvider>
       </SessionContextProvider>

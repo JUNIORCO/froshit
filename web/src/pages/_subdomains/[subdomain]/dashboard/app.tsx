@@ -1,50 +1,40 @@
-// @mui
 import { useTheme } from '@mui/material/styles';
 import { Button, Container, Grid } from '@mui/material';
-// hooks
-import useSettings from '../../../../hooks/useSettings';
-// layouts
 import Layout from '../../../../layouts';
-// _mock_
-// components
 import Page from '../../../../components/Page';
-// sections
-import { AppAreaInstalled, AppCurrentDownload } from '../../../../sections/@dashboard/general/app';
+import { AnalyticsPieChart, AnalyticsWidget, FrosheeRegistrationGraph } from '../../../../sections/dashboard/overview';
 import { GetServerSideProps, GetServerSidePropsContext } from 'next';
 import AuthApi from '../../../../../prisma/api/AuthApi';
 import { Analytics } from '../../../../../prisma/api/@types';
 import { getAnalysisColors } from 'src/config';
 import { fCurrency, fNumber } from '../../../../utils/formatNumber';
-import { AnalyticsWidgetSummary } from '../../../../sections/@dashboard/general/analytics';
 import NextLink from 'next/link';
 import Iconify from '../../../../components/Iconify';
-import React from 'react';
+import React, { ReactElement } from 'react';
 import useProfile from '../../../../hooks/useProfile';
 import { Role } from 'prisma/types';
-// assets
 
-AnalyticsPage.getLayout = function getLayout(page: React.ReactElement) {
+AnalyticsPage.getLayout = function getLayout(page: ReactElement) {
   return <Layout>{page}</Layout>;
 };
 
 export default function AnalyticsPage({
                                         university,
-                                        totalAmountPaid,
+                                        totalAmountCollected,
                                         totalOrganizers,
                                         totalLeaders,
                                         totalFroshees,
                                         froshFrosheeCount,
                                         froshLeaderCount,
-                                        froshsTotalAmountPaid,
+                                        froshsTotalAmountCollected,
                                         frosheesRegisteredAnalytics,
                                       }: Analytics) {
   const { profile } = useProfile();
   const theme = useTheme();
-  const { themeStretch } = useSettings();
 
   return (
-    <Page title='General: App'>
-      <Container maxWidth={themeStretch ? false : 'xl'}>
+    <Page title='Overview'>
+      <Container>
         <Grid container spacing={3}>
 
           {profile!.role === Role.Admin &&
@@ -61,16 +51,16 @@ export default function AnalyticsPage({
           </Grid>)}
 
           <Grid item xs={12} md={3}>
-            <AnalyticsWidgetSummary
-              title='Approx. Amount Collected'
-              total={totalAmountPaid}
+            <AnalyticsWidget
+              title='Estimated Amount Collected'
+              total={totalAmountCollected}
               color='success'
               formatter={fCurrency}
             />
           </Grid>
 
           <Grid item xs={12} md={3}>
-            <AnalyticsWidgetSummary
+            <AnalyticsWidget
               title='Total Organizers'
               total={totalOrganizers}
               color='info'
@@ -78,7 +68,7 @@ export default function AnalyticsPage({
           </Grid>
 
           <Grid item xs={12} md={3}>
-            <AnalyticsWidgetSummary
+            <AnalyticsWidget
               title='Total Leaders'
               total={totalLeaders}
               color='warning'
@@ -86,7 +76,7 @@ export default function AnalyticsPage({
           </Grid>
 
           <Grid item xs={12} md={3}>
-            <AnalyticsWidgetSummary
+            <AnalyticsWidget
               title='Total Froshees'
               total={totalFroshees}
               color='error'
@@ -94,19 +84,19 @@ export default function AnalyticsPage({
           </Grid>
 
           <Grid item xs={12} md={6} lg={4}>
-            <AppCurrentDownload
-              title='Paid Per Frosh'
+            <AnalyticsPieChart
+              title='Collected Per Frosh'
               chartColors={getAnalysisColors(theme)}
-              chartData={froshsTotalAmountPaid.map(froshAnalysis => ({
+              chartData={froshsTotalAmountCollected.map(froshAnalysis => ({
                 label: froshAnalysis.froshName.split(/\s(.+)/)[0],
-                value: froshAnalysis.totalAmountPaid,
+                value: froshAnalysis.totalOnlineAmountCollected + froshAnalysis.totalCashAmountCollected,
               }))}
               labelFormatter={fCurrency}
             />
           </Grid>
 
           <Grid item xs={12} md={6} lg={4}>
-            <AppCurrentDownload
+            <AnalyticsPieChart
               title='Leaders Per Frosh'
               chartColors={getAnalysisColors(theme)}
               chartData={froshLeaderCount.map(froshProfile => ({
@@ -118,7 +108,7 @@ export default function AnalyticsPage({
           </Grid>
 
           <Grid item xs={12} md={6} lg={4}>
-            <AppCurrentDownload
+            <AnalyticsPieChart
               title='Froshees Per Frosh'
               chartColors={getAnalysisColors(theme)}
               chartData={froshFrosheeCount.map(froshProfile => ({
@@ -130,7 +120,7 @@ export default function AnalyticsPage({
           </Grid>
 
           <Grid item xs={12} md={6} lg={12}>
-            <AppAreaInstalled
+            <FrosheeRegistrationGraph
               title='Froshees Registered'
               subheader='Past 7 days only'
               chartLabels={frosheesRegisteredAnalytics.dates}
@@ -148,11 +138,10 @@ export default function AnalyticsPage({
 export const getServerSideProps: GetServerSideProps = async (ctx: GetServerSidePropsContext) => {
   const { subdomain } = ctx.query;
   const api = new AuthApi({ ctx });
+
   const analytics = await api.Analytics.getAnalyticsForDashboard(subdomain as string);
 
   return {
-    props: {
-      ...analytics,
-    },
+    props: analytics,
   };
 };

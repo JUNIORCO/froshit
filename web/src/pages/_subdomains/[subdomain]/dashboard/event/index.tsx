@@ -7,6 +7,7 @@ import {
   Card,
   Container,
   Divider,
+  Stack,
   Tab,
   Table,
   TableBody,
@@ -16,7 +17,6 @@ import {
 } from '@mui/material';
 import { PATH_DASHBOARD } from '../../../../../routes/paths';
 import useTabs from '../../../../../hooks/useTabs';
-import useSettings from '../../../../../hooks/useSettings';
 import useTable, { emptyRows, getComparator } from '../../../../../hooks/useTable';
 import Layout from '../../../../../layouts';
 import Page from '../../../../../components/Page';
@@ -27,12 +27,14 @@ import { TableEmptyRows, TableHeadCustom, TableNoData } from '../../../../../com
 import { GetServerSideProps, GetServerSidePropsContext } from 'next';
 import { FullEvent } from '../../../../../../prisma/api/@types';
 import dayjs from 'dayjs';
-import { EventTableRow, EventTableToolbar } from '../../../../../sections/@dashboard/event/list';
+import { EventTableRow, EventTableToolbar } from '../../../../../sections/dashboard/event/list';
 import isBetween from 'dayjs/plugin/isBetween';
 import AuthApi from '../../../../../../prisma/api/AuthApi';
 import { useSupabaseClient } from '@supabase/auth-helpers-react';
 import { useSnackbar } from 'notistack';
 import useRefresh from '../../../../../hooks/useRefresh';
+import { Frosh } from 'prisma/types';
+import ConfirmDeleteModal from '../../../../../components/ConfirmDeleteModal';
 
 dayjs.extend(isBetween);
 
@@ -40,7 +42,7 @@ const TAB_OPTIONS = ['All', 'Current Events', 'Upcoming Events', 'Past Events'];
 
 const TABLE_HEAD = [
   { id: 'name', label: 'Name', align: 'left' },
-  { id: 'frosh', label: 'Frosh', align: 'left' },
+  { id: 'frosh', label: 'Froshs', align: 'left' },
   { id: 'startDate', label: 'Start Date', align: 'left' },
   { id: 'endDate', label: 'End Date', align: 'left' },
   { id: 'location', label: 'Location', align: 'left' },
@@ -53,53 +55,31 @@ EventList.getLayout = function getLayout(page: React.ReactElement) {
 
 type Props = {
   initialEvents: FullEvent[];
+  froshs: Frosh[];
 }
 
-export default function EventList({ initialEvents }: Props) {
-  const [tableData, setTableData] = useState<FullEvent[]>(initialEvents);
-  useEffect(() => {
-    setTableData(initialEvents);
-  }, [initialEvents]);
-
+export default function EventList({ initialEvents, froshs }: Props) {
+  const { push } = useRouter();
   const { refreshData } = useRefresh();
   const { enqueueSnackbar } = useSnackbar();
-  const supabaseClient = useSupabaseClient();
-
   const {
-    dense,
     page,
     order,
     orderBy,
     rowsPerPage,
     setPage,
-    selected,
     onSort,
     onChangePage,
     onChangeRowsPerPage,
   } = useTable();
+  const supabaseClient = useSupabaseClient();
 
-  const uniqueFroshsFromEvents = tableData.reduce((accum, { froshs }) => {
-    if (!froshs.length) {
-      return accum;
-    }
+  // table data
+  const [tableData, setTableData] = useState<FullEvent[]>(initialEvents);
 
-    froshs.forEach(({ name }) => {
-      if (!accum.includes(name)) accum.push(name);
-    });
-
-    return accum;
-  }, [] as string[]);
-
-  const FROSH_OPTIONS: string[] = ['All', ...uniqueFroshsFromEvents];
-
-  const { themeStretch } = useSettings();
-
-  const { push } = useRouter();
-
+  // filters
   const [filterName, setFilterName] = useState<string>('');
-
   const [filterFrosh, setFilterFrosh] = useState<string>('All');
-
   const { currentTab: filterTab, onChangeTab: onChangeFilterTab } = useTabs('All');
 
   const handleFilterName = (filterName: string) => {
@@ -109,6 +89,7 @@ export default function EventList({ initialEvents }: Props) {
 
   const handleFilterFrosh = (event: React.ChangeEvent<HTMLInputElement>) => {
     setFilterFrosh(event.target.value);
+    setPage(0);
   };
 
   const handleViewRow = (id: string) => {
@@ -127,39 +108,61 @@ export default function EventList({ initialEvents }: Props) {
     filterTab,
   });
 
-  const denseHeight = dense ? 52 : 72;
-
   const isNotFound =
     (!dataFiltered.length && !!filterName) ||
     (!dataFiltered.length && !!filterFrosh) ||
     (!dataFiltered.length && !!filterTab);
 
-  const handleDeleteRow = async (id: string) => {
-    const { error } = await supabaseClient.from('event').delete().eq('id', id);
+  const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
+  const toggleIsModalOpen = () => setIsModalOpen((prev) => !prev);
+  const [selectedEventToDelete, setSelectedEventToDelete] = useState<FullEvent | null>();
+  const handleDeleteRow = (event: FullEvent) => {
+    setSelectedEventToDelete(event);
+    toggleIsModalOpen();
+  };
+
+  const deleteEvent = async () => {
+    const { error } = await supabaseClient
+      .from('event')
+      .delete()
+      .eq('id', selectedEventToDelete!.id);
+
     if (error) {
-      console.error(error);
-      enqueueSnackbar('Error deleting event', { variant: 'error' });
+      enqueueSnackbar(error.message, { variant: 'error' });
       return;
     }
+
+    enqueueSnackbar(`${selectedEventToDelete!.name} deleted`);
+    setSelectedEventToDelete(null);
+    toggleIsModalOpen();
     refreshData();
   };
 
+  useEffect(() => {
+    setTableData(initialEvents);
+  }, [initialEvents]);
+
   return (
     <Page title='Event List'>
-      <Container maxWidth={themeStretch ? false : 'lg'}>
+      <Container>
         <HeaderBreadcrumbs
-          heading='Event List'
+          heading='Events'
           links={[
             { name: 'Dashboard', href: PATH_DASHBOARD.root },
             { name: 'Event', href: PATH_DASHBOARD.event.root },
             { name: 'List' },
           ]}
           action={
-            <NextLink href={PATH_DASHBOARD.event.new} passHref style={{ textDecoration: 'none' }}>
-              <Button variant='contained' startIcon={<Iconify icon={'eva:plus-fill'} />}>
-                New Event
+            <Stack flexDirection='row' gap={1}>
+              <Button variant='outlined' onClick={refreshData}>
+                <Iconify icon={'ic:round-refresh'} width={20} height={20} />
               </Button>
-            </NextLink>
+              <NextLink href={PATH_DASHBOARD.event.new} passHref style={{ textDecoration: 'none' }}>
+                <Button variant='contained' endIcon={<Iconify icon={'material-symbols:add-circle-outline-rounded'} />}>
+                  Add Event
+                </Button>
+              </NextLink>
+            </Stack>
           }
         />
 
@@ -184,7 +187,7 @@ export default function EventList({ initialEvents }: Props) {
             filterFrosh={filterFrosh}
             onFilterName={handleFilterName}
             onFilterFrosh={handleFilterFrosh}
-            optionsRole={FROSH_OPTIONS}
+            froshs={froshs}
           />
 
           <Scrollbar>
@@ -200,19 +203,18 @@ export default function EventList({ initialEvents }: Props) {
                 <TableBody>
                   {dataFiltered
                     .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
-                    .map((row: any) => (
+                    .map((row) => (
                       <EventTableRow
                         key={row.id}
                         row={row}
-                        selected={selected.includes(row.id)}
                         onViewRow={() => handleViewRow(row.id)}
                         onEditRow={() => handleEditRow(row.id)}
-                        onDeleteRow={() => handleDeleteRow(row.id)}
+                        onDeleteRow={() => handleDeleteRow(row)}
                       />
                     ))}
 
                   <TableEmptyRows
-                    height={denseHeight}
+                    height={52}
                     emptyRows={emptyRows(page, rowsPerPage, tableData.length)}
                   />
 
@@ -234,6 +236,14 @@ export default function EventList({ initialEvents }: Props) {
             />
           </Box>
         </Card>
+
+        <ConfirmDeleteModal
+          open={isModalOpen}
+          onClose={toggleIsModalOpen}
+          onConfirm={deleteEvent}
+          title={`Are you sure you want to delete ${selectedEventToDelete?.name}?`}
+          content={`Deleting ${selectedEventToDelete?.name} means Froshees won't be able to see it on their device.`}
+        />
       </Container>
     </Page>
   );
@@ -291,11 +301,14 @@ function applySortFilter({
 
 export const getServerSideProps: GetServerSideProps = async (ctx: GetServerSidePropsContext) => {
   const api = new AuthApi({ ctx });
+
   const initialEvents = await api.Event.getFullEvents();
+  const froshs = await api.Frosh.getFroshs();
 
   return {
     props: {
       initialEvents,
+      froshs,
     },
   };
 };

@@ -1,4 +1,4 @@
-
+// TODO part of config
 type GetSubdomainArgs = {
   subdomain: string;
   path: string;

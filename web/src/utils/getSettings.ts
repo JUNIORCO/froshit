@@ -1,9 +1,5 @@
-// next
 import { NextApiRequestCookies } from 'next/dist/server/api-utils';
-// config
 import { defaultSettings, cookiesKey } from '../config';
-
-// ----------------------------------------------------------------------
 
 export const getSettings = (cookies: NextApiRequestCookies) => {
   const themeMode = getData(cookies[cookiesKey.themeMode]) || defaultSettings.themeMode;
@@ -29,8 +25,6 @@ export const getSettings = (cookies: NextApiRequestCookies) => {
     themeColorPresets,
   };
 };
-
-// ----------------------------------------------------------------------
 
 const getData = (value: string | undefined) => {
   if (value === 'true' || value === 'false') {

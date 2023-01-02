@@ -1,14 +1,9 @@
 import * as React from 'react';
-// next
 import Document, { Html, Head, Main, NextScript } from 'next/document';
-// emotion
 import { CacheProvider } from '@emotion/react';
 import createCache from '@emotion/cache';
 import createEmotionServer from '@emotion/server/create-instance';
-// theme
 import palette from '../theme/palette';
-
-// ----------------------------------------------------------------------
 
 function createEmotionCache() {
   return createCache({ key: 'css' });
@@ -57,8 +52,6 @@ export default class MyDocument extends Document {
   }
 }
 
-// ----------------------------------------------------------------------
-
 MyDocument.getInitialProps = async (ctx) => {
   const originalRenderPage = ctx.renderPage;
 
@@ -84,7 +77,6 @@ MyDocument.getInitialProps = async (ctx) => {
     <style
       data-emotion={`${style.key} ${style.ids.join(' ')}`}
       key={style.key}
-      // eslint-disable-next-line react/no-danger
       dangerouslySetInnerHTML={{ __html: style.css }}
     />
   ));

@@ -1,32 +1,29 @@
 import { Container } from '@mui/material';
-import useSettings from '../../../../../../hooks/useSettings';
 import Layout from '../../../../../../layouts';
 import Page from '../../../../../../components/Page';
 import { GetServerSideProps, GetServerSidePropsContext } from 'next';
 import type { FullTeam, UnassignedFrosheesAndLeaders } from '../../../../../../../prisma/api/@types';
 import type { Frosh } from '../../../../../../../prisma/types';
-import TeamEditForm from '../../../../../../sections/@dashboard/team/TeamEditForm';
+import TeamEditForm from '../../../../../../sections/dashboard/team/TeamEditForm';
 import HeaderBreadcrumbs from '../../../../../../components/HeaderBreadcrumbs';
 import { PATH_DASHBOARD } from '../../../../../../routes/paths';
-import { Query } from '../../../../../../@types/query';
 import AuthApi from '../../../../../../../prisma/api/AuthApi';
+import { ReactElement } from 'react';
 
-TeamEdit.getLayout = function getLayout(page: React.ReactElement) {
+TeamEditPage.getLayout = function getLayout(page: ReactElement) {
   return <Layout>{page}</Layout>;
 };
 
-type Props = {
+type TeamEditPageProps = {
   team: FullTeam;
   froshs: Frosh[];
   profiles: UnassignedFrosheesAndLeaders[];
 }
 
-export default function TeamEdit({ team, froshs, profiles }: Props) {
-  const { themeStretch } = useSettings();
-
+export default function TeamEditPage({ team, froshs, profiles }: TeamEditPageProps) {
   return (
-    <Page title='Team Edit'>
-      <Container maxWidth={themeStretch ? false : 'lg'}>
+    <Page title='Edit Team'>
+      <Container>
         <HeaderBreadcrumbs
           heading='Edit Team'
           links={[
@@ -41,14 +38,15 @@ export default function TeamEdit({ team, froshs, profiles }: Props) {
   );
 }
 
-export const getServerSideProps: GetServerSideProps = async (ctx: GetServerSidePropsContext) => {
-  const { id } = ctx.query as Query;
-
+export const getServerSideProps: GetServerSideProps<TeamEditPageProps> = async (ctx: GetServerSidePropsContext) => {
+  const { id } = ctx.query;
   const api = new AuthApi({ ctx });
 
-  const team = await api.Team.getFullTeamById(id);
-  const froshs = await api.Frosh.getFroshs();
-  const profiles = await api.Profile.getUnassignedFrosheesAndLeaders();
+  const [team, froshs, profiles] = await Promise.all([
+    api.Team.getFullTeamById(id as string),
+    api.Frosh.getFroshs(),
+    api.Profile.getUnassignedFrosheesAndLeaders(),
+  ]);
 
   return {
     props: {

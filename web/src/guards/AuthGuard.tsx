@@ -1,6 +1,6 @@
 import { ReactNode, useEffect, useState } from 'react';
 import { useRouter } from 'next/router';
-import Login from '../pages/_subdomains/[subdomain]/auth/login';
+import LoginPage from '../pages/_subdomains/[subdomain]/auth/login';
 import LoadingScreen from '../components/LoadingScreen';
 import { useSessionContext } from '@supabase/auth-helpers-react';
 import { PATH_AUTH } from '../routes/paths';
@@ -34,7 +34,7 @@ export default function AuthGuard({ children }: Props) {
       setRequestedLocation(pathname);
       push(PATH_AUTH.login);
     }
-    return <Login />;
+    return <LoginPage />;
   }
 
   return <>{children}</>;

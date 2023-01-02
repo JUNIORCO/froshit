@@ -1,7 +1,5 @@
 import { Theme, alpha } from '@mui/material/styles';
 
-// ----------------------------------------------------------------------
-
 type BackgroundBlurProps = {
   blur?: number;
   opacity?: number;
@@ -26,8 +24,6 @@ function getDirection(value = 'bottom') {
     left: 'to left',
   }[value];
 }
-
-// ----------------------------------------------------------------------
 
 export default function cssStyles(theme?: Theme) {
   return {

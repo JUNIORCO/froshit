@@ -1,5 +1,4 @@
-import React, { useState } from 'react';
-import NextLink from 'next/link';
+import React, { ChangeEvent, ReactElement, useState } from 'react';
 import { useRouter } from 'next/router';
 import {
   Box,
@@ -17,22 +16,23 @@ import {
 } from '@mui/material';
 import { PATH_DASHBOARD } from '../../../../../routes/paths';
 import useTabs from '../../../../../hooks/useTabs';
-import useSettings from '../../../../../hooks/useSettings';
 import useTable, { emptyRows, getComparator } from '../../../../../hooks/useTable';
 import Layout from '../../../../../layouts';
 import Page from '../../../../../components/Page';
-import Iconify from '../../../../../components/Iconify';
 import Scrollbar from '../../../../../components/Scrollbar';
 import HeaderBreadcrumbs from '../../../../../components/HeaderBreadcrumbs';
 import { TableEmptyRows, TableHeadCustom, TableNoData } from '../../../../../components/table';
-import { UserTableRow, UserTableToolbar } from '../../../../../sections/@dashboard/user/list';
+import { FrosheeTableRow, FrosheeTableToolbar } from '../../../../../sections/dashboard/froshee/table';
 import { GetServerSideProps, GetServerSidePropsContext } from 'next';
 import type { UsersForUserList } from '../../../../../../prisma/api/@types';
-import UserAnalytic from '../../../../../sections/@dashboard/user/UserAnalytic';
-import { useTheme } from '@mui/material/styles';
 import AuthApi from '../../../../../../prisma/api/AuthApi';
+import { PaymentType } from '../../../../../../prisma/types';
+import { FrosheeTablePageProps } from '../../../../../@types/froshees';
+import Iconify from '../../../../../components/Iconify';
+import NextLink from 'next/link';
+import useRefresh from '../../../../../hooks/useRefresh';
 
-const TAB_OPTIONS = ['All', 'Unassigned Frosh', 'Unassigned Team'];
+const TAB_OPTIONS = ['All', 'Collected In Cash'];
 
 const TABLE_HEAD = [
   { id: 'firstName', label: 'Name', align: 'left' },
@@ -40,20 +40,18 @@ const TABLE_HEAD = [
   { id: 'phoneNumber', label: 'Phone Number', align: 'left' },
   { id: 'froshId', label: 'Frosh', align: 'left' },
   { id: 'teamId', label: 'Team', align: 'left' },
+  { id: 'payment', label: 'Payment', align: 'left' },
   { id: '' },
 ];
 
-UserList.getLayout = function getLayout(page: React.ReactElement) {
+FrosheeTablePage.getLayout = function getLayout(page: ReactElement) {
   return <Layout>{page}</Layout>;
 };
 
-interface UserListProps {
-  users: UsersForUserList[];
-}
-
-export default function UserList({ users }: UserListProps) {
+export default function FrosheeTablePage({ users, froshs }: FrosheeTablePageProps) {
+  const { refreshData } = useRefresh();
+  const { push } = useRouter();
   const {
-    dense,
     page,
     order,
     orderBy,
@@ -64,17 +62,17 @@ export default function UserList({ users }: UserListProps) {
     onChangeRowsPerPage,
   } = useTable();
 
-  const theme = useTheme();
-  const { themeStretch } = useSettings();
-
-  const { push } = useRouter();
-
   const [filterName, setFilterName] = useState<string>('');
-
+  const [filterFrosh, setFilterFrosh] = useState<string>('All');
   const { currentTab: filterTab, onChangeTab: onChangeFilterTab } = useTabs('All');
 
   const handleFilterName = (filterName: string) => {
     setFilterName(filterName);
+    setPage(0);
+  };
+
+  const handleFilterFrosh = (event: ChangeEvent<HTMLInputElement>) => {
+    setFilterFrosh(event.target.value);
     setPage(0);
   };
 
@@ -91,84 +89,36 @@ export default function UserList({ users }: UserListProps) {
     comparator: getComparator(order, orderBy),
     filterName,
     filterTab,
+    filterFrosh,
   });
-
-  const denseHeight = dense ? 52 : 72;
 
   const isNotFound =
     (!dataFiltered.length && !!filterName) ||
     (!dataFiltered.length && !!filterTab);
 
-  const {
-    totalValuePaid,
-    totalValueUnpaid,
-    numberFrosheesPaid,
-    numberFrosheesUnpaid,
-    totalNumberFroshees,
-  } = users.reduce((accum, user) => {
-    if (user.payment) {
-      accum.numberFrosheesPaid++;
-      accum.totalValuePaid += user.payment.amount;
-    } else {
-      accum.numberFrosheesUnpaid++;
-      accum.totalValueUnpaid += 0;
-    }
-
-    accum.totalNumberFroshees++;
-    return accum;
-  }, {
-    totalValuePaid: 0,
-    totalValueUnpaid: 0,
-    numberFrosheesPaid: 0,
-    numberFrosheesUnpaid: 0,
-    totalNumberFroshees: 0,
-  });
-
   return (
-    <Page title='Froshees List'>
-      <Container maxWidth={themeStretch ? false : 'lg'}>
+    <Page title='Froshees'>
+      <Container>
         <HeaderBreadcrumbs
-          heading='Froshees List'
+          heading='Froshees'
           links={[
             { name: 'Dashboard', href: PATH_DASHBOARD.general.app },
             { name: 'Froshees', href: PATH_DASHBOARD.froshees.root },
             { name: 'List' },
           ]}
           action={
-            <NextLink href={PATH_DASHBOARD.froshees.new} passHref style={{ textDecoration: 'none' }}>
-              <Button variant='contained' startIcon={<Iconify icon={'eva:plus-fill'} />}>
-                New Froshee
+            <Stack flexDirection='row' gap={1}>
+              <Button variant='outlined' onClick={refreshData}>
+                <Iconify icon={'ic:round-refresh'} width={20} height={20} />
               </Button>
-            </NextLink>
+              <NextLink href={PATH_DASHBOARD.froshees.new} passHref style={{ textDecoration: 'none' }}>
+                <Button variant='contained' endIcon={<Iconify icon={'material-symbols:add-circle-outline-rounded'} />}>
+                  Add Froshee
+                </Button>
+              </NextLink>
+            </Stack>
           }
         />
-
-        <Card sx={{ mb: 5 }}>
-          <Scrollbar>
-            <Stack
-              direction='row'
-              divider={<Divider orientation='vertical' flexItem sx={{ borderStyle: 'dashed' }} />}
-              sx={{ py: 2 }}
-            >
-              <UserAnalytic
-                title='Paid'
-                total={numberFrosheesPaid}
-                percent={totalNumberFroshees ? (numberFrosheesPaid / totalNumberFroshees) * 100 : 100}
-                price={totalValuePaid}
-                icon='eva:checkmark-circle-2-fill'
-                color={theme.palette.success.main}
-              />
-              <UserAnalytic
-                title='Unpaid'
-                total={numberFrosheesUnpaid}
-                percent={totalNumberFroshees ? (numberFrosheesUnpaid / totalNumberFroshees) * 100 : 100}
-                price={totalValueUnpaid}
-                icon='eva:alert-circle-fill'
-                color={theme.palette.warning.main}
-              />
-            </Stack>
-          </Scrollbar>
-        </Card>
 
         <Card>
           <Tabs
@@ -186,9 +136,12 @@ export default function UserList({ users }: UserListProps) {
 
           <Divider />
 
-          <UserTableToolbar
+          <FrosheeTableToolbar
             filterName={filterName}
             onFilterName={handleFilterName}
+            filterFrosh={filterFrosh}
+            onFilterFrosh={handleFilterFrosh}
+            froshs={froshs}
           />
 
           <Scrollbar>
@@ -205,7 +158,7 @@ export default function UserList({ users }: UserListProps) {
                   {dataFiltered
                     .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
                     .map((row) => (
-                      <UserTableRow
+                      <FrosheeTableRow
                         key={row.id}
                         row={row}
                         onViewRow={() => handleViewRow(row.id)}
@@ -214,7 +167,7 @@ export default function UserList({ users }: UserListProps) {
                     ))}
 
                   <TableEmptyRows
-                    height={denseHeight}
+                    height={52}
                     emptyRows={emptyRows(page, rowsPerPage, users.length)}
                   />
 
@@ -246,11 +199,13 @@ const applySortFilter = ({
                            comparator,
                            filterName,
                            filterTab,
+                           filterFrosh,
                          }: {
   tableData: UsersForUserList[];
   comparator: (a: any, b: any) => number;
   filterName: string;
   filterTab: string;
+  filterFrosh: string;
 }): UsersForUserList[] => {
   const stabilizedThis = tableData.map((el, index) => [el, index] as const);
 
@@ -271,27 +226,29 @@ const applySortFilter = ({
 
   if (filterTab !== 'All') {
     switch (filterTab) {
-      case 'Unassigned Frosh':
-        // @ts-ignore
-        tableData = tableData.filter((user) => user.frosh === null);
-        break;
-      case 'Unassigned Team':
-        // @ts-ignore
-        tableData = tableData.filter((user) => user.team === null);
+      case 'Collected In Cash':
+        tableData = tableData.filter((user) => user.payment?.type === PaymentType.Cash);
         break;
     }
+  }
+
+  if (filterFrosh !== 'All') {
+    tableData = tableData.filter(({ frosh }) => frosh ? frosh.name === filterFrosh : true);
   }
 
   return tableData;
 };
 
-export const getServerSideProps: GetServerSideProps = async (ctx: GetServerSidePropsContext) => {
+export const getServerSideProps: GetServerSideProps<FrosheeTablePageProps> = async (ctx: GetServerSidePropsContext) => {
   const api = new AuthApi({ ctx });
+
   const users = await api.Profile.getProfilesForProfileList();
+  const froshs = await api.Frosh.getFroshs();
 
   return {
     props: {
       users,
+      froshs,
     },
   };
 };

@@ -1,14 +1,12 @@
 import { Container } from '@mui/material';
-import useSettings from '../../../../../../hooks/useSettings';
 import Layout from '../../../../../../layouts';
 import Page from '../../../../../../components/Page';
 import { GetServerSideProps, GetServerSidePropsContext } from 'next';
 import { ResourceTag } from '../../../../../../../prisma/types';
 import HeaderBreadcrumbs from '../../../../../../components/HeaderBreadcrumbs';
 import { PATH_DASHBOARD } from '../../../../../../routes/paths';
-import { Query } from '../../../../../../@types/query';
 import { FullResource } from '../../../../../../../prisma/api/@types';
-import ResourceEditForm from '../../../../../../sections/@dashboard/resource/ResourceEditForm';
+import ResourceEditForm from '../../../../../../sections/dashboard/resource/ResourceEditForm';
 import AuthApi from '../../../../../../../prisma/api/AuthApi';
 
 ResourceEdit.getLayout = function getLayout(page: React.ReactElement) {
@@ -21,11 +19,9 @@ type Props = {
 }
 
 export default function ResourceEdit({ resource, resourceTags }: Props) {
-  const { themeStretch } = useSettings();
-
   return (
     <Page title='Resource Edit'>
-      <Container maxWidth={themeStretch ? false : 'lg'}>
+      <Container>
         <HeaderBreadcrumbs
           heading='Edit Resource'
           links={[
@@ -41,10 +37,13 @@ export default function ResourceEdit({ resource, resourceTags }: Props) {
 }
 
 export const getServerSideProps: GetServerSideProps = async (ctx: GetServerSidePropsContext) => {
-  const { id } = ctx.query as Query;
+  const { id } = ctx.query;
   const api = new AuthApi({ ctx });
-  const resource = await api.Resource.getResourceById(id);
-  const resourceTags = await api.Resource.getResourceTags();
+
+  const [resource, resourceTags] = await Promise.all([
+    await api.Resource.getResourceById(id as string),
+    api.Resource.getResourceTags(),
+  ]);
 
   return {
     props: {

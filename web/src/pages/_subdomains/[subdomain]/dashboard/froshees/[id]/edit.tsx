@@ -1,58 +1,49 @@
-import { Box, Container, Typography } from '@mui/material';
-import useSettings from '../../../../../../hooks/useSettings';
+import { Container } from '@mui/material';
 import Layout from '../../../../../../layouts';
 import Page from '../../../../../../components/Page';
-import UserNewEditForm from '../../../../../../sections/@dashboard/user/UserNewEditForm';
+import FrosheeNewEditViewForm from '../../../../../../sections/dashboard/froshee/FrosheeNewEditViewForm';
 import { GetServerSideProps, GetServerSidePropsContext } from 'next';
-import { FullProfile } from '../../../../../../../prisma/api/@types';
-import type { Frosh, Team } from '../../../../../../../prisma/types';
-import { Query } from '../../../../../../@types/query';
 import AuthApi from '../../../../../../../prisma/api/AuthApi';
+import React, { ReactElement } from 'react';
+import HeaderBreadcrumbs from '../../../../../../components/HeaderBreadcrumbs';
+import { PATH_DASHBOARD } from '../../../../../../routes/paths';
+import { FrosheeEditViewProps } from '../../../../../../@types/froshees';
 
-UserEdit.getLayout = function getLayout(page: React.ReactElement) {
+FrosheeEdit.getLayout = function getLayout(page: ReactElement) {
   return <Layout>{page}</Layout>;
 };
 
-interface UserEditProps {
-  user: FullProfile;
-  froshs: Frosh[];
-  teams: Team[];
-}
-
-export default function UserEdit({ user, froshs, teams }: UserEditProps) {
-  const { themeStretch } = useSettings();
-
+export default function FrosheeEdit({ froshee, froshs, teams }: FrosheeEditViewProps) {
   return (
     <Page title='Edit Froshee'>
-      <Container maxWidth={themeStretch ? false : 'lg'}>
-        <Box sx={{ mb: 5 }}>
-          <Box sx={{ display: 'flex', alignItems: 'center' }}>
-            <Box sx={{ flexGrow: 1 }}>
-              <Typography variant='h4' gutterBottom>
-                Edit Froshee
-              </Typography>
-            </Box>
-          </Box>
-        </Box>
-
-        <UserNewEditForm currentUser={user} froshs={froshs} teams={teams} />
+      <Container>
+        <HeaderBreadcrumbs
+          heading='Edit Froshee'
+          links={[
+            { name: 'Dashboard', href: PATH_DASHBOARD.root },
+            { name: 'Froshees', href: PATH_DASHBOARD.froshees.root },
+            { name: 'Edit' },
+          ]}
+        />
+        <FrosheeNewEditViewForm froshee={froshee} froshs={froshs} teams={teams} />
       </Container>
     </Page>
   );
 }
 
-export const getServerSideProps: GetServerSideProps = async (ctx: GetServerSidePropsContext) => {
-  const { id } = ctx.query as Query;
-
+export const getServerSideProps: GetServerSideProps<FrosheeEditViewProps> = async (ctx: GetServerSidePropsContext) => {
+  const { id } = ctx.query;
   const api = new AuthApi({ ctx });
 
-  const user = await api.Profile.getFullProfileById(id);
-  const froshs = await api.Frosh.getFroshs();
-  const teams = await api.Team.getTeamsWithFrosh();
+  const [froshee, froshs, teams] = await Promise.all([
+    api.Profile.getFullProfileById(id as string),
+    api.Frosh.getFroshs(),
+    api.Team.getTeamsWithFrosh(),
+  ]);
 
   return {
     props: {
-      user,
+      froshee,
       froshs,
       teams,
     },

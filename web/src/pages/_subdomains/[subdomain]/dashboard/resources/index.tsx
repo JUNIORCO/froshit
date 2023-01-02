@@ -13,7 +13,7 @@ import HeaderBreadcrumbs from '../../../../../components/HeaderBreadcrumbs';
 import { TableEmptyRows, TableHeadCustom, TableNoData } from '../../../../../components/table';
 import { GetServerSideProps, GetServerSidePropsContext } from 'next';
 import { FullResource } from '../../../../../../prisma/api/@types';
-import { ResourceTableRow, ResourceTableToolbar } from '../../../../../sections/@dashboard/resource/list';
+import { ResourceTableRow, ResourceTableToolbar } from '../../../../../sections/dashboard/resource/list';
 import AuthApi from '../../../../../../prisma/api/AuthApi';
 import useRefresh from '../../../../../hooks/useRefresh';
 import { useSnackbar } from 'notistack';
@@ -113,7 +113,7 @@ export default function ResourceList({ initialResources }: Props) {
 
   return (
     <Page title='Resources List'>
-      <Container maxWidth={themeStretch ? false : 'lg'}>
+      <Container>
         <HeaderBreadcrumbs
           heading='Resources List'
           links={[
@@ -123,7 +123,7 @@ export default function ResourceList({ initialResources }: Props) {
           ]}
           action={
             <NextLink href={PATH_DASHBOARD.resource.new} passHref style={{ textDecoration: 'none' }}>
-              <Button variant='contained' startIcon={<Iconify icon={'eva:plus-fill'} />}>
+              <Button variant='contained' endIcon={<Iconify icon={'material-symbols:add-circle-outline-rounded'} />}>
                 New Resource
               </Button>
             </NextLink>

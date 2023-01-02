@@ -11,7 +11,7 @@ const ICONS = {
   analytics: getIcon('carbon:dashboard'),
   event: getIcon('bi:calendar2-event'),
   team: getIcon('carbon:group'),
-  frosh: getIcon('carbon:tag-group'),
+  frosh: getIcon('fluent-emoji-high-contrast:party-popper'),
   offer: getIcon('tabler:discount'),
   resource: getIcon('carbon:security'),
   branding: getIcon('gala:image'),
@@ -53,11 +53,6 @@ const navConfig = [
         icon: ICONS.user,
       },
       {
-        title: 'Froshs',
-        path: PATH_DASHBOARD.froshs.root,
-        icon: ICONS.frosh,
-      },
-      {
         title: 'Events',
         path: PATH_DASHBOARD.event.root,
         icon: ICONS.event,
@@ -80,6 +75,11 @@ const navConfig = [
           { title: 'Resources', path: PATH_DASHBOARD.resource.root },
           { title: 'Tags', path: PATH_DASHBOARD.resourceTag.root },
         ],
+      },
+      {
+        title: 'Froshs',
+        path: PATH_DASHBOARD.froshs.root,
+        icon: ICONS.frosh,
       },
     ],
   },

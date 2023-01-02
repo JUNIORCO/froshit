@@ -1,18 +1,10 @@
 import { m } from 'framer-motion';
-// next
-import NextLink from 'next/link';
-// @mui
 import { styled } from '@mui/material/styles';
-import { Button, Typography, Container } from '@mui/material';
-// layouts
+import { Container, Typography } from '@mui/material';
 import Layout from '../layouts';
-// components
 import Page from '../components/Page';
 import { MotionContainer, varBounce } from '../components/animate';
-// assets
 import { PageNotFoundIllustration } from '../assets';
-
-// ----------------------------------------------------------------------
 
 const ContentStyle = styled('div')(({ theme }) => ({
   maxWidth: 480,
@@ -30,30 +22,18 @@ Page404.getLayout = function getLayout(page: React.ReactElement) {
 
 export default function Page404() {
   return (
-    <Page title="404 Page Not Found">
+    <Page title='404 Page Not Found'>
       <Container component={MotionContainer}>
         <ContentStyle sx={{ textAlign: 'center', alignItems: 'center' }}>
           <m.div variants={varBounce().in}>
-            <Typography variant="h3" paragraph>
-              Sorry, page not found!
-            </Typography>
-          </m.div>
-
-          <m.div variants={varBounce().in}>
-            <Typography sx={{ color: 'text.secondary' }}>
-              Sorry, we couldn’t find the page you’re looking for.
+            <Typography variant='h3' paragraph>
+              Page not found
             </Typography>
           </m.div>
 
           <m.div variants={varBounce().in}>
             <PageNotFoundIllustration sx={{ height: 260, my: { xs: 5, sm: 10 } }} />
           </m.div>
-
-          <NextLink href="/" passHref style={{ textDecoration: 'none' }}>
-            <Button size="large" variant="contained">
-              Go to Home
-            </Button>
-          </NextLink>
         </ContentStyle>
       </Container>
     </Page>

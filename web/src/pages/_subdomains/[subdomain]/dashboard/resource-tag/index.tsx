@@ -17,7 +17,7 @@ import useRefresh from '../../../../../hooks/useRefresh';
 import { useSnackbar } from 'notistack';
 import { useSupabaseClient } from '@supabase/auth-helpers-react';
 import { ResourceTag } from '../../../../../../prisma/types';
-import { ResourceTagTableRow, ResourceTagTableToolbar } from '../../../../../sections/@dashboard/resource-tags/list';
+import { ResourceTagTableRow, ResourceTagTableToolbar } from '../../../../../sections/dashboard/resource-tags/list';
 
 const TABLE_HEAD = [
   { id: 'name', label: 'Name', align: 'left' },
@@ -96,7 +96,7 @@ export default function ResourceTagsList({ initialResourceTags }: Props) {
 
   return (
     <Page title='Resource Tags List'>
-      <Container maxWidth={themeStretch ? false : 'lg'}>
+      <Container>
         <HeaderBreadcrumbs
           heading='Resource Tags List'
           links={[
@@ -106,7 +106,7 @@ export default function ResourceTagsList({ initialResourceTags }: Props) {
           ]}
           action={
             <NextLink href={PATH_DASHBOARD.resourceTag.new} passHref style={{ textDecoration: 'none' }}>
-              <Button variant='contained' startIcon={<Iconify icon={'eva:plus-fill'} />}>
+              <Button variant='contained' endIcon={<Iconify icon={'material-symbols:add-circle-outline-rounded'} />}>
                 New Resource Tag
               </Button>
             </NextLink>
@@ -170,8 +170,6 @@ export default function ResourceTagsList({ initialResourceTags }: Props) {
   );
 }
 
-// ----------------------------------------------------------------------
-
 function applySortFilter({
                            tableData,
                            comparator,
@@ -203,6 +201,7 @@ function applySortFilter({
 
 export const getServerSideProps: GetServerSideProps = async (ctx: GetServerSidePropsContext) => {
   const api = new AuthApi({ ctx });
+
   const initialResourceTags = await api.Resource.getResourceTags();
 
   return {

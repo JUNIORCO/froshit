@@ -56,7 +56,7 @@ function FrosheeRegistrationProvider({ university, children }: SubdomainProvider
     firstName: Yup.string().required('First name required'),
     lastName: Yup.string().required('Last name required'),
     email: Yup.string().email('Email must be a valid email address').required('Email is required'),
-    phoneNumber: Yup.string(),
+    phoneNumber: Yup.string().nullable(),
     frosh: Yup.object().required('Frosh is required'),
   });
 
@@ -84,7 +84,10 @@ function FrosheeRegistrationProvider({ university, children }: SubdomainProvider
     const res = await fetch('/api/stripe/create-checkout', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ formPayload: formValues, university }),
+      body: JSON.stringify({
+        formPayload: formValues,
+        university,
+      }),
     });
 
     const {

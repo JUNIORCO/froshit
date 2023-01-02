@@ -1,8 +1,5 @@
-// components
 import Image from '../components/Image';
 import Iconify from '../components/Iconify';
-
-// ----------------------------------------------------------------------
 
 const FORMAT_IMG = ['jpg', 'jpeg', 'gif', 'bmp', 'png'];
 const FORMAT_VIDEO = ['m4v', 'avi', 'mpg', 'mp4', 'webm'];

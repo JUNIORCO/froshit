@@ -1,9 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import NextLink from 'next/link';
 import { useRouter } from 'next/router';
-import { Box, Button, Card, Container, Table, TableBody, TableContainer, TablePagination } from '@mui/material';
+import { Box, Button, Card, Container, Stack, Table, TableBody, TableContainer, TablePagination } from '@mui/material';
 import { PATH_DASHBOARD } from '../../../../../routes/paths';
-import useSettings from '../../../../../hooks/useSettings';
 import useTable, { emptyRows, getComparator } from '../../../../../hooks/useTable';
 import Layout from '../../../../../layouts';
 import Page from '../../../../../components/Page';
@@ -13,7 +12,7 @@ import HeaderBreadcrumbs from '../../../../../components/HeaderBreadcrumbs';
 import { TableEmptyRows, TableHeadCustom, TableNoData } from '../../../../../components/table';
 import { GetServerSideProps, GetServerSidePropsContext } from 'next';
 import { Offer } from '../../../../../../prisma/types';
-import { OfferTableRow, OfferTableToolbar } from '../../../../../sections/@dashboard/offer/list';
+import { OfferTableRow, OfferTableToolbar } from '../../../../../sections/dashboard/offer/list';
 import AuthApi from '../../../../../../prisma/api/AuthApi';
 import useRefresh from '../../../../../hooks/useRefresh';
 import { useSnackbar } from 'notistack';
@@ -44,7 +43,6 @@ export default function OfferList({ initialOffers }: Props) {
   const { refreshData } = useRefresh();
   const { enqueueSnackbar } = useSnackbar();
   const supabaseClient = useSupabaseClient();
-  const { themeStretch } = useSettings();
   const { push } = useRouter();
   const {
     dense,
@@ -89,13 +87,9 @@ export default function OfferList({ initialOffers }: Props) {
     filterName,
   });
 
-  const denseHeight = dense ? 52 : 72;
-
-  const isNotFound = !tableData.length;
-
   return (
-    <Page title='Offers List'>
-      <Container maxWidth={themeStretch ? false : 'lg'}>
+    <Page title='Offers'>
+      <Container>
         <HeaderBreadcrumbs
           heading='Offers List'
           links={[
@@ -104,11 +98,16 @@ export default function OfferList({ initialOffers }: Props) {
             { name: 'List' },
           ]}
           action={
-            <NextLink href={PATH_DASHBOARD.offer.new} passHref style={{ textDecoration: 'none' }}>
-              <Button variant='contained' startIcon={<Iconify icon={'eva:plus-fill'} />}>
-                New Offer
+            <Stack flexDirection='row' gap={1}>
+              <Button variant='outlined' onClick={refreshData}>
+                <Iconify icon={'ic:round-refresh'} width={20} height={20} />
               </Button>
-            </NextLink>
+              <NextLink href={PATH_DASHBOARD.offer.new} passHref style={{ textDecoration: 'none' }}>
+                <Button variant='contained' endIcon={<Iconify icon={'material-symbols:add-circle-outline-rounded'} />}>
+                  Add Offer
+                </Button>
+              </NextLink>
+            </Stack>
           }
         />
 
@@ -143,11 +142,11 @@ export default function OfferList({ initialOffers }: Props) {
                     ))}
 
                   <TableEmptyRows
-                    height={denseHeight}
+                    height={52}
                     emptyRows={emptyRows(page, rowsPerPage, tableData.length)}
                   />
 
-                  <TableNoData isNotFound={isNotFound} />
+                  <TableNoData isNotFound={!tableData.length} />
                 </TableBody>
               </Table>
             </TableContainer>
@@ -169,8 +168,6 @@ export default function OfferList({ initialOffers }: Props) {
     </Page>
   );
 }
-
-// ----------------------------------------------------------------------
 
 function applySortFilter({
                            tableData,
@@ -204,6 +201,7 @@ function applySortFilter({
 
 export const getServerSideProps: GetServerSideProps = async (ctx: GetServerSidePropsContext) => {
   const api = new AuthApi({ ctx });
+
   const initialOffers = await api.Offer.getOffers();
 
   return {

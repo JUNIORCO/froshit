@@ -122,7 +122,8 @@ model Team {
   updatedAt DateTime @default(now()) @updatedAt
 
   // uniqueness
-  @@unique([froshId, number]) // can't have two teams with the same number and froshs
+  @@unique([froshId, number]) // can't have two teams with the same number and frosh
+  @@unique([froshId, name]) // can't have two teams with the same name and frosh
   // map
   @@map("team")
 }
@@ -171,7 +172,7 @@ model Payment {
   // attributes
   amount                Int
   type                  PaymentType
-  stripePaymentIntentId String
+  stripePaymentIntentId String?
 
   // associations
   profile Profile?

@@ -1,7 +1,7 @@
 import { prisma } from '../prisma';
 import { FullProfile, UnassignedFrosheesAndLeaders, UsersForUserList } from './@types';
 import { IChildApiOptions } from './AuthApi';
-import { Profile, Role } from '../types';
+import { Frosh, Profile, Role, Team } from '../types';
 
 class ProfileApi {
   protected readonly profile: Profile;
@@ -21,16 +21,26 @@ class ProfileApi {
         team: true,
         payment: true,
       },
+      orderBy: {
+        createdAt: 'desc',
+      },
     });
   }
 
-  public async getOrganizersAndLeadersOnly(): Promise<Profile[]> {
+  public async getOrganizersAndLeadersOnly(): Promise<(Profile & { frosh: Frosh | null, team: Team | null })[]> {
     return prisma.profile.findMany({
       where: {
         universityId: this.profile.universityId,
         role: {
           in: [Role.Organizer, Role.Leader],
         },
+      },
+      include: {
+        frosh: true,
+        team: true,
+      },
+      orderBy: {
+        createdAt: 'desc',
       },
     });
   }
@@ -43,6 +53,7 @@ class ProfileApi {
       include: {
         frosh: true,
         team: true,
+        payment: true,
       },
     });
   }

@@ -5,7 +5,7 @@ import type { Prisma } from '../../../../prisma/types';
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
   try {
     if (req.method === 'PATCH') {
-      const { id } = req.query as any;
+      const { id } = req.query as { id: string };
 
       const { name, number, froshId } = req.body as Prisma.TeamUncheckedUpdateInput;
       const { profiles }: { profiles: number[] } = req.body;

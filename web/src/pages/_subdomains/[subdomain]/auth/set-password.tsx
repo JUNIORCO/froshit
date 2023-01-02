@@ -1,36 +1,23 @@
-// @mui
-import { styled } from '@mui/material/styles';
-import { Box, Container, Link, Typography } from '@mui/material';
+import { Box, Container, Typography } from '@mui/material';
 import Layout from '../../../../layouts';
 import Page from '../../../../components/Page';
 import { SetPasswordForm } from '../../../../sections/auth/set-password';
 import { SentIcon } from '../../../../assets';
-import { useRouter } from 'next/router';
-import { useState } from 'react';
-import * as queryString from 'querystring';
 import { useUser } from '@supabase/auth-helpers-react';
+import { ContentStyle } from './styles';
+import { ReactElement } from 'react';
 
-const ContentStyle = styled('div')(({ theme }) => ({
-  maxWidth: 480,
-  margin: 'auto',
-  minHeight: '100vh',
-  display: 'flex',
-  justifyContent: 'center',
-  flexDirection: 'column',
-  padding: theme.spacing(12, 0),
-}));
-
-SetPassword.getLayout = function getLayout(page: React.ReactElement) {
+SetPasswordPage.getLayout = function getLayout(page: ReactElement) {
   return <Layout variant='logoOnly'>{page}</Layout>;
 };
 
-export default function SetPassword() {
+export default function SetPasswordPage() {
   const user = useUser();
 
   return (
     <Page title='Set Password'>
       <Container>
-        <ContentStyle sx={{ textAlign: 'center' }}>
+        <ContentStyle>
           {user && user.email ? (
             <>
               <SentIcon sx={{ mb: 5, mx: 'auto', height: 120 }} />
@@ -41,7 +28,7 @@ export default function SetPassword() {
                 Set a password
               </Typography>
               <Box sx={{ mt: 5, mb: 3 }}>
-                <SetPasswordForm email={user.email}/>
+                <SetPasswordForm email={user.email} />
               </Box>
             </>) : null}
 

@@ -1,32 +1,23 @@
 import NextLink from 'next/link';
-import { styled } from '@mui/material/styles';
 import { Button, Container, Typography } from '@mui/material';
 import { PATH_AUTH } from '../../../../routes/paths';
 import Layout from '../../../../layouts';
 import Page from '../../../../components/Page';
 import { ResetPasswordForm } from '../../../../sections/auth/reset-password';
 import GuestGuard from '../../../../guards/GuestGuard';
+import { ReactElement } from 'react';
+import { ContentStyle } from './styles';
 
-const ContentStyle = styled('div')(({ theme }) => ({
-  maxWidth: 480,
-  margin: 'auto',
-  minHeight: '100vh',
-  display: 'flex',
-  justifyContent: 'center',
-  flexDirection: 'column',
-  padding: theme.spacing(12, 0),
-}));
-
-ResetPassword.getLayout = function getLayout(page: React.ReactElement) {
+ResetPasswordPage.getLayout = function getLayout(page: ReactElement) {
   return <Layout variant='logoOnly'>{page}</Layout>;
 };
 
-export default function ResetPassword() {
+export default function ResetPasswordPage() {
   return (
     <GuestGuard>
       <Page title='Reset Password'>
         <Container>
-          <ContentStyle sx={{ textAlign: 'center' }}>
+          <ContentStyle>
             <Typography variant='h3' paragraph>
               Forgot your password?
             </Typography>

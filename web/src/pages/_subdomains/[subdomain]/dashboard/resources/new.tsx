@@ -6,7 +6,7 @@ import Page from '../../../../../components/Page';
 import HeaderBreadcrumbs from '../../../../../components/HeaderBreadcrumbs';
 import { GetServerSideProps, GetServerSidePropsContext } from 'next';
 import { ResourceTag } from 'prisma/types';
-import ResourceNewForm from '../../../../../sections/@dashboard/resource/ResourceNewForm';
+import ResourceNewForm from '../../../../../sections/dashboard/resource/ResourceNewForm';
 import AuthApi from '../../../../../../prisma/api/AuthApi';
 
 ResourceCreate.getLayout = function getLayout(page: React.ReactElement) {
@@ -22,7 +22,7 @@ export default function ResourceCreate({ resourceTags }: Props) {
 
   return (
     <Page title='Create Resource'>
-      <Container maxWidth={themeStretch ? false : 'lg'}>
+      <Container>
         <HeaderBreadcrumbs
           heading='Create a New Resource'
           links={[

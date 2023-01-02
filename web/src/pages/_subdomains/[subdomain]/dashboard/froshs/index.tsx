@@ -1,54 +1,35 @@
-import React, { useEffect, useState } from 'react';
-import NextLink from 'next/link';
-import { useRouter } from 'next/router';
-import { Box, Button, Card, Container, Table, TableBody, TableContainer, TablePagination } from '@mui/material';
+import React, { ReactElement, useEffect, useState } from 'react';
+import { Box, Card, Container, Table, TableBody, TableContainer, TablePagination, Typography } from '@mui/material';
 import { PATH_DASHBOARD } from '../../../../../routes/paths';
-import useSettings from '../../../../../hooks/useSettings';
 import useTable, { emptyRows } from '../../../../../hooks/useTable';
 import Layout from '../../../../../layouts';
 import Page from '../../../../../components/Page';
-import Iconify from '../../../../../components/Iconify';
 import Scrollbar from '../../../../../components/Scrollbar';
 import HeaderBreadcrumbs from '../../../../../components/HeaderBreadcrumbs';
 import { TableEmptyRows, TableHeadCustom, TableNoData } from '../../../../../components/table';
 import { GetServerSideProps, GetServerSidePropsContext } from 'next';
 import { FroshsWithStats } from '../../../../../../prisma/api/@types';
-import { FroshTableRow } from '../../../../../sections/@dashboard/frosh/list';
+import { FroshTableRow } from '../../../../../sections/dashboard/frosh/table';
 import AuthApi from '../../../../../../prisma/api/AuthApi';
-import useRefresh from '../../../../../hooks/useRefresh';
-import { useSnackbar } from 'notistack';
-import { useSupabaseClient } from '@supabase/auth-helpers-react';
+import { FroshTablePageProps } from '../../../../../@types/froshs';
 
 const TABLE_HEAD = [
   { id: 'name', label: 'Name', align: 'left' },
-  { id: 'frosheesPaid', label: 'Froshees Paid', align: 'center' },
+  { id: 'price', label: 'Price', align: 'left' },
   { id: 'numFroshees', label: 'Froshees Registered', align: 'center' },
   { id: 'numLeaders', label: 'Number of Leaders', align: 'center' },
   { id: 'numTeams', label: 'Number of Teams', align: 'center' },
   { id: 'numEvents', label: 'Number of Events', align: 'center' },
-  { id: '' },
 ];
 
-FroshList.getLayout = function getLayout(page: React.ReactElement) {
+FroshTablePage.getLayout = function getLayout(page: ReactElement) {
   return <Layout>{page}</Layout>;
 };
 
-type Props = {
-  initialFroshs: FroshsWithStats[];
-}
-
-export default function FroshList({ initialFroshs }: Props) {
+export default function FroshTablePage({ initialFroshs }: FroshTablePageProps) {
   const [froshs, setFroshs] = useState<FroshsWithStats[]>(initialFroshs);
-  useEffect(() => {
-    setFroshs(initialFroshs);
-  }, [initialFroshs]);
-
-  const { refreshData } = useRefresh();
-  const { enqueueSnackbar } = useSnackbar();
-  const supabaseClient = useSupabaseClient();
 
   const {
-    dense,
     page,
     order,
     orderBy,
@@ -58,36 +39,13 @@ export default function FroshList({ initialFroshs }: Props) {
     onChangeRowsPerPage,
   } = useTable();
 
-
-  const { themeStretch } = useSettings();
-
-  const { push } = useRouter();
-
-  const handleViewRow = (id: string) => {
-    void push(PATH_DASHBOARD.froshs.view(id));
-  };
-
-  const handleEditRow = (id: string) => {
-    void push(PATH_DASHBOARD.froshs.edit(id));
-  };
-
-  const handleDeleteRow = async (id: string) => {
-    const { error } = await supabaseClient.from('frosh').delete().eq('id', id);
-    if (error) {
-      console.error(error);
-      enqueueSnackbar('Error deleting froshs', { variant: 'error' });
-      return;
-    }
-    refreshData();
-  };
-
-  const denseHeight = dense ? 52 : 72;
-
-  const isNotFound = !froshs.length;
+  useEffect(() => {
+    setFroshs(initialFroshs);
+  }, [initialFroshs]);
 
   return (
     <Page title='Frosh List'>
-      <Container maxWidth={themeStretch ? false : 'lg'}>
+      <Container>
         <HeaderBreadcrumbs
           heading='Frosh List'
           links={[
@@ -95,14 +53,15 @@ export default function FroshList({ initialFroshs }: Props) {
             { name: 'Frosh', href: PATH_DASHBOARD.froshs.root },
             { name: 'List' },
           ]}
-          action={
-            <NextLink href={PATH_DASHBOARD.froshs.new} passHref style={{ textDecoration: 'none' }}>
-              <Button variant='contained' startIcon={<Iconify icon={'eva:plus-fill'} />}>
-                New Frosh
-              </Button>
-            </NextLink>
-          }
+          sx={{ mb: 2 }}
         />
+
+        <Typography
+          variant='subtitle2'
+          sx={{ mb: 2 }}
+        >
+          Please contact FROSHIT to make changes to your Froshs.
+        </Typography>
 
         <Card>
           <Scrollbar>
@@ -119,22 +78,14 @@ export default function FroshList({ initialFroshs }: Props) {
                 <TableBody>
                   {froshs
                     .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
-                    .map((row) => (
-                      <FroshTableRow
-                        key={row.id}
-                        row={row}
-                        onViewRow={() => handleViewRow(row.id)}
-                        onEditRow={() => handleEditRow(row.id)}
-                        onDeleteRow={() => handleDeleteRow(row.id)}
-                      />
-                    ))}
+                    .map((row) => (<FroshTableRow key={row.id} row={row} />))}
 
                   <TableEmptyRows
-                    height={denseHeight}
+                    height={52}
                     emptyRows={emptyRows(page, rowsPerPage, froshs.length)}
                   />
 
-                  <TableNoData isNotFound={isNotFound} />
+                  <TableNoData isNotFound={!froshs.length} />
                 </TableBody>
               </Table>
             </TableContainer>
@@ -157,8 +108,9 @@ export default function FroshList({ initialFroshs }: Props) {
   );
 }
 
-export const getServerSideProps: GetServerSideProps = async (ctx: GetServerSidePropsContext) => {
+export const getServerSideProps: GetServerSideProps<FroshTablePageProps> = async (ctx: GetServerSidePropsContext) => {
   const api = new AuthApi({ ctx });
+
   const initialFroshs = await api.Frosh.getFroshsWithStats();
 
   return {

@@ -9,11 +9,11 @@ export default function MyAvatar({ ...other }: AvatarProps) {
 
   return (
     <Avatar
-      src={profile!.imageUrl || ''}
-      alt={profile!.firstName}
+      src={profile?.imageUrl || ''}
+      alt={profile?.firstName}
       {...other}
     >
-      {createAvatar(profile!.firstName || '').name}
+      {createAvatar(profile?.firstName || '').name}
     </Avatar>
   );
 }

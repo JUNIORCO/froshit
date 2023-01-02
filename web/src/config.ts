@@ -1,8 +1,5 @@
-// @mui
 import { enUS, frFR } from '@mui/material/locale';
-// components
 import { SettingsValueProps } from './components/settings/type';
-// routes
 import { PATH_DASHBOARD } from './routes/paths';
 import type { Theme } from '@mui/material';
 

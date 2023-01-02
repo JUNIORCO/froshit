@@ -7,7 +7,7 @@ export default function Index() {
 
   useEffect(() => {
     if (router.asPath == '/') {
-      router.push(PATH_AFTER_LOGIN);
+      void router.push(PATH_AFTER_LOGIN);
     }
   });
 

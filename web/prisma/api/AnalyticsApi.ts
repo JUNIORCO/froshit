@@ -6,7 +6,7 @@ import {
   FrosheesRegistered,
   FrosheesRegisteredAnalytics,
   FroshProfileCount,
-  FroshTotalAmountPaid,
+  FroshTotalAmountCollected,
   GroupedRole,
 } from './@types';
 import { IChildApiOptions } from './AuthApi';
@@ -72,14 +72,20 @@ class AnalyticsApi {
   };
 
   /**
-   * Gets the total amount paid per froshs
+   * Gets the total amount collected per froshs
    */
-  private async getFroshsTotalAmountPaid(): Promise<FroshTotalAmountPaid[]> {
-    console.log('here')
-
-    const froshTotalAmountPaid = await prisma.$queryRaw<FroshTotalAmountPaid[]>(
+  private async getFroshsTotalAmountCollected(): Promise<FroshTotalAmountCollected[]> {
+    const froshTotalAmountCollected = await prisma.$queryRaw<FroshTotalAmountCollected[]>(
       Prisma.sql`
-        SELECT frosh.name as "froshName", SUM(payment.amount) / 100 * 0.93 as "totalAmountPaid"
+        SELECT frosh.name as "froshName", 
+          SUM(CASE
+              WHEN payment.type = 'Online' THEN payment.amount
+              ELSE 0
+           END) / 100 * 0.93 as "totalOnlineAmountCollected",
+           SUM(CASE
+              WHEN payment.type = 'Cash' THEN payment.amount
+              ELSE 0
+           END) / 100 as "totalCashAmountCollected"
         FROM frosh
         INNER JOIN profile ON frosh.id = profile."froshId"
         INNER JOIN payment ON profile."paymentId" = payment.id
@@ -91,7 +97,11 @@ class AnalyticsApi {
     );
 
     // Note: have to do this because of a bug in prisma where it returns big int instead of number for raw queries
-    return froshTotalAmountPaid.map(result => ({ ...result, totalAmountPaid: Number(result.totalAmountPaid) }));
+    return froshTotalAmountCollected.map(result => ({
+      ...result,
+      totalOnlineAmountCollected: Number(result.totalOnlineAmountCollected),
+      totalCashAmountCollected: Number(result.totalCashAmountCollected),
+    }));
   };
 
   /**
@@ -104,6 +114,9 @@ class AnalyticsApi {
         role: Role.Froshee,
         createdAt: {
           gte: dayjs().subtract(7, 'days').toDate(),
+        },
+        frosh: {
+          isNot: null,
         },
       },
       include: {
@@ -169,14 +182,14 @@ class AnalyticsApi {
       roleCountsResult,
       froshFrosheeCountResult,
       froshLeaderCountResult,
-      froshsTotalAmountPaidResult,
+      froshsTotalAmountCollectedResult,
       frosheeRegistrationsResult,
     ] = await Promise.allSettled([
       this.getUniversity(subdomain),
       this.getRoleCounts(),
       this.getFroshProfilesCount({ role: Role.Froshee }),
       this.getFroshProfilesCount({ role: Role.Leader }),
-      this.getFroshsTotalAmountPaid(),
+      this.getFroshsTotalAmountCollected(),
       this.getFrosheeRegistrationAnalytics(),
     ]);
 
@@ -184,13 +197,18 @@ class AnalyticsApi {
     const roleCounts = roleCountsResult.status === 'fulfilled' ? roleCountsResult.value : {} as FormattedGroupRole;
     const froshFrosheeCount = froshFrosheeCountResult.status === 'fulfilled' ? froshFrosheeCountResult.value : [] as FormattedFroshProfileCount[];
     const froshLeaderCount = froshLeaderCountResult.status === 'fulfilled' ? froshLeaderCountResult.value : [] as FormattedFroshProfileCount[];
-    const froshsTotalAmountPaid = froshsTotalAmountPaidResult.status === 'fulfilled' ? froshsTotalAmountPaidResult.value : [] as FroshTotalAmountPaid[];
+    const froshsTotalAmountCollected = froshsTotalAmountCollectedResult.status === 'fulfilled' ? froshsTotalAmountCollectedResult.value : [] as FroshTotalAmountCollected[];
     const frosheesRegisteredAnalytics = frosheeRegistrationsResult.status === 'fulfilled' ? frosheeRegistrationsResult.value : {} as FrosheesRegisteredAnalytics;
+
+    const sumByFunc = ({
+                         totalOnlineAmountCollected,
+                         totalCashAmountCollected,
+                       }: FroshTotalAmountCollected) => totalOnlineAmountCollected + totalCashAmountCollected;
 
     return {
       university,
 
-      totalAmountPaid: sumBy(froshsTotalAmountPaid, ({ totalAmountPaid }) => totalAmountPaid) || 0,
+      totalAmountCollected: sumBy(froshsTotalAmountCollected, sumByFunc) || 0,
 
       // role counts
       totalOrganizers: roleCounts[Role.Organizer],
@@ -200,7 +218,7 @@ class AnalyticsApi {
       // froshs analytics
       froshFrosheeCount,
       froshLeaderCount,
-      froshsTotalAmountPaid,
+      froshsTotalAmountCollected,
 
       // froshees registration analytics
       frosheesRegisteredAnalytics,

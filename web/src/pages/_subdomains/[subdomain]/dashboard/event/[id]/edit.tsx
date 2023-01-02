@@ -1,18 +1,16 @@
 import { Container } from '@mui/material';
-import useSettings from '../../../../../../hooks/useSettings';
 import Layout from '../../../../../../layouts';
 import Page from '../../../../../../components/Page';
 import type { GetServerSideProps, GetServerSidePropsContext } from 'next';
-import EventEditForm from '../../../../../../sections/@dashboard/event/EventEditForm';
+import EventEditForm from '../../../../../../sections/dashboard/event/EventEditForm';
 import HeaderBreadcrumbs from '../../../../../../components/HeaderBreadcrumbs';
 import { PATH_DASHBOARD } from '../../../../../../routes/paths';
 import React from 'react';
 import type { Frosh } from '../../../../../../../prisma/types';
-import { Query } from '../../../../../../@types/query';
 import AuthApi from '../../../../../../../prisma/api/AuthApi';
 import { FullEvent } from '../../../../../../../prisma/api/@types';
 
-TeamEdit.getLayout = function getLayout(page: React.ReactElement) {
+EventEdit.getLayout = function getLayout(page: React.ReactElement) {
   return <Layout>{page}</Layout>;
 };
 
@@ -21,12 +19,10 @@ type Props = {
   froshs: Frosh[];
 }
 
-export default function TeamEdit({ event, froshs }: Props) {
-  const { themeStretch } = useSettings();
-
+export default function EventEdit({ event, froshs }: Props) {
   return (
-    <Page title='Event Edit'>
-      <Container maxWidth={themeStretch ? false : 'lg'}>
+    <Page title='Edit Event'>
+      <Container>
         <HeaderBreadcrumbs
           heading='Edit Event'
           links={[
@@ -42,11 +38,13 @@ export default function TeamEdit({ event, froshs }: Props) {
 }
 
 export const getServerSideProps: GetServerSideProps<Props> = async (ctx: GetServerSidePropsContext) => {
-  const { id } = ctx.query as Query;
-
+  const { id } = ctx.query;
   const api = new AuthApi({ ctx });
-  const event = await api.Event.getEventById(id);
-  const froshs = await api.Frosh.getFroshs();
+
+  const [event, froshs] = await Promise.all([
+    api.Event.getEventById(id as string),
+    api.Frosh.getFroshs(),
+  ]);
 
   return {
     props: {

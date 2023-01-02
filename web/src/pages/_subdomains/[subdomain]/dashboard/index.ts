@@ -12,12 +12,10 @@ export default function Index() {
     if (getInternalPath(router.pathname) === PATH_DASHBOARD.root) {
       void router.replace(PATH_AFTER_LOGIN);
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [router.pathname]);
 
   useEffect(() => {
     void router.prefetch(PATH_AFTER_LOGIN);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   return null;

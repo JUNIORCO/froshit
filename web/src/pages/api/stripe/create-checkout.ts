@@ -1,9 +1,9 @@
 import { NextApiRequest, NextApiResponse } from 'next';
 import { Frosh, University } from 'prisma/types';
-import { stripe } from '../_utils/stripe';
+import { stripe } from '../../../utils/api/stripe';
 import { PATH_FROSHEE_REGISTER } from '../../../routes/paths';
 import { FormRegisterProps } from '../../../contexts/FrosheeRegistrationContext';
-import { supabaseAdmin } from '../_utils/supabaseAdmin';
+import { supabaseAdmin } from '../../../utils/api/supabaseAdmin';
 
 type CreateCheckoutBody = {
   formPayload: FormRegisterProps;

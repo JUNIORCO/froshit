@@ -1,13 +1,11 @@
 import { Container } from '@mui/material';
-import useSettings from '../../../../../../hooks/useSettings';
 import Layout from '../../../../../../layouts';
 import Page from '../../../../../../components/Page';
 import { GetServerSideProps, GetServerSidePropsContext } from 'next';
 import type { Offer } from '../../../../../../../prisma/types';
 import HeaderBreadcrumbs from '../../../../../../components/HeaderBreadcrumbs';
 import { PATH_DASHBOARD } from '../../../../../../routes/paths';
-import OfferEditForm from '../../../../../../sections/@dashboard/offer/OfferEditForm';
-import { Query } from '../../../../../../@types/query';
+import OfferEditForm from '../../../../../../sections/dashboard/offer/OfferEditForm';
 import AuthApi from '../../../../../../../prisma/api/AuthApi';
 
 OfferView.getLayout = function getLayout(page: React.ReactElement) {
@@ -19,11 +17,9 @@ type Props = {
 }
 
 export default function OfferView({ offer }: Props) {
-  const { themeStretch } = useSettings();
-
   return (
     <Page title='Offer View'>
-      <Container maxWidth={themeStretch ? false : 'lg'}>
+      <Container>
         <HeaderBreadcrumbs
           heading='Edit Offer'
           links={[
@@ -39,9 +35,10 @@ export default function OfferView({ offer }: Props) {
 }
 
 export const getServerSideProps: GetServerSideProps = async (ctx: GetServerSidePropsContext) => {
-  const { id } = ctx.query as Query;
+  const { id } = ctx.query;
   const api = new AuthApi({ ctx });
-  const offer = await api.Offer.getOfferById(id);
+
+  const offer = await api.Offer.getOfferById(id as string);
 
   return {
     props: {

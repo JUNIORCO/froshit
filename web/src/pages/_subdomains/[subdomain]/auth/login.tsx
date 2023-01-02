@@ -1,48 +1,11 @@
-import NextLink from 'next/link';
-import { styled } from '@mui/material/styles';
-import { Alert, Box, Container, Stack, Typography } from '@mui/material';
-import { PATH_AUTH } from '../../../../routes/paths';
+import { Box, Container, Stack, Typography } from '@mui/material';
 import Page from '../../../../components/Page';
 import Logo from '../../../../components/Logo';
 import { LoginForm } from '../../../../sections/auth/login';
 import GuestGuard from '../../../../guards/GuestGuard';
-import useSubdomain from '../../../../hooks/useSubdomain';
+import { ContentStyle, HeaderStyle, RootStyle } from './styles';
 
-const RootStyle = styled('div')(({ theme }) => ({
-  [theme.breakpoints.up('md')]: {
-    display: 'flex',
-  },
-}));
-
-const HeaderStyle = styled('header')(({ theme }) => ({
-  top: 0,
-  zIndex: 9,
-  lineHeight: 0,
-  width: '100%',
-  display: 'flex',
-  alignItems: 'center',
-  position: 'absolute',
-  padding: theme.spacing(3),
-  justifyContent: 'space-between',
-  [theme.breakpoints.up('md')]: {
-    alignItems: 'flex-start',
-    padding: theme.spacing(7, 5, 0, 7),
-  },
-}));
-
-const ContentStyle = styled('div')(({ theme }) => ({
-  maxWidth: 480,
-  margin: 'auto',
-  minHeight: '100vh',
-  display: 'flex',
-  justifyContent: 'center',
-  flexDirection: 'column',
-  padding: theme.spacing(12, 0),
-}));
-
-export default function Login() {
-  const { subdomain } = useSubdomain();
-
+export default function LoginPage() {
   return (
     <GuestGuard>
       <Page title='Login'>
@@ -65,10 +28,6 @@ export default function Login() {
 
                 <Logo university sx={{ width: 64, height: 64 }} />
               </Stack>
-
-              {subdomain === 'demo' && <Alert severity='info' sx={{ mb: 3 }}>
-                Use email : <strong>sami.juniorco@gmail.com</strong> / password :<strong> demo1234</strong>
-              </Alert>}
 
               <LoginForm />
             </ContentStyle>

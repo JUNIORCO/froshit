@@ -141,7 +141,7 @@ export default function UniversityIdentityPage({ university }: UniversityIdentit
   return (
     <RoleBasedGuard hasContent roles={[Role.Admin]}>
       <Page title='University Identity'>
-        <Container maxWidth={themeStretch ? false : 'lg'}>
+        <Container>
           <HeaderBreadcrumbs
             heading='Edit Your University Identity'
             links={[

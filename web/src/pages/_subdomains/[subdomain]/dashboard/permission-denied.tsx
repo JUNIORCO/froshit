@@ -1,37 +1,16 @@
 import { useState } from 'react';
-// @mui
-import {
-  Box,
-  Card,
-  Container,
-  Typography,
-  CardHeader,
-  ToggleButton,
-  ToggleButtonGroup,
-} from '@mui/material';
-// hooks
-import useSettings from '../../../../hooks/useSettings';
-// layouts
+import { Box, Card, CardHeader, Container, ToggleButton, ToggleButtonGroup, Typography } from '@mui/material';
 import Layout from '../../../../layouts';
-// routes
 import { PATH_DASHBOARD } from '../../../../routes/paths';
-// components
 import Page from '../../../../components/Page';
 import HeaderBreadcrumbs from '../../../../components/HeaderBreadcrumbs';
-// guards
 import RoleBasedGuard from '../../../../guards/RoleBasedGuard';
-
-// ----------------------------------------------------------------------
 
 PermissionDenied.getLayout = function getLayout(page: React.ReactElement) {
   return <Layout>{page}</Layout>;
 };
 
-// ----------------------------------------------------------------------
-
 export default function PermissionDenied() {
-  const { themeStretch } = useSettings();
-
   const [role, setRole] = useState('admin');
 
   const handleChangeRole = (event: React.MouseEvent<HTMLElement>, newRole: string | null) => {
@@ -41,10 +20,10 @@ export default function PermissionDenied() {
   };
 
   return (
-    <Page title="Permission Denied">
-      <Container maxWidth={themeStretch ? false : 'lg'}>
+    <Page title='Permission Denied'>
+      <Container>
         <HeaderBreadcrumbs
-          heading="Permission Denied"
+          heading='Permission Denied'
           links={[
             {
               name: 'Dashboard',
@@ -58,14 +37,14 @@ export default function PermissionDenied() {
           exclusive
           value={role}
           onChange={handleChangeRole}
-          color="primary"
+          color='primary'
           sx={{ mb: 5 }}
         >
-          <ToggleButton value="admin" aria-label="admin role">
+          <ToggleButton value='admin' aria-label='admin role'>
             isAdmin
           </ToggleButton>
 
-          <ToggleButton value="user" aria-label="user role">
+          <ToggleButton value='user' aria-label='user role'>
             isUser
           </ToggleButton>
         </ToggleButtonGroup>
@@ -80,7 +59,7 @@ export default function PermissionDenied() {
           >
             {[...Array(8)].map((_, index) => (
               <Card key={index}>
-                <CardHeader title={`Card ${index + 1}`} subheader="Proin viverra ligula" />
+                <CardHeader title={`Card ${index + 1}`} subheader='Proin viverra ligula' />
 
                 <Typography sx={{ p: 3, color: 'text.secondary' }}>
                   Aliquam lorem ante, dapibus in, viverra quis, feugiat a, tellus. In enim justo,

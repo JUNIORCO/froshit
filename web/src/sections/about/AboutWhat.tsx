@@ -1,19 +1,10 @@
 import { m } from 'framer-motion';
-// @mui
-import { alpha, useTheme, styled } from '@mui/material/styles';
-import { Box, Grid, Button, Container, Typography, LinearProgress } from '@mui/material';
-// hooks
+import { alpha, styled, useTheme } from '@mui/material/styles';
+import { Box, Container, Grid, LinearProgress, Typography } from '@mui/material';
 import useResponsive from '../../hooks/useResponsive';
-// utils
 import { fPercent } from '../../utils/formatNumber';
-// _mock_
-import { _skills } from '../../_mock';
-// components
 import Image from '../../components/Image';
-import Iconify from '../../components/Iconify';
 import { MotionViewport, varFade } from '../../components/animate';
-
-// ----------------------------------------------------------------------
 
 const RootStyle = styled('div')(({ theme }) => ({
   textAlign: 'center',
@@ -35,7 +26,7 @@ export default function AboutWhat() {
 
   const shadow = `-40px 40px 80px ${alpha(
     isLight ? theme.palette.grey[500] : theme.palette.common.black,
-    0.48
+    0.48,
   )}`;
 
   return (
@@ -44,13 +35,13 @@ export default function AboutWhat() {
         <Grid container spacing={3}>
           {isDesktop && (
             <Grid item xs={12} md={6} lg={7} sx={{ pr: { md: 7 } }}>
-              <Grid container spacing={3} alignItems="flex-end">
+              <Grid container spacing={3} alignItems='flex-end'>
                 <Grid item xs={6}>
                   <m.div variants={varFade().inUp}>
                     <Image
-                      alt="our office 1"
-                      src="https://minimal-assets-api-dev.vercel.app/assets/images/about/what-1.jpg"
-                      ratio="3/4"
+                      alt='our office 1'
+                      src='https://minimal-assets-api-dev.vercel.app/assets/images/about/what-1.jpg'
+                      ratio='3/4'
                       sx={{
                         borderRadius: 2,
                         boxShadow: shadow,
@@ -61,9 +52,9 @@ export default function AboutWhat() {
                 <Grid item xs={6}>
                   <m.div variants={varFade().inUp}>
                     <Image
-                      alt="our office 2"
-                      src="https://minimal-assets-api-dev.vercel.app/assets/images/about/what-2.jpg"
-                      ratio="1/1"
+                      alt='our office 2'
+                      src='https://minimal-assets-api-dev.vercel.app/assets/images/about/what-2.jpg'
+                      ratio='1/1'
                       sx={{ borderRadius: 2 }}
                     />
                   </m.div>
@@ -74,7 +65,7 @@ export default function AboutWhat() {
 
           <Grid item xs={12} md={6} lg={5}>
             <m.div variants={varFade().inRight}>
-              <Typography variant="h2" sx={{ mb: 3 }}>
+              <Typography variant='h2' sx={{ mb: 3 }}>
                 Why we started FROSHIT
               </Typography>
             </m.div>
@@ -111,13 +102,13 @@ function ProgressItem({ progress }: ProgressItemProps) {
   return (
     <Box sx={{ mt: 3 }}>
       <Box sx={{ mb: 1.5, display: 'flex', alignItems: 'center' }}>
-        <Typography variant="subtitle2">{label}&nbsp;-&nbsp;</Typography>
-        <Typography variant="body2" sx={{ color: 'text.secondary' }}>
+        <Typography variant='subtitle2'>{label}&nbsp;-&nbsp;</Typography>
+        <Typography variant='body2' sx={{ color: 'text.secondary' }}>
           {fPercent(value)}
         </Typography>
       </Box>
       <LinearProgress
-        variant="determinate"
+        variant='determinate'
         value={value}
         sx={{
           '& .MuiLinearProgress-bar': { bgcolor: 'grey.700' },

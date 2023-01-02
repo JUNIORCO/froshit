@@ -4,14 +4,14 @@ import { cryptoProvider, stripe } from '../_utils/stripe.ts';
 import { getAdminSupabase } from '../_utils/supabaseAdmin.ts';
 import { v4 as uuid } from '../_utils/uuid.ts';
 
-const groupBy = function(xs, key) {
-  return xs.reduce(function(rv, x) {
-    (rv[x[key]] = rv[x[key]] || []).push(x);
-    return rv;
-  }, {});
-};
+const groupBy = (xs: any[], key: any) => xs.reduce((rv, x) => {
+  (rv[x[key]] = rv[x[key]] || []).push(x);
+  return rv;
+}, {});
 
-const createTeam = async ({ supabaseAdmin, newTeamId, newTeamNumber, froshId }): Promise<string | null> => {
+const createTeam = async ({ supabaseAdmin, newTeamNumber, froshId }: any): Promise<string | null> => {
+  const newTeamId = uuid();
+
   const { error: teamCreateError } = await supabaseAdmin
     .from('team')
     .insert({
@@ -21,16 +21,22 @@ const createTeam = async ({ supabaseAdmin, newTeamId, newTeamNumber, froshId }):
       froshId,
     });
 
-  return teamCreateError ? null : newTeamId;
+  if (teamCreateError) {
+    console.log(`[Onboard Froshee] Auto assign team: encountered team create error ${teamCreateError.message}`);
+    return null;
+  }
+
+  console.log(`[Onboard Froshee] Auto assign team: successfully created team ${newTeamNumber} with id ${newTeamId}`);
+  return newTeamId;
 };
 
-const autoAssignTeam = async ({ supabaseAdmin, universityId, froshId }): Promise<string | null> => {
+const autoAssignTeam = async ({ supabaseAdmin, universityId, froshId }: any): Promise<string | null> => {
   const { data: university, error: universityError } = await supabaseAdmin
     .from('university')
     .select('maxTeamCapacity')
     .match({ id: universityId })
     .single();
-  console.log('Found university ', university, universityError);
+
   if (!university || universityError) return null;
 
   const { maxTeamCapacity } = university;
@@ -38,16 +44,21 @@ const autoAssignTeam = async ({ supabaseAdmin, universityId, froshId }): Promise
   const { data: profiles, error: profilesError } = await supabaseAdmin
     .from('profile')
     .select('*, team(*)')
-    .match({ froshId });
+    .match({
+      role: 'Froshee',
+      froshId,
+    })
+    .not('teamId', 'is', 'null');
 
-  console.log('Found profiles ', profiles, profilesError);
-
-  if (!profiles || profilesError) return null;
+  if (!profiles || profilesError) {
+    console.log(`[Onboard Froshee] Auto assign team: encountered error ${profilesError.message}`);
+    return null;
+  }
 
   if (!profiles.length) {
+    console.log(`[Onboard Froshee] Auto assign team: No profiles found, creating first team`);
     return createTeam({
       supabaseAdmin,
-      newTeamId: uuid(),
       newTeamNumber: 1,
       froshId,
     });
@@ -55,21 +66,22 @@ const autoAssignTeam = async ({ supabaseAdmin, universityId, froshId }): Promise
 
   const groupedProfiles = groupBy(profiles, 'teamId');
 
-  console.log('groupedProfiles ', groupedProfiles);
-
-  const [froshIdFound] = Object.entries(groupedProfiles)
+  const [teamIdFound] = Object.entries(groupedProfiles)
     .find(([_, profiles]) => profiles.length < maxTeamCapacity) || [];
 
-  console.log('froshIdFound ', froshIdFound);
-
   // if a frosh with capacity exists, return it
-  if (froshIdFound) return froshIdFound;
+  if (teamIdFound) {
+    console.log(`[Onboard Froshee] Auto assign team: found ${teamIdFound} with capacity`);
+    return teamIdFound;
+  }
+
+  const newTeamNumber = String(Object.values(groupedProfiles).length + 1);
+  console.log(`[Onboard Froshee] Auto assign team: found no team with capacity, creating Team ${newTeamNumber}`);
 
   // otherwise create one
   return createTeam({
     supabaseAdmin,
-    newTeamId: uuid(),
-    newTeamNumber: String(Object.values(groupedProfiles).length + 1),
+    newTeamNumber,
     froshId,
   });
 
@@ -109,7 +121,7 @@ const handleCheckoutSessionCompleted = async (session: any) => {
       user_metadata: {
         firstName: session.metadata.firstName,
         lastName: session.metadata.lastName,
-        phoneNumber: session.metadata.phoneNumber,
+        phoneNumber: session.metadata.phoneNumber === '' ? null : session.metadata.phoneNumber,
         role: 'Froshee',
         universityId: session.metadata.universityId,
         froshId: session.metadata.froshId,
@@ -152,12 +164,12 @@ serve(async (req: Request) => {
 
     switch (event.type) {
       case 'checkout.session.completed':
-        console.log('handling checkout.session.completed');
+        console.log('[Onboard Froshee] Handling checkout.session.completed');
         const session = event.data.object;
         await handleCheckoutSessionCompleted(session);
         break;
       default:
-        console.log(`Unhandled event type ${event.type}`);
+        console.log(`[Onboard Froshee] Unhandled event type ${event.type}`);
     }
     return new Response(JSON.stringify({ error: null }), {
       headers: { 'Content-Type': 'application/json' },

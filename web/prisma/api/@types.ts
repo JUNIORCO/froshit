@@ -9,7 +9,7 @@ export type FroshsWithStats = Frosh & { profiles: (Profile & { payment: Payment 
 /** User **/
 export type UsersForUserList = Profile & { frosh: Frosh | null, team: Team | null, payment: Payment | null };
 
-export type FullProfile = Profile & { frosh: Frosh | null, team: Team | null };
+export type FullProfile = Profile & { frosh: Frosh | null, team: Team | null, payment: Payment | null };
 
 export type UnassignedFrosheesAndLeaders = Profile & { frosh: Frosh | null };
 
@@ -33,7 +33,11 @@ export type FroshProfileCount = Frosh & { _count: { profiles: number } };
 
 export type FormattedFroshProfileCount = { froshName: string; profileCount: number };
 
-export type FroshTotalAmountPaid = { froshName: string; totalAmountPaid: number };
+export type FroshTotalAmountCollected = {
+  froshName: string;
+  totalOnlineAmountCollected: number;
+  totalCashAmountCollected: number;
+};
 
 export type FrosheesRegistered = {
   froshName: string;
@@ -49,7 +53,7 @@ export type FrosheesRegisteredAnalytics = {
 export type Analytics = {
   university: University;
 
-  totalAmountPaid: number;
+  totalAmountCollected: number;
 
   totalOrganizers: number;
   totalLeaders: number;
@@ -57,7 +61,7 @@ export type Analytics = {
 
   froshFrosheeCount: FormattedFroshProfileCount[];
   froshLeaderCount: FormattedFroshProfileCount[];
-  froshsTotalAmountPaid: FroshTotalAmountPaid[];
+  froshsTotalAmountCollected: FroshTotalAmountCollected[];
 
   frosheesRegisteredAnalytics: FrosheesRegisteredAnalytics;
 }

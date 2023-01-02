@@ -7,36 +7,33 @@ import {
   Card,
   Container,
   Divider,
-  FormControlLabel,
-  IconButton,
-  Switch,
+  Stack,
   Tab,
   Table,
   TableBody,
   TableContainer,
   TablePagination,
   Tabs,
-  Tooltip,
 } from '@mui/material';
 import { PATH_DASHBOARD } from '../../../../../routes/paths';
 import useTabs from '../../../../../hooks/useTabs';
-import useSettings from '../../../../../hooks/useSettings';
 import useTable, { emptyRows, getComparator } from '../../../../../hooks/useTable';
 import Layout from '../../../../../layouts';
 import Page from '../../../../../components/Page';
 import Iconify from '../../../../../components/Iconify';
 import Scrollbar from '../../../../../components/Scrollbar';
 import HeaderBreadcrumbs from '../../../../../components/HeaderBreadcrumbs';
-import { TableEmptyRows, TableHeadCustom, TableNoData, TableSelectedActions } from '../../../../../components/table';
+import { TableEmptyRows, TableHeadCustom, TableNoData } from '../../../../../components/table';
 import { GetServerSideProps, GetServerSidePropsContext } from 'next';
 import { FullTeam } from '../../../../../../prisma/api/@types';
-import TeamTableRow from '../../../../../sections/@dashboard/team/list/TeamTableRow';
-import { TeamTableToolbar } from '../../../../../sections/@dashboard/team/list';
-import { Offer, Role } from '../../../../../../prisma/types';
+import TeamTableRow from '../../../../../sections/dashboard/team/list/TeamTableRow';
+import { TeamTableToolbar } from '../../../../../sections/dashboard/team/list';
+import { Role } from '../../../../../../prisma/types';
 import AuthApi from '../../../../../../prisma/api/AuthApi';
 import useRefresh from '../../../../../hooks/useRefresh';
 import { useSnackbar } from 'notistack';
 import { useSupabaseClient } from '@supabase/auth-helpers-react';
+import ConfirmDeleteModal from '../../../../../components/ConfirmDeleteModal';
 
 const TAB_OPTIONS = ['All', 'No Leaders', 'No Froshees'];
 
@@ -44,8 +41,8 @@ const TABLE_HEAD = [
   { id: 'name', label: 'Name', align: 'left' },
   { id: 'number', label: 'Number', align: 'left' },
   { id: 'frosh', label: 'Frosh', align: 'left' },
-  { id: 'leaders', label: 'Leaders', align: 'left' },
-  { id: 'froshees', label: 'Froshees', align: 'left' },
+  { id: 'leaders', label: 'Number of Leaders', align: 'left' },
+  { id: 'froshees', label: 'Number of Froshees', align: 'left' },
   { id: '' },
 ];
 
@@ -64,22 +61,17 @@ export default function TeamList({ initialTeams }: Props) {
   }, [initialTeams]);
 
   const { push } = useRouter();
-  const { themeStretch } = useSettings();
   const { refreshData } = useRefresh();
   const { enqueueSnackbar } = useSnackbar();
   const supabaseClient = useSupabaseClient();
 
   const {
-    dense,
     page,
     order,
     orderBy,
     rowsPerPage,
     setPage,
-    selected,
     setSelected,
-    onSelectRow,
-    onSelectAllRows,
     onSort,
     onChangePage,
     onChangeRowsPerPage,
@@ -114,24 +106,8 @@ export default function TeamList({ initialTeams }: Props) {
     void push(PATH_DASHBOARD.team.view(id));
   };
 
-  const handleDeleteRows = (selected: number[]) => {
-    const deleteRows = tableData.filter((row: any) => !selected.includes(row.id));
-    setSelected([]);
-    setTableData(deleteRows);
-  };
-
   const handleEditRow = (id: string) => {
     void push(PATH_DASHBOARD.team.edit(id));
-  };
-
-  const handleDeleteRow = async (id: string) => {
-    const { error } = await supabaseClient.from('team').delete().eq('id', id);
-    if (error) {
-      console.error(error);
-      enqueueSnackbar('Error deleting team', { variant: 'error' });
-      return;
-    }
-    refreshData();
   };
 
   const dataFiltered = applySortFilter({
@@ -142,29 +118,57 @@ export default function TeamList({ initialTeams }: Props) {
     filterTab,
   });
 
-  const denseHeight = dense ? 52 : 72;
-
   const isNotFound =
     (!dataFiltered.length && !!filterName) ||
     (!dataFiltered.length && !!filterFrosh) ||
     (!dataFiltered.length && !!filterTab);
 
+  const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
+  const toggleIsModalOpen = () => setIsModalOpen((prev) => !prev);
+  const [selectedTeamToDelete, setSelectedTeamToDelete] = useState<FullTeam | null>();
+  const handleDeleteRow = (team: FullTeam) => {
+    setSelectedTeamToDelete(team);
+    toggleIsModalOpen();
+  };
+
+  const deleteEvent = async () => {
+    const { error } = await supabaseClient
+      .from('team')
+      .delete()
+      .eq('id', selectedTeamToDelete!.id);
+
+    if (error) {
+      enqueueSnackbar(error.message, { variant: 'error' });
+      return;
+    }
+
+    enqueueSnackbar(`${selectedTeamToDelete!.name} deleted`);
+    setSelectedTeamToDelete(null);
+    toggleIsModalOpen();
+    refreshData();
+  };
+
   return (
-    <Page title='Team List'>
-      <Container maxWidth={themeStretch ? false : 'lg'}>
+    <Page title='Teams'>
+      <Container>
         <HeaderBreadcrumbs
-          heading='Team List'
+          heading='Teams'
           links={[
             { name: 'Dashboard', href: PATH_DASHBOARD.root },
             { name: 'Team', href: PATH_DASHBOARD.team.root },
             { name: 'List' },
           ]}
           action={
-            <NextLink href={PATH_DASHBOARD.team.new} passHref style={{ textDecoration: 'none' }}>
-              <Button variant='contained' startIcon={<Iconify icon={'eva:plus-fill'} />}>
-                New Team
+            <Stack flexDirection='row' gap={1}>
+              <Button variant='outlined' onClick={refreshData}>
+                <Iconify icon={'ic:round-refresh'} width={20} height={20} />
               </Button>
-            </NextLink>
+              <NextLink href={PATH_DASHBOARD.team.new} passHref style={{ textDecoration: 'none' }}>
+                <Button variant='contained' endIcon={<Iconify icon={'material-symbols:add-circle-outline-rounded'} />}>
+                  Add Team
+                </Button>
+              </NextLink>
+            </Stack>
           }
         />
 
@@ -194,27 +198,6 @@ export default function TeamList({ initialTeams }: Props) {
 
           <Scrollbar>
             <TableContainer sx={{ minWidth: 800, position: 'relative' }}>
-              {selected.length > 0 && (
-                <TableSelectedActions
-                  dense={dense}
-                  numSelected={selected.length}
-                  rowCount={tableData.length}
-                  onSelectAllRows={(checked: boolean) =>
-                    onSelectAllRows(
-                      checked,
-                      tableData.map((row: any) => row.id),
-                    )
-                  }
-                  actions={
-                    <Tooltip title='Delete'>
-                      <IconButton color='primary' onClick={() => handleDeleteRows(selected)}>
-                        <Iconify icon={'eva:trash-2-outline'} />
-                      </IconButton>
-                    </Tooltip>
-                  }
-                />
-              )}
-
               <Table size='small'>
                 <TableHeadCustom
                   order={order}
@@ -226,20 +209,18 @@ export default function TeamList({ initialTeams }: Props) {
                 <TableBody>
                   {dataFiltered
                     .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
-                    .map((row: any) => (
+                    .map((row) => (
                       <TeamTableRow
                         key={row.id}
                         row={row}
-                        selected={selected.includes(row.id)}
-                        onSelectRow={() => onSelectRow(row.id)}
                         onViewRow={() => handleViewRow(row.id)}
                         onEditRow={() => handleEditRow(row.id)}
-                        onDeleteRow={() => handleDeleteRow(row.id)}
+                        onDeleteRow={() => handleDeleteRow(row)}
                       />
                     ))}
 
                   <TableEmptyRows
-                    height={denseHeight}
+                    height={52}
                     emptyRows={emptyRows(page, rowsPerPage, tableData.length)}
                   />
 
@@ -261,12 +242,18 @@ export default function TeamList({ initialTeams }: Props) {
             />
           </Box>
         </Card>
+
+        <ConfirmDeleteModal
+          open={isModalOpen}
+          onClose={toggleIsModalOpen}
+          onConfirm={deleteEvent}
+          title={`Are you sure you want to delete ${selectedTeamToDelete?.name}?`}
+          content={`Deleting ${selectedTeamToDelete?.name} will affect Leaders and Froshees within the team.`}
+        />
       </Container>
     </Page>
   );
 }
-
-// ----------------------------------------------------------------------
 
 function applySortFilter({
                            tableData,
@@ -294,8 +281,7 @@ function applySortFilter({
   if (filterName) {
     tableData = tableData.filter(
       (team) =>
-        // @ts-ignore
-        team.profiles.map((profile) => profile.name.toLowerCase().indexOf(filterName.toLowerCase()) !== -1).find((res) => res),
+        team.profiles?.map((profile) => profile.firstName.toLowerCase().indexOf(filterName.toLowerCase()) !== -1).find((res) => res),
     );
   }
 

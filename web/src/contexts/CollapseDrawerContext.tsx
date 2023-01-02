@@ -1,8 +1,5 @@
 import { ReactNode, createContext, useState, useEffect } from 'react';
-// hooks
 import useResponsive from '../hooks/useResponsive';
-
-// ----------------------------------------------------------------------
 
 export type CollapseDrawerContextProps = {
   isCollapse: boolean;

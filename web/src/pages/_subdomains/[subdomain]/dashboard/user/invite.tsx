@@ -12,7 +12,6 @@ import {
   Typography,
 } from '@mui/material';
 import { PATH_AUTH, PATH_DASHBOARD } from '../../../../../routes/paths';
-import useSettings from '../../../../../hooks/useSettings';
 import Layout from '../../../../../layouts';
 import Page from '../../../../../components/Page';
 import HeaderBreadcrumbs from '../../../../../components/HeaderBreadcrumbs';
@@ -24,17 +23,19 @@ import * as Yup from 'yup';
 import { useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 import useSWRMutation from 'swr/mutation';
-import { GetServerSideProps } from 'next';
+import { GetServerSideProps, GetServerSidePropsContext } from 'next';
 import Scrollbar from '../../../../../components/Scrollbar';
-import { TableEmptyRows, TableNoData } from '../../../../../components/table';
+import { TableEmptyRows, TableHeadCustom, TableNoData } from '../../../../../components/table';
 import useTable, { emptyRows, getComparator } from '../../../../../hooks/useTable';
 import AuthApi from '../../../../../../prisma/api/AuthApi';
-import { Profile, Role } from '../../../../../../prisma/types';
-import { AdminOrganizerTableRow } from '../../../../../sections/@dashboard/user/list/invite';
+import { Frosh, Profile, Role, Team } from '../../../../../../prisma/types';
+import { AdminOrganizerTableRow } from '../../../../../sections/dashboard/user/list/invite';
 import { getSubdomainUrl } from '../../../../../utils/url';
 import useSubdomain from '../../../../../hooks/useSubdomain';
 import useRefresh from '../../../../../hooks/useRefresh';
-import { UserTableToolbar } from '../../../../../sections/@dashboard/user/list';
+import { UserTableToolbar } from '../../../../../sections/dashboard/user/list';
+import ConfirmDeleteModal from '../../../../../components/ConfirmDeleteModal';
+import useUpdateEffect from '../../../../../hooks/useUpdateEffect';
 
 const sendInviteRequest = async (url: string, { arg }: any) => {
   const res = await fetch(url, {
@@ -60,6 +61,16 @@ const deleteUserRequest = async (url: string, { arg }: any) => {
   return res.json();
 };
 
+const TABLE_HEAD = [
+  { id: 'name', label: 'Name', align: 'left' },
+  { id: 'email', label: 'Email', align: 'left' },
+  { id: 'phoneNumber', label: 'Phone Number', align: 'left' },
+  { id: 'role', label: 'Role', align: 'left' },
+  { id: 'frosh', label: 'Frosh', align: 'left' },
+  { id: 'team', label: 'Team', align: 'left' },
+  { id: '' },
+];
+
 UserInvite.getLayout = function getLayout(page: React.ReactElement) {
   return <Layout>{page}</Layout>;
 };
@@ -67,14 +78,19 @@ UserInvite.getLayout = function getLayout(page: React.ReactElement) {
 type FormValuesProps = {
   email: string;
   role: string;
+  firstName: string;
+  lastName: string;
+  phoneNumber: string;
+  froshId: string | null;
 };
 
 type Props = {
-  initialProfiles: Profile[];
+  initialProfiles: (Profile & { frosh: Frosh | null, team: Team | null })[];
+  froshs: Frosh[];
 }
 
-export default function UserInvite({ initialProfiles }: Props) {
-  const [profiles, setProfiles] = useState<Profile[]>(initialProfiles);
+export default function UserInvite({ initialProfiles, froshs }: Props) {
+  const [profiles, setProfiles] = useState<(Profile & { frosh: Frosh | null, team: Team | null })[]>(initialProfiles);
   useEffect(() => {
     setProfiles(initialProfiles);
   }, [initialProfiles]);
@@ -83,7 +99,6 @@ export default function UserInvite({ initialProfiles }: Props) {
   const { refreshData } = useRefresh();
   const { trigger: sendInviteAPI } = useSWRMutation('/api/user', sendInviteRequest);
   const { trigger: deleteUserAPI } = useSWRMutation('/api/user', deleteUserRequest);
-  const { themeStretch } = useSettings();
   const { profile } = useProfile();
   const { enqueueSnackbar } = useSnackbar();
 
@@ -97,6 +112,7 @@ export default function UserInvite({ initialProfiles }: Props) {
     setPage,
     order,
     orderBy,
+    onSort,
   } = useTable();
 
   const InviteUserSchema = Yup.object().shape({
@@ -105,6 +121,10 @@ export default function UserInvite({ initialProfiles }: Props) {
     lastName: Yup.string().required('Last name is required'),
     phoneNumber: Yup.string().nullable(),
     role: Yup.string().required('Role is required'),
+    froshId: Yup.string().nullable().when('role', {
+      is: Role.Leader,
+      then: Yup.string().required('Frosh is required'),
+    }),
   });
 
   const defaultValues = {
@@ -113,6 +133,7 @@ export default function UserInvite({ initialProfiles }: Props) {
     lastName: '',
     phoneNumber: '',
     role: profile!.role === Role.Admin ? '' : Role.Leader,
+    froshId: null,
   };
 
   const methods = useForm<FormValuesProps>({
@@ -121,13 +142,19 @@ export default function UserInvite({ initialProfiles }: Props) {
   });
 
   const {
+    reset,
+    setValue,
+    watch,
     handleSubmit,
     formState: { isSubmitting },
   } = methods;
 
+  const payload = watch();
+
   const onSubmit = async (userToInvite: FormValuesProps) => {
     const { error } = await sendInviteAPI({
       ...userToInvite,
+      phoneNumber: userToInvite.phoneNumber === '' ? null : userToInvite.phoneNumber,
       universityId: profile?.universityId,
       redirectTo: getSubdomainUrl({ subdomain, path: PATH_AUTH.setPassword }),
     });
@@ -138,16 +165,7 @@ export default function UserInvite({ initialProfiles }: Props) {
     }
 
     enqueueSnackbar('User invited');
-    refreshData();
-  };
-
-  const handleDeleteRow = async (id: string) => {
-    const { error } = await deleteUserAPI({ id });
-    if (error) {
-      console.error(error);
-      enqueueSnackbar('Error deleting user', { variant: 'error' });
-      return;
-    }
+    reset();
     refreshData();
   };
 
@@ -166,9 +184,36 @@ export default function UserInvite({ initialProfiles }: Props) {
 
   const roleOptions = profile!.role === Role.Admin ? [Role.Organizer, Role.Leader] : [Role.Leader];
 
+  const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
+  const toggleIsModalOpen = () => setIsModalOpen((prev) => !prev);
+  const [selectedProfileToDelete, setSelectedProfileToDelete] = useState<Profile | null>();
+  const handleDeleteRow = (profile: Profile) => {
+    setSelectedProfileToDelete(profile);
+    toggleIsModalOpen();
+  };
+
+  const deleteEvent = async () => {
+    const { error } = await deleteUserAPI({ id: selectedProfileToDelete!.id });
+
+    if (error) {
+      enqueueSnackbar(error.message, { variant: 'error' });
+      return;
+    }
+
+    enqueueSnackbar(`${selectedProfileToDelete!.firstName} ${selectedProfileToDelete!.lastName} deleted`);
+    setSelectedProfileToDelete(null);
+    toggleIsModalOpen();
+    refreshData();
+  };
+
+  useUpdateEffect(() => {
+    if (payload.role === Role.Organizer) setValue('froshId', null);
+    if (payload.role === Role.Leader) setValue('froshId', '');
+  }, [payload.role]);
+
   return (
     <Page title='Invite User'>
-      <Container maxWidth={themeStretch ? false : 'lg'}>
+      <Container>
         <HeaderBreadcrumbs
           heading={profile!.role === Role.Admin ? 'Invite an Organizer/Leader' : 'Invite a Leader'}
           links={[
@@ -206,6 +251,17 @@ export default function UserInvite({ initialProfiles }: Props) {
                         </option>
                       ))}
                     </RHFSelect>)}
+
+                  {payload.role === Role.Leader && (
+                    <RHFSelect name='froshId' label='Frosh' placeholder='Frosh'>
+                      <option value='' />
+                      {froshs.map((frosh) => (
+                        <option key={frosh.id} value={frosh.id}>
+                          {frosh.name}
+                        </option>
+                      ))}
+                    </RHFSelect>
+                  )}
                 </Box>
 
                 <Stack alignItems='flex-end' sx={{ mt: 3 }}>
@@ -232,6 +288,13 @@ export default function UserInvite({ initialProfiles }: Props) {
           <Scrollbar>
             <TableContainer sx={{ minWidth: 800, position: 'relative' }}>
               <Table size='small'>
+                <TableHeadCustom
+                  order={order}
+                  orderBy={orderBy}
+                  headLabel={TABLE_HEAD}
+                  onSort={onSort}
+                />
+
                 <TableBody>
                   {dataFiltered
                     .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
@@ -239,7 +302,7 @@ export default function UserInvite({ initialProfiles }: Props) {
                       <AdminOrganizerTableRow
                         key={row.id}
                         row={row}
-                        onDeleteRow={() => handleDeleteRow(row.id)}
+                        onDeleteRow={() => handleDeleteRow(row)}
                       />
                     ))}
 
@@ -266,6 +329,14 @@ export default function UserInvite({ initialProfiles }: Props) {
             />
           </Box>
 
+          <ConfirmDeleteModal
+            open={isModalOpen}
+            onClose={toggleIsModalOpen}
+            onConfirm={deleteEvent}
+            title={`Are you sure you want to remove ${selectedProfileToDelete?.firstName} ${selectedProfileToDelete?.lastName}?`}
+            content={`You'll be able to invite them again.`}
+          />
+
         </Card>
       </Container>
     </Page>
@@ -277,10 +348,10 @@ const applySortFilter = ({
                            comparator,
                            filterName,
                          }: {
-  tableData: Profile[];
+  tableData: (Profile & { frosh: Frosh | null, team: Team | null })[];
   comparator: (a: any, b: any) => number;
   filterName: string;
-}): Profile[] => {
+}): (Profile & { frosh: Frosh | null, team: Team | null })[] => {
   const stabilizedThis = tableData.map((el, index) => [el, index] as const);
 
   stabilizedThis.sort((a, b) => {
@@ -301,13 +372,18 @@ const applySortFilter = ({
   return tableData;
 };
 
-export const getServerSideProps: GetServerSideProps = async (ctx) => {
+export const getServerSideProps: GetServerSideProps<Props> = async (ctx: GetServerSidePropsContext) => {
   const api = new AuthApi({ ctx });
-  const initialProfiles = await api.Profile.getOrganizersAndLeadersOnly();
+
+  const [initialProfiles, froshs] = await Promise.all([
+    api.Profile.getOrganizersAndLeadersOnly(),
+    api.Frosh.getFroshs(),
+  ]);
 
   return {
     props: {
       initialProfiles,
+      froshs,
     },
   };
 };

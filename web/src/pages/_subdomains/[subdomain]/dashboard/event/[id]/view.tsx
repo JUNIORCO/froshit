@@ -1,14 +1,12 @@
-import { Box, Container } from '@mui/material';
+import { Container } from '@mui/material';
 import { PATH_DASHBOARD } from '../../../../../../routes/paths';
-import useSettings from '../../../../../../hooks/useSettings';
 import Layout from '../../../../../../layouts';
 import Page from '../../../../../../components/Page';
 import HeaderBreadcrumbs from '../../../../../../components/HeaderBreadcrumbs';
-import { GetServerSideProps } from 'next';
+import { GetServerSideProps, GetServerSidePropsContext } from 'next';
 import { FullEvent } from '../../../../../../../prisma/api/@types';
-import { Query } from '../../../../../../@types/query';
 import AuthApi from '../../../../../../../prisma/api/AuthApi';
-import EventEditForm from '../../../../../../sections/@dashboard/event/EventEditForm';
+import EventEditForm from '../../../../../../sections/dashboard/event/EventEditForm';
 import React from 'react';
 
 EventView.getLayout = function getLayout(page: React.ReactElement) {
@@ -20,11 +18,9 @@ type Props = {
 }
 
 export default function EventView({ event }: Props) {
-  const { themeStretch } = useSettings();
-
   return (
     <Page title='View Event'>
-      <Container maxWidth={themeStretch ? false : 'lg'}>
+      <Container>
         <HeaderBreadcrumbs
           heading='Event'
           links={[
@@ -33,16 +29,17 @@ export default function EventView({ event }: Props) {
             { name: 'View' },
           ]}
         />
-        <EventEditForm view currentEvent={event}  />
+        <EventEditForm view currentEvent={event} />
       </Container>
     </Page>
   );
 }
 
-export const getServerSideProps: GetServerSideProps = async (ctx) => {
-  const { id } = ctx.query as Query;
+export const getServerSideProps: GetServerSideProps = async (ctx: GetServerSidePropsContext) => {
+  const { id } = ctx.query;
   const api = new AuthApi({ ctx });
-  const event = await api.Event.getEventById(id);
+
+  const event = await api.Event.getEventById(id as string);
 
   return {
     props: {

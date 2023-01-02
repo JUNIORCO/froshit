@@ -1,6 +1,6 @@
 import type { NextApiRequest, NextApiResponse } from 'next';
 import { Role } from 'prisma/types';
-import { supabaseAdmin } from '../_utils/supabaseAdmin';
+import { supabaseAdmin } from '../../../utils/api/supabaseAdmin';
 
 /**
  * Used to invite or delete an Organizer/Leader
@@ -10,7 +10,7 @@ import { supabaseAdmin } from '../_utils/supabaseAdmin';
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
   try {
     if (req.method === 'POST') {
-      const { email, firstName, lastName, phoneNumber, role, universityId, redirectTo } = req.body;
+      const { email, firstName, lastName, phoneNumber, role, froshId, universityId, redirectTo } = req.body;
 
       // use the inviteUserByEmail api
       if (role === Role.Organizer) {
@@ -46,7 +46,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
             phoneNumber,
             role,
             universityId,
-            froshId: null,
+            froshId,
             teamId: null,
             paymentId: null,
           },

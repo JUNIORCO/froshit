@@ -1,30 +1,20 @@
-// @mui
-import { styled } from '@mui/material/styles';
-import { Box, Container, Link, Typography } from '@mui/material';
+import { Box, Container, Typography } from '@mui/material';
 import Layout from '../../../../layouts';
 import Page from '../../../../components/Page';
 import { NewPasswordForm } from '../../../../sections/auth/new-password';
 import { SentIcon } from '../../../../assets';
+import { ReactElement } from 'react';
+import { ContentStyle } from './styles';
 
-const ContentStyle = styled('div')(({ theme }) => ({
-  maxWidth: 480,
-  margin: 'auto',
-  minHeight: '100vh',
-  display: 'flex',
-  justifyContent: 'center',
-  flexDirection: 'column',
-  padding: theme.spacing(12, 0),
-}));
-
-NewPassword.getLayout = function getLayout(page: React.ReactElement) {
+NewPasswordPage.getLayout = function getLayout(page: ReactElement) {
   return <Layout variant='logoOnly'>{page}</Layout>;
 };
 
-export default function NewPassword() {
+export default function NewPasswordPage() {
   return (
     <Page title='New Password'>
       <Container>
-        <ContentStyle sx={{ textAlign: 'center' }}>
+        <ContentStyle>
           <SentIcon sx={{ mb: 5, mx: 'auto', height: 120 }} />
 
           <Typography variant='h3' gutterBottom>
