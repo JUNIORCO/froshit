@@ -1,4 +1,3 @@
-// @mui
 import { alpha, styled } from '@mui/material/styles';
 import {
   ListItemText,
@@ -8,12 +7,8 @@ import {
   ListItemTextProps,
   ListItemButtonProps,
 } from '@mui/material';
-// utils
 import cssStyles from '../../../utils/cssStyles';
-// config
 import { ICON, NAVBAR } from '../../../config';
-
-// ----------------------------------------------------------------------
 
 export interface ListItemStyleProps extends ListItemButtonProps {
   active: boolean;

@@ -1,19 +1,10 @@
-import { useState, ReactNode } from 'react';
-// @mui
+import { ReactNode, useState } from 'react';
 import { styled } from '@mui/material/styles';
 import { Box } from '@mui/material';
-// hooks
-import useSettings from '../../hooks/useSettings';
-import useResponsive from '../../hooks/useResponsive';
 import useCollapseDrawer from '../../hooks/useCollapseDrawer';
-// config
 import { HEADER, NAVBAR } from '../../config';
-//
 import DashboardHeader from './header';
 import NavbarVertical from './navbar/NavbarVertical';
-import NavbarHorizontal from './navbar/NavbarHorizontal';
-
-// ----------------------------------------------------------------------
 
 type MainStyleProps = {
   collapseClick: boolean;
@@ -40,14 +31,13 @@ const MainStyle = styled('main', {
   },
 }));
 
-// ----------------------------------------------------------------------
-
 type Props = {
   children: ReactNode;
 };
 
 export default function DashboardLayout({ children }: Props) {
   const { collapseClick, isCollapse } = useCollapseDrawer();
+
   const [open, setOpen] = useState(false);
 
   return (

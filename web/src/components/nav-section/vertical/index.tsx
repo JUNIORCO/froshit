@@ -1,13 +1,8 @@
-// @ts-nocheck
 import { List, Box } from '@mui/material';
-// hooks
 import useLocales from '../../../hooks/useLocales';
-//
 import { NavSectionProps } from '../type';
 import { ListSubheaderStyle } from './style';
 import NavList from './NavList';
-
-// ----------------------------------------------------------------------
 
 export default function NavSectionVertical({ navConfig, isCollapse, ...other }: NavSectionProps) {
   const { translate } = useLocales();

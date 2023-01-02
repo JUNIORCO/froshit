@@ -3,7 +3,6 @@ import NextLink from 'next/link';
 import { useRouter } from 'next/router';
 import { Box, Button, Card, Container, Table, TableBody, TableContainer, TablePagination } from '@mui/material';
 import { PATH_DASHBOARD } from '../../../../../routes/paths';
-import useSettings from '../../../../../hooks/useSettings';
 import useTable, { emptyRows, getComparator } from '../../../../../hooks/useTable';
 import Layout from '../../../../../layouts';
 import Page from '../../../../../components/Page';

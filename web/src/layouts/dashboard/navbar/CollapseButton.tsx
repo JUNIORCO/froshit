@@ -1,9 +1,5 @@
-// @mui
 import { Box } from '@mui/material';
-// components
 import { IconButtonAnimate } from '../../../components/animate';
-
-// ----------------------------------------------------------------------
 
 type Props = {
   onToggleCollapse: VoidFunction;
@@ -30,8 +26,6 @@ export default function CollapseButton({ onToggleCollapse, collapseClick }: Prop
     </IconButtonAnimate>
   );
 }
-
-// ----------------------------------------------------------------------
 
 const icon = (
   <svg width="24" height="24" xmlns="http://www.w3.org/2000/svg">

@@ -7,9 +7,8 @@ type Props = {
 };
 
 export default function ThemeLocalization({ children }: Props) {
-  const defaultTheme = useTheme();
-
   const { currentLang } = useLocales();
+  const defaultTheme = useTheme();
 
   const theme = createTheme(defaultTheme, currentLang.systemValue);
 

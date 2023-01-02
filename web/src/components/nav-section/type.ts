@@ -1,8 +1,6 @@
 import { ReactElement } from 'react';
 import { BoxProps } from '@mui/material';
 
-// ----------------------------------------------------------------------
-
 export type NavListProps = {
   title: string;
   path: string;
