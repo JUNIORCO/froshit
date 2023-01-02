@@ -6,7 +6,7 @@ import Page from '../../../../components/Page';
 import { ResetPasswordForm } from '../../../../sections/auth/reset-password';
 import GuestGuard from '../../../../guards/GuestGuard';
 import { ReactElement } from 'react';
-import { ContentStyle } from './styles';
+import { ContentStyle } from '../../../../styles/auth';
 
 ResetPasswordPage.getLayout = function getLayout(page: ReactElement) {
   return <Layout variant='logoOnly'>{page}</Layout>;

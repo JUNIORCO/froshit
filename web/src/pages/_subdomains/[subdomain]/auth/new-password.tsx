@@ -4,7 +4,7 @@ import Page from '../../../../components/Page';
 import { NewPasswordForm } from '../../../../sections/auth/new-password';
 import { SentIcon } from '../../../../assets';
 import { ReactElement } from 'react';
-import { ContentStyle } from './styles';
+import { ContentStyle } from '../../../../styles/auth';
 
 NewPasswordPage.getLayout = function getLayout(page: ReactElement) {
   return <Layout variant='logoOnly'>{page}</Layout>;

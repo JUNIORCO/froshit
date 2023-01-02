@@ -7,7 +7,7 @@ import { Frosh, University } from '../../../../../prisma/types';
 import PublicApi from '../../../../../prisma/api/PublicApi';
 import CheckoutForm from '../../../../components/checkout/CheckoutForm';
 import { FrosheeRegistrationProvider } from '../../../../contexts/FrosheeRegistrationContext';
-import { ContentStyle, HeaderStyle, RootStyle } from './styles';
+import { ContentStyle, HeaderStyle, RootStyle } from '../../../../styles/froshee';
 
 type FrosheeRegisterProps = {
   university: University & { froshs: Frosh[] };

@@ -4,7 +4,7 @@ import Page from '../../../../components/Page';
 import { SetPasswordForm } from '../../../../sections/auth/set-password';
 import { SentIcon } from '../../../../assets';
 import { useUser } from '@supabase/auth-helpers-react';
-import { ContentStyle } from './styles';
+import { ContentStyle } from '../../../../styles/auth';
 import { ReactElement } from 'react';
 
 SetPasswordPage.getLayout = function getLayout(page: ReactElement) {
