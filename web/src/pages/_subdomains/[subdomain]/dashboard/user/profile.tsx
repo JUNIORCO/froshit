@@ -16,7 +16,6 @@ UserProfile.getLayout = function getLayout(page: React.ReactElement) {
 };
 
 export default function UserProfile() {
-  const { themeStretch } = useSettings();
   const { currentTab, onChangeTab } = useTabs('general');
 
   const ACCOUNT_TABS = [

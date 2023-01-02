@@ -35,10 +35,8 @@ type UniversityIdentityPageProps = {
 }
 
 export default function UniversityIdentityPage({ university }: UniversityIdentityPageProps) {
-  const { themeStretch } = useSettings();
   const { subdomain } = useSubdomain();
   const supabaseClient = useSupabaseClient();
-  const { replace } = useRouter();
   const { enqueueSnackbar } = useSnackbar();
   const { refreshData } = useRefresh();
 

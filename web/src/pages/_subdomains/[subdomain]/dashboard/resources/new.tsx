@@ -18,8 +18,6 @@ type Props = {
 }
 
 export default function ResourceCreate({ resourceTags }: Props) {
-  const { themeStretch } = useSettings();
-
   return (
     <Page title='Create Resource'>
       <Container>

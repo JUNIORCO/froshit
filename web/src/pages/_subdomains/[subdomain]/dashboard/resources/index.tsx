@@ -63,8 +63,6 @@ export default function ResourceList({ initialResources }: Props) {
 
   const RESOURCE_TAG_OPTIONS: string[] = ['All', ...uniqueTags];
 
-  const { themeStretch } = useSettings();
-
   const { push } = useRouter();
 
   const [filterName, setFilterName] = useState<string>('');

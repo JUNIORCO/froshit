@@ -55,10 +55,6 @@ type Props = {
 };
 
 export default function NotistackProvider({ children }: Props) {
-  const { themeDirection } = useSettings();
-
-  const isRTL = themeDirection === 'rtl';
-
   const notistackRef = useRef<any>(null);
 
   const onClose = (key: SnackbarKey) => () => {
@@ -75,7 +71,6 @@ export default function NotistackProvider({ children }: Props) {
         maxSnack={5}
         preventDuplicate
         autoHideDuration={3000}
-        TransitionComponent={isRTL ? Collapse : undefined}
         variant="success" // Set default variant
         anchorOrigin={{ vertical: 'top', horizontal: 'right' }}
         iconVariant={{
@@ -96,8 +91,6 @@ export default function NotistackProvider({ children }: Props) {
     </>
   );
 }
-
-// ----------------------------------------------------------------------
 
 type SnackbarIconProps = {
   icon: IconifyIcon | string;

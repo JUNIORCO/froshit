@@ -1,24 +1,19 @@
 import { useMemo, ReactNode } from 'react';
-// @mui
 import { CssBaseline } from '@mui/material';
 import { createTheme, ThemeOptions, ThemeProvider as MUIThemeProvider } from '@mui/material/styles';
-// hooks
 import useSettings from '../hooks/useSettings';
-//
 import palette from './palette';
 import typography from './typography';
 import breakpoints from './breakpoints';
 import componentsOverride from './overrides';
 import shadows, { customShadows } from './shadows';
 
-// ----------------------------------------------------------------------
-
 type Props = {
   children: ReactNode;
 };
 
 export default function ThemeProvider({ children }: Props) {
-  const { themeMode, themeDirection } = useSettings();
+  const { themeMode } = useSettings();
 
   const isLight = themeMode === 'light';
 
@@ -28,11 +23,11 @@ export default function ThemeProvider({ children }: Props) {
       typography,
       breakpoints,
       shape: { borderRadius: 8 },
-      direction: themeDirection,
+      direction: 'ltr',
       shadows: isLight ? shadows.light : shadows.dark,
       customShadows: isLight ? customShadows.light : customShadows.dark,
     }),
-    [isLight, themeDirection]
+    [isLight]
   );
 
   const theme = createTheme(themeOptions);

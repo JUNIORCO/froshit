@@ -101,7 +101,7 @@ export default function HomeHero() {
 
             {isDesktop ? (
               <m.div variants={varFade().inRight}>
-                <a href={PATH_PAGE.contact} target='_blank' rel='noreferrer' style={{ textDecoration: 'none' }}>
+                <a href={PATH_PAGE.contact} style={{ textDecoration: 'none' }}>
                   <Button
                     size='large'
                     variant='contained'

@@ -49,21 +49,13 @@ export const cookiesExpires = 3;
 
 export const cookiesKey = {
   themeMode: 'themeMode',
-  themeLayout: 'themeLayout',
-  themeStretch: 'themeStretch',
-  themeContrast: 'themeContrast',
-  themeDirection: 'themeDirection',
   themeColorPresets: 'themeColorPresets',
   accessToken: 'accessToken',
 };
 
 export const defaultSettings: SettingsValueProps = {
   themeMode: 'light',
-  themeDirection: 'ltr',
-  themeContrast: 'default',
-  themeLayout: 'horizontal',
   themeColorPresets: 'default',
-  themeStretch: true,
 };
 
 // MULTI LANGUAGES

@@ -8,12 +8,8 @@ import Page from '../components/Page';
 import {
   HomeHero,
   HomeMinimal,
-  HomeDarkMode,
-  HomeLookingFor,
-  HomeColorPresets,
   HomePricingPlans,
   HomeAdvertisement,
-  HomeCleanInterfaces,
   HomeHugePackElements,
 } from '../sections/home';
 
@@ -43,15 +39,7 @@ export default function HomePage() {
 
         <HomeHugePackElements />
 
-        {/*<HomeDarkMode />*/}
-
-        {/*<HomeColorPresets />*/}
-
-        {/*<HomeCleanInterfaces />*/}
-
         <HomePricingPlans />
-
-        {/*<HomeLookingFor />*/}
 
         <HomeAdvertisement />
       </ContentStyle>

@@ -1,10 +1,6 @@
 import { ReactNode } from 'react';
-// @mui
 import { ThemeProvider, createTheme, useTheme } from '@mui/material/styles';
-// hooks
 import useLocales from '../../hooks/useLocales';
-
-// ----------------------------------------------------------------------
 
 type Props = {
   children: ReactNode;

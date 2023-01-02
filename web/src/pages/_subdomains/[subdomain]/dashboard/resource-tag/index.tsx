@@ -55,8 +55,6 @@ export default function ResourceTagsList({ initialResourceTags }: Props) {
     onChangeRowsPerPage,
   } = useTable();
 
-  const { themeStretch } = useSettings();
-
   const { push } = useRouter();
 
   const [filterName, setFilterName] = useState<string>('');
