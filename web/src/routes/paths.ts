@@ -23,10 +23,7 @@ export const PATH_AUTH = {
   setPassword: path(ROOTS_AUTH, '/set-password'),
 };
 
-export const DEMO_PAGE = `${process.env.NODE_ENV === 'development' ? 'http://' : 'https://'}demo.${process.env.ROOT_DOMAIN}`;
-
 export const PATH_PAGE = {
-  demo: '/demo',
   pricing: '/pricing',
   about: '/about',
   contact: '/contact',

@@ -3,7 +3,7 @@ import { m } from 'framer-motion';
 import { styled } from '@mui/material/styles';
 import { Box, Button, Container, Stack, StackProps, Typography } from '@mui/material';
 // routes
-import { DEMO_PAGE } from '../../routes/paths';
+import { PATH_PAGE } from '../../routes/paths';
 // components
 import Iconify from '../../components/Iconify';
 import { MotionContainer, varFade } from '../../components/animate';
@@ -101,13 +101,13 @@ export default function HomeHero() {
 
             {isDesktop ? (
               <m.div variants={varFade().inRight}>
-                <a href={DEMO_PAGE} target='_blank' rel='noreferrer' style={{ textDecoration: 'none' }}>
+                <a href={PATH_PAGE.contact} target='_blank' rel='noreferrer' style={{ textDecoration: 'none' }}>
                   <Button
                     size='large'
                     variant='contained'
                     startIcon={<Iconify icon={'eva:flash-fill'} width={20} height={20} />}
                   >
-                    Live Demo
+                    Get Started
                   </Button>
                 </a>
               </m.div>

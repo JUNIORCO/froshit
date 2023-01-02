@@ -1,4 +1,4 @@
-name: Developing
+name: FROSHIT CI
 
 env:
   NEXT_PUBLIC_DATABASE_URL: ${{ secrets.NEXT_PUBLIC_DATABASE_URL }}

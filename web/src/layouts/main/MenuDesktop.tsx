@@ -22,7 +22,6 @@ import {
 import Iconify from '../../components/Iconify';
 //
 import { MenuItemProps, MenuProps } from './type';
-import { DEMO_PAGE } from '../../routes/paths';
 
 // ----------------------------------------------------------------------
 
@@ -117,7 +116,7 @@ function MenuDesktopItem({
                          }: MenuDesktopItemProps) {
   const { pathname } = useRouter();
 
-  const { title, path, children, demo } = item;
+  const { title, path, children } = item;
 
   const isActive = (path: string) => pathname === path;
 
@@ -233,20 +232,7 @@ function MenuDesktopItem({
     );
   }
 
-  return demo ? (
-    <NextLink href={DEMO_PAGE} passHref target='_blank' rel='noreferrer' style={{ textDecoration: 'none' }}>
-      <LinkStyle
-        sx={{
-          ...(isHome && { color: 'common.white' }),
-          ...(isOffset && { color: 'text.primary' }),
-          ...(isActive(path) && {
-            color: 'primary.main',
-          }),
-        }}
-      >
-        {title}
-      </LinkStyle>
-    </NextLink>) : (
+  return (
     <NextLink href={path} passHref style={{ textDecoration: 'none' }}>
       <LinkStyle
         sx={{

@@ -13,7 +13,6 @@ export type MenuItemProps = {
       path: string;
     }[];
   }[];
-  demo?: boolean;
 };
 
 export type MenuProps = {

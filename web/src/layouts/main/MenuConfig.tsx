@@ -1,5 +1,5 @@
 // routes
-import { DEMO_PAGE, PATH_PAGE } from '../../routes/paths';
+import { PATH_PAGE } from '../../routes/paths';
 // components
 // components
 import Iconify from '../../components/Iconify';
@@ -16,12 +16,6 @@ const menuConfig = [
     title: 'Home',
     icon: <Iconify icon={'eva:home-fill'} {...ICON_SIZE} />,
     path: '/',
-  },
-  {
-    title: 'Demo',
-    icon: <Iconify icon={'eva:flash-fill'} {...ICON_SIZE} />,
-    path: DEMO_PAGE,
-    demo: true,
   },
   {
     title: 'Pricing',
