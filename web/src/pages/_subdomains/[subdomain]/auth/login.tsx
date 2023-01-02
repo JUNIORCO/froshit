@@ -3,7 +3,7 @@ import Page from '../../../../components/Page';
 import Logo from '../../../../components/Logo';
 import { LoginForm } from '../../../../sections/auth/login';
 import GuestGuard from '../../../../guards/GuestGuard';
-import { ContentStyle, HeaderStyle, RootStyle } from './styles';
+import { ContentStyle, HeaderStyle, RootStyle } from '../../../../styles/auth';
 
 export default function LoginPage() {
   return (

@@ -3,7 +3,7 @@ import { Box, Container, Typography } from '@mui/material';
 import Page from '../../../../components/Page';
 import Logo from '../../../../components/Logo';
 import { GetServerSideProps, GetServerSidePropsContext } from 'next';
-import { ContentStyle, HeaderStyle, RootStyle } from './styles';
+import { ContentStyle, HeaderStyle, RootStyle } from '../../../../styles/froshee';
 
 export default function PaymentSuccess() {
   return (
