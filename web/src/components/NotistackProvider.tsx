@@ -1,18 +1,12 @@
 import { ReactNode, useRef } from 'react';
 import { IconifyIcon } from '@iconify/react';
 import { SnackbarProvider, SnackbarKey } from 'notistack';
-// @mui
 import { alpha, useTheme } from '@mui/material/styles';
 import { Box, GlobalStyles, Collapse } from '@mui/material';
-// hooks
 import useSettings from '../hooks/useSettings';
-// theme
 import { ColorSchema } from '../theme/palette';
-//
 import Iconify from './Iconify';
 import { IconButtonAnimate } from './animate';
-
-// ----------------------------------------------------------------------
 
 function SnackbarStyles() {
   const theme = useTheme();

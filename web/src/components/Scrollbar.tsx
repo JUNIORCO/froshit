@@ -1,9 +1,6 @@
 import SimpleBarReact, { Props as ScrollbarProps } from 'simplebar-react';
-// @mui
 import { alpha, styled } from '@mui/material/styles';
 import { Box, SxProps } from '@mui/material';
-
-// ----------------------------------------------------------------------
 
 const RootStyle = styled('div')(() => ({
   flexGrow: 1,
@@ -31,8 +28,6 @@ const SimpleBarStyle = styled(SimpleBarReact)(({ theme }) => ({
     zIndex: 'inherit',
   },
 }));
-
-// ----------------------------------------------------------------------
 
 interface Props extends ScrollbarProps {
   sx?: SxProps;

@@ -1,17 +1,6 @@
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 require('dotenv').config();
 
-// /* eslint-disable @typescript-eslint/no-var-requires */
-// const withTM = require('next-transpile-modules')([
-//   '@fullcalendar/common',
-//   '@fullcalendar/daygrid',
-//   '@fullcalendar/interaction',
-//   '@fullcalendar/table',
-//   '@fullcalendar/react',
-//   '@fullcalendar/timegrid',
-//   '@fullcalendar/timeline',
-// ]);
-
 module.exports = {
   swcMinify: false,
   experimental: {

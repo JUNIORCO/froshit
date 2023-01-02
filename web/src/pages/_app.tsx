@@ -10,8 +10,6 @@ import 'slick-carousel/slick/slick-theme.css';
 import 'react-lazy-load-image-component/src/effects/blur.css';
 import 'react-lazy-load-image-component/src/effects/opacity.css';
 import 'react-lazy-load-image-component/src/effects/black-and-white.css';
-import '@fullcalendar/common/main.min.css';
-import '@fullcalendar/daygrid/main.min.css';
 import cookie from 'cookie';
 import { ReactElement, ReactNode, useState } from 'react';
 import { NextPage } from 'next';
