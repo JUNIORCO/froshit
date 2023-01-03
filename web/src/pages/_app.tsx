@@ -11,7 +11,7 @@ import 'react-lazy-load-image-component/src/effects/blur.css';
 import 'react-lazy-load-image-component/src/effects/opacity.css';
 import 'react-lazy-load-image-component/src/effects/black-and-white.css';
 import cookie from 'cookie';
-import { ReactElement, ReactNode, useEffect, useState } from 'react';
+import { ReactElement, ReactNode, useState } from 'react';
 import { NextPage } from 'next';
 import Head from 'next/head';
 import App, { AppContext, AppProps } from 'next/app';
@@ -31,7 +31,6 @@ import { createBrowserSupabaseClient } from '@supabase/auth-helpers-nextjs';
 import { Session, SessionContextProvider } from '@supabase/auth-helpers-react';
 import { ProfileProvider } from '../contexts/ProfileContext';
 import { SubdomainProvider } from '../contexts/SubdomainContext';
-import useSettings from '../hooks/useSettings';
 
 type NextPageWithLayout = NextPage & {
   getLayout?: (page: ReactElement) => ReactNode;
@@ -46,7 +45,6 @@ interface MyAppProps extends AppProps<{ initialSession: Session }> {
 
 export default function MyApp(props: MyAppProps) {
   const { Component, pageProps, settings, subdomain, profile } = props;
-  const { setColorPalette } = useSettings();
 
   const [supabaseClient] = useState(() => createBrowserSupabaseClient());
 

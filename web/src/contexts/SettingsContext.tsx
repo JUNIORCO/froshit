@@ -41,6 +41,7 @@ function SettingsProvider({ children, defaultSettings }: SettingsProviderProps) 
   };
 
   useEffect(() => {
+    console.log('subdomain : ', subdomain);
     setColorPalette(subdomain ? subdomain as ValidSubdomains : ValidSubdomains.demo);
   }, [subdomain]);
 
@@ -52,7 +53,7 @@ function SettingsProvider({ children, defaultSettings }: SettingsProviderProps) 
         onToggleMode,
         setColorPalette,
 
-        setColor: getColorPresets(settings.themeColorPresets),
+        setColor: getColorPresets(settings.themeColorPresets) || SUBDOMAIN_COLOR_PALETTE.demo,
         colorOption: Object.entries(SUBDOMAIN_COLOR_PALETTE).map(([key, value]) => ({
           name: key,
           value: value.main,
