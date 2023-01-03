@@ -4,7 +4,6 @@ import { useState } from 'react';
 import { useTheme, styled } from '@mui/material/styles';
 import { Typography } from '@mui/material';
 // config
-import { MAPBOX_API } from '../../config';
 // components
 import Iconify from '../../components/Iconify';
 import { MapControl, MapMarker, MapPopup } from '../../components/map';
@@ -50,7 +49,7 @@ export default function ContactMap({ contacts }: Props) {
           zoom: 2,
         }}
         mapStyle={`mapbox://styles/mapbox/${isLight ? 'light' : 'dark'}-v10`}
-        mapboxAccessToken={MAPBOX_API}
+        mapboxAccessToken={''}
       >
         <MapControl hideGeolocateControl />
 

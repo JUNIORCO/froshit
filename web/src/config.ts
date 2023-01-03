@@ -2,19 +2,16 @@ import { enUS, frFR } from '@mui/material/locale';
 import { SettingsValueProps } from './components/settings/type';
 import { PATH_DASHBOARD } from './routes/paths';
 import type { Theme } from '@mui/material';
+import { ValidSubdomains } from './hardcoded/subdomains';
 
-// BUSINESS
-// ----------------------------------------------------------------------
 export const FROSHIT_EMAIL = 'froshit.business@gmail.com';
 export const FROSHIT_ADDRESS = '88 Harbour St, Toronto, Ontario';
 export const FROSHIT_PHONE = '(437) 987 6231';
 export const FROSHIT_LINKEDIN = 'https://linkedin.com';
 export const FROSHIT_INSTAGRAM = 'https://instagram.com';
 
-export const MAPBOX_API = process.env.MAPBOX_API;
-
 // ROOT PATH AFTER LOGIN SUCCESSFUL
-export const PATH_AFTER_LOGIN = PATH_DASHBOARD.general.app; // as '/dashboard/app'
+export const PATH_AFTER_LOGIN = PATH_DASHBOARD.general.app;
 
 // LAYOUT
 // ----------------------------------------------------------------------
@@ -27,10 +24,8 @@ export const HEADER = {
 };
 
 export const NAVBAR = {
-  BASE_WIDTH: 260,
   DASHBOARD_WIDTH: 240,
   DASHBOARD_COLLAPSE_WIDTH: 88,
-  //
   DASHBOARD_ITEM_ROOT_HEIGHT: 48,
   DASHBOARD_ITEM_SUB_HEIGHT: 40,
 };
@@ -40,7 +35,6 @@ export const ICON = {
 };
 
 // SETTINGS
-// Please remove `localStorage` when you change settings.
 // ----------------------------------------------------------------------
 
 export const cookiesExpires = 3;
@@ -48,17 +42,14 @@ export const cookiesExpires = 3;
 export const cookiesKey = {
   themeMode: 'themeMode',
   themeColorPresets: 'themeColorPresets',
-  accessToken: 'accessToken',
 };
 
 export const defaultSettings: SettingsValueProps = {
   themeMode: 'light',
-  themeColorPresets: 'default',
+  themeColorPresets: ValidSubdomains.demo,
 };
 
 // MULTI LANGUAGES
-// Please remove `localStorage` when you change settings.
-// ----------------------------------------------------------------------
 
 export const allLangs = [
   {

@@ -1,3 +1,5 @@
+import { ValidSubdomains } from '../../hardcoded/subdomains';
+
 type ColorVariants = {
   name: string;
   lighter: string;
@@ -9,7 +11,7 @@ type ColorVariants = {
 };
 
 export type ThemeMode = 'light' | 'dark';
-export type ThemeColorPresets = 'default' | 'purple' | 'cyan' | 'blue' | 'orange' | 'red';
+export type ThemeColorPresets = ValidSubdomains;
 
 export type SettingsValueProps = {
   themeMode: ThemeMode;
@@ -27,4 +29,6 @@ export type SettingsContextProps = {
 
   // Mode
   onToggleMode: VoidFunction;
+
+  setColorPalette: VoidFunction;
 };

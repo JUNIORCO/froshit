@@ -1,12 +1,15 @@
 import Cookies from 'js-cookie';
 import { createContext, Dispatch, ReactNode, SetStateAction, useEffect, useState } from 'react';
-import getColorPresets, { colorPresets, defaultPreset } from '../utils/getColorPresets';
+import getColorPresets, { defaultPreset } from '../utils/getColorPresets';
 import { cookiesExpires, cookiesKey, defaultSettings } from '../config';
 import { SettingsContextProps, SettingsValueProps } from '../components/settings/type';
+import { SUBDOMAIN_COLOR_PALETTE } from '../hardcoded/subdomain-color-palette';
+import { ValidSubdomains } from '../hardcoded/subdomains';
 
 const initialState: SettingsContextProps = {
   ...defaultSettings,
   onToggleMode: () => {},
+  setColorPalette: () => {},
   setColor: defaultPreset,
   colorOption: [],
 };
@@ -28,17 +31,25 @@ function SettingsProvider({ children, defaultSettings }: SettingsProviderProps) 
     });
   };
 
+  const setColorPalette = (color: ValidSubdomains) => {
+    setSettings({
+      ...settings,
+      themeColorPresets: color,
+    });
+  };
+
   return (
     <SettingsContext.Provider
       value={{
         ...settings,
 
         onToggleMode,
+        setColorPalette,
 
         setColor: getColorPresets(settings.themeColorPresets),
-        colorOption: colorPresets.map((color) => ({
-          name: color.name,
-          value: color.main,
+        colorOption: Object.entries(SUBDOMAIN_COLOR_PALETTE).map(([key, value]) => ({
+          name: key,
+          value: value.main,
         })),
       }}
     >
@@ -60,7 +71,6 @@ function useSettingCookies(
     Cookies.set(cookiesKey.themeColorPresets, settings.themeColorPresets, {
       expires: cookiesExpires,
     });
-
   };
 
   useEffect(() => {

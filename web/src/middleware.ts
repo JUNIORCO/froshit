@@ -1,26 +1,14 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { createMiddlewareSupabaseClient } from '@supabase/auth-helpers-nextjs';
 import { PATH_AUTH, PATH_FROSHEE_REGISTER } from './routes/paths';
-import type { SupabaseClient } from '@supabase/supabase-js';
+import { ValidSubdomains } from './hardcoded/subdomains';
 
 export const config = {
   matcher: ['/((?!api|_next|fonts|examples|[\\w-]+\\.\\w+).*)'],
 };
 
-type CheckValidSubdomainArgs = {
-  supabase: SupabaseClient;
-  subdomain: string
-};
-
-// todo use cache here
-async function checkValidSubdomain({ supabase, subdomain }: CheckValidSubdomainArgs) {
-  const { data, error } = await supabase
-    .from('university')
-    .select('subdomain')
-    .eq('subdomain', subdomain)
-    .single();
-
-  return !!data && !error;
+function checkValidSubdomain(subdomain: string) {
+  return !!Object.values(ValidSubdomains).some((enumSubdomain) => enumSubdomain === subdomain);
 }
 
 const UNPROTECTED_PAGES = [...Object.values(PATH_AUTH), ...Object.values(PATH_FROSHEE_REGISTER)];
@@ -47,7 +35,7 @@ export default async function middleware(req: NextRequest) {
     return;
   }
 
-  const isValidSubdomain = await checkValidSubdomain({ supabase, subdomain: currentHost });
+  const isValidSubdomain = checkValidSubdomain(currentHost);
 
   // invalid subdomain (e.g apple.froshit.com), reroute to 404
   if (!isValidSubdomain) {
