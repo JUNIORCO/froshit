@@ -30,5 +30,5 @@ export type SettingsContextProps = {
   // Mode
   onToggleMode: VoidFunction;
 
-  setColorPalette: VoidFunction;
+  setColorPalette: (x: ValidSubdomains) => void;
 };
