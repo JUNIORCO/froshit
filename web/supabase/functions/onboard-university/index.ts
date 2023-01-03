@@ -9,6 +9,7 @@ import { v4 as uuid } from '../_utils/uuid.ts';
  * I hit this endpoint manually when onboarding a university
  */
 serve(async (req: Request) => {
+  console.log('[Onboard University] Function started')
   if (req.method !== 'POST') {
     return new Response(JSON.stringify({ error: 'Unsupported method' }), {
       headers: { 'Content-Type': 'application/json' },

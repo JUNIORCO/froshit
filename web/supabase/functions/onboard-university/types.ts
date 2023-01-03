@@ -1,4 +1,4 @@
-// @ts-ignore
+// @ts-nocheck
 import { z } from '../_utils/zod.ts';
 
 export const UniversityPayloadSchema = z.object({
