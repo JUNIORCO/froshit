@@ -5,6 +5,7 @@ import { cookiesExpires, cookiesKey, defaultSettings } from '../config';
 import { SettingsContextProps, SettingsValueProps } from '../components/settings/type';
 import { SUBDOMAIN_COLOR_PALETTE } from '../hardcoded/subdomain-color-palette';
 import { ValidSubdomains } from '../hardcoded/subdomains';
+import useSubdomain from '../hooks/useSubdomain';
 
 const initialState: SettingsContextProps = {
   ...defaultSettings,
@@ -22,6 +23,7 @@ type SettingsProviderProps = {
 };
 
 function SettingsProvider({ children, defaultSettings }: SettingsProviderProps) {
+  const { subdomain } = useSubdomain();
   const [settings, setSettings] = useSettingCookies(defaultSettings);
 
   const onToggleMode = () => {
@@ -37,6 +39,10 @@ function SettingsProvider({ children, defaultSettings }: SettingsProviderProps) 
       themeColorPresets: color,
     });
   };
+
+  useEffect(() => {
+    setColorPalette(subdomain ? subdomain as ValidSubdomains : ValidSubdomains.demo);
+  }, [subdomain]);
 
   return (
     <SettingsContext.Provider

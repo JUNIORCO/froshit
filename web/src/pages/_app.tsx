@@ -52,10 +52,6 @@ export default function MyApp(props: MyAppProps) {
 
   const getLayout = Component.getLayout ?? ((page) => page);
 
-  useEffect(() => {
-    props.subdomain && setColorPalette(props.subdomain);
-  }, []);
-
   return (
     <>
       <Head>
