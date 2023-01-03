@@ -16,4 +16,3 @@ export type FrosheeEditViewProps = {
   froshs: Frosh[];
   teams: Team[];
 }
-
