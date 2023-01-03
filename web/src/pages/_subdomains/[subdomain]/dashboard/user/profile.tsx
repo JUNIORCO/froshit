@@ -9,7 +9,6 @@ import { AccountChangePassword, AccountGeneral } from '../../../../../sections/d
 import Iconify from '../../../../../components/Iconify';
 import useTabs from '../../../../../hooks/useTabs';
 import { capitalCase } from 'change-case';
-import useSettings from '../../../../../hooks/useSettings';
 
 UserProfile.getLayout = function getLayout(page: React.ReactElement) {
   return <Layout>{page}</Layout>;

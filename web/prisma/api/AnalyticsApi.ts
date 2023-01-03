@@ -193,7 +193,9 @@ class AnalyticsApi {
       this.getFrosheeRegistrationAnalytics(),
     ]);
 
-    const university = universityResult.status === 'fulfilled' ? universityResult.value : {} as University;
+    if (universityResult.status === 'rejected') throw Error(universityResult.reason);
+
+    const university = universityResult.value;
     const roleCounts = roleCountsResult.status === 'fulfilled' ? roleCountsResult.value : {} as FormattedGroupRole;
     const froshFrosheeCount = froshFrosheeCountResult.status === 'fulfilled' ? froshFrosheeCountResult.value : [] as FormattedFroshProfileCount[];
     const froshLeaderCount = froshLeaderCountResult.status === 'fulfilled' ? froshLeaderCountResult.value : [] as FormattedFroshProfileCount[];

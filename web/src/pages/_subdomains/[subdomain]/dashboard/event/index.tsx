@@ -26,7 +26,7 @@ import HeaderBreadcrumbs from '../../../../../components/HeaderBreadcrumbs';
 import { TableEmptyRows, TableHeadCustom, TableNoData } from '../../../../../components/table';
 import { GetServerSideProps, GetServerSidePropsContext } from 'next';
 import { FullEvent } from '../../../../../../prisma/api/@types';
-import dayjs from 'dayjs';
+import dayjs from 'src/utils/dayjs';
 import { EventTableRow, EventTableToolbar } from '../../../../../sections/dashboard/event/list';
 import isBetween from 'dayjs/plugin/isBetween';
 import AuthApi from '../../../../../../prisma/api/AuthApi';
@@ -35,8 +35,6 @@ import { useSnackbar } from 'notistack';
 import useRefresh from '../../../../../hooks/useRefresh';
 import { Frosh } from 'prisma/types';
 import ConfirmDeleteModal from '../../../../../components/ConfirmDeleteModal';
-
-dayjs.extend(isBetween);
 
 const TAB_OPTIONS = ['All', 'Current Events', 'Upcoming Events', 'Past Events'];
 

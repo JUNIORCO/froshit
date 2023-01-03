@@ -83,23 +83,6 @@ const navConfig = [
       },
     ],
   },
-
-  // CUSTOMIZATION
-  // ----------------------------------------------------------------------
-  {
-    subheader: 'Customization',
-    items: [
-      {
-        title: 'Settings',
-        path: PATH_DASHBOARD.settings.root,
-        icon: ICONS.settings,
-        roles: [Role.Admin],
-        children: [
-          { title: 'University Identity', path: PATH_DASHBOARD.settings.university_identity },
-        ],
-      },
-    ],
-  },
 ];
 
 export default navConfig;

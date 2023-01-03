@@ -41,7 +41,6 @@ function SettingsProvider({ children, defaultSettings }: SettingsProviderProps) 
   };
 
   useEffect(() => {
-    console.log('subdomain : ', subdomain);
     setColorPalette(subdomain ? subdomain as ValidSubdomains : ValidSubdomains.demo);
   }, [subdomain]);
 

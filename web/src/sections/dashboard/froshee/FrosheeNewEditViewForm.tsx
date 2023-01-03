@@ -5,14 +5,47 @@ import { useRouter } from 'next/router';
 import { useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 import { LoadingButton } from '@mui/lab';
-import { Box, Card, Grid, Stack } from '@mui/material';
+import { InputAttributes, NumericFormat } from 'react-number-format';
+import { Box, Card, Grid, InputAdornment, Stack } from '@mui/material';
 import { PATH_DASHBOARD } from '../../../routes/paths';
 import { FormProvider, RHFSelect, RHFTextField } from '../../../components/hook-form';
 import { Frosh, Team } from '../../../../prisma/types';
 import useProfile from '../../../hooks/useProfile';
 import { FullProfile } from '../../../../prisma/api/@types';
-import { useEffect, useMemo } from 'react';
+import { forwardRef, useMemo } from 'react';
 import useUpdateEffect from '../../../hooks/useUpdateEffect';
+import { fDollarToCent } from '../../../utils/formatNumber';
+
+interface CustomProps {
+  onChange: (event: { target: { name: string; value: string } }) => void;
+  name: string;
+}
+
+const NumberFormatCustom = forwardRef<typeof NumericFormat<InputAttributes>, CustomProps>(
+  function NumberFormatCustom(props, ref) {
+  const { onChange, ...other } = props;
+
+  return (
+    <NumericFormat
+      {...other}
+      getInputRef={ref}
+      onValueChange={(values) => {
+        onChange({
+          target: {
+            name: props.name,
+            value: values.value,
+          },
+        });
+      }}
+      thousandSeparator
+      valueIsNumericString
+      allowNegative={false}
+      decimalScale={2}
+      isAllowed={({ floatValue }) => floatValue ? floatValue < 500 : true}
+    />
+  );
+});
+
 
 const createFroshee = async (url: string, { arg }: any) => {
   const res = await fetch(url, {
@@ -66,7 +99,7 @@ export default function FrosheeNewEditViewForm({ froshee, froshs, teams, view }:
       lastName: froshee?.lastName || '',
       froshId: froshee?.froshId || '',
       teamId: froshee?.teamId || '',
-      paymentAmount: froshee?.payment?.amount ? String(froshee.payment.amount) : '',
+      paymentAmount: froshee?.payment?.amount ? String(froshee.payment.amount / 100) : '',
     }),
     [froshee],
   );
@@ -87,8 +120,11 @@ export default function FrosheeNewEditViewForm({ froshee, froshs, teams, view }:
   const teamOptions = formPayload.froshId === '' ? [] : teams.filter(team => team.froshId === formPayload.froshId);
 
   const onSubmit = async (newFroshee: FrosheeNewFormValuesProps) => {
+    const amountInCents = fDollarToCent(Number(newFroshee.paymentAmount));
+
     const { error } = await createFrosheeAPI({
       ...newFroshee,
+      paymentAmount: amountInCents,
       universityId: profile!.universityId,
     });
 
@@ -126,7 +162,15 @@ export default function FrosheeNewEditViewForm({ froshee, froshs, teams, view }:
 
               <RHFTextField name='lastName' label='Last Name' disabled={view || !!froshee} />
 
-              <RHFTextField name='paymentAmount' label='Payment Amount' disabled={view || !!froshee} />
+              <RHFTextField
+                name='paymentAmount'
+                label='Payment Amount'
+                disabled={view || !!froshee}
+                InputProps={{
+                  startAdornment: <InputAdornment position='start'>$</InputAdornment>,
+                  inputComponent: NumberFormatCustom as any,
+                }}
+              />
 
               <RHFSelect name='froshId' label='Frosh' placeholder='Frosh' disabled={view || !!froshee}>
                 <option value='' />

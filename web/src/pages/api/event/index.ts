@@ -1,13 +1,14 @@
 import type { NextApiRequest, NextApiResponse } from 'next';
 import { prisma } from '../../../../prisma';
+import dayjs from 'src/utils/dayjs';
 
 type RequestBody = {
   id: string;
   imageUrl: string;
   name: string;
   description: string;
-  startDate: Date;
-  endDate: Date;
+  startDate: string;
+  endDate: string;
   location: string;
   accessibility: string;
   froshIds: string[];

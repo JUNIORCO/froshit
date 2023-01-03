@@ -27,8 +27,6 @@ export default function FrosheeRegistrationGraph({
   const [selectedFrosh, setSelectedFrosh] = useState('All');
   const [dailyDataSelected, setDailyDataSelected] = useState(false);
   const selectedData = dailyDataSelected ? dailyChartData : cumulativeChartData;
-  console.log(dailyChartData)
-  console.log(cumulativeChartData)
   const handleChangeSeriesData = (event: React.ChangeEvent<HTMLInputElement>) => {
     setSelectedFrosh(event.target.value);
   };

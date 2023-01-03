@@ -55,6 +55,12 @@ Inbucket URL `http://localhost:54324`
 
 `supabase functions serve onboard-university --env-file ./supabase/.env.local`
 
+`supabase functions serve onboard-froshee --env-file ./supabase/.env.local --no-verify-jwt`
+
+`stripe listen --forward-to localhost:54321/functions/v1/onboard-froshee`
+
+`stripe trigger checkout.session.completed`
+
 ### Frontend
 
 Start another terminal and run

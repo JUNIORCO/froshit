@@ -90,7 +90,7 @@ export default function AccountGeneral() {
       }
     }
 
-    const newImagePath = `profile/${imageUrl.name}`;
+    const newImagePath = `profile/${profile!.id}${imageUrl.name}`;
 
     const { data: uploadData, error: uploadError } = await supabaseClient
       .storage
@@ -179,13 +179,13 @@ export default function AccountGeneral() {
             >
               <RHFTextField name='email' label='Email' disabled />
 
-              <RHFTextField name='phoneNumber' label='Phone Number' />
+              <RHFTextField name='role' label='Role' disabled />
 
               <RHFTextField name='firstName' label='First Name' />
 
               <RHFTextField name='lastName' label='Last Name' />
 
-              <RHFTextField name='role' label='Role' disabled />
+              <RHFTextField name='phoneNumber' label='Phone Number' />
             </Box>
 
             <Stack alignItems='flex-end' sx={{ mt: 3 }}>
