@@ -53,7 +53,7 @@ export default function MyApp(props: MyAppProps) {
   const getLayout = Component.getLayout ?? ((page) => page);
 
   useEffect(() => {
-    setColorPalette(props.subdomain);
+    props.subdomain && setColorPalette(props.subdomain);
   }, []);
 
   return (
