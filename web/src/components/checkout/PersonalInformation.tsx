@@ -10,7 +10,7 @@ export default function PersonalInformation() {
 
   const handleNextClick = async () => {
     setErrorMessage('');
-    setActiveStep(FrosheeRegistrationSteps.FROSH_SELECT);
+    setActiveStep(FrosheeRegistrationSteps.PROGRAM_AND_INTERESTS);
   };
 
   return (

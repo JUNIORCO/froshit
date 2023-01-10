@@ -111,7 +111,7 @@ const handleCheckoutSessionCompleted = async (session: any) => {
     universityId: session.metadata.universityId,
     froshId: session.metadata.froshId,
   });
-
+  console.log(session.metadata)
   const { data: { user: authFroshee }, error: frosheeCreateError } = await supabaseAdmin
     .auth
     .admin
@@ -123,6 +123,9 @@ const handleCheckoutSessionCompleted = async (session: any) => {
         lastName: session.metadata.lastName,
         phoneNumber: session.metadata.phoneNumber === '' ? null : session.metadata.phoneNumber,
         role: 'Froshee',
+        program: session.metadata.program,
+        faculty: session.metadata.faculty,
+        interests: session.metadata.interests,
         universityId: session.metadata.universityId,
         froshId: session.metadata.froshId,
         teamId,

@@ -111,6 +111,7 @@ export default function AccountGeneral() {
       .from('profile')
       .update({
         ...profileWithoutImage,
+        phoneNumber: updatedProfile.phoneNumber === '' ? null : updatedProfile.phoneNumber,
         imageUrl: profileImageUrl,
       })
       .match({ id: profile!.id });

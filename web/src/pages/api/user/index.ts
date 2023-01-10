@@ -49,6 +49,9 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
             froshId,
             teamId: null,
             paymentId: null,
+            program: null,
+            faculty: null,
+            interests: null,
           },
         });
 

@@ -139,8 +139,9 @@ model Profile {
   lastName    String
   role        Role
   imageUrl    String?
-  interests   String?
+  faculty     String?
   program     String?
+  interests   String?
 
   // associations
   university   University @relation(fields: [universityId], references: [id])

@@ -14,6 +14,9 @@ export type FormRegisterProps = {
   lastName: string;
   email: string;
   phoneNumber: string | null;
+  faculty: string;
+  program: string;
+  interests: string;
   frosh: Frosh | null;
   afterSubmit?: string;
 };
@@ -57,6 +60,9 @@ function FrosheeRegistrationProvider({ university, children }: SubdomainProvider
     lastName: Yup.string().required('Last name required'),
     email: Yup.string().email('Email must be a valid email address').required('Email is required'),
     phoneNumber: Yup.string().nullable(),
+    program: Yup.string().required('Program is required'),
+    faculty: Yup.string().required('Faculty is required'),
+    interests: Yup.string().required('Interests is required'),
     frosh: Yup.object().required('Frosh is required'),
   });
 
@@ -65,6 +71,9 @@ function FrosheeRegistrationProvider({ university, children }: SubdomainProvider
     lastName: '',
     email: '',
     phoneNumber: null,
+    program: '',
+    faculty: '',
+    interests: '',
     frosh: null,
   };
 

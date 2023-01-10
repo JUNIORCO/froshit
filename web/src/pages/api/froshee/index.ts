@@ -48,6 +48,9 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
           froshId: froshee.froshId,
           teamId: froshee.teamId,
           paymentId,
+          program: null,
+          faculty: null,
+          interests: null,
         },
       });
 

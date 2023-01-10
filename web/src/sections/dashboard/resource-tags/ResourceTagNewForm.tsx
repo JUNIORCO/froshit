@@ -11,6 +11,7 @@ import React, { useCallback } from 'react';
 import { CustomFile } from '../../../components/upload';
 import useSubdomain from '../../../hooks/useSubdomain';
 import { useSupabaseClient } from '@supabase/auth-helpers-react';
+import { handleImageUpload } from '../../../utils/imageUpload';
 
 type FormValuesProps = {
   imageUrl: CustomFile;
@@ -49,29 +50,22 @@ export default function ResourceTagNewForm() {
   const onSubmit = async (tagToCrate: FormValuesProps) => {
     const { imageUrl, name } = tagToCrate;
 
-    const imagePath = `resource_tag/${imageUrl.name}`;
+    const { data: imageUploadData, error: imageUploadError } = await handleImageUpload({
+      supabaseClient,
+      subdomain,
+      bucketName: 'resource_tag',
+      image: imageUrl,
+    });
 
-    const { data: deleteData, error: deleteError } = await supabaseClient.storage.from(subdomain).remove([imagePath]);
-
-    if (!deleteData || deleteError) {
-      enqueueSnackbar('Error deleting old image', { variant: 'error' });
-      console.error(deleteError);
+    if (!imageUploadData || imageUploadError) {
+      enqueueSnackbar(imageUploadError, { variant: 'error' });
+      console.error(imageUploadError);
       return;
     }
 
-    const { data: uploadData, error: uploadError } = await supabaseClient.storage
-      .from(subdomain)
-      .upload(imagePath, imageUrl);
-
-    if (!uploadData || uploadError) {
-      enqueueSnackbar('Error uploading image', { variant: 'error' });
-      console.error(uploadError);
-      return;
-    }
-
-    const { data: { publicUrl: resourceTagImageUrl } } = supabaseClient.storage.from(subdomain).getPublicUrl(uploadData.path);
-
-    const { error } = await supabaseClient.from('resource_tag').insert({ name, imageUrl: resourceTagImageUrl });
+    const { error } = await supabaseClient
+      .from('resource_tag')
+      .insert({ name, imageUrl: imageUploadData.imageUrl });
 
     if (error) {
       enqueueSnackbar(`Error creating resource tag`, { variant: 'error' });
@@ -79,7 +73,7 @@ export default function ResourceTagNewForm() {
     }
 
     enqueueSnackbar('Resource tag created');
-    void push(PATH_DASHBOARD.event.root);
+    void push(PATH_DASHBOARD.resourceTag.root);
   };
 
   const handleDrop = useCallback(

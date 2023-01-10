@@ -39,7 +39,7 @@ export default function SelectFrosh() {
       setExpanded(isExpanded ? panel : false);
     };
 
-  const handleBack = () => setActiveStep(FrosheeRegistrationSteps.PERSONAL_INFORMATION);
+  const handleBack = () => setActiveStep(FrosheeRegistrationSteps.PROGRAM_AND_INTERESTS);
 
   return (
     <Stack spacing={3}>

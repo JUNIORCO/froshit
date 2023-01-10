@@ -12,6 +12,7 @@ import { CustomFile } from '../../../components/upload';
 import useSubdomain from '../../../hooks/useSubdomain';
 import { useSupabaseClient } from '@supabase/auth-helpers-react';
 import { ResourceTag } from '../../../../prisma/types';
+import { handleImageUpload } from '../../../utils/imageUpload';
 
 type FormValuesProps = {
   imageUrl: CustomFile | string;
@@ -53,9 +54,12 @@ export default function ResourceTagEditForm({ currentResourceTag, view }: Props)
   const onSubmit = async ({ name, imageUrl }: FormValuesProps) => {
     // user has not updated image
     if (typeof imageUrl === 'string') {
-      const { error } = await supabaseClient.from('resource_tag').update({ name }).match({ id: currentResourceTag.id });
+      const { error } = await supabaseClient
+        .from('resource_tag')
+        .update({ name })
+        .match({ id: currentResourceTag.id });
       if (error) {
-        enqueueSnackbar(`Error updating resource tag`, { variant: 'error' });
+        enqueueSnackbar(error.message, { variant: 'error' });
         return;
       }
       enqueueSnackbar('Resource tag updated');
@@ -63,37 +67,30 @@ export default function ResourceTagEditForm({ currentResourceTag, view }: Props)
       return;
     }
 
-    if (currentResourceTag.imageUrl) {
-      const splitImageUrl = currentResourceTag.imageUrl.split('/') || '';
-      const oldImagePath = `resource_tag/${splitImageUrl[splitImageUrl.length - 1]}`;
-      const {
-        data: deleteData,
-        error: deleteError,
-      } = await supabaseClient.storage.from(subdomain).remove([oldImagePath]);
+    const splitImageUrl = currentResourceTag.imageUrl.split('/') || '';
+    const oldImagePath = `resource_tag/${splitImageUrl[splitImageUrl.length - 1]}`;
 
-      if (!deleteData || deleteError) {
-        enqueueSnackbar(`Error updating resource tag`, { variant: 'error' });
-        return;
-      }
-    }
+    const { data: imageUploadData, error: imageUploadError } = await handleImageUpload({
+      supabaseClient,
+      subdomain,
+      bucketName: 'resource_tag',
+      image: imageUrl,
+      oldImagePath,
+    });
 
-    const newImagePath = `resource_tag/${imageUrl.name}`;
-
-    const { data: uploadData, error: uploadError } = await supabaseClient.storage
-      .from(subdomain)
-      .upload(newImagePath, imageUrl);
-
-    if (!uploadData || uploadError) {
-      enqueueSnackbar('Error updating resource tag', { variant: 'error' });
+    if (!imageUploadData || imageUploadError) {
+      enqueueSnackbar(imageUploadError, { variant: 'error' });
+      console.error(imageUploadError);
       return;
     }
 
-    const { data: { publicUrl: resourceTagImageUrl } } = supabaseClient.storage.from(subdomain).getPublicUrl(uploadData.path);
-
-    const { error } = await supabaseClient.from('resource_tag').update({
-      name,
-      imageUrl: resourceTagImageUrl,
-    }).match({ id: currentResourceTag.id });
+    const { error } = await supabaseClient
+      .from('resource_tag')
+      .update({
+        name,
+        imageUrl: imageUploadData.imageUrl,
+      })
+      .match({ id: currentResourceTag.id });
 
     if (error) {
       enqueueSnackbar(`Error updating resource tag`, { variant: 'error' });

@@ -5,7 +5,7 @@ language plpgsql
 security definer set search_path = public
 as $$
 begin
-  insert into public.profile ("id", "email", "phoneNumber", "firstName", "lastName", "role", "universityId", "froshId", "teamId", "paymentId")
+  insert into public.profile ("id", "email", "phoneNumber", "firstName", "lastName", "role", "universityId", "froshId", "teamId", "paymentId", "program", "faculty", "interests")
   values (
     new.id,
     new.email,
@@ -16,7 +16,10 @@ begin
     new.raw_user_meta_data->>'universityId',
     new.raw_user_meta_data->>'froshId',
     new.raw_user_meta_data->>'teamId',
-    new.raw_user_meta_data->>'paymentId'
+    new.raw_user_meta_data->>'paymentId',
+    new.raw_user_meta_data->>'program',
+    new.raw_user_meta_data->>'faculty',
+    new.raw_user_meta_data->>'interests'
   );
   return new;
 end;
