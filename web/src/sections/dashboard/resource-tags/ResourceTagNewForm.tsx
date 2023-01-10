@@ -12,6 +12,7 @@ import { CustomFile } from '../../../components/upload';
 import useSubdomain from '../../../hooks/useSubdomain';
 import { useSupabaseClient } from '@supabase/auth-helpers-react';
 import { handleImageUpload } from '../../../utils/imageUpload';
+import { v4 as uuid } from 'uuid';
 
 type FormValuesProps = {
   imageUrl: CustomFile;
@@ -65,7 +66,11 @@ export default function ResourceTagNewForm() {
 
     const { error } = await supabaseClient
       .from('resource_tag')
-      .insert({ name, imageUrl: imageUploadData.imageUrl });
+      .insert({
+        id: uuid(),
+        name,
+        imageUrl: imageUploadData.imageUrl,
+      });
 
     if (error) {
       enqueueSnackbar(`Error creating resource tag`, { variant: 'error' });
