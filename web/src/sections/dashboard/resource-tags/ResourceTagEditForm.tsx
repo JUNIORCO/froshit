@@ -31,7 +31,7 @@ export default function ResourceTagEditForm({ currentResourceTag, view }: Props)
   const supabaseClient = useSupabaseClient();
 
   const NewResourceTagSchema = Yup.object().shape({
-    imageUrl: Yup.string().required('Image is required'),
+    imageUrl: Yup.mixed().test('required', 'Image is required', (value) => value && value !== ''),
     name: Yup.string().required('Name is required'),
   });
 
