@@ -27,7 +27,7 @@ export default function ResourceTagNewForm() {
   const { enqueueSnackbar } = useSnackbar();
 
   const NewResourceTagSchema = Yup.object().shape({
-    imageUrl: Yup.string().required('Image is required'),
+    imageUrl: Yup.mixed().test('required', 'Image is required', (value) => value && value !== ''),
     name: Yup.string().required('Name is required'),
   });
 
