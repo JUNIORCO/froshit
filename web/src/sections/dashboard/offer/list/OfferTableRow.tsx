@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { MenuItem, TableCell, TableRow } from '@mui/material';
+import { Avatar, MenuItem, TableCell, TableRow, Typography } from '@mui/material';
 import Iconify from '../../../../components/Iconify';
 import { TableMoreMenu } from '../../../../components/table';
 import { Offer } from '../../../../../prisma/types';
@@ -17,7 +17,7 @@ export default function OfferTableRow({
                                         onViewRow,
                                         onDeleteRow,
                                       }: Props) {
-  const { title, description, location, provider } = row;
+  const { title, description, location, provider, imageUrl } = row;
 
   const [openMenu, setOpenMenuActions] = useState<HTMLElement | null>(null);
 
@@ -32,8 +32,11 @@ export default function OfferTableRow({
   return (
     <TableRow hover>
 
-      <TableCell align='left'>
-        {provider}
+      <TableCell sx={{ display: 'flex', alignItems: 'center' }}>
+        <Avatar alt={provider} src={imageUrl} sx={{ mr: 2 }} />
+        <Typography variant='subtitle2' noWrap>
+          {provider}
+        </Typography>
       </TableCell>
 
       <TableCell align='left'>
