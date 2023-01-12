@@ -135,10 +135,6 @@ export default function App() {
 
   return (
     <QueryClientProvider client={queryClient}>
-      <AuthAppLoader
-        loadingComponent={<SplashImage/>}
-        minimumLoadingTime={500}
-      >
         <SignInProvider>
           <NavigationContainer>
             <Stack.Navigator screenOptions={{ headerShown: false }}>
@@ -147,7 +143,6 @@ export default function App() {
             </Stack.Navigator>
           </NavigationContainer>
         </SignInProvider>
-      </AuthAppLoader>
     </QueryClientProvider>
   );
 }

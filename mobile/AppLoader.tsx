@@ -1,5 +1,5 @@
 // courtesy of https://javascript.plainenglish.io/how-to-handle-and-design-the-startup-of-a-react-application-da779f3727e5
-import { every } from "lodash";
+import { some } from "lodash";
 import React, { FC, Fragment, memo, ReactElement, useEffect, useState } from "react";
 import { useGetEvents, useGetMessages, useGetOffers, useGetResources, useGetTeam } from "./hooks/query";
 
@@ -60,7 +60,7 @@ const AppLoader: FC<Props> = memo(props => {
       isReady: !resourcesIsLoading,
     },
     {
-      name: "fetch_messaages",
+      name: "fetch_messages",
       isReady: !messagesIsLoading,
     }
   ];
@@ -74,7 +74,7 @@ const AppLoader: FC<Props> = memo(props => {
 
   return (
     <Fragment>
-      {every(loadingProcesses, "isReady") && minimumDurationPassed ? props.children : props.loadingComponent}
+      {some(loadingProcesses, "isReady") && minimumDurationPassed ? props.children : props.loadingComponent}
     </Fragment>
   );
 });
