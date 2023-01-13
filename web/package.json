@@ -37,6 +37,7 @@
     "@mui/lab": "^5.0.0-alpha.109",
     "@mui/material": "^5.10.15",
     "@mui/x-date-pickers": "^5.0.8",
+    "@plasmicapp/loader-nextjs": "^1.0.213",
     "@prisma/client": "^4.8.0",
     "@stripe/stripe-js": "^1.46.0",
     "@supabase/auth-helpers-nextjs": "^0.5.2",

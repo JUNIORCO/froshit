@@ -1,48 +1,18 @@
-// @mui
-import { styled } from '@mui/material/styles';
-// layouts
-import Layout from '../layouts';
-// components
-import Page from '../components/Page';
-// sections
 import {
-  HomeHero,
-  HomeMinimal,
-  HomePricingPlans,
-  HomeAdvertisement,
-  HomeHugePackElements,
-} from '../sections/home';
+  PlasmicRootProvider,
+  PlasmicComponent,
+} from '@plasmicapp/loader-nextjs';
+import { useRouter } from 'next/router';
+import { PLASMIC } from '../plasmic';
 
-// ----------------------------------------------------------------------
-
-const ContentStyle = styled('div')(({ theme }) => ({
-  overflow: 'hidden',
-  position: 'relative',
-  backgroundColor: theme.palette.background.default,
-}));
-
-// ----------------------------------------------------------------------
-
-HomePage.getLayout = function getLayout(page: React.ReactElement) {
-  return <Layout variant="main">{page}</Layout>;
-};
-
-// ----------------------------------------------------------------------
-
-export default function HomePage() {
+export default function MyPage() {
+  const router = useRouter();
   return (
-    <Page title="Home">
-      <HomeHero />
-
-      <ContentStyle>
-        <HomeMinimal />
-
-        <HomeHugePackElements />
-
-        <HomePricingPlans />
-
-        <HomeAdvertisement />
-      </ContentStyle>
-    </Page>
+    <PlasmicRootProvider
+      loader={PLASMIC}
+      pageQuery={router.query}
+    >
+      <PlasmicComponent component='Homepage' />
+    </PlasmicRootProvider>
   );
 }
