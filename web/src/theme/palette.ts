@@ -60,11 +60,11 @@ declare module '@mui/material' {
 
 // SETUP COLORS
 const PRIMARY = {
-  lighter: '#efeffc',
-  light: '#aeaff1',
-  main: '#5D5EE2',
-  dark: '#2f2f71',
-  darker: '#090917',
+  lighter: '#ede8fc',
+  light: '#9474ec',
+  main: '#4C18E0',
+  dark: '#260c70',
+  darker: '#080216',
 };
 const SECONDARY = {
   lighter: '#D6E4FF',
