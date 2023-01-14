@@ -7,4 +7,5 @@ export const PLASMIC = initPlasmicLoader({
       token: process.env.NEXT_PUBLIC_PLASMIC_API_KEY ?? '',
     },
   ],
+  preview: process.env.NODE_ENV === 'development',
 });
