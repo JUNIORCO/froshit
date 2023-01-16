@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import NextLink from 'next/link';
 import { useRouter } from 'next/router';
-import { Box, Button, Card, Container, Table, TableBody, TableContainer, TablePagination } from '@mui/material';
+import { Box, Button, Card, Container, Stack, Table, TableBody, TableContainer, TablePagination } from '@mui/material';
 import { PATH_DASHBOARD } from '../../../../../routes/paths';
 import useTable, { emptyRows, getComparator } from '../../../../../hooks/useTable';
 import Layout from '../../../../../layouts';
@@ -17,6 +17,7 @@ import { useSnackbar } from 'notistack';
 import { useSupabaseClient } from '@supabase/auth-helpers-react';
 import { ResourceTag } from '../../../../../../prisma/types';
 import { ResourceTagTableRow, ResourceTagTableToolbar } from '../../../../../sections/dashboard/resource-tags/list';
+import ConfirmDeleteModal from '../../../../../components/ConfirmDeleteModal';
 
 const TABLE_HEAD = [
   { id: 'name', label: 'Name', align: 'left' },
@@ -41,6 +42,14 @@ export default function ResourceTagsList({ initialResourceTags }: Props) {
   const { refreshData } = useRefresh();
   const { enqueueSnackbar } = useSnackbar();
   const supabaseClient = useSupabaseClient();
+
+  const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
+  const toggleIsModalOpen = () => setIsModalOpen((prev) => !prev);
+  const [selectedTagToDelete, setSelectedTagToDelete] = useState<ResourceTag | null>();
+  const handleDeleteRow = (tag: ResourceTag) => {
+    setSelectedTagToDelete(tag);
+    toggleIsModalOpen();
+  };
 
   const {
     dense,
@@ -71,8 +80,12 @@ export default function ResourceTagsList({ initialResourceTags }: Props) {
     void push(PATH_DASHBOARD.resourceTag.edit(id));
   };
 
-  const handleDeleteRow = async (id: string) => {
-    const { error } = await supabaseClient.from('resource_tag').delete().eq('id', id);
+  const deleteResourceTag = async () => {
+    const { error } = await supabaseClient
+      .from('resource_tag')
+      .delete()
+      .eq('id', selectedTagToDelete!.id);
+
     if (error) {
       console.error(error);
       enqueueSnackbar('Error deleting resource tag', { variant: 'error' });
@@ -102,11 +115,16 @@ export default function ResourceTagsList({ initialResourceTags }: Props) {
             { name: 'List' },
           ]}
           action={
-            <NextLink href={PATH_DASHBOARD.resourceTag.new} passHref style={{ textDecoration: 'none' }}>
-              <Button variant='contained' endIcon={<Iconify icon={'material-symbols:add-circle-outline-rounded'} />}>
-                New Resource Tag
+            <Stack flexDirection='row' gap={1}>
+              <Button variant='outlined' onClick={refreshData}>
+                <Iconify icon={'ic:round-refresh'} width={20} height={20} />
               </Button>
-            </NextLink>
+              <NextLink href={PATH_DASHBOARD.resourceTag.new} passHref style={{ textDecoration: 'none' }}>
+                <Button variant='contained' endIcon={<Iconify icon={'material-symbols:add-circle-outline-rounded'} />}>
+                  Add Resource Tag
+                </Button>
+              </NextLink>
+            </Stack>
           }
         />
 
@@ -129,13 +147,13 @@ export default function ResourceTagsList({ initialResourceTags }: Props) {
                 <TableBody>
                   {dataFiltered
                     .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
-                    .map((row: any) => (
+                    .map((row) => (
                       <ResourceTagTableRow
                         key={row.id}
                         row={row}
                         onViewRow={() => handleViewRow(row.id)}
                         onEditRow={() => handleEditRow(row.id)}
-                        onDeleteRow={() => handleDeleteRow(row.id)}
+                        onDeleteRow={() => handleDeleteRow(row)}
                       />
                     ))}
 
@@ -162,6 +180,14 @@ export default function ResourceTagsList({ initialResourceTags }: Props) {
             />
           </Box>
         </Card>
+
+        <ConfirmDeleteModal
+          open={isModalOpen}
+          onClose={toggleIsModalOpen}
+          onConfirm={deleteResourceTag}
+          title={`Are you sure you want to delete ${selectedTagToDelete?.name}?`}
+          content={`Deleting ${selectedTagToDelete?.name} will also delete all Resources attached to this tag.`}
+        />
       </Container>
     </Page>
   );

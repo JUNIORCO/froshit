@@ -5,9 +5,15 @@ import { Prisma } from '../../../../prisma/types';
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
   try {
     if (req.method === 'POST') {
-      const resource = req.body as Prisma.ResourceCreateInput;
+      const resource = req.body as Prisma.ResourceUncheckedCreateInput;
 
-      const createdResource = await prisma.resource.create({ data: resource });
+      const createdResource = await prisma.resource.create({
+        data: {
+          ...resource,
+          phoneNumber: resource.phoneNumber === '' ? null : resource.phoneNumber,
+          email: resource.phoneNumber === '' ? null : resource.email,
+        },
+      });
 
       res.status(200).json(createdResource);
     } else {
@@ -15,6 +21,6 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     }
   } catch (error) {
     console.error(error);
-    res.status(500).send(error.toString());
+    res.status(500).json({ error: error.message });
   }
 }

@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import NextLink from 'next/link';
 import { useRouter } from 'next/router';
-import { Box, Button, Card, Container, Table, TableBody, TableContainer, TablePagination } from '@mui/material';
+import { Box, Button, Card, Container, Stack, Table, TableBody, TableContainer, TablePagination } from '@mui/material';
 import { PATH_DASHBOARD } from '../../../../../routes/paths';
 import useTable, { emptyRows, getComparator } from '../../../../../hooks/useTable';
 import Layout from '../../../../../layouts';
@@ -119,11 +119,16 @@ export default function ResourceList({ initialResources }: Props) {
             { name: 'List' },
           ]}
           action={
-            <NextLink href={PATH_DASHBOARD.resource.new} passHref style={{ textDecoration: 'none' }}>
-              <Button variant='contained' endIcon={<Iconify icon={'material-symbols:add-circle-outline-rounded'} />}>
-                New Resource
+            <Stack flexDirection='row' gap={1}>
+              <Button variant='outlined' onClick={refreshData}>
+                <Iconify icon={'ic:round-refresh'} width={20} height={20} />
               </Button>
-            </NextLink>
+              <NextLink href={PATH_DASHBOARD.resource.new} passHref style={{ textDecoration: 'none' }}>
+                <Button variant='contained' endIcon={<Iconify icon={'material-symbols:add-circle-outline-rounded'} />}>
+                  Add Resource
+                </Button>
+              </NextLink>
+            </Stack>
           }
         />
 

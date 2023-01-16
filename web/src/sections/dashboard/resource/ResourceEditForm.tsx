@@ -11,6 +11,7 @@ import { PATH_DASHBOARD } from '../../../routes/paths';
 import { FormProvider, RHFSelect, RHFTextField } from '../../../components/hook-form';
 import { ResourceTag } from '../../../../prisma/types';
 import { FullResource } from '../../../../prisma/api/@types';
+import useProfile from '../../../hooks/useProfile';
 
 const sendResourceEditRequest = async (url: string, { arg: resource }: any) => {
   const res = await fetch(url, {
@@ -25,8 +26,11 @@ const sendResourceEditRequest = async (url: string, { arg: resource }: any) => {
 };
 
 type FormValuesProps = {
-  name: string;
+  title: string;
   description: string;
+  phoneNumber?: string;
+  email?: string;
+  resourceTagId: string;
 };
 
 type Props = {
@@ -36,7 +40,7 @@ type Props = {
 
 export default function ResourceEditForm({ resource, resourceTags }: Props) {
   const { trigger } = useSWRMutation(`/api/resource/${resource.id}`, sendResourceEditRequest);
-
+  const { profile } = useProfile();
   const { push } = useRouter();
 
   const { enqueueSnackbar } = useSnackbar();
@@ -81,7 +85,7 @@ export default function ResourceEditForm({ resource, resourceTags }: Props) {
 
   const onSubmit = async (resourceToUpdate: FormValuesProps) => {
     try {
-      await trigger({ ...resourceToUpdate, universityId: '1678f7bf-7a13-477c-942c-c85dcadfdd40' });
+      await trigger({ ...resourceToUpdate, universityId: profile!.universityId });
       enqueueSnackbar('Update success!');
       void push(PATH_DASHBOARD.resource.root);
     } catch (error) {

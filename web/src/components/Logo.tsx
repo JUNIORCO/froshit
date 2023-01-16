@@ -16,7 +16,8 @@ const Logo = forwardRef<any, Props>(({ university = false, disabledLink = false,
   const supabaseClient = useSupabaseClient();
   const { subdomain } = useSubdomain();
 
-  const { data: { publicUrl: froshitLogo } } = supabaseClient.storage.from('froshit').getPublicUrl('FROSHIT_Logo.png');
+  // const { data: { publicUrl: froshitLogo } } = supabaseClient.storage.from('froshit').getPublicUrl('FROSHIT_Logo.png'); // note: this doesn't work locally
+  const froshitLogo = 'https://mybvkrkmvnuzeqvzgbzg.supabase.co/storage/v1/object/public/froshit/FROSHIT_Logo.png';
   const [displayedLogo, setDisplayedLogo] = useState<string | null>();
 
   const universityLogoFromProfile = profile?.university?.imageUrl;

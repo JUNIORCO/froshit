@@ -9,6 +9,7 @@ import { Box, Card, Grid, Stack } from '@mui/material';
 import { PATH_DASHBOARD } from '../../../routes/paths';
 import { FormProvider, RHFSelect, RHFTextField } from '../../../components/hook-form';
 import { ResourceTag } from 'prisma/types';
+import useProfile from '../../../hooks/useProfile';
 
 const sendResourceCreateRequest = async (url: string, { arg: resource }: any) => {
   const res = await fetch(url, {
@@ -37,8 +38,8 @@ type Props = {
 export default function ResourceNewForm({
                                           resourceTags,
                                         }: Props) {
-  const { trigger } = useSWRMutation('/api/resources', sendResourceCreateRequest);
-
+  const { trigger } = useSWRMutation('/api/resource', sendResourceCreateRequest);
+  const { profile } = useProfile();
   const { push } = useRouter();
 
   const { enqueueSnackbar } = useSnackbar();
@@ -65,19 +66,20 @@ export default function ResourceNewForm({
   });
 
   const {
-    reset,
     handleSubmit,
     formState: { isSubmitting },
   } = methods;
 
   const onSubmit = async (payload: FormValuesProps) => {
-    try {
-      await trigger({ ...payload, universityId: '1678f7bf-7a13-477c-942c-c85dcadfdd40' });
-      enqueueSnackbar('Create success!');
-      push(PATH_DASHBOARD.resource.root);
-    } catch (error) {
-      console.error(error);
+    const { error } = await trigger({ ...payload, universityId: profile!.universityId });
+
+    if (error) {
+      enqueueSnackbar(error, { variant: 'error' });
+      return;
     }
+
+    enqueueSnackbar('Created resource');
+    push(PATH_DASHBOARD.resource.root);
   };
 
   return (

@@ -1,6 +1,5 @@
 import { Container } from '@mui/material';
 import { PATH_DASHBOARD } from '../../../../../routes/paths';
-import useSettings from '../../../../../hooks/useSettings';
 import Layout from '../../../../../layouts';
 import Page from '../../../../../components/Page';
 import HeaderBreadcrumbs from '../../../../../components/HeaderBreadcrumbs';

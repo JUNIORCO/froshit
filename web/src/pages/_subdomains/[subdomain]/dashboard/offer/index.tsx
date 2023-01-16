@@ -45,7 +45,6 @@ export default function OfferList({ initialOffers }: Props) {
   const supabaseClient = useSupabaseClient();
   const { push } = useRouter();
   const {
-    dense,
     page,
     order,
     orderBy,
