@@ -16,11 +16,11 @@ export const SUBDOMAIN_COLOR_PALETTE: Record<ValidSubdomains, ColorObject> = {
     name: ValidSubdomains.demo,
     contrastText: '#f2f2f2',
 
-    lighter: '#FEE9D1',
-    light: '#FDAB76',
-    main: '#EB4752',
-    dark: '#B3200E',
-    darker: '#770508',
+    lighter: '#ede8fc',
+    light: '#9474ec',
+    main: '#4C18E0',
+    dark: '#260c70',
+    darker: '#080216',
   },
   [ValidSubdomains.mcgill]: {
     name: ValidSubdomains.mcgill,
