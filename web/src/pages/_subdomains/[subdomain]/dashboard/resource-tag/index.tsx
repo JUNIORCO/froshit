@@ -91,6 +91,10 @@ export default function ResourceTagsList({ initialResourceTags }: Props) {
       enqueueSnackbar('Error deleting resource tag', { variant: 'error' });
       return;
     }
+
+    enqueueSnackbar(`${selectedTagToDelete!.name} deleted`);
+    setSelectedTagToDelete(null);
+    toggleIsModalOpen();
     refreshData();
   };
 
