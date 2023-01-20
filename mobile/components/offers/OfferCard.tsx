@@ -1,32 +1,30 @@
 import * as React from 'react';
-import { Avatar, Card } from 'react-native-paper';
-import { StyleSheet } from "react-native";
+import { Card } from 'react-native-paper';
+import { Image, StyleSheet } from "react-native";
 
 const styles = StyleSheet.create({
   container: {
-    // marginHorizontal: 16,
+    padding: 16,
   },
+  image: {
+    width: 48,
+    height: 48,
+  }
 });
 
-export default function OfferCard({ title, description, icon, provider, colour }) {
+export default function OfferCard({ title, description, location, provider, imageUrl }: any) {
 
-  const LeftContent = props => <Avatar.Icon {...props} color={colour} icon="folder"/>;
+  const LeftContent = () => <Image style={styles.image} source={{ uri: imageUrl }}/>;
 
-  // const RightContent = () => (
-  //   <View style={{ marginRight: 12 }}>
-  //     <Ionicons name="call-outline" size={32}/>
-  //   </View>
-  // );
+  const formattedDescription = `${provider} at ${location}\n${description}`
 
   return (
     <Card style={styles.container}>
       <Card.Title
         title={title}
-        subtitle={description}
-        subtitleNumberOfLines={2}
+        subtitle={formattedDescription}
+        subtitleNumberOfLines={6}
         left={LeftContent}
-        // right={RightContent}
-        style={{ padding: 16 }}
       />
     </Card>
   );

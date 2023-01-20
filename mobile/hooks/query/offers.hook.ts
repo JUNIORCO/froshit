@@ -1,5 +1,5 @@
 import { useQuery } from "@tanstack/react-query";
-import QueryKeys from "../../@types/QueryKeys";
+import QueryKeys from "./QueryKeys";
 import { fetchOffers } from "../../api/offers";
 import useSession from "../useSession";
 

@@ -11,8 +11,9 @@ export const styles = StyleSheet.create({
     height: '100%',
   },
   title: {
-    fontSize: 24,
+    fontSize: 32,
     marginVertical: 16,
+    fontWeight: 'bold',
   },
   header: {
     fontSize: 24,

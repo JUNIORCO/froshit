@@ -1,33 +1,23 @@
-import { supabase } from "../supabase/supabase";
-import { Tables } from "../supabase/columns";
 import { QueryFunctionContext } from "@tanstack/react-query";
+import { db } from "../supabase/db";
 
 type QueryKeyArg = {
   froshId: string;
 }
 
-export const fetchEvents = async ({ queryKey }: QueryFunctionContext<[string, QueryKeyArg]>): Promise<any> => {
+export const fetchEvents = async ({ queryKey }: QueryFunctionContext<[string, QueryKeyArg]>) => {
   const [_key, { froshId }] = queryKey;
-  console.log('api -> Fetching events...')
-  const { data: eventFroshMapping, error: eventFroshMappingError } = await supabase
-    .from('_EventToFrosh')
-    .select('*')
-    .eq('B', froshId);
+
+  const { data: eventFroshMapping, error: eventFroshMappingError } = await db.event.getEventFroshMappings(froshId);
 
   if (!eventFroshMapping || eventFroshMappingError) throw eventFroshMappingError;
 
   if (!eventFroshMapping.length) return [];
 
-  const { data: events, error: eventsError } = await supabase
-    .from(Tables.EVENT)
-    .select('*')
-    .in('id', eventFroshMapping.map(mapping => mapping.A))
-    .order('startDate', { ascending: true });
+  const eventIds = eventFroshMapping.map(mapping => mapping.A);
+  const { data: events, error: eventsError } = await db.event.getEvents(eventIds);
 
-  if (eventsError) {
-    console.error(`api -> fetchEvents errored ${eventsError.message}`);
-    throw eventsError;
-  }
+  if (eventsError) throw eventsError;
 
   return events;
 }

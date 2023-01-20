@@ -4,8 +4,6 @@ enum QueryKeys {
   OFFERS = 'Offers',
   MESSAGES = 'Messages',
   RESOURCES = 'Resources',
-  UNIVERSITIES = 'Universities',
 }
 
 export default QueryKeys;
-

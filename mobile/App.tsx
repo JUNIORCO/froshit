@@ -12,17 +12,16 @@ import { useOnlineManager } from "./hooks/useOnlineManager";
 import { useAppState } from "./hooks/useAppState";
 import AppLoader from "./AppLoader";
 import SplashImage from "./components/common/SplashImage";
-import HeaderLeft from "./layout/HeaderLeft";
-import HeaderTitle from "./layout/HeaderTitle";
 import TabBarIcon from "./layout/TabBarIcon";
-import HeaderRight from "./layout/HeaderRight";
-import AuthAppLoader from "./AuthAppLoader";
-import { createStackNavigator } from '@react-navigation/stack';
-import EmailInputScreen from "./screens/auth/EmailInputScreen";
-import VerifyCodeScreen from './screens/auth/VerifyCodeScreen';
 import { SessionProvider } from "./contexts/SessionContext";
 import { SignInProvider } from "./contexts/SignInContext";
-import { SignInScreenNames } from "./@types/navigation";
+import { SUBDOMAIN_COLOR_PALETTE } from "./theme/subdomain-color-palette";
+import { ValidSubdomains } from "./theme/subdomains";
+import { ThemeProvider } from "./theme/theme";
+import AuthScreen from "./screens/AuthScreen";
+import AuthAppLoader from "./AuthAppLoader";
+import { db } from "./supabase/db";
+import { LoggedInProfile } from "./supabase/database.types";
 
 export default function App() {
   /********************************************************************************************************************/
@@ -48,18 +47,16 @@ export default function App() {
   useAppState(onAppStateChange);
   useOnlineManager();
 
-
   /********************************************************************************************************************/
   /*                                                navigators                                                        */
   /********************************************************************************************************************/
   const Tab = createBottomTabNavigator();
-  const Stack = createStackNavigator();
 
   /********************************************************************************************************************/
   /*                                                   auth                                                           */
   /********************************************************************************************************************/
   const [session, setSession] = useState<Session | null>();
-  const [profile, setProfile] = useState<Record<string, any> | null>();
+  const [profile, setProfile] = useState<LoggedInProfile>();
 
   useEffect(() => {
     supabase.auth.getSession().then(({ data: { session } }) => {
@@ -74,19 +71,16 @@ export default function App() {
   const fetchProfile = async (session: Session) => {
     const userId = session.user.id;
 
-    const { data: userProfile, error: userProfileError } = await supabase
-      .from('profile')
-      .select('*, team(*)')
-      .eq('id', userId)
-      .single();
+    const { data: userProfile, error: userProfileError } = await db.profile.getLoggedInProfile(userId);
 
     if (!userProfile || userProfileError) {
       Alert.alert(userProfileError!.message);
       return;
     }
 
+    // @ts-ignore
     setProfile(userProfile);
-  }
+  };
 
   useEffect(() => {
     if (session && session.user) {
@@ -94,40 +88,48 @@ export default function App() {
     }
   }, [session])
 
+  /********************************************************************************************************************/
+  /*                                                  theme                                                           */
+  /********************************************************************************************************************/
+  const getColor = () => {
+    return profile && profile.university ? SUBDOMAIN_COLOR_PALETTE[profile.university.subdomain as ValidSubdomains].main : '#5D5EE2';
+  }
+
   if (session && session.user && profile) {
     return (
       <QueryClientProvider client={queryClient}>
         <SessionProvider session={session} profile={profile}>
-          <AppLoader
-            loadingComponent={<SplashImage/>}
-            minimumLoadingTime={__DEV__ ? 500 : 2000}
-          >
-            <NavigationContainer>
-              <Tab.Navigator
-                initialRouteName={BOTTOM_TABS.EVENTS.name}
-                screenOptions={{
-                  headerStyle: {
-                    backgroundColor: '#ed1b2f'
-                  },
-                  tabBarActiveTintColor: '#ed1b2f',
-                  headerTitle: (props) => <HeaderTitle {...props} />,
-                  headerLeft: (props) => <HeaderLeft {...props}/>,
-                  headerRight: (props) => <HeaderRight {...props}/>,
-                }}
-              >
-                {Object.entries(BOTTOM_TABS).map(([tabName, options]) => (
-                  <Tab.Screen
-                    key={tabName}
-                    name={options.name}
-                    component={options.component}
-                    options={{
-                      tabBarIcon: (props) => <TabBarIcon name={options.icon} {...props}/>,
-                    }}
-                  />
-                ))}
-              </Tab.Navigator>
-            </NavigationContainer>
-          </AppLoader>
+          <ThemeProvider>
+            <AppLoader
+              loadingComponent={<SplashImage/>}
+              minimumLoadingTime={1000}
+            >
+              <NavigationContainer>
+                <Tab.Navigator
+                  initialRouteName={BOTTOM_TABS.EVENTS.name}
+                  screenOptions={{
+                    headerStyle: {
+                      backgroundColor: getColor(),
+                    },
+                    headerShown: false,
+                    tabBarActiveTintColor: getColor(),
+                    lazy: false,
+                  }}
+                >
+                  {Object.entries(BOTTOM_TABS).map(([tabName, options]) => (
+                    <Tab.Screen
+                      key={tabName}
+                      name={options.name}
+                      component={options.component}
+                      options={{
+                        tabBarIcon: (props) => <TabBarIcon name={options.icon} {...props}/>,
+                      }}
+                    />
+                  ))}
+                </Tab.Navigator>
+              </NavigationContainer>
+            </AppLoader>
+          </ThemeProvider>
         </SessionProvider>
       </QueryClientProvider>
     );
@@ -135,14 +137,16 @@ export default function App() {
 
   return (
     <QueryClientProvider client={queryClient}>
+      <ThemeProvider>
         <SignInProvider>
-          <NavigationContainer>
-            <Stack.Navigator screenOptions={{ headerShown: false }}>
-              <Stack.Screen name={SignInScreenNames.EMAIL_INPUT} component={EmailInputScreen}/>
-              <Stack.Screen name={SignInScreenNames.VERIFY_CODE} component={VerifyCodeScreen}/>
-            </Stack.Navigator>
-          </NavigationContainer>
+          <AuthAppLoader
+            loadingComponent={<SplashImage/>}
+            minimumLoadingTime={1000}
+          >
+            <AuthScreen/>
+          </AuthAppLoader>
         </SignInProvider>
+      </ThemeProvider>
     </QueryClientProvider>
   );
 }

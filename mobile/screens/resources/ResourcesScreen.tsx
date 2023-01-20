@@ -18,7 +18,6 @@ export default function EventsScreen() {
         options={{
           headerTitle: '',
           headerBackTitle: 'Back',
-          headerTintColor: '#ed1b2f',
           headerStyle: {
             backgroundColor: 'transparent',
           }

@@ -6,8 +6,8 @@ import { uuid } from "@supabase/supabase-js/dist/main/lib/helpers";
 import { supabase } from "../supabase/supabase";
 import { useGetMessages } from "../hooks/query";
 import { formatMessage } from "../helpers/messageFormatter";
-import { Message } from "../@types/message";
-import { Tables } from "../supabase/columns";
+import { Tables } from "../supabase/extended.types";
+import { Database } from "../supabase/database.types";
 
 export const styles = StyleSheet.create({
   container: {
@@ -15,8 +15,9 @@ export const styles = StyleSheet.create({
     height: '100%',
   },
   title: {
-    fontSize: 24,
+    fontSize: 32,
     marginVertical: 16,
+    fontWeight: 'bold',
   },
   header: {
     fontSize: 24,
@@ -35,8 +36,9 @@ export default function ChatScreen() {
 
   const { profile } = useSession();
   const user = { id: profile!.id };
+  console.log('user : ', user)
   const [displayedMessages, setDisplayedMessages] = useState<MessageType.Text[]>([]);
-
+  console.log(displayedMessages[0])
   useEffect(() => {
     if (messages) {
       setDisplayedMessages(messages);
@@ -47,7 +49,7 @@ export default function ChatScreen() {
   const channel = supabase.channel('messages');
 
   const handleSendPress = async (message: MessageType.PartialText) => {
-    const { data, error } = await supabase.from(Tables.MESSAGE).insert({
+    const { data, error } = await supabase.from(Tables.message).insert({
       id: uuid(),
       teamId: profile!.teamId,
       profileId: profile!.id,
@@ -56,8 +58,8 @@ export default function ChatScreen() {
       profileLastName: profile!.lastName,
       profileImageUrl: profile!.imageUrl || '',
       profileRole: profile!.role,
-    })
-    console.log(error)
+    });
+    console.log('[realtime] handle send press: error', error)
   }
 
   channel.on(
@@ -69,17 +71,17 @@ export default function ChatScreen() {
       filter: `teamId=eq.${profile!.teamId}`,
     },
     (payload) => {
-      console.log('[realtime] new message receievd!')
-      const formattedMessage: MessageType.Text = formatMessage(payload.new as Message);
+      console.log('[realtime] new message receievd! s', payload.new)
+      const formattedMessage: MessageType.Text = formatMessage(payload.new as Database['public']['Tables']['message']['Row']);
       console.log('[realtime] formattedMessage : ', formattedMessage)
       setDisplayedMessages((prev) => [formattedMessage, ...prev]);
     }
   )
 
   channel.subscribe(async (status) => {
-    if (status === 'SUBSCRIBED') {
-      console.log('subscribed!');
-    }
+    console.log('[realtime] status : ', status)
+    // if (status === 'SUBSCRIBED') {
+    // }
   })
 
   return (

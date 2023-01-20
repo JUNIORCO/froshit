@@ -35,7 +35,7 @@ export default class MyDocument extends Document {
 
           <meta
             name="description"
-            content="FROSHIT is an all-in-one platform for managing Frosh, encompassing payment, registration, administration, and a mobile app for Froshees."
+            content="FROSHIT is an all-in-one platform for managing Frosh, encompassing payment, registration, administration, and a mobile app."
           />
 
           <meta name="keywords" content="frosh,university,orientation,freshman,freshmen,canada" />

@@ -27,7 +27,7 @@ export default function EventsProvider({ children }: EventsProviderProps) {
 
   useEffect(() => {
     if (selectedDate && events && events.length) {
-      setFilteredEvents(events.filter(({ startDate }: any) => dayjs(startDate).isSame(selectedDate, 'day')))
+      setFilteredEvents(events.filter(({ startDate }) => dayjs(startDate).isSame(selectedDate, 'day')))
     }
   }, [events, selectedDate]);
 

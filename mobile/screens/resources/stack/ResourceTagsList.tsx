@@ -1,9 +1,17 @@
-import { Dimensions, FlatList, Pressable, RefreshControl, SafeAreaView, StyleSheet, Text } from "react-native";
+import {
+  Dimensions,
+  FlatList,
+  ImageBackground,
+  Pressable,
+  RefreshControl,
+  SafeAreaView,
+  StyleSheet,
+  Text
+} from "react-native";
 import { useGetResources } from "../../../hooks/query";
 import VerticalItemSeparatorComponent from "../../../components/common/VerticalItemSeparatorComponent";
 import React from "react";
 import { useRefetchByUser } from "../../../hooks/useRefetchByUser";
-import Ionicons from "@expo/vector-icons/Ionicons";
 import { flow, groupBy, map } from 'lodash/fp';
 import { useNavigation } from "@react-navigation/native";
 
@@ -16,20 +24,28 @@ export const styles = StyleSheet.create({
     height: '100%',
   },
   title: {
-    fontSize: 24,
+    fontSize: 32,
     marginVertical: 16,
+    fontWeight: 'bold',
   },
   header: {
-    fontSize: 24,
-    marginVertical: 16,
+    fontSize: 32,
+    fontWeight: 'bold',
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.2,
+    shadowRadius: 2,
+    elevation: 1,
   },
   square: {
     width: dim,
     height: dim,
-    backgroundColor: 'grey',
     justifyContent: 'center',
     alignItems: 'center',
-    borderRadius: 16,
+  },
+  imageBackground: {
+    borderRadius: 32,
+    opacity: 0.8,
   }
 });
 
@@ -54,14 +70,11 @@ export default function ResourceTagsList() {
   const renderResourceTag = ({ item }) => {
     const { resources, tag } = item;
     return (
-      <Pressable style={styles.square} onPress={() => handleOnPress({ resources, tag })}>
-        <Ionicons
-          name={tag.icon}
-          color='white'
-          size={64}
-        />
-        <Text>{tag.name}</Text>
-      </Pressable>
+      <ImageBackground source={{ uri: tag.imageUrl }} imageStyle={styles.imageBackground}>
+        <Pressable style={styles.square} onPress={() => handleOnPress({ resources, tag })}>
+          <Text style={styles.header}>{tag.name}</Text>
+        </Pressable>
+      </ImageBackground>
     );
   }
 

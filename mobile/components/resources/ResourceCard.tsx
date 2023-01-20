@@ -1,32 +1,33 @@
 import * as React from 'react';
-import { Avatar, Card } from 'react-native-paper';
-import { StyleSheet } from "react-native";
+import { Card } from 'react-native-paper';
+import { Linking, StyleSheet, View } from "react-native";
+import { Feather } from "@expo/vector-icons";
 
 const styles = StyleSheet.create({
   container: {
-    // marginHorizontal: 16,
+    padding: 16,
   },
 });
 
-export default function ResourceCard({ title, description, phoneNumber, email, resourceTagId }) {
-  const { icon: tagIcon } = resourceTagId;
+export default function ResourceCard({ title, description, phoneNumber, email }: any) {
+  const handlePhonePress = () => Linking.openURL(`tel:${phoneNumber}`);
 
-  const LeftContent = props => <Avatar.Icon {...props} icon="folder"/>;
+  const handleEmailPress = () => Linking.openURL(`mailto:${email}`);
 
-  // const RightContent = () => (
-  //   <View style={{ marginRight: 12 }}>
-  //     <Ionicons name="call-outline" size={32}/>
-  //   </View>
-  // );
+  const RightContent = () => (
+    <View style={{ flexDirection: 'row' }}>
+      {email && <Feather name="mail" size={32} onPress={handleEmailPress} style={{ marginRight: 16 }}/>}
+      {phoneNumber && <Feather name="phone-call" size={32} onPress={handlePhonePress} color='#25D366'/>}
+    </View>
+  );
 
   return (
     <Card style={styles.container}>
       <Card.Title
         title={title}
-        subtitle={description + ' a lot of text a lot of text a lot of text a lot of text a lot of text a lot of text a lot of text a lot of text a lot of text a lot of text '}
-        subtitleNumberOfLines={3}
-        left={LeftContent}
-        // right={RightContent}
+        subtitle={description}
+        subtitleNumberOfLines={6}
+        right={RightContent}
         style={{ padding: 16 }}
       />
     </Card>

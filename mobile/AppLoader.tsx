@@ -1,7 +1,8 @@
 // courtesy of https://javascript.plainenglish.io/how-to-handle-and-design-the-startup-of-a-react-application-da779f3727e5
-import { some } from "lodash";
+import { every } from "lodash";
 import React, { FC, Fragment, memo, ReactElement, useEffect, useState } from "react";
 import { useGetEvents, useGetMessages, useGetOffers, useGetResources, useGetTeam } from "./hooks/query";
+import { imagePrefetch } from "./imagePrefetch";
 
 interface LoadingProcess {
   name: string;
@@ -40,6 +41,7 @@ const AppLoader: FC<Props> = memo(props => {
   const { isLoading: offersIsLoading } = useGetOffers();
   const { isLoading: resourcesIsLoading } = useGetResources();
   const { isLoading: messagesIsLoading } = useGetMessages();
+  void imagePrefetch();
 
   // As long as not all screens are ready, display splashscreen
   const loadingProcesses: LoadingProcess[] = [
@@ -62,7 +64,7 @@ const AppLoader: FC<Props> = memo(props => {
     {
       name: "fetch_messages",
       isReady: !messagesIsLoading,
-    }
+    },
   ];
 
   // Handle potential minimum duration
@@ -74,7 +76,7 @@ const AppLoader: FC<Props> = memo(props => {
 
   return (
     <Fragment>
-      {some(loadingProcesses, "isReady") && minimumDurationPassed ? props.children : props.loadingComponent}
+      {every(loadingProcesses, "isReady") && minimumDurationPassed ? props.children : props.loadingComponent}
     </Fragment>
   );
 });

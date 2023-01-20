@@ -12,6 +12,11 @@ export const styles = StyleSheet.create({
     alignItems: 'center',
   }),
   title: {
-    fontSize: 16,
+    fontSize: 32,
+    marginVertical: 16,
+    fontWeight: 'bold',
   },
+  data: {
+    fontSize: 16,
+  }
 });

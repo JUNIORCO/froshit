@@ -19,7 +19,6 @@ export default function EventList() {
 
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>Events</Text>
       <FlatList
         data={filteredEvents}
         showsVerticalScrollIndicator={false}

@@ -28,7 +28,6 @@ import { GetServerSideProps, GetServerSidePropsContext } from 'next';
 import { FullEvent } from '../../../../../../prisma/api/@types';
 import dayjs from 'src/utils/dayjs';
 import { EventTableRow, EventTableToolbar } from '../../../../../sections/dashboard/event/list';
-import isBetween from 'dayjs/plugin/isBetween';
 import AuthApi from '../../../../../../prisma/api/AuthApi';
 import { useSupabaseClient } from '@supabase/auth-helpers-react';
 import { useSnackbar } from 'notistack';

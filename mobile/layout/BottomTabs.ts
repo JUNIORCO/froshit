@@ -3,6 +3,7 @@ import ChatScreen from "../screens/ChatScreen";
 import TeamScreen from "../screens/TeamScreen";
 import OffersScreen from "../screens/OffersScreen";
 import EventsScreen from "../screens/events/EventsScreen";
+import ProfileScreen from "../screens/ProfileScreen";
 
 const BOTTOM_TABS = {
   RESOURCES: {
@@ -29,6 +30,11 @@ const BOTTOM_TABS = {
     name: 'Team',
     icon: 'account-group-outline',
     component: TeamScreen,
+  },
+  PROFILE: {
+    name: 'Profile',
+    icon: 'account-box-outline',
+    component: ProfileScreen,
   },
 }
 

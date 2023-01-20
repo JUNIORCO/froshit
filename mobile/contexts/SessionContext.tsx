@@ -1,9 +1,10 @@
 import { createContext, ReactNode } from 'react';
 import { Session } from "@supabase/supabase-js";
+import { LoggedInProfile } from "../supabase/database.types";
 
 export type ProfileContextProps = {
   session: Session | null;
-  profile: Record<string, any> | null;
+  profile: LoggedInProfile | null;
 }
 
 const initialState: ProfileContextProps = {
@@ -15,7 +16,7 @@ const SessionContext = createContext(initialState);
 
 type ProfileProviderProps = {
   session: Session | null;
-  profile: Record<string, any> | null;
+  profile: LoggedInProfile | null;
   children: ReactNode;
 };
 

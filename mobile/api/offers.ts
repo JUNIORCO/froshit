@@ -1,27 +1,16 @@
-import { supabase } from "../supabase/supabase";
-import { Tables } from "../supabase/columns";
 import { QueryFunctionContext } from "@tanstack/react-query";
+import { db } from "../supabase/db";
 
 type QueryKeyArg = {
   universityId: string;
 }
 
-export const fetchOffers = async ({ queryKey }: QueryFunctionContext<[string, QueryKeyArg]>): Promise<any> => {
+export const fetchOffers = async ({ queryKey }: QueryFunctionContext<[string, QueryKeyArg]>) => {
   const [_key, { universityId }] = queryKey;
-  console.log(`api -> Fetching offers for university ${universityId}`)
-  const {
-    data: offers,
-    error
-  } = await supabase
-    .from(Tables.OFFER)
-    .select('*')
-    .eq('universityId', universityId)
-    .order('provider', { ascending: true });
 
-  if (error) {
-    console.error(`fetchOffers -> ${error.message}`);
-    throw error;
-  }
+  const { data: offers, error: getOffersError } = await db.offer.getOffersByUniversityId(universityId);
+
+  if (getOffersError) throw getOffersError;
 
   return offers;
 }

@@ -24,8 +24,8 @@ export default function Calendar() {
     return (
       <Pressable onPress={() => handleCalendarPress(date)}>
         <View style={styles.item(isDateSelected(dayjsDate))}>
-          <Text style={styles.title}>{dayjsDate.format('MMM')}</Text>
-          <Text style={styles.title}>{dayjsDate.format('D')}</Text>
+          <Text style={styles.date}>{dayjsDate.format('MMM')}</Text>
+          <Text style={styles.date}>{dayjsDate.format('D')}</Text>
         </View>
       </Pressable>
     )
@@ -33,6 +33,7 @@ export default function Calendar() {
 
   return (
     <View style={styles.container}>
+      <Text style={styles.title}>Events</Text>
       <FlatList
         horizontal
         showsHorizontalScrollIndicator={false}

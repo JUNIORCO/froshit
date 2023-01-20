@@ -1,9 +1,10 @@
 import { useState } from "react";
-import { useGetEvents, useGetTeam } from "./query";
+import { useGetEvents, useGetResources, useGetTeam } from "./query";
 
 export function useRefetchByUser() {
   const { refetch: refetchEvents } = useGetEvents();
   const { refetch: refetchTeam } = useGetTeam();
+  const { refetch: refetchResources } = useGetResources();
 
   const [isRefetchingByUser, setIsRefetchingByUser] = useState(false);
 
@@ -14,6 +15,7 @@ export function useRefetchByUser() {
       await Promise.allSettled([
         refetchEvents(),
         refetchTeam(),
+        refetchResources(),
       ]);
     } catch (error) {
       console.error('useRefetchByUser -> Could not refetch by user...', error.message)

@@ -3,8 +3,7 @@ import { SafeAreaView, SectionList, StyleSheet, Text } from 'react-native';
 import VerticalItemSeparatorComponent from "../components/common/VerticalItemSeparatorComponent";
 import { useRefetchByUser } from "../hooks/useRefetchByUser";
 import { useGetTeam } from "../hooks/query";
-import LeaderCard from "../components/team/LeaderCard";
-import FrosheeCard from "../components/team/FrosheeCard";
+import TeamCard from "../components/team/TeamCard";
 import useSession from "../hooks/useSession";
 
 export const styles = StyleSheet.create({
@@ -13,8 +12,9 @@ export const styles = StyleSheet.create({
     height: '100%',
   },
   title: {
-    fontSize: 24,
-    marginTop: 16,
+    fontSize: 32,
+    marginVertical: 16,
+    fontWeight: 'bold',
   },
   header: {
     fontSize: 24,
@@ -51,9 +51,9 @@ export default function TeamScreen() {
     }
   ]);
 
-  const renderLeaderCard = ({ profile }) => <LeaderCard {...profile}/>;
+  const renderLeaderCard = ({ profile }) => <TeamCard {...profile} isLeader />;
 
-  const renderFrosheeCard = ({ profile }) => <FrosheeCard {...profile}/>;
+  const renderFrosheeCard = ({ profile }) => <TeamCard {...profile}/>;
 
   const renderItem = ({ item: profile }) =>
     profile.role === 'Leader' ?
@@ -68,7 +68,7 @@ export default function TeamScreen() {
     <SafeAreaView style={styles.container}>
       <Text style={styles.title}>{profile!.team.name}</Text>
       <SectionList
-        sections={formattedTeam}
+        sections={formattedTeam || []}
         showsVerticalScrollIndicator={false}
         renderItem={renderItem}
         renderSectionHeader={renderSectionHeader}
