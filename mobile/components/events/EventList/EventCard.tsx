@@ -4,8 +4,6 @@ import { styles } from "./EventCard.styles";
 import { Text, View } from "react-native";
 import dayjs from "../../../utils/dayjs";
 
-const LeftContent = props => <Avatar.Icon {...props} icon="camera"/>
-
 const RightContent = ({ startDate, endDate }) => (
   <View style={{ marginRight: 12 }}>
     <Text style={{ fontSize: 12, fontWeight: '200' }}>{dayjs(startDate).format('h:mma')}</Text>
@@ -22,7 +20,6 @@ export default function EventCard({ imageUrl, name, location, startDate, endDate
         title={name}
         subtitle={`${description.slice(0, 30)}...\n${location}`}
         subtitleNumberOfLines={2}
-        left={LeftContent}
         right={() => <RightContent startDate={startDate} endDate={endDate}/>}
         style={{ padding: 16 }}
       />

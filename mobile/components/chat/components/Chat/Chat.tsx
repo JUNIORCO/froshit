@@ -7,6 +7,7 @@ import {
   FlatList,
   FlatListProps,
   GestureResponderHandlers,
+  ImageBackground,
   InteractionManager,
   LayoutAnimation,
   StatusBar,
@@ -396,7 +397,11 @@ export const Chat = ({
     <UserContext.Provider value={user}>
       <ThemeContext.Provider value={theme}>
         <L10nContext.Provider value={l10nValue}>
-          <View style={container} onLayout={onLayout}>
+          <ImageBackground
+            source={require('../../../../assets/images/background.png')}
+            style={container}
+            onLayout={onLayout}
+          >
             {customBottomComponent ? (
               <>
                 <>{renderScrollable({})}</>
@@ -422,13 +427,7 @@ export const Chat = ({
                 />
               </KeyboardAccessoryView>
             )}
-            <ImageView
-              imageIndex={imageViewIndex}
-              images={gallery}
-              onRequestClose={handleRequestClose}
-              visible={isImageViewVisible}
-            />
-          </View>
+          </ImageBackground>
         </L10nContext.Provider>
       </ThemeContext.Provider>
     </UserContext.Provider>

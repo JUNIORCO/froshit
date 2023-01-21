@@ -1,10 +1,10 @@
-import React from 'react';
-import { SafeAreaView, SectionList, StyleSheet, Text } from 'react-native';
-import VerticalItemSeparatorComponent from "../components/common/VerticalItemSeparatorComponent";
-import { useRefetchByUser } from "../hooks/useRefetchByUser";
+import React, { Fragment } from 'react';
+import { StyleSheet, Text } from 'react-native';
 import { useGetTeam } from "../hooks/query";
 import TeamCard from "../components/team/TeamCard";
 import useSession from "../hooks/useSession";
+import { Card } from "react-native-paper";
+import { Profile, Role } from "../supabase/extended.types";
 
 export const styles = StyleSheet.create({
   container: {
@@ -18,10 +18,9 @@ export const styles = StyleSheet.create({
   },
   header: {
     fontSize: 24,
-    marginVertical: 16,
+    marginVertical: 8,
   },
 });
-
 
 export default function TeamScreen() {
   const { profile } = useSession();
@@ -31,7 +30,6 @@ export default function TeamScreen() {
     data: team,
     error: teamError,
   } = useGetTeam();
-  const { isRefetchingByUser, refetchByUser } = useRefetchByUser();
 
   const formattedTeam = team?.reduce((accum, member) => {
     if (member.role === 'Leader') {
@@ -43,40 +41,24 @@ export default function TeamScreen() {
   }, [
     {
       title: 'Leaders',
-      data: [],
+      data: [] as any,
     },
     {
       title: 'Froshees',
-      data: [],
+      data: [] as any,
     }
-  ]);
+  ]) || [];
 
-  const renderLeaderCard = ({ profile }) => <TeamCard {...profile} isLeader />;
-
-  const renderFrosheeCard = ({ profile }) => <TeamCard {...profile}/>;
-
-  const renderItem = ({ item: profile }) =>
-    profile.role === 'Leader' ?
-      renderLeaderCard({ profile })
-      : renderFrosheeCard({ profile });
-
-  const renderSectionHeader = ({ section: { title } }) => (
-    <Text style={styles.header}>{title}</Text>
-  );
+  const renderGroup = (group: { title: string, data: Profile['Row'][] }) =>
+    <Fragment key={group.title}>
+      <Text style={styles.header}>{group.title}</Text>
+      {group.data.map(member => <TeamCard key={member.id} {...member} isLeader={member.role === 'Leader' as Role}/>)}
+    </Fragment>
 
   return (
-    <SafeAreaView style={styles.container}>
-      <Text style={styles.title}>{profile!.team.name}</Text>
-      <SectionList
-        sections={formattedTeam || []}
-        showsVerticalScrollIndicator={false}
-        renderItem={renderItem}
-        renderSectionHeader={renderSectionHeader}
-        keyExtractor={item => item.id}
-        ItemSeparatorComponent={VerticalItemSeparatorComponent}
-        refreshing={isRefetchingByUser}
-        onRefresh={refetchByUser}
-      />
-    </SafeAreaView>
+    <Card style={{ padding: 16, borderRadius: 16 }}>
+      <Text style={styles.title}>{profile.team.name}</Text>
+      {formattedTeam.map(renderGroup)}
+    </Card>
   )
 }

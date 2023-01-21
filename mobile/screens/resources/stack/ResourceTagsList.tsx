@@ -1,19 +1,10 @@
-import {
-  Dimensions,
-  FlatList,
-  ImageBackground,
-  Pressable,
-  RefreshControl,
-  SafeAreaView,
-  StyleSheet,
-  Text
-} from "react-native";
+import { Dimensions, FlatList, ImageBackground, Pressable, StyleSheet, Text } from "react-native";
 import { useGetResources } from "../../../hooks/query";
 import VerticalItemSeparatorComponent from "../../../components/common/VerticalItemSeparatorComponent";
 import React from "react";
-import { useRefetchByUser } from "../../../hooks/useRefetchByUser";
 import { flow, groupBy, map } from 'lodash/fp';
 import { useNavigation } from "@react-navigation/native";
+import { Card } from "react-native-paper";
 
 const { width } = Dimensions.get('window');
 const dim = (width) / 2.1 * 0.93;
@@ -38,14 +29,13 @@ export const styles = StyleSheet.create({
     elevation: 1,
   },
   square: {
-    width: dim,
-    height: dim,
+    width: dim * 0.9,
+    height: dim * 0.9,
     justifyContent: 'center',
     alignItems: 'center',
   },
   imageBackground: {
-    borderRadius: 32,
-    opacity: 0.8,
+    borderRadius: 16,
   }
 });
 
@@ -56,7 +46,6 @@ export default function ResourceTagsList() {
     data: resources,
     error: teamError,
   } = useGetResources();
-  const { isRefetchingByUser, refetchByUser } = useRefetchByUser();
 
   const navigation = useNavigation();
 
@@ -79,9 +68,9 @@ export default function ResourceTagsList() {
   }
 
   return (
-    <SafeAreaView style={styles.container}>
-      <Text style={styles.title}>Resources</Text>
+    <Card style={{ padding: 16, borderRadius: 16, opacity: 0.97 }}>
       <FlatList
+        scrollEnabled={false}
         columnWrapperStyle={{ justifyContent: 'space-between' }}
         data={resourcesGroupedByResourceTag}
         numColumns={2}
@@ -89,13 +78,7 @@ export default function ResourceTagsList() {
         renderItem={renderResourceTag}
         keyExtractor={item => item.tag.id}
         ItemSeparatorComponent={VerticalItemSeparatorComponent}
-        refreshControl={
-          <RefreshControl
-            refreshing={isRefetchingByUser}
-            onRefresh={refetchByUser}
-          />
-        }
       />
-    </SafeAreaView>
+    </Card>
   )
 }

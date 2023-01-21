@@ -7,7 +7,7 @@ import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import BOTTOM_TABS from "./layout/BottomTabs";
 import { focusManager, QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import type { AppStateStatus } from "react-native"
-import { Alert, Platform } from 'react-native'
+import { Alert, Platform, SafeAreaView, View } from 'react-native'
 import { useOnlineManager } from "./hooks/useOnlineManager";
 import { useAppState } from "./hooks/useAppState";
 import AppLoader from "./AppLoader";
@@ -22,6 +22,7 @@ import AuthScreen from "./screens/AuthScreen";
 import AuthAppLoader from "./AuthAppLoader";
 import { db } from "./supabase/db";
 import { LoggedInProfile } from "./supabase/database.types";
+import ScreenLayout from "./layout/ScreenLayout";
 
 export default function App() {
   /********************************************************************************************************************/
@@ -91,15 +92,18 @@ export default function App() {
   /********************************************************************************************************************/
   /*                                                  theme                                                           */
   /********************************************************************************************************************/
-  const getColor = () => {
-    return profile && profile.university ? SUBDOMAIN_COLOR_PALETTE[profile.university.subdomain as ValidSubdomains].main : '#5D5EE2';
-  }
+  const getTabBarActiveTintColor = (profile: LoggedInProfile) =>
+    SUBDOMAIN_COLOR_PALETTE[profile.university.subdomain as ValidSubdomains]["500"];
+
+  /********************************************************************************************************************/
+  /*                                                 render                                                           */
+  /********************************************************************************************************************/
 
   if (session && session.user && profile) {
     return (
       <QueryClientProvider client={queryClient}>
         <SessionProvider session={session} profile={profile}>
-          <ThemeProvider>
+          <ThemeProvider subdomain={profile.university.subdomain as ValidSubdomains}>
             <AppLoader
               loadingComponent={<SplashImage/>}
               minimumLoadingTime={1000}
@@ -108,11 +112,9 @@ export default function App() {
                 <Tab.Navigator
                   initialRouteName={BOTTOM_TABS.EVENTS.name}
                   screenOptions={{
-                    headerStyle: {
-                      backgroundColor: getColor(),
-                    },
-                    headerShown: false,
-                    tabBarActiveTintColor: getColor(),
+                    headerTitle: '',
+                    headerTransparent: true,
+                    tabBarActiveTintColor: getTabBarActiveTintColor(profile),
                     lazy: false,
                   }}
                 >
@@ -120,11 +122,15 @@ export default function App() {
                     <Tab.Screen
                       key={tabName}
                       name={options.name}
-                      component={options.component}
                       options={{
                         tabBarIcon: (props) => <TabBarIcon name={options.icon} {...props}/>,
-                      }}
-                    />
+                      }}>
+                      {() => <ScreenLayout
+                        wrapView={options.wrapView}
+                        background={options.background}
+                        component={<options.component/>}
+                      />}
+                    </Tab.Screen>
                   ))}
                 </Tab.Navigator>
               </NavigationContainer>

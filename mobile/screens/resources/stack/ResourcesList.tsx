@@ -1,7 +1,6 @@
-import { Dimensions, FlatList, RefreshControl, SafeAreaView, StyleSheet, Text } from "react-native";
+import { Dimensions, FlatList, SafeAreaView, StyleSheet, Text } from "react-native";
 import VerticalItemSeparatorComponent from "../../../components/common/VerticalItemSeparatorComponent";
 import React from "react";
-import { useRefetchByUser } from "../../../hooks/useRefetchByUser";
 import ResourceCard from "../../../components/resources/ResourceCard";
 
 const { width } = Dimensions.get('window');
@@ -32,7 +31,6 @@ export const styles = StyleSheet.create({
 });
 
 export default function ResourceTagsList({ route }) {
-  const { isRefetchingByUser, refetchByUser } = useRefetchByUser();
 
   const { resources, tag } = route.params;
 
@@ -42,17 +40,12 @@ export default function ResourceTagsList({ route }) {
     <SafeAreaView style={styles.container}>
       <Text style={styles.title}>{tag.name}</Text>
       <FlatList
+        scrollEnabled={false}
         data={resources}
         showsVerticalScrollIndicator={false}
         renderItem={renderResource}
         keyExtractor={item => item.id}
         ItemSeparatorComponent={VerticalItemSeparatorComponent}
-        refreshControl={
-          <RefreshControl
-            refreshing={isRefetchingByUser}
-            onRefresh={refetchByUser}
-          />
-        }
       />
     </SafeAreaView>
   )

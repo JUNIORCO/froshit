@@ -394,5 +394,6 @@ export interface Database {
 }
 
 export type LoggedInProfile = Database['public']['Tables']['profile']['Row']
+  & { team: Database['public']['Tables']['team']['Row'] }
   & { frosh: Database['public']['Tables']['frosh']['Row'] }
   & { university: Database['public']['Tables']['university']['Row'] };

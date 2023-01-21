@@ -1,45 +1,29 @@
 import { ValidSubdomains } from './subdomains';
 
 type ColorObject = {
-  name: string;
-  contrastText: string;
-
-  lighter: string;
-  light: string;
-  main: string;
-  dark: string;
-  darker: string;
+  "50": string;
+  "100": string;
+  "200": string;
+  "300": string;
+  "400": string;
+  "500": string;
+  "600": string;
+  "700": string;
+  "800": string;
+  "900": string;
 }
 
 export const SUBDOMAIN_COLOR_PALETTE: Record<ValidSubdomains, ColorObject> = {
   [ValidSubdomains.demo]: {
-    name: ValidSubdomains.demo,
-    contrastText: '#FAF9F6',
-
-    lighter: '#ede8fc',
-    light: '#9474ec',
-    main: '#4C18E0',
-    dark: '#260c70',
-    darker: '#080216',
+    "50": "#cebffe",
+    "100": "#b19bfa",
+    "200": "#967af3",
+    "300": "#7c5beb",
+    "400": "#6039e6",
+    "500": "#532adc",
+    "600": "#4d29c6",
+    "700": "#492bac",
+    "800": "#442c93",
+    "900": "#3e2c7c",
   },
-  // [ValidSubdomains.mcgill]: {
-  //   name: ValidSubdomains.mcgill,
-  //   contrastText: '#f2f2f2',
-  //
-  //   lighter: '#fde8ea',
-  //   light: '#f68d97',
-  //   main: '#ed1b2f',
-  //   dark: '#770e18',
-  //   darker: '#180305',
-  // },
-  // [ValidSubdomains.concordia]: {
-  //   name: ValidSubdomains.concordia,
-  //   contrastText: '#f2f2f2',
-  //
-  //   lighter: '#f4e9eb',
-  //   light: '#c8919c',
-  //   main: '#912338',
-  //   dark: '#49121c',
-  //   darker: '#0e0306',
-  // },
 };

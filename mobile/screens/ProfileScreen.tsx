@@ -1,9 +1,9 @@
 import React, { useState } from 'react';
-import { SafeAreaView, StyleSheet, Text } from 'react-native';
+import { Keyboard, StyleSheet, TouchableWithoutFeedback } from 'react-native';
 import useSession from "../hooks/useSession";
-import { Button, Card } from "react-native-paper";
+import { Avatar, Button, Card } from "react-native-paper";
 import { supabase } from "../supabase/supabase";
-import { FormControl, Input, ScrollView, useToast, VStack } from "native-base";
+import { FormControl, Input, Text, useToast, VStack } from "native-base";
 import { Profile, Tables } from "../supabase/extended.types";
 
 export const styles = StyleSheet.create({
@@ -31,6 +31,9 @@ export default function ProfileScreen() {
   const [interests, setInterests] = useState<string>(profile!.interests || '');
   const [phoneNumber, setPhoneNumber] = useState<string>(profile!.phoneNumber || '');
 
+  const cardTitle = `${profile.firstName} ${profile.lastName}`;
+  const cardSubtitle = profile.email;
+
   const handleSave = async () => {
     setSaving(true);
 
@@ -49,39 +52,40 @@ export default function ProfileScreen() {
   }
 
   return (
-    <SafeAreaView style={styles.container}>
-      <Text style={styles.title}>Profile</Text>
-      <Card elevation={4}>
-        <ScrollView>
-          <Card.Cover source={{ uri: profile!.imageUrl }} style={{ height: 296 }}/>
-          <Card.Title title={`${profile!.firstName} ${profile!.lastName}`} subtitle={profile!.email}/>
-          <Card.Content>
-            <VStack space={1}>
-              <FormControl.Label>Phone Number</FormControl.Label>
-              <Input
-                size="lg"
-                onChangeText={setPhoneNumber}
-                value={phoneNumber}
-                placeholder="Phone Number"
-                keyboardType='number-pad'
-              />
-              <FormControl.Label>Interests</FormControl.Label>
-              <Input
-                size="lg"
-                onChangeText={setInterests}
-                value={interests}
-                placeholder="Interests"
-              />
-            </VStack>
-          </Card.Content>
-          <Card.Actions style={{ alignSelf: 'flex-end' }}>
-            <VStack space={8}>
-              <Button icon="content-save-outline" mode='contained' onPress={handleSave} loading={saving}>Save</Button>
-              <Button icon="logout" onPress={() => supabase.auth.signOut()}>Sign Out</Button>
-            </VStack>
-          </Card.Actions>
-        </ScrollView>
+    <TouchableWithoutFeedback onPress={Keyboard.dismiss} accessible={false}>
+      <Card style={{ padding: 16, borderRadius: 16 }}>
+        <Avatar.Image
+          size={128}
+          source={{ uri: profile.imageUrl || 'https://www.gravatar.com/avatar/?d=mp' }}
+        />
+        <Text style={{ alignSelf: 'flex-end' }}>TODO Upload image button</Text>
+        <Card.Title title={cardTitle} subtitle={cardSubtitle}/>
+        <Card.Content>
+          <VStack space={2}>
+            <FormControl.Label>Phone Number</FormControl.Label>
+            <Input
+              size="lg"
+              onChangeText={setPhoneNumber}
+              value={phoneNumber}
+              placeholder="Phone Number"
+              keyboardType='number-pad'
+            />
+            <FormControl.Label>Interests</FormControl.Label>
+            <Input
+              size="lg"
+              onChangeText={setInterests}
+              value={interests}
+              placeholder="Interests"
+            />
+          </VStack>
+        </Card.Content>
+        <Card.Actions>
+          <VStack space={2} style={{ width: '100%' }}>
+            <Button icon="content-save-outline" mode='contained' onPress={handleSave} loading={saving}>Save</Button>
+            <Button icon="logout" onPress={() => supabase.auth.signOut()}>Sign Out</Button>
+          </VStack>
+        </Card.Actions>
       </Card>
-    </SafeAreaView>
+    </TouchableWithoutFeedback>
   )
 }

@@ -1,9 +1,8 @@
 import React from 'react';
-import { FlatList, RefreshControl, SafeAreaView, StyleSheet, Text } from 'react-native';
-import VerticalItemSeparatorComponent from "../components/common/VerticalItemSeparatorComponent";
-import { useRefetchByUser } from "../hooks/useRefetchByUser";
+import { StyleSheet } from 'react-native';
 import { useGetOffers } from "../hooks/query";
 import OfferCard from "../components/offers/OfferCard";
+import { Card } from 'react-native-paper';
 
 export const styles = StyleSheet.create({
   container: {
@@ -29,26 +28,10 @@ export default function OffersScreen() {
     data: offers,
     error: teamError,
   } = useGetOffers();
-  const { isRefetchingByUser, refetchByUser } = useRefetchByUser();
-
-  const renderOfferCard = ({ item: offer }) => <OfferCard {...offer}/>;
 
   return (
-    <SafeAreaView style={styles.container}>
-      <Text style={styles.title}>Offers</Text>
-      <FlatList
-        data={offers}
-        showsVerticalScrollIndicator={false}
-        renderItem={renderOfferCard}
-        keyExtractor={item => item.id}
-        ItemSeparatorComponent={VerticalItemSeparatorComponent}
-        refreshControl={
-          <RefreshControl
-            refreshing={isRefetchingByUser}
-            onRefresh={refetchByUser}
-          />
-        }
-      />
-    </SafeAreaView>
+    <Card style={{ paddingHorizontal: 16, paddingVertical: 32, borderRadius: 16 }}>
+      {offers?.map(offer => <OfferCard key={offer.id} {...offer}/>)}
+    </Card>
   )
 }

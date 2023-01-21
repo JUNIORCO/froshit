@@ -5,5 +5,5 @@ interface Props {
 }
 
 export default function TabBarIcon({ name, ...props }: Props) {
-  return (<MaterialCommunityIcons name={name} {...props}/>);
+  return (<MaterialCommunityIcons name={name} color='white' {...props}/>);
 }

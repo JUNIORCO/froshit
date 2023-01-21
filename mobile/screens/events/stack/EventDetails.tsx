@@ -1,6 +1,5 @@
-import { Image, Linking, Platform, Pressable, SafeAreaView, StyleSheet, Text, View } from "react-native";
-import EventsProvider from "../../../contexts/EventsContext";
-import React from "react";
+import { Image, Linking, Platform, Pressable, StyleSheet, Text, View } from "react-native";
+import React, { Fragment } from "react";
 import { FontAwesome, Ionicons } from '@expo/vector-icons';
 import dayjs from "dayjs";
 
@@ -36,41 +35,38 @@ export default function EventDetails({ route }) {
   }
 
   return (
-    <EventsProvider>
-      <SafeAreaView style={styles.container}>
-        <Image source={{ uri: imageUrl }} style={{ width: '100%', height: 248, marginBottom: 16, }}/>
-        <Text style={styles.titleText}>{name}</Text>
-        <Text style={styles.descriptionText}>{description}</Text>
+    <Fragment>
+      <Image source={{ uri: imageUrl }} style={{ width: '100%', height: 248, marginBottom: 16, }}/>
+      <Text style={styles.titleText}>{name}</Text>
+      <Text style={styles.descriptionText}>{description}</Text>
 
+      <View style={{ flexDirection: "row", height: 50, marginBottom: 8, alignItems: 'center' }}>
+        <Ionicons name="time-outline" size={32} color="#E91E63"
+                  style={{ flex: 0.15, textAlign: 'center', paddingRight: 8 }}/>
+        <View style={{ flexDirection: 'column' }}>
+          <Text>{dayjs(startDate).format('MMMM D, YYYY')}</Text>
+          <Text>{dayjs(startDate).format('h:m a')} - {dayjs(endDate).format('h:m a')}</Text>
+        </View>
+      </View>
+
+      <Pressable onPress={handleLocationPress}>
         <View style={{ flexDirection: "row", height: 50, marginBottom: 8, alignItems: 'center' }}>
-          <Ionicons name="time-outline" size={32} color="#E91E63"
+          <Ionicons name="location" size={32} color="#E91E63"
                     style={{ flex: 0.15, textAlign: 'center', paddingRight: 8 }}/>
           <View style={{ flexDirection: 'column' }}>
-            <Text>{dayjs(startDate).format('MMMM D, YYYY')}</Text>
-            <Text>{dayjs(startDate).format('h:m a')} - {dayjs(endDate).format('h:m a')}</Text>
+            <Text>{location}</Text>
+            <Text style={styles.helperText}>Click to open maps</Text>
           </View>
         </View>
+      </Pressable>
 
-        <Pressable onPress={handleLocationPress}>
-          <View style={{ flexDirection: "row", height: 50, marginBottom: 8, alignItems: 'center' }}>
-            <Ionicons name="location" size={32} color="#E91E63"
-                      style={{ flex: 0.15, textAlign: 'center', paddingRight: 8 }}/>
-            <View style={{ flexDirection: 'column' }}>
-              <Text>{location}</Text>
-              <Text style={styles.helperText}>Click to open maps</Text>
-            </View>
-          </View>
-        </Pressable>
-
-        <View style={{ flexDirection: "row", height: 50, marginBottom: 8, alignItems: 'center' }}>
-          <FontAwesome name="universal-access" size={32} color="#E91E63"
-                       style={{ flex: 0.15, textAlign: 'center', paddingRight: 8 }}/>
-          <View style={{ flexDirection: 'column' }}>
-            <Text>{accessibility}</Text>
-          </View>
+      <View style={{ flexDirection: "row", height: 50, marginBottom: 8, alignItems: 'center' }}>
+        <FontAwesome name="universal-access" size={32} color="#E91E63"
+                     style={{ flex: 0.15, textAlign: 'center', paddingRight: 8 }}/>
+        <View style={{ flexDirection: 'column' }}>
+          <Text>{accessibility}</Text>
         </View>
-
-      </SafeAreaView>
-    </EventsProvider>
+      </View>
+    </Fragment>
   );
 }

@@ -32,16 +32,14 @@ export default function Calendar() {
   };
 
   return (
-    <View style={styles.container}>
-      <Text style={styles.title}>Events</Text>
-      <FlatList
-        horizontal
-        showsHorizontalScrollIndicator={false}
-        data={calendarData}
-        renderItem={renderCalendarItem}
-        keyExtractor={item => item.id}
-        ItemSeparatorComponent={HorizontalItemSeparatorComponent}
-      />
-    </View>
+    <FlatList
+      scrollEnabled={false}
+      horizontal
+      showsHorizontalScrollIndicator={false}
+      data={calendarData}
+      renderItem={renderCalendarItem}
+      keyExtractor={item => item.id}
+      ItemSeparatorComponent={HorizontalItemSeparatorComponent}
+    />
   )
 }
