@@ -5,6 +5,6 @@ import useSession from "../useSession";
 
 export const useGetResources = () => {
   const { profile } = useSession();
-  const universityId = profile!.universityId;
+  const universityId = profile.universityId;
   return useQuery({ queryKey: [QueryKeys.RESOURCES, { universityId }], queryFn: fetchResources })
 };

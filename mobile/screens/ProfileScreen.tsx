@@ -1,46 +1,36 @@
 import React, { useState } from 'react';
-import { Keyboard, StyleSheet, TouchableWithoutFeedback } from 'react-native';
+import { Keyboard, TouchableWithoutFeedback } from 'react-native';
 import useSession from "../hooks/useSession";
 import { Avatar, Button, Card } from "react-native-paper";
 import { supabase } from "../supabase/supabase";
-import { FormControl, Input, Text, useToast, VStack } from "native-base";
-import { Profile, Tables } from "../supabase/extended.types";
-
-export const styles = StyleSheet.create({
-  container: {
-    marginHorizontal: 16,
-    height: '100%',
-  },
-  title: {
-    fontSize: 32,
-    marginVertical: 16,
-    fontWeight: 'bold',
-  },
-  header: {
-    fontSize: 24,
-    marginVertical: 16,
-  },
-});
-
+import { FormControl, Input, useToast, VStack } from "native-base";
+import { useRefetchByUser } from "../hooks/useRefetchByUser";
+import { commonStyles } from './styles/Common.styles';
+import { styles } from "./styles/ProfileScreen.styles";
+import { db } from "../supabase/db";
 
 export default function ProfileScreen() {
+  const { refetchByUser } = useRefetchByUser();
   const { profile } = useSession();
   const toast = useToast();
 
   const [saving, setSaving] = useState<boolean>(false);
-  const [interests, setInterests] = useState<string>(profile!.interests || '');
-  const [phoneNumber, setPhoneNumber] = useState<string>(profile!.phoneNumber || '');
+  const [interests, setInterests] = useState<string>(profile.interests || '');
+  const [phoneNumber, setPhoneNumber] = useState<string>(profile.phoneNumber || '');
 
   const cardTitle = `${profile.firstName} ${profile.lastName}`;
   const cardSubtitle = profile.email;
+  const imageSource = { uri: profile.imageUrl || 'https://www.gravatar.com/avatar/?d=mp' };
 
   const handleSave = async () => {
     setSaving(true);
 
-    const { error: updateProfileError } = await supabase
-      .from<typeof Tables.profile, Profile>(Tables.profile)
-      .update({ interests, phoneNumber: phoneNumber === '' ? null : phoneNumber })
-      .match({ id: profile!.id });
+    const { error: updateProfileError } = await db.profile.updateProfile(profile.id, {
+      interests: interests == '' ? null : interests,
+      phoneNumber: phoneNumber == '' ? null : phoneNumber,
+    });
+
+    await refetchByUser();
 
     setSaving(false);
 
@@ -52,37 +42,37 @@ export default function ProfileScreen() {
   }
 
   return (
-    <TouchableWithoutFeedback onPress={Keyboard.dismiss} accessible={false}>
-      <Card style={{ padding: 16, borderRadius: 16 }}>
-        <Avatar.Image
-          size={128}
-          source={{ uri: profile.imageUrl || 'https://www.gravatar.com/avatar/?d=mp' }}
-        />
-        <Text style={{ alignSelf: 'flex-end' }}>TODO Upload image button</Text>
+    <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
+      <Card style={commonStyles.mainCard}>
+        <Avatar.Image size={128} source={imageSource}/>
         <Card.Title title={cardTitle} subtitle={cardSubtitle}/>
         <Card.Content>
           <VStack space={2}>
-            <FormControl.Label>Phone Number</FormControl.Label>
-            <Input
-              size="lg"
-              onChangeText={setPhoneNumber}
-              value={phoneNumber}
-              placeholder="Phone Number"
-              keyboardType='number-pad'
-            />
-            <FormControl.Label>Interests</FormControl.Label>
-            <Input
-              size="lg"
-              onChangeText={setInterests}
-              value={interests}
-              placeholder="Interests"
-            />
+            <VStack>
+              <FormControl.Label>Phone Number</FormControl.Label>
+              <Input
+                size="lg"
+                onChangeText={setPhoneNumber}
+                value={phoneNumber}
+                placeholder="Phone Number"
+                keyboardType='number-pad'
+              />
+            </VStack>
+            <VStack>
+              <FormControl.Label>Interests</FormControl.Label>
+              <Input
+                size="lg"
+                onChangeText={setInterests}
+                value={interests}
+                placeholder="Interests"
+              />
+            </VStack>
           </VStack>
         </Card.Content>
         <Card.Actions>
-          <VStack space={2} style={{ width: '100%' }}>
-            <Button icon="content-save-outline" mode='contained' onPress={handleSave} loading={saving}>Save</Button>
-            <Button icon="logout" onPress={() => supabase.auth.signOut()}>Sign Out</Button>
+          <VStack space={2} style={styles.buttonContainer}>
+            <Button mode='contained' onPress={handleSave} loading={saving}>Save</Button>
+            <Button onPress={() => supabase.auth.signOut()}>Sign Out</Button>
           </VStack>
         </Card.Actions>
       </Card>

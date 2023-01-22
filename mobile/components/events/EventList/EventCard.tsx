@@ -1,28 +1,88 @@
 import * as React from 'react';
-import { Avatar, Card } from 'react-native-paper';
+import { useState } from 'react';
+import { Card } from 'react-native-paper';
 import { styles } from "./EventCard.styles";
-import { Text, View } from "react-native";
+import { Image, Linking, Platform, Pressable, Text, View } from "react-native";
 import dayjs from "../../../utils/dayjs";
+import { Event } from "../../../supabase/extended.types";
+import { FontAwesome, Ionicons } from "@expo/vector-icons";
+import { VStack } from "native-base";
+import { SUBDOMAIN_COLOR_PALETTE } from "../../../theme/subdomain-color-palette";
+import { ValidSubdomains } from "../../../theme/subdomains";
+import useSession from "../../../hooks/useSession";
 
-const RightContent = ({ startDate, endDate }) => (
-  <View style={{ marginRight: 12 }}>
-    <Text style={{ fontSize: 12, fontWeight: '200' }}>{dayjs(startDate).format('h:mma')}</Text>
-    <Text style={{ fontSize: 12, fontWeight: '200', alignSelf: 'center' }}>–</Text>
-    <Text style={{ fontSize: 12, fontWeight: '200' }}>{dayjs(endDate).format('h:mma')}</Text>
-  </View>
-);
+export default function EventCard({
+                                    selectedDate,
+                                    imageUrl,
+                                    name,
+                                    location,
+                                    startDate,
+                                    endDate,
+                                    description,
+                                    accessibility
+                                  }: Event['Row']) {
+  const { profile } = useSession();
+  const [pressed, setPressed] = useState<boolean>(false);
 
-export default function EventCard({ imageUrl, name, location, startDate, endDate, description, handleCardClick }) {
+  // image
+  const uri = imageUrl || 'https://via.placeholder.com/500x500.png?text=Image+Coming+Soon';
+
+  // time
+  const timeFormat = 'h:mm a';
+
+  // icons
+  const iconColor = SUBDOMAIN_COLOR_PALETTE[profile.university.subdomain as ValidSubdomains]["500"];
+  const iconSize = 32;
+
+  // location
+  const scheme = Platform.select({ ios: 'maps:0,0?q=', android: 'geo:0,0?q=' });
+  const url = `${scheme}${location}`;
+  const handleLocationPress = () => Linking.openURL(url);
+
+  const handleCardPress = () => setPressed((prev) => !prev);
+
+  const RightContent = ({ startDate, endDate }: Pick<Event['Row'], 'startDate' | 'endDate'>) => (
+    <View style={styles.timeContainer}>
+      <Text style={styles.timeText}>{dayjs(startDate).format(timeFormat)}</Text>
+      <Text style={styles.timeText}>–</Text>
+      <Text style={styles.timeText}>{dayjs(endDate).format(timeFormat)}</Text>
+    </View>
+  );
+
+  const renderCardContent = () => (
+    <Card.Content>
+      <VStack space={2}>
+        <Text>{description}</Text>
+
+        <Pressable style={styles.locationContainer} onPress={handleLocationPress}>
+          <Ionicons name="location" size={iconSize} color={iconColor} style={styles.icon}/>
+          <VStack>
+            <Text>{location}</Text>
+            <Text style={styles.helperText}>Click to open maps</Text>
+          </VStack>
+        </Pressable>
+
+        <View style={styles.accessibilityContainer}>
+          <FontAwesome name="universal-access" size={iconSize} color={iconColor} style={styles.icon}/>
+          <Text>{accessibility}</Text>
+        </View>
+      </VStack>
+    </Card.Content>
+  );
+
+  const showCard = dayjs(selectedDate).isSame(startDate, 'day');
+
   return (
-    <Card style={styles.container} onPress={handleCardClick}>
-      <Card.Cover source={{ uri: imageUrl }}/>
+    <Card onPress={handleCardPress} style={{ display: showCard ? 'flex' : 'none' }}>
+      <Image style={{ width: '100%', height: 150 }} source={{ uri }}/>
       <Card.Title
         title={name}
-        subtitle={`${description.slice(0, 30)}...\n${location}`}
+        subtitle={location}
         subtitleNumberOfLines={2}
         right={() => <RightContent startDate={startDate} endDate={endDate}/>}
-        style={{ padding: 16 }}
+        style={styles.titleContainer}
       />
+      {pressed && renderCardContent()}
     </Card>
   );
 }

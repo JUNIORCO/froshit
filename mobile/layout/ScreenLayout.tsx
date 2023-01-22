@@ -24,7 +24,7 @@ type Props = {
   component: ReactElement;
 }
 
-// wrap view temporary until Resources, Events, and Chat work without React stack navigation
+// wrap view temporary until Resources, Events work without React stack navigation
 export default function ScreenLayout({ wrapView, background, component }: Props) {
   const { isRefetchingByUser, refetchByUser } = useRefetchByUser();
 

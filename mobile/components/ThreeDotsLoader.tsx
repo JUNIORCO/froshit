@@ -3,12 +3,12 @@ import React from 'react'
 import { View, StyleSheet, Animated } from 'react-native'
 
 const SIZE = 16
-const MARGIN = 16
+const MARGIN = 12
 const BG = '#9474ec'
 const ACTIVE_BG = '#4C18E0'
 const dots = [1, 2, 3]
-const INTERVAL = 300
-const ANIMATION_DURATION = 400
+const INTERVAL = 350
+const ANIMATION_DURATION = 350
 const ANIMATION_SCALE = 1.4
 
 export default class ThreeDotsLoader extends React.Component {
@@ -108,5 +108,6 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     marginBottom: 32,
+    marginTop: 16,
   },
 })

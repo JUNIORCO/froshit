@@ -5,7 +5,7 @@ export class _Team {
   public static getTeamMembers = async (teamId: string) =>
     supabase
       .from<typeof Tables.profile, Profile>(Tables.profile)
-      .select('*, teamId (name)')
+      .select('*, teamId (*)')
       .eq('teamId', teamId)
       .order('firstName', { ascending: true });
 }

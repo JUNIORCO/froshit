@@ -3,6 +3,7 @@ import { StyleSheet } from 'react-native';
 import { useGetOffers } from "../hooks/query";
 import OfferCard from "../components/offers/OfferCard";
 import { Card } from 'react-native-paper';
+import { commonStyles } from "./styles/Common.styles";
 
 export const styles = StyleSheet.create({
   container: {
@@ -30,7 +31,7 @@ export default function OffersScreen() {
   } = useGetOffers();
 
   return (
-    <Card style={{ paddingHorizontal: 16, paddingVertical: 32, borderRadius: 16 }}>
+    <Card style={commonStyles.mainCard}>
       {offers?.map(offer => <OfferCard key={offer.id} {...offer}/>)}
     </Card>
   )

@@ -1,6 +1,4 @@
-import React, { useEffect, useState } from 'react';
-import { StyleSheet } from 'react-native';
-import { Chat, MessageType } from '../components/chat'
+import React, { useCallback, useEffect, useState } from 'react';
 import useSession from "../hooks/useSession";
 import { uuid } from "@supabase/supabase-js/dist/main/lib/helpers";
 import { supabase } from "../supabase/supabase";
@@ -8,24 +6,10 @@ import { useGetMessages } from "../hooks/query";
 import { formatMessage } from "../helpers/messageFormatter";
 import { Tables } from "../supabase/extended.types";
 import { Database } from "../supabase/database.types";
-
-export const styles = StyleSheet.create({
-  container: {
-    marginHorizontal: 16,
-    height: '100%',
-  },
-  title: {
-    fontSize: 32,
-    marginVertical: 16,
-    fontWeight: 'bold',
-  },
-  header: {
-    fontSize: 24,
-    marginVertical: 16,
-  },
-});
+import { GiftedChat, IMessage } from "react-native-gifted-chat";
 
 export default function ChatScreen() {
+  const { profile } = useSession();
   const {
     isLoading: eventsIsLoading,
     isError: eventsIsError,
@@ -34,33 +18,33 @@ export default function ChatScreen() {
     refetch: refetchMessages,
   } = useGetMessages();
 
-  const { profile } = useSession();
-  const user = { id: profile!.id };
-  console.log('user : ', user)
-  const [displayedMessages, setDisplayedMessages] = useState<MessageType.Text[]>([]);
-  console.log(displayedMessages[0])
-  useEffect(() => {
-    if (messages) {
-      setDisplayedMessages(messages);
-    }
-  }, [messages])
+  const [displayedMessages, setDisplayedMessages] = useState<IMessage[]>([]);
 
+  const chatUser = { _id: profile.id };
 
-  const channel = supabase.channel('messages');
+  const onSend = useCallback(async (messages: IMessage[] = []) => {
+    const message = messages[0];
+    if (!message) return;
 
-  const handleSendPress = async (message: MessageType.PartialText) => {
-    const { data, error } = await supabase.from(Tables.message).insert({
+    const { error } = await supabase.from(Tables.message).insert({
       id: uuid(),
-      teamId: profile!.teamId,
-      profileId: profile!.id,
+      teamId: profile.teamId,
+      profileId: profile.id,
       content: message.text,
-      profileFirstName: profile!.firstName,
-      profileLastName: profile!.lastName,
-      profileImageUrl: profile!.imageUrl || '',
-      profileRole: profile!.role,
+      profileFirstName: profile.firstName,
+      profileLastName: profile.lastName,
+      profileImageUrl: profile.imageUrl || '',
+      profileRole: profile.role,
     });
-    console.log('[realtime] handle send press: error', error)
-  }
+  }, []);
+
+
+  /*
+  *
+  * Supabase logic
+  *
+  * */
+  const channel = supabase.channel('messages');
 
   channel.on(
     'postgres_changes',
@@ -68,31 +52,32 @@ export default function ChatScreen() {
       event: 'INSERT',
       schema: 'public',
       table: 'message',
-      filter: `teamId=eq.${profile!.teamId}`,
+      filter: `teamId=eq.${profile.teamId}`,
     },
     (payload) => {
-      console.log('[realtime] new message receievd! s', payload.new)
-      const formattedMessage: MessageType.Text = formatMessage(payload.new as Database['public']['Tables']['message']['Row']);
-      console.log('[realtime] formattedMessage : ', formattedMessage)
+      const formattedMessage: IMessage = formatMessage(payload.new as Database['public']['Tables']['message']['Row']);
       setDisplayedMessages((prev) => [formattedMessage, ...prev]);
     }
   )
 
   channel.subscribe(async (status) => {
-    console.log('[realtime] status : ', status)
     // if (status === 'SUBSCRIBED') {
     // }
-  })
+  });
+
+  useEffect(() => {
+    if (messages) {
+      setDisplayedMessages(messages);
+    }
+  }, [messages]);
 
   return (
-    <Chat
+    <GiftedChat
       messages={displayedMessages}
-      onSendPress={handleSendPress}
-      user={user}
-      showUserAvatars
-      showUserNames
-      enableAnimation
-      timeFormat='h:m a'
+      onSend={onSend}
+      user={chatUser}
+      renderUsernameOnMessage
+      maxInputLength={280}
     />
   )
 }

@@ -7,7 +7,7 @@ import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import BOTTOM_TABS from "./layout/BottomTabs";
 import { focusManager, QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import type { AppStateStatus } from "react-native"
-import { Alert, Platform, SafeAreaView, View } from 'react-native'
+import { Alert, Platform } from 'react-native'
 import { useOnlineManager } from "./hooks/useOnlineManager";
 import { useAppState } from "./hooks/useAppState";
 import AppLoader from "./AppLoader";
@@ -124,6 +124,7 @@ export default function App() {
                       name={options.name}
                       options={{
                         tabBarIcon: (props) => <TabBarIcon name={options.icon} {...props}/>,
+                        lazy: false,
                       }}>
                       {() => <ScreenLayout
                         wrapView={options.wrapView}

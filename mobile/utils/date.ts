@@ -1,4 +1,5 @@
 import dayjs from "./dayjs";
+import type { Event } from "../supabase/extended.types";
 
 type GetDatesBetweenType = {
   startDate: Date;
@@ -6,8 +7,8 @@ type GetDatesBetweenType = {
 }
 
 export const getDatesBetween = ({ startDate, endDate }: GetDatesBetweenType): Date[] => {
-  const dayjsStartDate = dayjs.utc(startDate);
-  const dayjsEndDate = dayjs.utc(endDate);
+  const dayjsStartDate = dayjs(startDate);
+  const dayjsEndDate = dayjs(endDate);
 
   const dateArray: Date[] = [];
   let currentDate = dayjsStartDate;
@@ -18,4 +19,13 @@ export const getDatesBetween = ({ startDate, endDate }: GetDatesBetweenType): Da
   }
 
   return dateArray;
+}
+
+export const getDatesFromEvents = (events: Event['Row'][] | null | undefined): Date[] => {
+  if (!events) return [];
+
+  const firstDate = events[0].startDate;
+  const lastDate = events[events.length - 1].startDate;
+
+  return getDatesBetween({ startDate: new Date(firstDate), endDate: new Date(lastDate) });
 }

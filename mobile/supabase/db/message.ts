@@ -6,5 +6,6 @@ export class _Message {
     supabase.from<typeof Tables.message, Message>(Tables.message)
       .select('*')
       .eq('teamId', teamId)
-      .order('createdAt', { ascending: false });
+      .order('createdAt', { ascending: false })
+      .limit(100);
 }

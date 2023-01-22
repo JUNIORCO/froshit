@@ -1,8 +1,8 @@
-import ResourcesScreen from "../screens/resources/ResourcesScreen";
+import ResourcesScreen from "../screens/ResourcesScreen";
 import ChatScreen from "../screens/ChatScreen";
 import TeamScreen from "../screens/TeamScreen";
 import OffersScreen from "../screens/OffersScreen";
-import EventsScreen from "../screens/events/EventsScreen";
+import EventsScreen from "../screens/EventsScreen";
 import ProfileScreen from "../screens/ProfileScreen";
 
 const BOTTOM_TABS = {
@@ -11,7 +11,7 @@ const BOTTOM_TABS = {
     icon: 'help-circle-outline',
     component: ResourcesScreen,
     background: require('../assets/images/background.png'),
-    wrapView: false,
+    wrapView: true,
   },
   OFFERS: {
     name: 'Offers',
@@ -25,7 +25,7 @@ const BOTTOM_TABS = {
     icon: 'calendar-blank-outline',
     component: EventsScreen,
     background: require('../assets/images/background.png'),
-    wrapView: false,
+    wrapView: true,
   },
   CHAT: {
     name: 'Chat',

@@ -11,9 +11,10 @@ function cacheImages(images: (string | number)[]) {
   });
 }
 
-export const imagePrefetch = async () => {
+export const imagePrefetch = async (images: string[] = []) => {
   await Promise.all(cacheImages([
     require('./assets/images/background.png'),
     require('./assets/icon.png'),
+    ...images,
   ]));
 }

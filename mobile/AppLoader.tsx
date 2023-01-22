@@ -36,12 +36,11 @@ const AppLoader: FC<Props> = memo(props => {
   const [minimumDurationPassed, setMinimumDurationPassed] = useState<boolean>((props.minimumLoadingTime || 0) <= 0);
 
   // processes to load before loading app
-  const { isLoading: eventsIsLoading } = useGetEvents();
-  const { isLoading: teamIsLoading } = useGetTeam();
-  const { isLoading: offersIsLoading } = useGetOffers();
-  const { isLoading: resourcesIsLoading } = useGetResources();
-  const { isLoading: messagesIsLoading } = useGetMessages();
-  void imagePrefetch();
+  const { isLoading: eventsIsLoading, data: events } = useGetEvents();
+  const { isLoading: teamIsLoading, data: team } = useGetTeam();
+  const { isLoading: offersIsLoading, data: offers } = useGetOffers();
+  const { isLoading: resourcesIsLoading, data: resources } = useGetResources();
+  const { isLoading: messagesIsLoading, data: messages } = useGetMessages();
 
   // As long as not all screens are ready, display splashscreen
   const loadingProcesses: LoadingProcess[] = [
@@ -73,6 +72,19 @@ const AppLoader: FC<Props> = memo(props => {
       setTimeout(() => setMinimumDurationPassed(true), props.minimumLoadingTime);
     }
   }, []);
+
+  useEffect(() => {
+    if (every(loadingProcesses, "isReady")) {
+      const imageUrls: string[] = [
+        ...events?.flatMap(event => event.imageUrl ? [event.imageUrl] : []) || [],
+        ...team?.flatMap(member => member.imageUrl ? [member.imageUrl] : []) || [],
+        ...offers?.flatMap(offer => offer.imageUrl ? [offer.imageUrl] : []) || [],
+        // ...resources?.map(resource => resource.resou) || [],
+        ...messages?.flatMap(message => message.image ? [message.image] : []) || [],
+      ];
+      void imagePrefetch(imageUrls);
+    }
+  }, [loadingProcesses]);
 
   return (
     <Fragment>

@@ -18,7 +18,7 @@ export default function AuthScreen() {
         >
           <TouchableWithoutFeedback onPress={Keyboard.dismiss} accessible={false}>
             <View style={styles.innerContainer}>
-              <Logo width={170} height={80}/>
+              <Logo width={200} height={100}/>
               {step === SignInSteps.EMAIL_INPUT && < EmailInput/>}
               {step === SignInSteps.VERIFY_OTP && < VerifyCode/>}
             </View>

@@ -1,14 +1,14 @@
-import { StatusBar, StyleSheet } from "react-native";
+import { StyleSheet } from "react-native";
 
 export const styles = StyleSheet.create({
   container: {
     marginBottom: 16,
   },
-  item: (selected: boolean) => ({
+  item: (backgroundColor) => ({
     borderRadius: 8,
-    backgroundColor: selected ? '#e91e63' : 'grey',
-    paddingHorizontal: 18,
-    paddingVertical: 32,
+    backgroundColor: backgroundColor,
+    paddingHorizontal: 16,
+    paddingVertical: 24,
     alignItems: 'center',
   }),
   title: {

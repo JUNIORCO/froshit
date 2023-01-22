@@ -3,13 +3,17 @@ import { Avatar, Card } from 'react-native-paper';
 import { styles } from "./TeamCard.styles";
 import { Image, Linking, View } from "react-native";
 import { Feather } from "@expo/vector-icons";
-import { LoggedInProfile } from "../../supabase/database.types";
+import useSession from "../../hooks/useSession";
 
-type Props = LoggedInProfile & { isLeader?: boolean };
+// todo need to return type of getTeam
+type Props = any & { isLeader?: boolean };
 
-export default function TeamCard({ imageUrl, firstName, lastName, phoneNumber, interests, program, isLeader }: Props) {
+export default function TeamCard({ id, imageUrl, firstName, lastName, phoneNumber, interests, program, isLeader }: Props) {
+  const { profile } = useSession();
+
   const title = `${firstName} ${lastName}`;
   const subtitle = `${program ? `Program: ${program}` : ''}\n${interests ? `Interests: ${interests}` : ''}`.trim();
+  const showPhoneContent = isLeader && profile.id !== id;
 
   const handlePhonePress = () => Linking.openURL(`tel:${phoneNumber}`);
 
@@ -17,23 +21,23 @@ export default function TeamCard({ imageUrl, firstName, lastName, phoneNumber, i
 
   const renderUserImage = (imageUrl: string) => <Image style={styles.image} source={{ uri: imageUrl }} />;
 
-  const LeftContent = () => imageUrl ? renderUserImage(imageUrl) : renderAvatarIcon();
+  const AvatarContent = () => imageUrl ? renderUserImage(imageUrl) : renderAvatarIcon();
 
-  const RightContent = () => (
-    <View style={{ marginRight: 12 }}>
+  const PhoneContent = () => (
+    <View style={styles.phoneContent}>
       <Feather name="phone-call" size={32} onPress={handlePhonePress} color='#25D366'/>
     </View>
   );
 
   return (
-    <Card style={styles.container}>
+    <Card style={styles.card}>
       <Card.Title
         title={title}
         subtitle={subtitle}
         subtitleNumberOfLines={2}
-        left={LeftContent}
-        right={isLeader ? RightContent : undefined}
-        style={{ paddingLeft: 0 }}
+        left={AvatarContent}
+        right={showPhoneContent ? PhoneContent : undefined}
+        style={styles.innerCard}
       />
     </Card>
   );

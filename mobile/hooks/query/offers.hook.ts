@@ -5,7 +5,7 @@ import useSession from "../useSession";
 
 export const useGetOffers = () => {
   const { profile } = useSession();
-  const universityId = profile!.universityId;
+  const universityId = profile.universityId;
   return useQuery({
     queryKey: [QueryKeys.OFFERS, { universityId }],
     queryFn: fetchOffers

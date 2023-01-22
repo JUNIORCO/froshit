@@ -18,7 +18,7 @@ export default function Logo({ university, width, height }: LogoProps) {
     <Image
       style={{
         width: width ?? 100,
-        height: height ?? 40,
+        height: height ?? 50,
         ...(university && { resizeMode: 'stretch' }),
       }}
       source={imageSource}

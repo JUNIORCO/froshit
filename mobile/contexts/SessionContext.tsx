@@ -8,7 +8,9 @@ export type ProfileContextProps = {
 }
 
 const initialState: ProfileContextProps = {
+  // @ts-ignore
   session: null,
+  // @ts-ignore
   profile: null,
 };
 

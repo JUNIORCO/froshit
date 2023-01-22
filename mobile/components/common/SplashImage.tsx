@@ -11,8 +11,8 @@ export default function SplashImage() {
         style={styles.backgroundImage}
       >
         <View style={styles.innerContainer}>
-          <Logo width={170} height={80}/>
-          <ThreeDotsLoader/>
+          <Logo width={200} height={100}/>
+          <ThreeDotsLoader />
         </View>
       </ImageBackground>
     </View>
@@ -34,7 +34,6 @@ const styles = StyleSheet.create({
     padding: 32,
     width: '80%',
     backgroundColor: 'white',
-    opacity: 0.95,
     borderRadius: 16,
     alignItems: 'center',
   },

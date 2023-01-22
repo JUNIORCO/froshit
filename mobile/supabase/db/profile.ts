@@ -13,5 +13,14 @@ export class _Profile {
       .select('*, team(*), university(*)')
       .eq('id', userId)
       .single();
+
+  public static updateProfile = async (id: string, {
+    interests,
+    phoneNumber
+  }: Pick<Profile['Update'], 'interests' | 'phoneNumber'>) =>
+    supabase
+      .from<typeof Tables.profile, Profile>(Tables.profile)
+      .update({ interests, phoneNumber })
+      .match({ id })
 }
 

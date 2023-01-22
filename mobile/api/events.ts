@@ -1,5 +1,6 @@
 import { QueryFunctionContext } from "@tanstack/react-query";
 import { db } from "../supabase/db";
+import { eventFormatter } from "../helpers/eventFormatter";
 
 type QueryKeyArg = {
   froshId: string;
@@ -19,5 +20,5 @@ export const fetchEvents = async ({ queryKey }: QueryFunctionContext<[string, Qu
 
   if (eventsError) throw eventsError;
 
-  return events;
+  return events.map(eventFormatter);
 }
