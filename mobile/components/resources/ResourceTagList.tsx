@@ -1,8 +1,7 @@
-import { Flex } from "native-base";
 import { styles } from "../../screens/styles/ResourcesScreen";
 import { Dispatch, SetStateAction } from "react";
 import { flow, groupBy, map } from "lodash/fp";
-import { ImageBackground, Pressable, Text } from "react-native";
+import { ImageBackground, Pressable, Text, View} from "react-native";
 import { useGetResources } from "../../hooks/query";
 import { Resource, ResourceTag } from "../../supabase/extended.types";
 
@@ -41,7 +40,7 @@ export default function ResourceTagList({ setSelectedTag }: Props) {
   };
 
   return (
-    <Flex style={styles.flexContainer}>
+    <View style={styles.flexContainer}>
       {resourcesGroupedByResourceTag.map(renderResourceTag)}
-    </Flex>)
+    </View>)
 }

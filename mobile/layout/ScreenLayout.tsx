@@ -2,7 +2,6 @@ import React, { ReactElement } from "react";
 import { ImageBackground, ImageSourcePropType, RefreshControl, ScrollView, StyleSheet, View } from "react-native";
 import Logo from "../components/common/Logo";
 import { Card } from "react-native-paper";
-import { HStack } from "native-base";
 import { useRefetchByUser } from "../hooks/useRefetchByUser";
 
 const styles = StyleSheet.create({
@@ -40,10 +39,10 @@ export default function ScreenLayout({ wrapView, background, component }: Props)
           <ScrollView refreshControl={refreshControl}>
             <View style={styles.innerContainer}>
               <Card style={{ padding: 16, borderRadius: 16, marginBottom: 16 }}>
-                <HStack justifyContent='space-between'>
+                <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
                   <Logo/>
                   <Logo university/>
-                </HStack>
+                </View>
               </Card>
               {component}
             </View>

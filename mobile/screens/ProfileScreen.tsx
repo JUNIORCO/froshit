@@ -1,9 +1,8 @@
 import React, { useState } from 'react';
-import { Keyboard, TouchableWithoutFeedback } from 'react-native';
+import { Keyboard, TouchableWithoutFeedback, Text, View } from 'react-native';
 import useSession from "../hooks/useSession";
-import { Avatar, Button, Card } from "react-native-paper";
+import { Avatar, Button, Card, TextInput } from "react-native-paper";
 import { supabase } from "../supabase/supabase";
-import { FormControl, Input, useToast, VStack } from "native-base";
 import { useRefetchByUser } from "../hooks/useRefetchByUser";
 import { commonStyles } from './styles/Common.styles';
 import { styles } from "./styles/ProfileScreen.styles";
@@ -12,7 +11,6 @@ import { db } from "../supabase/db";
 export default function ProfileScreen() {
   const { refetchByUser } = useRefetchByUser();
   const { profile } = useSession();
-  const toast = useToast();
 
   const [saving, setSaving] = useState<boolean>(false);
   const [interests, setInterests] = useState<string>(profile.interests || '');
@@ -34,11 +32,12 @@ export default function ProfileScreen() {
 
     setSaving(false);
 
-    if (updateProfileError) {
-      toast.show({ description: 'Failed to update your profile', placement: "top", variant: 'subtle' });
-    } else {
-      toast.show({ description: 'Updated profile', placement: "top", variant: 'subtle' });
-    }
+    // TODO handle error
+    // if (updateProfileError) {
+    //   toast.show({ description: 'Failed to update your profile', placement: "top", variant: 'subtle' });
+    // } else {
+    //   toast.show({ description: 'Updated profile', placement: "top", variant: 'subtle' });
+    // }
   }
 
   return (
@@ -47,33 +46,31 @@ export default function ProfileScreen() {
         <Avatar.Image size={128} source={imageSource}/>
         <Card.Title title={cardTitle} subtitle={cardSubtitle}/>
         <Card.Content>
-          <VStack space={2}>
-            <VStack>
-              <FormControl.Label>Phone Number</FormControl.Label>
-              <Input
-                size="lg"
+          <View style={{ flexDirection: 'column' }}>
+            <View style={{ flexDirection: 'column' }}>
+              <Text>Phone Number</Text>
+              <TextInput
                 onChangeText={setPhoneNumber}
                 value={phoneNumber}
                 placeholder="Phone Number"
                 keyboardType='number-pad'
               />
-            </VStack>
-            <VStack>
-              <FormControl.Label>Interests</FormControl.Label>
-              <Input
-                size="lg"
+            </View>
+            <View style={{ flexDirection: 'column' }}>
+              <Text>Interests</Text>
+              <TextInput
                 onChangeText={setInterests}
                 value={interests}
                 placeholder="Interests"
               />
-            </VStack>
-          </VStack>
+            </View>
+          </View>
         </Card.Content>
         <Card.Actions>
-          <VStack space={2} style={styles.buttonContainer}>
+          <View style={styles.buttonContainer}>
             <Button mode='contained' onPress={handleSave} loading={saving}>Save</Button>
             <Button onPress={() => supabase.auth.signOut()}>Sign Out</Button>
-          </VStack>
+          </View>
         </Card.Actions>
       </Card>
     </TouchableWithoutFeedback>

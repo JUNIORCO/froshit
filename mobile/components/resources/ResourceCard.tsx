@@ -1,10 +1,9 @@
 import * as React from 'react';
 import { Dispatch, SetStateAction } from 'react';
-import { Card } from 'react-native-paper';
+import { Card, Button } from 'react-native-paper';
 import { Linking, StyleSheet, View } from "react-native";
 import { Feather, Ionicons } from "@expo/vector-icons";
 import { GroupedResource } from "./ResourceTagList";
-import { Button, Icon, VStack } from "native-base";
 import { Resource, ResourceTag } from "../../supabase/extended.types";
 
 const styles = StyleSheet.create({
@@ -45,14 +44,13 @@ export default function ResourceCard({ selectedTag, setSelectedTag }: Props) {
   )
 
   return (
-    <VStack space={2}>
+    <View style={{ flexDirection: 'column' }}>
       <Button
-        leftIcon={<Icon as={Ionicons} name="arrow-back" size="sm"/>}
-        variant="link"
+        icon='arrow-left'
+        mode="text"
         onPress={() => setSelectedTag(null)}
         style={{ justifyContent: 'flex-start' }}
-        size='lg'
       >Back</Button>
       {resources.map(renderResourceCard)}
-    </VStack>);
+    </View>);
 }

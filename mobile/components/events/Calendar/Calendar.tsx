@@ -1,9 +1,8 @@
 import React, { Dispatch, SetStateAction } from 'react';
-import { FlatList, Pressable, Text } from 'react-native';
+import { FlatList, Pressable, Text, View } from 'react-native';
 import { styles } from "./Calendar.styles";
 import HorizontalItemSeparatorComponent from "../../common/HorizontalItemSeparatorComponent";
 import dayjs from "../../../utils/dayjs";
-import { Box } from "native-base";
 import { SUBDOMAIN_COLOR_PALETTE } from "../../../theme/subdomain-color-palette";
 import { ValidSubdomains } from "../../../theme/subdomains";
 import useSession from "../../../hooks/useSession";
@@ -26,10 +25,10 @@ export default function Calendar({ dates, selectedDate, setSelectedDate }: Props
 
     return (
       <Pressable onPress={() => setSelectedDate(date)}>
-        <Box style={styles.item(isDateSelected(dayjsDate) ? selectedColor : unselectedColor)}>
+        <View style={styles.item(isDateSelected(dayjsDate) ? selectedColor : unselectedColor)}>
           <Text style={styles.date}>{dayjsDate.format('MMM')}</Text>
           <Text style={styles.date}>{dayjsDate.format('D')}</Text>
-        </Box>
+        </View>
       </Pressable>
     )
   };

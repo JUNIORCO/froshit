@@ -1,5 +1,8 @@
 import type { ReactElement } from 'react';
-import { extendTheme, NativeBaseProvider } from 'native-base';
+import {
+  MD3LightTheme as DefaultTheme,
+  Provider as PaperProvider,
+} from 'react-native-paper';
 import { ValidSubdomains } from "./subdomains";
 import { SUBDOMAIN_COLOR_PALETTE } from "./subdomain-color-palette";
 
@@ -24,15 +27,19 @@ export function ThemeProvider({ subdomain, children }: Props) {
     "900": "#3e2c7c",
   }
 
-  const theme = extendTheme({
-    colors: {
-      primary: subdomain ? SUBDOMAIN_COLOR_PALETTE[subdomain] : froshitColors,
-    },
-  });
+  // const theme = extendTheme({
+  //   colors: {
+  //     primary: subdomain ? SUBDOMAIN_COLOR_PALETTE[subdomain] : froshitColors,
+  //   },
+  // });
+
+  const theme = {
+    ...DefaultTheme,
+  };
 
   return (
-    <NativeBaseProvider theme={theme}>
+    <PaperProvider theme={theme}>
       {children}
-    </NativeBaseProvider>
+    </PaperProvider>
   );
 }

@@ -33,7 +33,7 @@ export default function TeamCard({ id, imageUrl, firstName, lastName, phoneNumbe
     <Card style={styles.card}>
       <Card.Title
         title={title}
-        subtitle={subtitle}
+        subtitle={subtitle || undefined}
         subtitleNumberOfLines={2}
         left={AvatarContent}
         right={showPhoneContent ? PhoneContent : undefined}

@@ -1,7 +1,7 @@
 import React, { Fragment } from 'react'
 import { StyleSheet, Text, View } from 'react-native'
 import { supabase } from '../../supabase/supabase'
-import { Alert, Button, Input, VStack } from 'native-base';
+import { Snackbar, Button, TextInput } from 'react-native-paper';
 import useSignIn from "../../hooks/useSignIn";
 import { SignInSteps } from "./steps";
 
@@ -26,11 +26,10 @@ export default function VerifyCode() {
 
   return (
     <Fragment>
-      {error !== '' && <Alert status="error"><Text>{error}</Text></Alert>}
       <View style={[styles.verticallySpaced, styles.mt20]}>
         <Text style={{ marginBottom: 16 }}>We sent a code to {email}</Text>
-        <Input
-          size="lg"
+        <TextInput
+          label='Code'
           placeholder="Code"
           keyboardType='number-pad'
           maxLength={6}
@@ -41,19 +40,27 @@ export default function VerifyCode() {
           textContentType='none'
         />
       </View>
-      <VStack style={{ width: '100%' }}>
+      <View style={{ flexDirection: 'column', width: '100%' }}>
         <Button
-          isDisabled={otp.length !== 6}
+          disabled={otp.length !== 6}
           onPress={signInWithOtp}
           style={styles.verticallySpaced}
-          isLoading={loading}
+          loading={loading}
         >Verify</Button>
         <Button
-          variant="ghost"
           onPress={handleBack}
           style={styles.verticallySpaced}
         >Back</Button>
-      </VStack>
+      </View>
+      <Snackbar
+        visible={error !== ''}
+        onDismiss={() => setError('')}
+        action={{
+          label: 'Ok',
+          onPress: () => setError(''),
+        }}>
+        {error}
+      </Snackbar>
     </Fragment>
   )
 }

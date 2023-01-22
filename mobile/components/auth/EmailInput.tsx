@@ -1,9 +1,9 @@
 import React, { Fragment } from 'react'
-import { Keyboard, StyleSheet, Text, View } from 'react-native'
+import { Keyboard, StyleSheet, View } from 'react-native'
 import { supabase } from '../../supabase/supabase'
 import useSignIn from "../../hooks/useSignIn";
 import { db } from "../../supabase/db";
-import { Alert, Button, Input } from 'native-base';
+import { Button, Snackbar, TextInput } from 'react-native-paper';
 import { SignInSteps } from "./steps";
 
 export default function EmailInput() {
@@ -44,24 +44,32 @@ export default function EmailInput() {
 
   return (
     <Fragment>
-      {error !== '' && <Alert status="error"><Text>{error}</Text></Alert>}
       <View style={[styles.verticallySpaced, styles.mt20]}>
-        <Input
-          size="lg"
-          onChangeText={(text) => setEmail(text)}
+        <TextInput
+          label='University Email'
+          onChangeText={(email) => setEmail(email)}
           value={email}
-          placeholder="University Email"
           autoCapitalize='none'
           autoComplete='email'
           textContentType='emailAddress'
         />
       </View>
       <Button
-        isDisabled={!email.match(/^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/)}
+        disabled={!email.match(/^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/)}
         onPress={signInWithEmail}
         style={styles.verticallySpaced}
-        isLoading={loading}
+        loading={loading}
+        mode='contained'
       >Sign In</Button>
+      <Snackbar
+        visible={error !== ''}
+        onDismiss={() => setError('')}
+        action={{
+          label: 'Ok',
+          onPress: () => setError(''),
+        }}>
+        {error}
+      </Snackbar>
     </Fragment>
   )
 }

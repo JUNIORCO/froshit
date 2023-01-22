@@ -6,7 +6,6 @@ import { Image, Linking, Platform, Pressable, Text, View } from "react-native";
 import dayjs from "../../../utils/dayjs";
 import { Event } from "../../../supabase/extended.types";
 import { FontAwesome, Ionicons } from "@expo/vector-icons";
-import { VStack } from "native-base";
 import { SUBDOMAIN_COLOR_PALETTE } from "../../../theme/subdomain-color-palette";
 import { ValidSubdomains } from "../../../theme/subdomains";
 import useSession from "../../../hooks/useSession";
@@ -51,22 +50,22 @@ export default function EventCard({
 
   const renderCardContent = () => (
     <Card.Content>
-      <VStack space={2}>
+      <View style={{ flexDirection: 'column' }}>
         <Text>{description}</Text>
 
         <Pressable style={styles.locationContainer} onPress={handleLocationPress}>
           <Ionicons name="location" size={iconSize} color={iconColor} style={styles.icon}/>
-          <VStack>
+          <View style={{ flexDirection: 'column' }}>
             <Text>{location}</Text>
             <Text style={styles.helperText}>Click to open maps</Text>
-          </VStack>
+          </View>
         </Pressable>
 
         <View style={styles.accessibilityContainer}>
           <FontAwesome name="universal-access" size={iconSize} color={iconColor} style={styles.icon}/>
           <Text>{accessibility}</Text>
         </View>
-      </VStack>
+      </View>
     </Card.Content>
   );
 
