@@ -1,5 +1,5 @@
 import EventCard from "./EventCard";
-import { Event } from "../../../supabase/extended.types";
+import { Event } from "../../../supabase/types/extended";
 import { Fragment } from "react";
 
 type Props = {

@@ -1,5 +1,5 @@
 import dayjs from "./dayjs";
-import type { Event } from "../supabase/extended.types";
+import type { Event } from "../supabase/types/extended";
 
 type GetDatesBetweenType = {
   startDate: Date;

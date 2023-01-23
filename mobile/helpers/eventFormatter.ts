@@ -1,4 +1,4 @@
-import type { Event } from "../supabase/extended.types";
+import type { Event } from "../supabase/types/extended";
 import dayjs from "../utils/dayjs";
 
 export const eventFormatter = (event: Event['Row']): Event['Row'] => ({

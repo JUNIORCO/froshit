@@ -1,5 +1,5 @@
 import { supabase } from "../supabase";
-import { Resource, Tables } from "../extended.types";
+import { Resource, Tables } from "../types/extended";
 
 export class _Resource {
   public static getResources = async (universityId: string) =>

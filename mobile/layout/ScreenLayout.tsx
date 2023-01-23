@@ -23,7 +23,7 @@ type Props = {
   component: ReactElement;
 }
 
-// wrap view temporary until Resources, Events work without React stack navigation
+// wrap view temporary until Chat works without the check
 export default function ScreenLayout({ wrapView, background, component }: Props) {
   const { isRefetchingByUser, refetchByUser } = useRefetchByUser();
 
@@ -40,8 +40,8 @@ export default function ScreenLayout({ wrapView, background, component }: Props)
             <View style={styles.innerContainer}>
               <Card style={{ padding: 16, borderRadius: 16, marginBottom: 16 }}>
                 <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
-                  <Logo />
-                  <Logo university />
+                  <Logo/>
+                  <Logo university/>
                 </View>
               </Card>
               {component}

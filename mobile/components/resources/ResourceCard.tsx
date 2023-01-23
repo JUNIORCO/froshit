@@ -4,7 +4,7 @@ import { Card, Button } from 'react-native-paper';
 import { Linking, StyleSheet, View } from "react-native";
 import { Feather, Ionicons } from "@expo/vector-icons";
 import { GroupedResource } from "./ResourceTagList";
-import { Resource, ResourceTag } from "../../supabase/extended.types";
+import { Resource, ResourceTag } from "../../supabase/types/extended";
 
 const styles = StyleSheet.create({
   container: {

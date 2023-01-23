@@ -1,11 +1,4 @@
-export type Json =
-  | string
-  | number
-  | boolean
-  | null
-  | { [key: string]: Json }
-  | Json[]
-
+// auto generated from Supabase cli
 export interface Database {
   public: {
     Tables: {
@@ -392,8 +385,3 @@ export interface Database {
     }
   }
 }
-
-export type LoggedInProfile = Database['public']['Tables']['profile']['Row']
-  & { team: Database['public']['Tables']['team']['Row'] }
-  & { frosh: Database['public']['Tables']['frosh']['Row'] }
-  & { university: Database['public']['Tables']['university']['Row'] };

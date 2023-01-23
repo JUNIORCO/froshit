@@ -1,4 +1,4 @@
-import { Database } from "./database.types";
+import { Database } from "./database";
 
 /* Tables */
 export type Tables = keyof Database['public']['Tables'];
@@ -34,3 +34,9 @@ export type University = DatabaseTypes['university'];
 /* Enums */
 export type PaymentType = Database['public']['Enums']['PaymentType'];
 export type Role = Database['public']['Enums']['Role'];
+
+/* My types */
+export type LoggedInProfile = Database['public']['Tables']['profile']['Row']
+  & { team: Database['public']['Tables']['team']['Row'] }
+  & { frosh: Database['public']['Tables']['frosh']['Row'] }
+  & { university: Database['public']['Tables']['university']['Row'] };

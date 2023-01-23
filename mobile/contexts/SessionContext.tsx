@@ -1,6 +1,6 @@
 import { createContext, ReactNode } from 'react';
 import { Session } from "@supabase/supabase-js";
-import { LoggedInProfile } from "../supabase/database.types";
+import { LoggedInProfile } from "../supabase/types/extended";
 
 export type ProfileContextProps = {
   session: Session;

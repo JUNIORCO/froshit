@@ -1,5 +1,5 @@
 import { supabase } from "../supabase";
-import { Offer, Tables } from "../extended.types";
+import { Offer, Tables } from "../types/extended";
 
 export class _Offer {
   public static getOffersByUniversityId = async (universityId: string) =>

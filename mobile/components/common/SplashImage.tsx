@@ -23,7 +23,7 @@ export default function SplashImage() {
           borderRadius: 16,
           alignItems: 'center',
         }}>
-          <Logo width={200} height={100}/>
+          <Logo width={250} height={125}/>
           <ThreeDotsLoader/>
         </View>
       </ImageBackground>

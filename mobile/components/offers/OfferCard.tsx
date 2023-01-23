@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { Card } from 'react-native-paper';
 import { Image, StyleSheet } from "react-native";
-import { Offer } from "../../supabase/extended.types";
+import { Offer } from "../../supabase/types/extended";
 
 const styles = StyleSheet.create({
   container: {

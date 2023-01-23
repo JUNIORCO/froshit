@@ -16,7 +16,7 @@ import { ThemeProvider } from "./contexts/ThemeContext";
 import AuthScreen from "./screens/AuthScreen";
 import AuthAppLoader from "./AuthAppLoader";
 import { db } from "./supabase/db";
-import { LoggedInProfile } from "./supabase/database.types";
+import { LoggedInProfile } from "./supabase/types/extended";
 import { PreferencesProvider } from "./contexts/PreferencesContext";
 import AppLayout from "./layout/AppLayout";
 

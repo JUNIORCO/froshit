@@ -1,5 +1,5 @@
 import { supabase } from "../supabase";
-import { Message, Tables } from "../extended.types";
+import { Message, Tables } from "../types/extended";
 
 export class _Message {
   public static getMessagesByTeamId = async (teamId: string) =>

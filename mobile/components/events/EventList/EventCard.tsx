@@ -4,7 +4,7 @@ import { Card, Text } from 'react-native-paper';
 import { styles } from "./EventCard.styles";
 import { Image, Linking, Platform, Pressable, View } from "react-native";
 import dayjs from "../../../utils/dayjs";
-import { Event } from "../../../supabase/extended.types";
+import { Event } from "../../../supabase/types/extended";
 import { FontAwesome, Ionicons } from "@expo/vector-icons";
 import { SUBDOMAIN_COLOR_PALETTE } from "../../../theme/subdomain-color-palette";
 import { ValidSubdomains } from "../../../theme/subdomains";

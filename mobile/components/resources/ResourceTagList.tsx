@@ -3,7 +3,7 @@ import { Dispatch, SetStateAction } from "react";
 import { flow, groupBy, map } from "lodash/fp";
 import { ImageBackground, Pressable, Text, View} from "react-native";
 import { useGetResources } from "../../hooks/query";
-import { Resource, ResourceTag } from "../../supabase/extended.types";
+import { Resource, ResourceTag } from "../../supabase/types/extended";
 
 export type GroupedResource = {
   resources: (Resource['Row'] & { resourceTagId: Omit<ResourceTag['Row'], 'createdAt' | 'updatedAt'> })[];

@@ -1,5 +1,5 @@
 import { supabase } from "../supabase";
-import { _EventToFrosh, Event, Tables } from "../extended.types";
+import { _EventToFrosh, Event, Tables } from "../types/extended";
 
 export class _Event {
   public static getEventFroshMappings = async (froshId: string) =>

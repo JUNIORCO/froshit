@@ -1,5 +1,5 @@
 import { supabase } from "../supabase";
-import { Profile, Tables } from "../extended.types";
+import { Profile, Tables } from "../types/extended";
 
 export class _Profile {
   public static getProfileByEmail = async (email: string) =>

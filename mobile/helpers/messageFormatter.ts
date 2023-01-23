@@ -1,5 +1,5 @@
 import dayjs from "../utils/dayjs";
-import { Message } from "../supabase/extended.types";
+import { Message } from "../supabase/types/extended";
 import { IMessage } from "react-native-gifted-chat/lib/Models";
 
 export const formatMessage = (message: Message['Row']): IMessage => ({
