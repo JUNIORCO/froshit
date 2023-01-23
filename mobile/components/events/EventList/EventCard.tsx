@@ -1,14 +1,15 @@
 import * as React from 'react';
 import { useState } from 'react';
-import { Card } from 'react-native-paper';
+import { Card, Text } from 'react-native-paper';
 import { styles } from "./EventCard.styles";
-import { Image, Linking, Platform, Pressable, Text, View } from "react-native";
+import { Image, Linking, Platform, Pressable, View } from "react-native";
 import dayjs from "../../../utils/dayjs";
 import { Event } from "../../../supabase/extended.types";
 import { FontAwesome, Ionicons } from "@expo/vector-icons";
 import { SUBDOMAIN_COLOR_PALETTE } from "../../../theme/subdomain-color-palette";
 import { ValidSubdomains } from "../../../theme/subdomains";
 import useSession from "../../../hooks/useSession";
+import useTheme from "../../../hooks/useTheme";
 
 export default function EventCard({
                                     imageUrl,
@@ -21,6 +22,8 @@ export default function EventCard({
                                     selectedDate,
                                   }: Event['Row'] & { selectedDate: Date }) {
   const { profile } = useSession();
+  const theme = useTheme();
+
   const [pressed, setPressed] = useState<boolean>(false);
 
   const showCard = dayjs(selectedDate).isSame(startDate, 'day');
@@ -32,7 +35,7 @@ export default function EventCard({
   const timeFormat = 'h:mm a';
 
   // icons
-  const iconColor = SUBDOMAIN_COLOR_PALETTE[profile.university.subdomain as ValidSubdomains]["500"];
+  const iconColor = theme.colors.primary;
   const iconSize = 32;
 
   // location

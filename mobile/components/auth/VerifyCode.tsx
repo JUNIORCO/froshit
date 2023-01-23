@@ -1,12 +1,14 @@
 import React, { Fragment } from 'react'
-import { StyleSheet, Text, View } from 'react-native'
+import { StyleSheet, View } from 'react-native'
 import { supabase } from '../../supabase/supabase'
-import { Snackbar, Button, TextInput } from 'react-native-paper';
+import { Snackbar, Button, TextInput, Text } from 'react-native-paper';
 import useSignIn from "../../hooks/useSignIn";
 import { SignInSteps } from "./steps";
+import useTheme from "../../hooks/useTheme";
 
 export default function VerifyCode() {
   const { loading, setLoading, error, setError, setStep, email, otp, setOtp, resetSignInFields } = useSignIn();
+  const theme = useTheme()
 
   const handleBack = () => setStep(SignInSteps.EMAIL_INPUT);
 
@@ -41,6 +43,7 @@ export default function VerifyCode() {
         />
       </View>
       <View style={{ flexDirection: 'column', width: '100%' }}>
+        {error !== '' && <Text style={{ marginTop: 16, marginBottom: 8, color: theme.colors.error }}>{error}</Text>}
         <Button
           disabled={otp.length !== 6}
           onPress={signInWithOtp}
@@ -52,15 +55,6 @@ export default function VerifyCode() {
           style={styles.verticallySpaced}
         >Back</Button>
       </View>
-      <Snackbar
-        visible={error !== ''}
-        onDismiss={() => setError('')}
-        action={{
-          label: 'Ok',
-          onPress: () => setError(''),
-        }}>
-        {error}
-      </Snackbar>
     </Fragment>
   )
 }

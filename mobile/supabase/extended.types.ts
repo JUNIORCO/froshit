@@ -17,17 +17,19 @@ export const Tables: { [key in Tables]: Tables } = {
   university: 'university',
 };
 
-export type _EventToFrosh = Database['public']['Tables']['_EventToFrosh'];
-export type Event = Database['public']['Tables']['event'];
-export type Frosh = Database['public']['Tables']['frosh'];
-export type Message = Database['public']['Tables']['message'];
-export type Offer = Database['public']['Tables']['offer'];
-export type Payment = Database['public']['Tables']['payment'];
-export type Profile = Database['public']['Tables']['profile'];
-export type Resource = Database['public']['Tables']['resource'];
-export type ResourceTag = Database['public']['Tables']['resource_tag'];
-export type Team = Database['public']['Tables']['team'];
-export type University = Database['public']['Tables']['university'];
+export type DatabaseTypes = Database['public']['Tables'];
+
+export type _EventToFrosh = DatabaseTypes['_EventToFrosh'];
+export type Event = DatabaseTypes['event'];
+export type Frosh = DatabaseTypes['frosh'];
+export type Message = DatabaseTypes['message'];
+export type Offer = DatabaseTypes['offer'];
+export type Payment = DatabaseTypes['payment'];
+export type Profile = DatabaseTypes['profile'];
+export type Resource = DatabaseTypes['resource'];
+export type ResourceTag = DatabaseTypes['resource_tag'];
+export type Team = DatabaseTypes['team'];
+export type University = DatabaseTypes['university'];
 
 /* Enums */
 export type PaymentType = Database['public']['Enums']['PaymentType'];

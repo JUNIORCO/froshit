@@ -1,9 +1,8 @@
 import React, { Fragment } from 'react';
-import { Text } from 'react-native';
 import { useGetTeam } from "../hooks/query";
 import TeamCard from "../components/team/TeamCard";
 import useSession from "../hooks/useSession";
-import { Card } from "react-native-paper";
+import { Text, Card } from "react-native-paper";
 import { Profile, Role } from "../supabase/extended.types";
 import { commonStyles } from "./styles/Common.styles";
 import { styles } from './styles/TeamScreen.styles';

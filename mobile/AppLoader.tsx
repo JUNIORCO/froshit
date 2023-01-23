@@ -1,6 +1,6 @@
 // courtesy of https://javascript.plainenglish.io/how-to-handle-and-design-the-startup-of-a-react-application-da779f3727e5
 import { every } from "lodash";
-import React, { FC, Fragment, memo, ReactElement, useEffect, useState } from "react";
+import React, { FC, Fragment, memo, ReactElement, ReactNode, useEffect, useState } from "react";
 import { useGetEvents, useGetMessages, useGetOffers, useGetResources, useGetTeam } from "./hooks/query";
 import { imagePrefetch } from "./imagePrefetch";
 import { useAsync } from "./hooks/useAsync";
@@ -11,28 +11,11 @@ interface LoadingProcess {
 }
 
 interface Props {
-  /**
-   * In ms. If provided this will make the loading last for the given duration even if everything has loaded.
-   *
-   * @type {number}
-   * @memberof Props
-   */
   minimumLoadingTime: number;
-
-  /**
-   * Can be a splashscreen or whatever
-   *
-   * @type {ReactElement}
-   * @memberof Props
-   */
   loadingComponent: ReactElement;
-
-  children: any;
+  children: ReactNode;
 }
 
-/**
- * A component used to display a loading while some processes are loading.
- */
 const AppLoader: FC<Props> = memo(props => {
   const [minimumDurationPassed, setMinimumDurationPassed] = useState<boolean>((props.minimumLoadingTime || 0) <= 0);
 
@@ -67,20 +50,21 @@ const AppLoader: FC<Props> = memo(props => {
     },
   ];
 
+  const everyProcessIsReady = every(loadingProcesses, "isReady");
+
   // Handle potential minimum duration
   const promisedTimeout = () => new Promise<boolean>(
     resolve =>
       setTimeout(() => resolve(true), props.minimumLoadingTime));
   useAsync<boolean>(promisedTimeout, setMinimumDurationPassed);
 
-
   useEffect(() => {
-    if (every(loadingProcesses, "isReady")) {
+    if (everyProcessIsReady) {
       const imageUrls: string[] = [
         ...events?.flatMap(event => event.imageUrl ? [event.imageUrl] : []) || [],
         ...team?.flatMap(member => member.imageUrl ? [member.imageUrl] : []) || [],
         ...offers?.flatMap(offer => offer.imageUrl ? [offer.imageUrl] : []) || [],
-        // ...resources?.map(resource => resource.resou) || [],
+        ...resources?.map(resource => resource.resourceTagId.imageUrl) || [],
         ...messages?.flatMap(message => message.image ? [message.image] : []) || [],
       ];
       void imagePrefetch(imageUrls);
@@ -89,7 +73,7 @@ const AppLoader: FC<Props> = memo(props => {
 
   return (
     <Fragment>
-      {every(loadingProcesses, "isReady") && minimumDurationPassed ? props.children : props.loadingComponent}
+      {everyProcessIsReady && minimumDurationPassed ? props.children : props.loadingComponent}
     </Fragment>
   );
 });

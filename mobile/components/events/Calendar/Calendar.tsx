@@ -1,11 +1,10 @@
 import React, { Dispatch, SetStateAction } from 'react';
-import { FlatList, Pressable, Text, View } from 'react-native';
+import { FlatList, Pressable, View } from 'react-native';
 import { styles } from "./Calendar.styles";
 import HorizontalItemSeparatorComponent from "../../common/HorizontalItemSeparatorComponent";
 import dayjs from "../../../utils/dayjs";
-import { SUBDOMAIN_COLOR_PALETTE } from "../../../theme/subdomain-color-palette";
-import { ValidSubdomains } from "../../../theme/subdomains";
-import useSession from "../../../hooks/useSession";
+import { Text } from 'react-native-paper';
+import useTheme from "../../../hooks/useTheme";
 
 type Props = {
   dates: Date[];
@@ -14,9 +13,7 @@ type Props = {
 }
 
 export default function Calendar({ dates, selectedDate, setSelectedDate }: Props) {
-  const { profile } = useSession();
-  const selectedColor = SUBDOMAIN_COLOR_PALETTE[profile.university.subdomain as ValidSubdomains].primary;
-  const unselectedColor = SUBDOMAIN_COLOR_PALETTE[profile.university.subdomain as ValidSubdomains].secondary;
+  const theme = useTheme();
 
   const isDateSelected = (dayjsDate) => dayjsDate.isSame(selectedDate, 'day');
 
@@ -25,9 +22,10 @@ export default function Calendar({ dates, selectedDate, setSelectedDate }: Props
 
     return (
       <Pressable onPress={() => setSelectedDate(date)}>
-        <View style={styles.item(isDateSelected(dayjsDate) ? selectedColor : unselectedColor)}>
-          <Text style={styles.date}>{dayjsDate.format('MMM')}</Text>
-          <Text style={styles.date}>{dayjsDate.format('D')}</Text>
+        <View
+          style={styles.item(isDateSelected(dayjsDate) ? theme.colors.primary : theme.colors.surface)}>
+          <Text style={styles.date}>{dayjsDate.format('ddd')}</Text>
+          <Text style={styles.date}>{dayjsDate.format('MMM')} {dayjsDate.format('D')}</Text>
         </View>
       </Pressable>
     )

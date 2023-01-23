@@ -5,22 +5,33 @@ import useSignIn from "../hooks/useSignIn";
 import { SignInSteps } from "../components/auth/steps";
 import EmailInput from "../components/auth/EmailInput";
 import VerifyCode from "../components/auth/VerifyCode";
+import useTheme from "../hooks/useTheme";
 
 export default function AuthScreen() {
   const { step } = useSignIn();
+  const theme = useTheme();
 
   return (
-    <View style={styles.container}>
+    <View style={{
+      flex: 1,
+      backgroundColor: theme.colors.surface
+    }}>
       <TouchableWithoutFeedback onPress={Keyboard.dismiss} accessible={false}>
         <ImageBackground
           source={require('../assets/images/background.png')}
           style={styles.backgroundImage}
         >
           <TouchableWithoutFeedback onPress={Keyboard.dismiss} accessible={false}>
-            <View style={styles.innerContainer}>
-              <Logo width={200} height={100}/>
-              {step === SignInSteps.EMAIL_INPUT && < EmailInput/>}
-              {step === SignInSteps.VERIFY_OTP && < VerifyCode/>}
+            <View style={{
+              padding: 32,
+              width: '80%',
+              backgroundColor: theme.colors.surface,
+              borderRadius: 16,
+              alignItems: 'center',
+            }}>
+              <Logo width={250} height={125}/>
+              {step === SignInSteps.EMAIL_INPUT && <EmailInput/>}
+              {step === SignInSteps.VERIFY_OTP && <VerifyCode/>}
             </View>
           </TouchableWithoutFeedback>
         </ImageBackground>

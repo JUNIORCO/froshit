@@ -6,11 +6,12 @@ import { useGetMessages } from "../hooks/query";
 import { formatMessage } from "../helpers/messageFormatter";
 import { Tables } from "../supabase/extended.types";
 import { Database } from "../supabase/database.types";
-import { GiftedChat, IMessage } from "react-native-gifted-chat";
-import { useSafeAreaInsets } from "react-native-safe-area-context";
+import { GiftedChat, IMessage, InputToolbar } from "react-native-gifted-chat";
+import useTheme from "../hooks/useTheme";
+import { InputToolbarProps } from "react-native-gifted-chat/lib/InputToolbar";
 
 export default function ChatScreen() {
-  const insets = useSafeAreaInsets();
+  const theme = useTheme();
   const { profile } = useSession();
   const {
     isLoading: eventsIsLoading,
@@ -73,6 +74,16 @@ export default function ChatScreen() {
     }
   }, [messages]);
 
+  const renderInputToolbar = (props: InputToolbarProps<IMessage>) =>
+    <InputToolbar
+      {...props}
+      containerStyle={{
+        backgroundColor: theme.colors.surface,
+        borderTopColor: theme.colors.surface,
+        paddingHorizontal: 16,
+      }}
+    />
+
   return (
     <GiftedChat
       messages={displayedMessages}
@@ -81,6 +92,9 @@ export default function ChatScreen() {
       renderUsernameOnMessage
       maxInputLength={280}
       wrapInSafeArea={false}
+      renderInputToolbar={renderInputToolbar}
+      textInputProps={{ color: theme.colors.outline }}
+      bottomOffset={83}
     />
   )
 }

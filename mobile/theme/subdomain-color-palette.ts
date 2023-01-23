@@ -5,17 +5,26 @@ type ColorObject = {
   primaryContainer: string;
   secondary: string;
   secondaryContainer: string;
-  // tertiary: string;
-  // tertiaryContainer: string;
 }
 
-export const SUBDOMAIN_COLOR_PALETTE: Record<ValidSubdomains, ColorObject> = {
+export type CustomTheme = {
+  light: ColorObject;
+  dark: ColorObject;
+}
+
+export const SUBDOMAIN_COLOR_PALETTE: Record<ValidSubdomains, CustomTheme> = {
   [ValidSubdomains.demo]: {
-    primary: '#5D5EE2',
-    primaryContainer: '#b19bfa',
-    secondary: '#b19bfa',
-    secondaryContainer: 'white',
-    // tertiary: palette.tertiary40,
-    // tertiaryContainer: palette.tertiary90,
+    light: {
+      primary: '#5D5EE2',
+      primaryContainer: '#b19bfa',
+      secondary: '#b19bfa',
+      secondaryContainer: 'white',
+    },
+    dark: {
+      primary: '#5D5EE2',
+      primaryContainer: '#b19bfa',
+      secondary: '#b19bfa',
+      secondaryContainer: 'white',
+    },
   },
 };

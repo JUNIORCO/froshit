@@ -3,11 +3,12 @@ import { Keyboard, StyleSheet, View } from 'react-native'
 import { supabase } from '../../supabase/supabase'
 import useSignIn from "../../hooks/useSignIn";
 import { db } from "../../supabase/db";
-import { Button, Snackbar, TextInput } from 'react-native-paper';
+import { Button, Text, TextInput, useTheme } from 'react-native-paper';
 import { SignInSteps } from "./steps";
 
 export default function EmailInput() {
   const { loading, setLoading, setStep, error, setError, email, setEmail } = useSignIn();
+  const theme = useTheme();
 
   async function signInWithEmail() {
     setLoading(true);
@@ -55,6 +56,7 @@ export default function EmailInput() {
           textContentType='emailAddress'
         />
       </View>
+      {error !== '' && <Text style={{ marginTop: 16, marginBottom: 8, color: theme.colors.error }}>{error}</Text>}
       <Button
         disabled={!email.match(/^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/)}
         onPress={signInWithEmail}
@@ -62,15 +64,6 @@ export default function EmailInput() {
         loading={loading}
         mode='contained'
       >Sign In</Button>
-      <Snackbar
-        visible={error !== ''}
-        onDismiss={() => setError('')}
-        action={{
-          label: 'Ok',
-          onPress: () => setError(''),
-        }}>
-        {error}
-      </Snackbar>
     </Fragment>
   )
 }

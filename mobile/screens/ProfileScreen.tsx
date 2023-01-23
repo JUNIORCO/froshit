@@ -1,45 +1,20 @@
 import React, { useState } from 'react';
-import { Keyboard, Text, TouchableWithoutFeedback, View } from 'react-native';
+import { Keyboard, TouchableWithoutFeedback, View } from 'react-native';
 import useSession from "../hooks/useSession";
-import { Avatar, Button, Card, Dialog, Portal, Provider, TextInput } from "react-native-paper";
+import { Avatar, Button, Card, Dialog, Portal, Text } from "react-native-paper";
 import { supabase } from "../supabase/supabase";
-import { useRefetchByUser } from "../hooks/useRefetchByUser";
 import { commonStyles } from './styles/Common.styles';
 import { styles } from "./styles/ProfileScreen.styles";
-import { db } from "../supabase/db";
+import PreferencesSection from "../components/profile/PreferencesSection";
+import PersonalInformationSection from "../components/profile/PersonalInformationSection";
+import SectionDivider from "../components/profile/SectionDivider";
 
 export default function ProfileScreen() {
-  const { refetchByUser } = useRefetchByUser();
   const { profile } = useSession();
-
-  const [saving, setSaving] = useState<boolean>(false);
-  const [interests, setInterests] = useState<string>(profile.interests || '');
-  const [phoneNumber, setPhoneNumber] = useState<string>(profile.phoneNumber || '');
 
   const cardTitle = `${profile.firstName} ${profile.lastName}`;
   const cardSubtitle = profile.email;
   const imageSource = { uri: profile.imageUrl || 'https://www.gravatar.com/avatar/?d=mp' };
-
-  const handleSave = async () => {
-    Keyboard.dismiss();
-    setSaving(true);
-
-    const { error: updateProfileError } = await db.profile.updateProfile(profile.id, {
-      interests: interests == '' ? null : interests,
-      phoneNumber: phoneNumber == '' ? null : phoneNumber,
-    });
-
-    await refetchByUser();
-
-    setSaving(false);
-
-    // TODO handle error
-    // if (updateProfileError) {
-    //   toast.show({ description: 'Failed to update your profile', placement: "top", variant: 'subtle' });
-    // } else {
-    //   toast.show({ description: 'Updated profile', placement: "top", variant: 'subtle' });
-    // }
-  }
 
   const [visible, setVisible] = useState<boolean>(false);
 
@@ -57,31 +32,14 @@ export default function ProfileScreen() {
           <Card.Title title={cardTitle} subtitle={cardSubtitle}/>
           <Card.Content>
             <View style={{ flexDirection: 'column' }}>
-              <View style={{ flexDirection: 'column', marginBottom: 8 }}>
-                <Text style={{ marginBottom: 4, fontSize: 16 }}>Phone Number</Text>
-                <TextInput
-                  mode='outlined'
-                  onChangeText={setPhoneNumber}
-                  value={phoneNumber}
-                  placeholder="Phone Number"
-                  keyboardType='number-pad'
-                />
-              </View>
-              <View style={{ flexDirection: 'column', marginBottom: 8 }}>
-                <Text style={{ marginBottom: 4, fontSize: 16 }}>Interests</Text>
-                <TextInput
-                  mode='outlined'
-                  onChangeText={setInterests}
-                  value={interests}
-                  placeholder="Interests"
-                />
-              </View>
+              <PersonalInformationSection/>
+              <SectionDivider/>
+              <PreferencesSection/>
             </View>
           </Card.Content>
-          <Card.Actions>
+          <Card.Actions style={{ width: '100%' }}>
             <View style={styles.buttonContainer}>
-              <Button mode='contained' onPress={handleSave} loading={saving} style={{ marginBottom: 8 }}>Save</Button>
-              <Button onPress={showDialog}>Sign Out</Button>
+              <Button mode='text' onPress={showDialog}>Sign Out</Button>
             </View>
           </Card.Actions>
         </Card>
