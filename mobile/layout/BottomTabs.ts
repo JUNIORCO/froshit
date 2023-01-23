@@ -31,7 +31,7 @@ const BOTTOM_TABS = {
     name: 'Chat',
     icon: 'chat-outline',
     component: ChatScreen,
-    background: require('../assets/images/background.png'),
+    background: require('../assets/images/chat-background.png'),
     wrapView: false,
   },
   TEAM: {

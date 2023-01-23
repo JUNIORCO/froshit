@@ -16,12 +16,7 @@ export const styles = StyleSheet.create({
     fontSize: 12,
     color: 'grey'
   },
-  locationContainer: {
-    flexDirection: "row",
-    height: 50,
-    alignItems: 'center'
-  },
-  accessibilityContainer: {
+  cardDescriptionContainer: {
     flexDirection: "row",
     height: 50,
     alignItems: 'center'

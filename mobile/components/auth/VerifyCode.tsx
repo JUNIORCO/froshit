@@ -29,8 +29,8 @@ export default function VerifyCode() {
       <View style={[styles.verticallySpaced, styles.mt20]}>
         <Text style={{ marginBottom: 16 }}>We sent a code to {email}</Text>
         <TextInput
+          mode='outlined'
           label='Code'
-          placeholder="Code"
           keyboardType='number-pad'
           maxLength={6}
           onChangeText={(text) => setOtp(text)}

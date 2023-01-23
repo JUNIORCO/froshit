@@ -3,6 +3,7 @@ import { every } from "lodash";
 import React, { FC, Fragment, memo, ReactElement, useEffect, useState } from "react";
 import { useGetEvents, useGetMessages, useGetOffers, useGetResources, useGetTeam } from "./hooks/query";
 import { imagePrefetch } from "./imagePrefetch";
+import { useAsync } from "./hooks/useAsync";
 
 interface LoadingProcess {
   name: string;
@@ -16,7 +17,7 @@ interface Props {
    * @type {number}
    * @memberof Props
    */
-  minimumLoadingTime?: number;
+  minimumLoadingTime: number;
 
   /**
    * Can be a splashscreen or whatever
@@ -67,11 +68,11 @@ const AppLoader: FC<Props> = memo(props => {
   ];
 
   // Handle potential minimum duration
-  useEffect(() => {
-    if (props.minimumLoadingTime) {
-      setTimeout(() => setMinimumDurationPassed(true), props.minimumLoadingTime);
-    }
-  }, []);
+  const promisedTimeout = () => new Promise<boolean>(
+    resolve =>
+      setTimeout(() => resolve(true), props.minimumLoadingTime));
+  useAsync<boolean>(promisedTimeout, setMinimumDurationPassed);
+
 
   useEffect(() => {
     if (every(loadingProcesses, "isReady")) {

@@ -11,17 +11,19 @@ import { ValidSubdomains } from "../../../theme/subdomains";
 import useSession from "../../../hooks/useSession";
 
 export default function EventCard({
-                                    selectedDate,
                                     imageUrl,
                                     name,
                                     location,
                                     startDate,
                                     endDate,
                                     description,
-                                    accessibility
-                                  }: Event['Row']) {
+                                    accessibility,
+                                    selectedDate,
+                                  }: Event['Row'] & { selectedDate: Date }) {
   const { profile } = useSession();
   const [pressed, setPressed] = useState<boolean>(false);
+
+  const showCard = dayjs(selectedDate).isSame(startDate, 'day');
 
   // image
   const uri = imageUrl || 'https://via.placeholder.com/500x500.png?text=Image+Coming+Soon';
@@ -51,17 +53,19 @@ export default function EventCard({
   const renderCardContent = () => (
     <Card.Content>
       <View style={{ flexDirection: 'column' }}>
-        <Text>{description}</Text>
+        <Text style={{ marginBottom: 8 }}>{description}</Text>
 
-        <Pressable style={styles.locationContainer} onPress={handleLocationPress}>
+        <View style={styles.cardDescriptionContainer}>
           <Ionicons name="location" size={iconSize} color={iconColor} style={styles.icon}/>
           <View style={{ flexDirection: 'column' }}>
             <Text>{location}</Text>
-            <Text style={styles.helperText}>Click to open maps</Text>
+            <Pressable onPress={handleLocationPress}>
+              <Text style={styles.helperText}>Click to open maps</Text>
+            </Pressable>
           </View>
-        </Pressable>
+        </View>
 
-        <View style={styles.accessibilityContainer}>
+        <View style={styles.cardDescriptionContainer}>
           <FontAwesome name="universal-access" size={iconSize} color={iconColor} style={styles.icon}/>
           <Text>{accessibility}</Text>
         </View>
@@ -69,11 +73,9 @@ export default function EventCard({
     </Card.Content>
   );
 
-  const showCard = dayjs(selectedDate).isSame(startDate, 'day');
-
   return (
     <Card onPress={handleCardPress} style={{ display: showCard ? 'flex' : 'none' }}>
-      <Image style={{ width: '100%', height: 150 }} source={{ uri }}/>
+      <Image style={{ width: '100%', height: 256 }} source={{ uri }}/>
       <Card.Title
         title={name}
         subtitle={location}

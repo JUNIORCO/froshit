@@ -1,6 +1,7 @@
 // courtesy of https://javascript.plainenglish.io/how-to-handle-and-design-the-startup-of-a-react-application-da779f3727e5
 import React, { FC, Fragment, memo, ReactElement, useEffect, useState } from "react";
 import { imagePrefetch } from "./imagePrefetch";
+import { useAsync } from "./hooks/useAsync";
 
 interface Props {
   /**
@@ -32,9 +33,10 @@ const AuthAppLoader: FC<Props> = memo(props => {
   void imagePrefetch();
 
   // Handle potential minimum duration
-  useEffect(() => {
-    setTimeout(() => setMinimumDurationPassed(true), props.minimumLoadingTime);
-  }, []);
+  const promisedTimeout = () => new Promise<boolean>(
+    resolve =>
+      setTimeout(() => resolve(true), props.minimumLoadingTime));
+  useAsync<boolean>(promisedTimeout, setMinimumDurationPassed);
 
   return (
     <Fragment>

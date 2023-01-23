@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
-import { Keyboard, TouchableWithoutFeedback, Text, View } from 'react-native';
+import { Keyboard, Text, TouchableWithoutFeedback, View } from 'react-native';
 import useSession from "../hooks/useSession";
-import { Avatar, Button, Card, TextInput } from "react-native-paper";
+import { Avatar, Button, Card, Dialog, Portal, Provider, TextInput } from "react-native-paper";
 import { supabase } from "../supabase/supabase";
 import { useRefetchByUser } from "../hooks/useRefetchByUser";
 import { commonStyles } from './styles/Common.styles';
@@ -21,6 +21,7 @@ export default function ProfileScreen() {
   const imageSource = { uri: profile.imageUrl || 'https://www.gravatar.com/avatar/?d=mp' };
 
   const handleSave = async () => {
+    Keyboard.dismiss();
     setSaving(true);
 
     const { error: updateProfileError } = await db.profile.updateProfile(profile.id, {
@@ -40,39 +41,64 @@ export default function ProfileScreen() {
     // }
   }
 
+  const [visible, setVisible] = useState<boolean>(false);
+
+  const showDialog = () => setVisible(true);
+
+  const hideDialog = () => setVisible(false);
+
+  const signOut = () => supabase.auth.signOut();
+
   return (
-    <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
-      <Card style={commonStyles.mainCard}>
-        <Avatar.Image size={128} source={imageSource}/>
-        <Card.Title title={cardTitle} subtitle={cardSubtitle}/>
-        <Card.Content>
-          <View style={{ flexDirection: 'column' }}>
+    <View>
+      <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
+        <Card style={commonStyles.mainCard}>
+          <Avatar.Image size={128} source={imageSource}/>
+          <Card.Title title={cardTitle} subtitle={cardSubtitle}/>
+          <Card.Content>
             <View style={{ flexDirection: 'column' }}>
-              <Text>Phone Number</Text>
-              <TextInput
-                onChangeText={setPhoneNumber}
-                value={phoneNumber}
-                placeholder="Phone Number"
-                keyboardType='number-pad'
-              />
+              <View style={{ flexDirection: 'column', marginBottom: 8 }}>
+                <Text style={{ marginBottom: 4, fontSize: 16 }}>Phone Number</Text>
+                <TextInput
+                  mode='outlined'
+                  onChangeText={setPhoneNumber}
+                  value={phoneNumber}
+                  placeholder="Phone Number"
+                  keyboardType='number-pad'
+                />
+              </View>
+              <View style={{ flexDirection: 'column', marginBottom: 8 }}>
+                <Text style={{ marginBottom: 4, fontSize: 16 }}>Interests</Text>
+                <TextInput
+                  mode='outlined'
+                  onChangeText={setInterests}
+                  value={interests}
+                  placeholder="Interests"
+                />
+              </View>
             </View>
-            <View style={{ flexDirection: 'column' }}>
-              <Text>Interests</Text>
-              <TextInput
-                onChangeText={setInterests}
-                value={interests}
-                placeholder="Interests"
-              />
+          </Card.Content>
+          <Card.Actions>
+            <View style={styles.buttonContainer}>
+              <Button mode='contained' onPress={handleSave} loading={saving} style={{ marginBottom: 8 }}>Save</Button>
+              <Button onPress={showDialog}>Sign Out</Button>
             </View>
-          </View>
-        </Card.Content>
-        <Card.Actions>
-          <View style={styles.buttonContainer}>
-            <Button mode='contained' onPress={handleSave} loading={saving}>Save</Button>
-            <Button onPress={() => supabase.auth.signOut()}>Sign Out</Button>
-          </View>
-        </Card.Actions>
-      </Card>
-    </TouchableWithoutFeedback>
+          </Card.Actions>
+        </Card>
+      </TouchableWithoutFeedback>
+
+      <Portal>
+        <Dialog visible={visible} onDismiss={hideDialog}>
+          <Dialog.Title>Sign Out</Dialog.Title>
+          <Dialog.Content>
+            <Text>Are you sure you want to sign out?</Text>
+          </Dialog.Content>
+          <Dialog.Actions>
+            <Button onPress={hideDialog}>No</Button>
+            <Button onPress={signOut}>Yes</Button>
+          </Dialog.Actions>
+        </Dialog>
+      </Portal>
+    </View>
   )
 }

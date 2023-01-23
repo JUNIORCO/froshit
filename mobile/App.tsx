@@ -93,7 +93,7 @@ export default function App() {
   /*                                                  theme                                                           */
   /********************************************************************************************************************/
   const getTabBarActiveTintColor = (profile: LoggedInProfile) =>
-    SUBDOMAIN_COLOR_PALETTE[profile.university.subdomain as ValidSubdomains]["500"];
+    SUBDOMAIN_COLOR_PALETTE[profile.university.subdomain as ValidSubdomains].primary;
 
   /********************************************************************************************************************/
   /*                                                 render                                                           */

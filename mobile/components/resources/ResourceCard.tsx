@@ -32,7 +32,7 @@ export default function ResourceCard({ selectedTag, setSelectedTag }: Props) {
   );
 
   const renderResourceCard = (resource: (Resource['Row'] & { resourceTagId: Omit<ResourceTag['Row'], 'createdAt' | 'updatedAt'> })) => (
-    <Card style={styles.container}>
+    <Card style={styles.container} key={resource.id}>
       <Card.Title
         title={resource.title}
         subtitle={resource.description}
@@ -45,12 +45,19 @@ export default function ResourceCard({ selectedTag, setSelectedTag }: Props) {
 
   return (
     <View style={{ flexDirection: 'column' }}>
-      <Button
-        icon='arrow-left'
-        mode="text"
-        onPress={() => setSelectedTag(null)}
-        style={{ justifyContent: 'flex-start' }}
-      >Back</Button>
+      <View style={{
+        flex: 1,
+        flexDirection: 'column',
+        justifyContent: 'flex-start',
+        alignItems: 'flex-start',
+        marginBottom: 8,
+      }}>
+        <Button
+          icon='arrow-left'
+          mode="text"
+          onPress={() => setSelectedTag(null)}
+        >Back</Button>
+      </View>
       {resources.map(renderResourceCard)}
     </View>);
 }

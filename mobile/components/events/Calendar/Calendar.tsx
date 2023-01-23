@@ -15,8 +15,8 @@ type Props = {
 
 export default function Calendar({ dates, selectedDate, setSelectedDate }: Props) {
   const { profile } = useSession();
-  const selectedColor = SUBDOMAIN_COLOR_PALETTE[profile.university.subdomain as ValidSubdomains]["400"];
-  const unselectedColor = SUBDOMAIN_COLOR_PALETTE[profile.university.subdomain as ValidSubdomains]["50"];
+  const selectedColor = SUBDOMAIN_COLOR_PALETTE[profile.university.subdomain as ValidSubdomains].primary;
+  const unselectedColor = SUBDOMAIN_COLOR_PALETTE[profile.university.subdomain as ValidSubdomains].secondary;
 
   const isDateSelected = (dayjsDate) => dayjsDate.isSame(selectedDate, 'day');
 

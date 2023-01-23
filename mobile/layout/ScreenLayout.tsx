@@ -36,12 +36,12 @@ export default function ScreenLayout({ wrapView, background, component }: Props)
     <View style={styles.container}>
       <ImageBackground source={background} style={styles.backgroundImage}>
         {wrapView ?
-          <ScrollView refreshControl={refreshControl}>
+          <ScrollView refreshControl={refreshControl} keyboardShouldPersistTaps='always'>
             <View style={styles.innerContainer}>
               <Card style={{ padding: 16, borderRadius: 16, marginBottom: 16 }}>
                 <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
-                  <Logo/>
-                  <Logo university/>
+                  <Logo />
+                  <Logo university />
                 </View>
               </Card>
               {component}

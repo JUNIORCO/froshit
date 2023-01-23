@@ -46,6 +46,7 @@ export default function EmailInput() {
     <Fragment>
       <View style={[styles.verticallySpaced, styles.mt20]}>
         <TextInput
+          mode='outlined'
           label='University Email'
           onChangeText={(email) => setEmail(email)}
           value={email}

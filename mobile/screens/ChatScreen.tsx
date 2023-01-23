@@ -7,8 +7,10 @@ import { formatMessage } from "../helpers/messageFormatter";
 import { Tables } from "../supabase/extended.types";
 import { Database } from "../supabase/database.types";
 import { GiftedChat, IMessage } from "react-native-gifted-chat";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 export default function ChatScreen() {
+  const insets = useSafeAreaInsets();
   const { profile } = useSession();
   const {
     isLoading: eventsIsLoading,
@@ -78,6 +80,7 @@ export default function ChatScreen() {
       user={chatUser}
       renderUsernameOnMessage
       maxInputLength={280}
+      wrapInSafeArea={false}
     />
   )
 }

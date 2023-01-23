@@ -4,6 +4,7 @@ import { Fragment } from "react";
 
 type Props = {
   events: Event['Row'][];
+  selectedDate: Date;
 }
 
 export default function EventList({ events, selectedDate }: Props) {
