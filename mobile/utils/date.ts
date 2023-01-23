@@ -22,7 +22,7 @@ export const getDatesBetween = ({ startDate, endDate }: GetDatesBetweenType): Da
 }
 
 export const getDatesFromEvents = (events: Event['Row'][] | null | undefined): Date[] => {
-  if (!events) return [];
+  if (!events || !events.length) return [];
 
   const firstDate = events[0].startDate;
   const lastDate = events[events.length - 1].startDate;

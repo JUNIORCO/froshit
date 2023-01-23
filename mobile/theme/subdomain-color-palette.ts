@@ -27,4 +27,18 @@ export const SUBDOMAIN_COLOR_PALETTE: Record<ValidSubdomains, CustomTheme> = {
       secondaryContainer: 'white',
     },
   },
+  [ValidSubdomains.mcgill]: {
+    light: {
+      primary: '#ed1b2f',
+      primaryContainer: '#fde8ea',
+      secondary: '#770e18',
+      secondaryContainer: 'white',
+    },
+    dark: {
+      primary: '#ed1b2f',
+      primaryContainer: '#fde8ea',
+      secondary: '#770e18',
+      secondaryContainer: 'black',
+    },
+  },
 };
