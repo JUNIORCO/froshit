@@ -4,7 +4,6 @@
   "version": "1.0.0",
   "description": "Froshit monorepo",
   "private": true,
-  "type": "module",
   "prisma": {
     "schema": "prisma/schema.prisma"
   },

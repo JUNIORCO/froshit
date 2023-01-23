@@ -20,7 +20,6 @@ type FormValuesProps = {
   location: string;
   provider: string;
   imageUrl: CustomFile | string;
-  color: string;
 };
 
 type Props = {
@@ -29,7 +28,6 @@ type Props = {
 };
 
 export default function OfferEditForm({ currentOffer, view }: Props) {
-  const { profile } = useProfile();
   const supabaseClient = useSupabaseClient();
   const { subdomain } = useSubdomain();
   const { push } = useRouter();
@@ -41,7 +39,6 @@ export default function OfferEditForm({ currentOffer, view }: Props) {
     location: Yup.string().required('Location is required'),
     provider: Yup.string().required('Provider is required'),
     imageUrl: Yup.mixed().test('required', 'Icon is required', (value) => value && value !== ''),
-    color: Yup.string().required('Ticket price is required'),
   });
 
   const defaultValues = useMemo(
@@ -51,7 +48,6 @@ export default function OfferEditForm({ currentOffer, view }: Props) {
       location: currentOffer.location,
       provider: currentOffer.provider,
       imageUrl: currentOffer.imageUrl,
-      color: currentOffer.color,
     }),
     // eslint-disable-next-line react-hooks/exhaustive-deps
     [currentOffer],
@@ -178,8 +174,6 @@ export default function OfferEditForm({ currentOffer, view }: Props) {
               <RHFTextField name='location' label='Location' disabled={view} />
 
               <RHFTextField name='provider' label='Provider' disabled={view} />
-
-              <RHFTextField name='color' label='Color' disabled={view} />
             </Box>
 
             {!view && <Stack alignItems='flex-end' sx={{ mt: 3 }}>

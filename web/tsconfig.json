@@ -33,8 +33,5 @@
     "next-env.d.ts",
     "**/*.ts",
     "**/*.tsx"
-  ],
-  "ts-node": {
-    "esm": true
-  }
+  ]
 }
