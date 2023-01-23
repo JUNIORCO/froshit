@@ -8,7 +8,6 @@ export const UniversityPayloadSchema = z.object({
   stripeConnectedAccountId: z.string(),
   stripeConnectedAccountLink: z.string(),
   maxTeamCapacity: z.number(),
-  timezone: z.string(),
 });
 
 export const FroshPayloadSchema = z.object({

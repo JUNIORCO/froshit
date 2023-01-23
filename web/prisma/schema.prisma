@@ -31,7 +31,6 @@ model University {
   stripeConnectedAccountId   String @unique
   stripeConnectedAccountLink String @unique
   maxTeamCapacity            Int
-  timezone                   String
 
   // associations
   froshs    Frosh[]
@@ -240,7 +239,6 @@ model Offer {
   location    String
   provider    String
   imageUrl    String
-  color       String
 
   // associations
   university   University @relation(fields: [universityId], references: [id])
