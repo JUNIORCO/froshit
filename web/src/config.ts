@@ -10,6 +10,7 @@ export const FROSHIT_PHONE = '(437) 987 6231';
 export const FROSHIT_LINKEDIN = 'https://linkedin.com';
 export const FROSHIT_INSTAGRAM = 'https://instagram.com';
 
+
 // ROOT PATH AFTER LOGIN SUCCESSFUL
 export const PATH_AFTER_LOGIN = PATH_DASHBOARD.general.app;
 
