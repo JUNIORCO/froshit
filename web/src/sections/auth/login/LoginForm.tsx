@@ -30,21 +30,19 @@ export default function LoginForm() {
   const { subdomain } = useSubdomain();
   const supabaseClient = useSupabaseClient();
 
-  const [showPassword, setShowPassword] = useState(subdomain === 'demo');
+  const [showPassword, setShowPassword] = useState<boolean>(false);
 
   const LoginSchema = Yup.object().shape({
     email: Yup.string().email('Email must be a valid email address').required('Email is required'),
     password: Yup.string().required('Password is required'),
   });
 
-  const defaultValues = {
-    email: 'sami.juniorco@gmail.com',
-    password: 'demo1234',
-  };
-
   const methods = useForm<FormValuesProps>({
     resolver: yupResolver(LoginSchema),
-    defaultValues,
+    defaultValues: {
+      email: '',
+      password: '',
+    },
   });
 
   const {
