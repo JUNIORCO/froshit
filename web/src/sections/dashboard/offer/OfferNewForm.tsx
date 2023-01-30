@@ -20,7 +20,6 @@ type FormValuesProps = {
   location: string;
   provider: string;
   imageUrl: CustomFile;
-  color: string;
 };
 
 export default function OfferNewForm() {
@@ -36,7 +35,6 @@ export default function OfferNewForm() {
     location: Yup.string().required('Location is required'),
     provider: Yup.string().required('Provider is required'),
     imageUrl: Yup.mixed().test('required', 'Icon is required', (value) => value && value !== ''),
-    color: Yup.string().required('Ticket price is required'),
   });
 
   const defaultValues = {
@@ -45,7 +43,6 @@ export default function OfferNewForm() {
     location: '',
     provider: '',
     imageUrl: undefined,
-    color: '',
   };
 
   const methods = useForm<FormValuesProps>({
@@ -148,8 +145,6 @@ export default function OfferNewForm() {
               <RHFTextField name='location' label='Location' />
 
               <RHFTextField name='provider' label='Provider' />
-
-              <RHFTextField name='color' label='Color' />
             </Box>
 
             <Stack alignItems='flex-end' sx={{ mt: 3 }}>
