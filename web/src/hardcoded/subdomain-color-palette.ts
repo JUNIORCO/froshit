@@ -42,4 +42,14 @@ export const SUBDOMAIN_COLOR_PALETTE: Record<ValidSubdomains, ColorObject> = {
     dark: '#49121c',
     darker: '#0e0306',
   },
+  [ValidSubdomains.queens]: {
+    name: ValidSubdomains.queens,
+    contrastText: '#f2f2f2',
+
+    lighter: '#e6e9ee',
+    light: '#8092a9',
+    main: '#002452',
+    dark: '#001229',
+    darker: '#000408',
+  },
 };
