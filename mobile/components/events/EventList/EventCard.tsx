@@ -2,16 +2,16 @@ import * as React from 'react';
 import { useState } from 'react';
 import { Card, Text } from 'react-native-paper';
 import { styles } from "./EventCard.styles";
-import { Image, Linking, Platform, Pressable, View } from "react-native";
+import { Linking, Platform, Pressable, View } from "react-native";
 import dayjs from "../../../utils/dayjs";
 import { Event } from "../../../supabase/types/extended";
 import { FontAwesome, Ionicons } from "@expo/vector-icons";
-import { SUBDOMAIN_COLOR_PALETTE } from "../../../theme/subdomain-color-palette";
-import { ValidSubdomains } from "../../../theme/subdomains";
 import useSession from "../../../hooks/useSession";
 import useTheme from "../../../hooks/useTheme";
+import CachedImage from 'expo-cached-image';
 
 export default function EventCard({
+                                    id,
                                     imageUrl,
                                     name,
                                     location,
@@ -59,7 +59,7 @@ export default function EventCard({
         <Text style={{ marginBottom: 8 }}>{description}</Text>
 
         <View style={styles.cardDescriptionContainer}>
-          <Ionicons name="location" size={iconSize} color={iconColor} style={styles.icon}/>
+          <Ionicons name="location-sharp" size={iconSize} color={iconColor} style={styles.icon}/>
           <View style={{ flexDirection: 'column' }}>
             <Text>{location}</Text>
             <Pressable onPress={handleLocationPress}>
@@ -77,8 +77,12 @@ export default function EventCard({
   );
 
   return (
-    <Card onPress={handleCardPress} style={{ display: showCard ? 'flex' : 'none' }}>
-      <Image style={{ width: '100%', height: 256 }} source={{ uri }}/>
+    <Card onPress={handleCardPress} style={{ display: showCard ? 'flex' : 'none', marginBottom: 24, borderRadius: 16 }}>
+      <CachedImage
+        style={{ width: '100%', height: 256, borderTopRightRadius: 16, borderTopLeftRadius: 16 }}
+        source={{ uri }}
+        cacheKey={`${id}-${(imageUrl || '').split('/').pop()}`}
+      />
       <Card.Title
         title={name}
         subtitle={location}

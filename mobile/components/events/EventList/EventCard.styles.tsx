@@ -18,12 +18,11 @@ export const styles = StyleSheet.create({
   },
   cardDescriptionContainer: {
     flexDirection: "row",
-    height: 50,
+    height: 64,
     alignItems: 'center'
   },
   icon: {
-    flex: 0.15,
     textAlign: 'center',
-    paddingRight: 8
+    marginRight: 16
   }
 });

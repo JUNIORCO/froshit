@@ -1,4 +1,5 @@
 export enum ValidSubdomains {
   demo = 'demo',
-  mcgill = 'mcgill'
+  mcgill = 'mcgill',
+  queens = 'queens',
 }

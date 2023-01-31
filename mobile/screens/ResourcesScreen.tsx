@@ -4,7 +4,7 @@ import { commonStyles } from "./styles/Common.styles";
 import ResourceTagList, { GroupedResource } from "../components/resources/ResourceTagList";
 import ResourceCard from "../components/resources/ResourceCard";
 
-export default function EventsScreen() {
+export default function ResourcesScreen() {
   const [selectedTag, setSelectedTag] = useState<GroupedResource | null>(null);
 
   return (

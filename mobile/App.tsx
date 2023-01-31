@@ -2,7 +2,7 @@ import 'react-native-url-polyfill/auto';
 import { useEffect, useState } from 'react';
 import { supabase } from './supabase/supabase';
 import { Session } from '@supabase/supabase-js';
-import { focusManager, QueryClient, QueryClientProvider } from '@tanstack/react-query'
+import { focusManager, QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import type { AppStateStatus } from "react-native"
 import { Alert } from 'react-native'
 import { useOnlineManager } from "./hooks/useOnlineManager";
@@ -19,6 +19,10 @@ import { db } from "./supabase/db";
 import { LoggedInProfile } from "./supabase/types/extended";
 import { PreferencesProvider } from "./contexts/PreferencesContext";
 import AppLayout from "./layout/AppLayout";
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import { useNetInfo } from "@react-native-community/netinfo";
+import { createAsyncStoragePersister } from "@tanstack/query-async-storage-persister";
+import { PersistQueryClientProvider } from '@tanstack/react-query-persist-client';
 
 export default function App() {
   /********************************************************************************************************************/
@@ -28,12 +32,16 @@ export default function App() {
     defaultOptions: {
       queries: {
         retry: 2,
-        staleTime: 86400, // 24 hrs
+        staleTime: 7200, // 2 hrs
         refetchOnWindowFocus: false,
         refetchOnReconnect: true,
       }
     },
   });
+
+  const asyncStoragePersister = createAsyncStoragePersister({
+    storage: AsyncStorage
+  })
 
   const onAppStateChange = (status: AppStateStatus) => focusManager.setFocused(status === 'active')
   useAppState(onAppStateChange);
@@ -52,11 +60,27 @@ export default function App() {
 
     supabase.auth.onAuthStateChange((_event, session) => {
       setSession(session);
+      setProfile(null);
     });
   }, []);
 
+  const netInfo = useNetInfo();
+
   const fetchProfile = async (session: Session) => {
     const userId = session.user.id;
+
+    const key = 'Profile';
+    const cachedProfile = await AsyncStorage.getItem(key);
+
+    if (cachedProfile) {
+      console.log('found profile from cache')
+      setProfile(JSON.parse<LoggedInProfile>(cachedProfile));
+    }
+
+    if (!netInfo.isConnected) {
+      console.log('ot connected! cant refresh')
+      return;
+    }
 
     const { data: userProfile, error: userProfileError } = await db.profile.getLoggedInProfile(userId);
 
@@ -66,13 +90,14 @@ export default function App() {
     }
 
     setProfile(userProfile);
+    await AsyncStorage.setItem(key, JSON.stringify(userProfile));
   };
 
   useEffect(() => {
     if (session && session.user) {
       void fetchProfile(session);
     }
-  }, [session])
+  }, [session]);
 
   /********************************************************************************************************************/
   /*                                                 render                                                           */
@@ -80,7 +105,7 @@ export default function App() {
 
   if (session && session.user && profile) {
     return (
-      <QueryClientProvider client={queryClient}>
+      <PersistQueryClientProvider client={queryClient} persistOptions={{ persister: asyncStoragePersister }}>
         <SessionProvider session={session} profile={profile}>
           <PreferencesProvider>
             <ThemeProvider subdomain={profile.university.subdomain as ValidSubdomains}>
@@ -90,7 +115,7 @@ export default function App() {
             </ThemeProvider>
           </PreferencesProvider>
         </SessionProvider>
-      </QueryClientProvider>
+      </PersistQueryClientProvider>
     );
   }
 
@@ -99,7 +124,7 @@ export default function App() {
       <PreferencesProvider>
         <ThemeProvider>
           <SignInProvider>
-            <AuthAppLoader loadingComponent={<SplashImage/>} minimumLoadingTime={500}>
+            <AuthAppLoader loadingComponent={<SplashImage/>} minimumLoadingTime={250}>
               <AuthScreen/>
             </AuthAppLoader>
           </SignInProvider>

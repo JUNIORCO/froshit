@@ -1,6 +1,6 @@
 import { styles } from "../../screens/styles/ResourcesScreen";
 import { Dispatch, SetStateAction } from "react";
-import { flow, groupBy, map } from "lodash/fp";
+import { flow, groupBy, map, sortBy } from "lodash/fp";
 import { ImageBackground, Pressable, Text, View} from "react-native";
 import { useGetResources } from "../../hooks/query";
 import { Resource, ResourceTag } from "../../supabase/types/extended";
@@ -23,6 +23,7 @@ export default function ResourceTagList({ setSelectedTag }: Props) {
   } = useGetResources();
 
   const resourcesGroupedByResourceTag: GroupedResource[] = flow(
+    sortBy('resourceTagId.name'),
     groupBy<any>('resourceTagId.id'),
     map((resources) => ({ tag: resources[0].resourceTagId, resources })),
   )(resources);

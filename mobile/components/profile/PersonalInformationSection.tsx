@@ -1,7 +1,6 @@
 import * as React from 'react';
 import { Fragment, useState } from 'react';
 import { Button, Text, TextInput } from 'react-native-paper';
-import usePreferences from "../../hooks/usePreferences";
 import { Keyboard, View } from "react-native";
 import { db } from "../../supabase/db";
 import useSession from "../../hooks/useSession";
@@ -60,7 +59,7 @@ export default function PersonalInformationSection() {
           placeholder="Interests"
         />
       </View>
-      <Button mode='contained' onPress={handleSave} loading={saving} style={{ marginBottom: 8 }}>Save</Button>
+      <Button mode='contained' onPress={handleSave} loading={saving} style={{ marginVertical: 16 }}>Save</Button>
     </Fragment>
   );
 }

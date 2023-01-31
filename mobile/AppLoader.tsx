@@ -16,7 +16,7 @@ interface Props {
   children: ReactNode;
 }
 
-const AppLoader: FC<Props> = memo(props => {
+const AppLoader: FC<Props> = memo((props: Props) => {
   const [minimumDurationPassed, setMinimumDurationPassed] = useState<boolean>((props.minimumLoadingTime || 0) <= 0);
 
   // processes to load before loading app
@@ -67,13 +67,13 @@ const AppLoader: FC<Props> = memo(props => {
         ...resources?.map(resource => resource.resourceTagId.imageUrl) || [],
         ...messages?.flatMap(message => message.image ? [message.image] : []) || [],
       ];
-      void imagePrefetch(imageUrls);
+      // void imagePrefetch(imageUrls);
     }
   }, [loadingProcesses]);
 
   return (
     <Fragment>
-      {everyProcessIsReady && minimumDurationPassed ? props.children : props.loadingComponent}
+      {everyProcessIsReady || minimumDurationPassed ? props.children : props.loadingComponent}
     </Fragment>
   );
 });

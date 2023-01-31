@@ -3,16 +3,16 @@
     "name": "FROSHIT",
     "slug": "FROSHIT",
     "owner": "froshit",
-    "version": "1.0.0",
+    "version": "1.1.0",
     "orientation": "portrait",
-    "icon": "./assets/icon.png",
+    "icon": "./assets/images/icon.png",
     "privacy": "public",
     "platforms": [
       "ios",
       "android"
     ],
     "updates": {
-      "fallbackToCacheTimeout": 0
+      "url": "https://u.expo.dev/461772ce-36c0-41dd-8837-4cb669bab20f"
     },
     "assetBundlePatterns": [
       "**/*"
@@ -23,7 +23,7 @@
     },
     "android": {
       "adaptiveIcon": {
-        "foregroundImage": "./assets/icon.png",
+        "foregroundImage": "./assets/images/adaptive-icon.png",
         "backgroundColor": "#AEAEAE"
       },
       "package": "com.domainname.froshit"
@@ -32,6 +32,12 @@
       "eas": {
         "projectId": "461772ce-36c0-41dd-8837-4cb669bab20f"
       }
+    },
+    "splash": {
+      "image": "./assets/images/splash.png"
+    },
+    "runtimeVersion": {
+      "policy": "sdkVersion"
     }
   }
 }

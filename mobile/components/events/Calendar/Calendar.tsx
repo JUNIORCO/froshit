@@ -21,11 +21,11 @@ export default function Calendar({ dates, selectedDate, setSelectedDate }: Props
     const dayjsDate = dayjs(date);
 
     return (
-      <Pressable onPress={() => setSelectedDate(date)}>
+      <Pressable onPress={() => setSelectedDate(date)} style={{ borderRadius: 16 }}>
         <View
           style={styles.item(isDateSelected(dayjsDate) ? theme.colors.primary : theme.colors.surface)}>
-          <Text style={styles.date}>{dayjsDate.format('ddd')}</Text>
-          <Text style={styles.date}>{dayjsDate.format('MMM')} {dayjsDate.format('D')}</Text>
+          <Text style={{ ...(isDateSelected(dayjsDate) && { color: theme.colors.onPrimaryContainer }) }}>{dayjsDate.format('ddd')}</Text>
+          <Text style={{ ...(isDateSelected(dayjsDate) && { color: theme.colors.onPrimaryContainer }) }}>{dayjsDate.format('MMM')} {dayjsDate.format('D')}</Text>
         </View>
       </Pressable>
     )

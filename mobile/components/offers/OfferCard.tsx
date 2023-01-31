@@ -1,7 +1,8 @@
 import * as React from 'react';
 import { Card } from 'react-native-paper';
-import { Image, StyleSheet } from "react-native";
+import { StyleSheet } from "react-native";
 import { Offer } from "../../supabase/types/extended";
+import CachedImage from 'expo-cached-image';
 
 const styles = StyleSheet.create({
   container: {
@@ -11,16 +12,17 @@ const styles = StyleSheet.create({
     borderRadius: 16,
   },
   image: {
-    width: 48,
-    height: 48,
+    flex: 1,
+    width: undefined,
+    height: undefined,
   }
 });
 
-export default function OfferCard({ title, description, location, provider, color, imageUrl }: Offer['Row']) {
+export default function OfferCard({ id, title, description, location, provider, imageUrl }: Offer['Row']) {
+  const formattedDescription = `${provider}, ${location}\n${description}`;
+  const cacheKey =`${id}-${imageUrl.split('/').pop()}`;
 
-  const LeftContent = () => <Image style={styles.image} source={{ uri: imageUrl }}/>;
-
-  const formattedDescription = `${provider}, ${location}\n${description}`
+  const LeftContent = () => <CachedImage style={styles.image} source={{ uri: imageUrl, expiresIn: 0 }} resizeMode="contain" cacheKey={cacheKey}/>;
 
   return (
     <Card style={styles.container}>

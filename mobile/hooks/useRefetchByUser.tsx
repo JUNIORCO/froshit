@@ -1,7 +1,12 @@
 import { useState } from "react";
 import { useGetEvents, useGetOffers, useGetResources, useGetTeam } from "./query";
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import QueryKeys from "./query/QueryKeys";
+import { useQueryClient } from "@tanstack/react-query";
 
 export function useRefetchByUser() {
+  const queryClient = useQueryClient()
+
   const { refetch: refetchEvents } = useGetEvents();
   const { refetch: refetchTeam } = useGetTeam();
   const { refetch: refetchResources } = useGetResources();
@@ -11,6 +16,12 @@ export function useRefetchByUser() {
 
   const refetchByUser = async () => {
     setIsRefetchingByUser(true);
+
+    await queryClient.clear();
+
+    for (const queryKey in QueryKeys) {
+      await AsyncStorage.removeItem(queryKey);
+    }
 
     await Promise.allSettled([
       refetchEvents(),

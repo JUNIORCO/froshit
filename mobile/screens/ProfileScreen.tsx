@@ -33,8 +33,8 @@ export default function ProfileScreen() {
           <Card.Content>
             <View style={{ flexDirection: 'column' }}>
               <PersonalInformationSection/>
-              <SectionDivider/>
-              <PreferencesSection/>
+              {/*<SectionDivider/>*/}
+              {/*<PreferencesSection/>*/}
             </View>
           </Card.Content>
           <Card.Actions style={{ width: '100%' }}>

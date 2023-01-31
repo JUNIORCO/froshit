@@ -42,7 +42,7 @@ export default function TeamScreen() {
 
   return (
     <Card style={commonStyles.mainCard}>
-      <Text style={styles.teamName}>{profile.team.name}</Text>
+      <Text style={styles.teamName}>{profile.team?.name || 'Your Team'}</Text>
       {formattedTeam.map(renderGroup)}
     </Card>
   )

@@ -38,7 +38,7 @@ function ThemeProvider({ subdomain, children }: PreferencesProviderProps) {
     colors: {
       ...MD3LightTheme.colors,
       ...LightTheme.colors,
-      ...(customTheme.light),
+      ...customTheme.light,
     },
   };
 

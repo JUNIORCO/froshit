@@ -30,6 +30,7 @@ export const styles = StyleSheet.create({
   },
   imageBackground: {
     borderRadius: 16,
+    margin: 8,
   },
   flexContainer: {
     flexDirection: 'row',
