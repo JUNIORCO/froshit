@@ -25,7 +25,6 @@ export default function FrosheeView({ froshee, froshs, teams }: FrosheeEditViewP
             { name: 'View' },
           ]}
         />
-
         <FrosheeNewEditViewForm froshee={froshee} froshs={froshs} teams={teams} view />
       </Container>
     </Page>

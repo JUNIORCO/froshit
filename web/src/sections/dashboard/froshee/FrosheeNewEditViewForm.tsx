@@ -67,6 +67,9 @@ type FrosheeNewFormValuesProps = {
   froshId: string;
   teamId: string;
   paymentAmount: string;
+  program: string;
+  faculty: string;
+  intersts: string;
 }
 
 type FrosheeNewFormProps = {
@@ -90,6 +93,9 @@ export default function FrosheeNewEditViewForm({ froshee, froshs, teams, view }:
     froshId: Yup.string().required('Frosh is required'),
     teamId: Yup.string().required('Team is required'),
     paymentAmount: Yup.string().required('Payment amount is required'),
+    program: Yup.string().required('Program is required'),
+    faculty: Yup.string().required('Faculty is required'),
+    interests: Yup.string(),
   });
 
   const defaultValues = useMemo(() => ({
@@ -100,6 +106,9 @@ export default function FrosheeNewEditViewForm({ froshee, froshs, teams, view }:
       froshId: froshee?.froshId || '',
       teamId: froshee?.teamId || '',
       paymentAmount: froshee?.payment?.amount ? String(froshee.payment.amount / 100) : '',
+      program: froshee?.program || '',
+      faculty: froshee?.faculty || '',
+      interests: froshee?.interests || '',
     }),
     [froshee],
   );
@@ -161,6 +170,12 @@ export default function FrosheeNewEditViewForm({ froshee, froshs, teams, view }:
               <RHFTextField name='firstName' label='First Name' disabled={view || !!froshee} />
 
               <RHFTextField name='lastName' label='Last Name' disabled={view || !!froshee} />
+
+              <RHFTextField name='program' label='Program' disabled={view || !!froshee} />
+
+              <RHFTextField name='faculty' label='Faculty' disabled={view || !!froshee} />
+
+              <RHFTextField name='interests' label='Interests' disabled={view || !!froshee} />
 
               <RHFTextField
                 name='paymentAmount'

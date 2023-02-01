@@ -12,6 +12,9 @@ type FrosheeCreate = {
   teamId: string;
   paymentAmount: string;
   universityId: string;
+  program: string;
+  faculty: string;
+  interests: string;
 }
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
@@ -48,9 +51,9 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
           froshId: froshee.froshId,
           teamId: froshee.teamId,
           paymentId,
-          program: null,
-          faculty: null,
-          interests: null,
+          program: froshee.program,
+          faculty: froshee.faculty,
+          interests: froshee.interests,
         },
       });
 
