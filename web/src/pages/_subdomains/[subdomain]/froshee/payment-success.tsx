@@ -20,7 +20,7 @@ export default function PaymentSuccess() {
                   Payment Success
                 </Typography>
               </Box>
-              <Logo university disabledLink sx={{ width: 64, height: 64 }} />
+              <Logo university sx={{ width: 64, height: 64 }} />
             </Box>
           </ContentStyle>
         </Container>

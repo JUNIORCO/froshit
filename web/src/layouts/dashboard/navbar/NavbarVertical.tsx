@@ -62,7 +62,7 @@ export default function NavbarVertical({ isOpenSidebar, onCloseSidebar }: Props)
         }}
       >
         <Stack direction='row' alignItems='center' justifyContent='space-between'>
-          <Logo university disabledLink />
+          <Logo university />
 
           {/*{isDesktop && !isCollapse && (*/}
           {/*  <CollapseButton onToggleCollapse={onToggleCollapse} collapseClick={collapseClick} />*/}

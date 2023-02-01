@@ -29,7 +29,7 @@ export default function Register({ university }: FrosheeRegisterProps) {
                   Froshee Registration
                 </Typography>
               </Box>
-              <Logo university disabledLink sx={{ width: 64, height: 64 }} />
+              <Logo university sx={{ width: 64, height: 64 }} />
             </Box>
             <FrosheeRegistrationProvider university={university}>
               <CheckoutForm />
