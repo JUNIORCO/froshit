@@ -76,7 +76,7 @@ export default function OfferEditForm({ currentOffer, view }: Props) {
   const onSubmit = async (offerToUpdate: FormValuesProps) => {
     const { imageUrl, ...offer } = offerToUpdate;
 
-    // user has not updated image
+    // user has not updated images
     if (typeof imageUrl === 'string') {
       const { error } = await supabaseClient
         .from('offer')

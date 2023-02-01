@@ -78,7 +78,7 @@ export default function OfferNewForm() {
       .upload(imagePath, imageUrl);
 
     if (!uploadData || uploadError) {
-      enqueueSnackbar('Error uploading image', { variant: 'error' });
+      enqueueSnackbar('Error uploading images', { variant: 'error' });
       console.error(uploadError);
       return;
     }

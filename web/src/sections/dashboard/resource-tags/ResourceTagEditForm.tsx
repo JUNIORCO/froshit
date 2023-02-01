@@ -52,7 +52,7 @@ export default function ResourceTagEditForm({ currentResourceTag, view }: Props)
   } = methods;
 
   const onSubmit = async ({ name, imageUrl }: FormValuesProps) => {
-    // user has not updated image
+    // user has not updated images
     if (typeof imageUrl === 'string') {
       const { error } = await supabaseClient
         .from('resource_tag')

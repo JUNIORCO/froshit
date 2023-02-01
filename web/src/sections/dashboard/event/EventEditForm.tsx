@@ -108,7 +108,7 @@ export default function EventEditForm({
   const onSubmit = async (updatedEvent: EventForm) => {
     const { imageUrl, ...event } = updatedEvent;
 
-    // user has not updated image
+    // user has not updated images
     if (typeof imageUrl === 'string') {
       const { error } = await updateEventAPI(event);
 

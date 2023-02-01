@@ -61,7 +61,7 @@ export default function AccountGeneral() {
   const onSubmit = async (updatedProfile: FormValuesProps) => {
     const { imageUrl, ...profileWithoutImage } = updatedProfile;
 
-    // user has not updated image
+    // user has not updated images
     if (typeof imageUrl === 'string') {
       const { error } = await supabaseClient
         .from('profile')
@@ -72,7 +72,7 @@ export default function AccountGeneral() {
       return;
     }
 
-    // if already uploaded an image, delete the old one
+    // if already uploaded an images, delete the old one
     if (profile!.imageUrl) {
       const splitImageUrl = profile!.imageUrl.split('/') || '';
       const oldImagePath = `profile/${splitImageUrl[splitImageUrl.length - 1]}`;
@@ -98,7 +98,7 @@ export default function AccountGeneral() {
       .upload(newImagePath, imageUrl);
 
     if (!uploadData || uploadError) {
-      enqueueSnackbar('Error uploading new image', { variant: 'error' });
+      enqueueSnackbar('Error uploading new images', { variant: 'error' });
       return;
     }
 

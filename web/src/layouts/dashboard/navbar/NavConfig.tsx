@@ -14,7 +14,7 @@ const ICONS = {
   frosh: getIcon('fluent-emoji-high-contrast:party-popper'),
   offer: getIcon('tabler:discount'),
   resource: getIcon('carbon:security'),
-  branding: getIcon('gala:image'),
+  branding: getIcon('gala:images'),
   settings: getIcon('carbon:settings-adjust'),
   blog: getIcon('carbon:user'),
   chat: getIcon('carbon:user'),
