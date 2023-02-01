@@ -171,11 +171,11 @@ export default function FrosheeNewEditViewForm({ froshee, froshs, teams, view }:
 
               <RHFTextField name='lastName' label='Last Name' disabled={view || !!froshee} />
 
-              <RHFTextField name='program' label='Program' disabled={view || !!froshee} />
+              <RHFTextField name='program' label='Program' disabled={view} />
 
-              <RHFTextField name='faculty' label='Faculty' disabled={view || !!froshee} />
+              <RHFTextField name='faculty' label='Faculty' disabled={view} />
 
-              <RHFTextField name='interests' label='Interests' disabled={view || !!froshee} />
+              <RHFTextField name='interests' label='Interests' disabled={view} />
 
               <RHFTextField
                 name='paymentAmount'
