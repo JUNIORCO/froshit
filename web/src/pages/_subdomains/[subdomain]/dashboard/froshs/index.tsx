@@ -31,10 +31,7 @@ export default function FroshTablePage({ initialFroshs }: FroshTablePageProps) {
 
   const {
     page,
-    order,
-    orderBy,
     rowsPerPage,
-    onSort,
     onChangePage,
     onChangeRowsPerPage,
   } = useTable();
@@ -68,10 +65,7 @@ export default function FroshTablePage({ initialFroshs }: FroshTablePageProps) {
             <TableContainer sx={{ minWidth: 800, position: 'relative' }}>
               <Table size='small' sx={{ marginTop: 1 }}>
                 <TableHeadCustom
-                  order={order}
-                  orderBy={orderBy}
                   headLabel={TABLE_HEAD}
-                  onSort={onSort}
                   sx={{ paddingTop: 1 }}
                 />
 
