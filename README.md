@@ -1,3 +1,12 @@
+# License
+Copyright (C) FROSHIT Inc. - All Rights Reserved
+
+Unauthorized copying of this file, via any medium is strictly prohibited.
+
+Proprietary and confidential.
+
+Written by Sami Junior Kahil <sami@froshit.com>.
+
 # FROSHIT
 
 This is the FROSHIT monolith repo. Contains the backend, frontend, and mobile application.
