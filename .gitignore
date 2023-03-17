@@ -7,6 +7,7 @@
 ### web ###
 # env
 /web/.env
+/web/supabase/.env.local
 
 # dependencies
 /web/node_modules
@@ -60,3 +61,4 @@
 /mobile/*.orig.*
 /mobile/web-build/
 /mobile/ios/
+/mobile/.env

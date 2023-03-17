@@ -1,9 +1,10 @@
 import { styles } from "../../screens/styles/ResourcesScreen";
-import { Dispatch, SetStateAction } from "react";
+import { Dispatch, SetStateAction, useEffect } from "react";
 import { flow, groupBy, map, sortBy } from "lodash/fp";
-import { ImageBackground, Pressable, Text, View} from "react-native";
+import { ImageBackground, Pressable, Text, View } from "react-native";
 import { useGetResources } from "../../hooks/query";
 import { Resource, ResourceTag } from "../../supabase/types/extended";
+import { CacheManager } from 'expo-cached-image'
 
 export type GroupedResource = {
   resources: (Resource['Row'] & { resourceTagId: Omit<ResourceTag['Row'], 'createdAt' | 'updatedAt'> })[];
@@ -39,6 +40,19 @@ export default function ResourceTagList({ setSelectedTag }: Props) {
       </ImageBackground>
     );
   };
+
+  const cacheResourceTagImages = async (resources) => {
+    await Promise.allSettled(resources.map(resource =>
+      CacheManager.addToCache({
+        file: resource.imageUrl,
+        key: resource.id,
+      })
+    ));
+  }
+
+  useEffect(() => {
+    void cacheResourceTagImages(resources);
+  }, [resources]);
 
   return (
     <View style={styles.flexContainer}>
