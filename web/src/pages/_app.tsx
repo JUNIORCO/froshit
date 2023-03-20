@@ -31,6 +31,7 @@ import { createBrowserSupabaseClient } from '@supabase/auth-helpers-nextjs';
 import { Session, SessionContextProvider } from '@supabase/auth-helpers-react';
 import { ProfileProvider } from '../contexts/ProfileContext';
 import { SubdomainProvider } from '../contexts/SubdomainContext';
+import { Analytics } from '@vercel/analytics/react';
 
 type NextPageWithLayout = NextPage & {
   getLayout?: (page: ReactElement) => ReactNode;
@@ -82,6 +83,7 @@ export default function MyApp(props: MyAppProps) {
           </ProfileProvider>
         </SubdomainProvider>
       </SessionContextProvider>
+      <Analytics />
     </>
   );
 }
