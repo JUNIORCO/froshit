@@ -1,12 +1,11 @@
 import {
-  ComponentRenderData,
-  extractPlasmicQueryData,
+  PlasmicRootProvider,
   PlasmicComponent,
-  PlasmicRootProvider
+  ComponentRenderData,
+  extractPlasmicQueryData
 } from '@plasmicapp/loader-nextjs';
 import { useRouter } from 'next/router';
 import { PLASMIC } from '../plasmic';
-import { Analytics } from '@vercel/analytics/react';
 
 // Statically fetch the data needed to render Plasmic pages or components.
 export const getStaticProps = async () => {
@@ -21,7 +20,7 @@ export const getStaticProps = async () => {
   // Cache the necessary data fetched for the page
   const queryCache = await extractPlasmicQueryData(
     <PlasmicRootProvider loader={PLASMIC} prefetchedData={plasmicData} pageParams={compMeta.params}>
-      <PlasmicComponent component={compMeta.displayName}/>
+      <PlasmicComponent component={compMeta.displayName} />
     </PlasmicRootProvider>
   );
   return {
@@ -41,17 +40,14 @@ export default function Index(props: { plasmicData: ComponentRenderData; queryCa
   const router = useRouter();
   const compMeta = props.plasmicData.entryCompMetas[0];
   return (
-    <>
-      <PlasmicRootProvider
-        loader={PLASMIC}
-        prefetchedData={props.plasmicData}
-        prefetchedQueryData={props.queryCache}
-        pageParams={compMeta.params}
-        pageQuery={router.query}
-      >
-        <PlasmicComponent component={compMeta.displayName}/>
-      </PlasmicRootProvider>
-      <Analytics/>
-    </>
+    <PlasmicRootProvider
+      loader={PLASMIC}
+      prefetchedData={props.plasmicData}
+      prefetchedQueryData={props.queryCache}
+      pageParams={compMeta.params}
+      pageQuery={router.query}
+    >
+      <PlasmicComponent component={compMeta.displayName} />
+    </PlasmicRootProvider>
   );
 }
