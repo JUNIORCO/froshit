@@ -6,5 +6,6 @@ begin;
   create publication supabase_realtime;
 commit;
 
+
 -- add a table to the publication
 alter publication supabase_realtime add table message;
